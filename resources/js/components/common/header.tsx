@@ -293,7 +293,7 @@ function MobileNavigation({
     notifications,
     unreadMessages = 0,
 }: MobileNavigationProps) {
-    const { user } = auth.user;
+    const user = auth.user;
 
     return (
         <Sheet>
@@ -343,7 +343,7 @@ function MobileNavigation({
                     </nav>
 
                     {/* User Actions */}
-                    {auth.user && (
+                    {user && (
                         <div className="border-t pt-4 space-y-2">
                             <Button
                                 variant="ghost"
@@ -384,7 +384,7 @@ function MobileNavigation({
 
                     {/* Auth Actions */}
                     <div className="border-t pt-4">
-                        {auth.user ? (
+                        {user ? (
                             <Button
                                 variant="ghost"
                                 onClick={() => navigate("/logout")}
@@ -394,7 +394,7 @@ function MobileNavigation({
                                 Log out
                             </Button>
                         ) : (
-                            <div className="space-y-2">
+                            <div className="space-y-2 px-2">
                                 <Button
                                     onClick={() => navigate("/signup")}
                                     className="w-full"
@@ -545,7 +545,7 @@ export function Header({
                         </div>
 
                         <div className="flex items-center gap-2">
-                            {auth.user ? (
+                            {user ? (
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button
@@ -554,13 +554,11 @@ export function Header({
                                         >
                                             <Avatar className="size-8 overflow-hidden rounded-full">
                                                 <AvatarImage
-                                                    src={auth.user.avatar}
-                                                    alt={auth.user.name}
+                                                    src={user.avatar}
+                                                    alt={user.name}
                                                 />
                                                 <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
-                                                    {getUserInitials(
-                                                        auth.user.name
-                                                    )}
+                                                    {getUserInitials(user.name)}
                                                 </AvatarFallback>
                                             </Avatar>
                                         </Button>
@@ -569,7 +567,7 @@ export function Header({
                                         className="w-56"
                                         align="end"
                                     >
-                                        <UserMenuContent user={auth.user} />
+                                        <UserMenuContent user={user} />
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             ) : (

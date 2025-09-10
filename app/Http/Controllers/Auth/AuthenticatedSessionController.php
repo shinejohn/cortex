@@ -79,7 +79,7 @@ final class AuthenticatedSessionController extends Controller
             $user->save();
         }
 
-        return redirect()->intended(route('dashboard', absolute: false))
+        return redirect()->intended(route('home', absolute: false))
             ->with($messageType, $message);
     }
 
@@ -121,7 +121,7 @@ final class AuthenticatedSessionController extends Controller
         if ($invitationToken) {
             $action->response(redirect()->route('auth.magic-link.callback', ['invitation' => $invitationToken]));
         } else {
-            $action->response(redirect('/dashboard'));
+            $action->response(redirect('/home'));
         }
 
         $magicLink = MagicLink::create($action)->url;
@@ -166,7 +166,7 @@ final class AuthenticatedSessionController extends Controller
             $user->save();
         }
 
-        return redirect()->route('dashboard')
+        return redirect()->route('home')
             ->with($messageType, $message);
     }
 }
