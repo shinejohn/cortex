@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "/home/linuxbrew/.linuxbrew/Cellar/php/8.4.8/bin/php",
+            "args": [
+                "/home/aditya/workspace/makerkit/makerkit-laravel-react/artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}

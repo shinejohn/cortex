@@ -1,0 +1,60 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "build:ssr": "vite build && vite build --ssr",
+        "dev": "vite --host",
+        "format": "biome format --write resources/",
+        "check": "biome check --write resources/",
+        "lint": "biome lint --write resources/",
+        "types": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "1.9.4",
+        "@types/node": "^24.3.1"
+    },
+    "dependencies": {
+        "@headlessui/react": "^2.2.7",
+        "@inertiajs/react": "^2.1.5",
+        "@radix-ui/react-avatar": "^1.1.10",
+        "@radix-ui/react-checkbox": "^1.3.3",
+        "@radix-ui/react-collapsible": "^1.1.12",
+        "@radix-ui/react-dialog": "^1.1.15",
+        "@radix-ui/react-dropdown-menu": "^2.1.16",
+        "@radix-ui/react-label": "^2.1.7",
+        "@radix-ui/react-navigation-menu": "^1.2.14",
+        "@radix-ui/react-select": "^2.2.6",
+        "@radix-ui/react-separator": "^1.1.7",
+        "@radix-ui/react-slot": "^1.2.3",
+        "@radix-ui/react-toggle": "^1.1.10",
+        "@radix-ui/react-toggle-group": "^1.1.11",
+        "@radix-ui/react-tooltip": "^1.2.8",
+        "@tailwindcss/vite": "^4.1.13",
+        "@types/react": "^19.1.12",
+        "@types/react-dom": "^19.1.9",
+        "@vitejs/plugin-react": "^5.0.2",
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
+        "concurrently": "^9.2.1",
+        "globals": "^16.3.0",
+        "laravel-vite-plugin": "^2.0.1",
+        "lucide-react": "^0.542.0",
+        "next-themes": "^0.4.6",
+        "react": "^19.1.1",
+        "react-dom": "^19.1.1",
+        "react-icons": "^5.5.0",
+        "sonner": "^2.0.7",
+        "tailwind-merge": "^3.3.1",
+        "tailwindcss": "^4.1.13",
+        "tailwindcss-animate": "^1.0.7",
+        "typescript": "^5.9.2",
+        "vaul": "^1.1.2",
+        "vite": "^7.1.5"
+    },
+    "optionalDependencies": {
+        "@rollup/rollup-linux-x64-gnu": "^4.50.1",
+        "@tailwindcss/oxide-linux-x64-gnu": "^4.1.13",
+        "lightningcss-linux-x64-gnu": "^1.30.1"
+    }
+}
