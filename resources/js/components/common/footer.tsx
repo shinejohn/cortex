@@ -154,7 +154,7 @@ const APP_STORE_LINKS: readonly AppStoreLink[] = [
 function FooterSection({ section }: { readonly section: FooterSection }) {
     return (
         <div>
-            <h3 className="text-lg font-semibold mb-4 text-white">
+            <h3 className="text-lg font-semibold mb-4 text-foreground">
                 {section.title}
             </h3>
             <ul className="space-y-2">
@@ -162,7 +162,7 @@ function FooterSection({ section }: { readonly section: FooterSection }) {
                     <li key={link.href}>
                         <Link
                             href={link.href}
-                            className="text-gray-300 hover:text-white text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 rounded"
+                            className="text-muted-foreground hover:text-foreground text-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-opacity-50 rounded"
                         >
                             {link.label}
                         </Link>
@@ -183,7 +183,7 @@ function SocialMediaLinks() {
                         key={social.name}
                         variant="ghost"
                         size="icon"
-                        className="text-gray-400 hover:text-white hover:bg-gray-800 transition-colors duration-200"
+                        className="text-muted-foreground hover:text-foreground transition-colors duration-200"
                         asChild
                     >
                         <a
@@ -208,12 +208,12 @@ function LegalLinks() {
                 <span key={link.href} className="flex items-center">
                     <Link
                         href={link.href}
-                        className="text-gray-400 hover:text-gray-300 text-xs transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 rounded"
+                        className="text-muted-foreground hover:text-foreground text-xs transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-opacity-50 rounded"
                     >
                         {link.label}
                     </Link>
                     {index < LEGAL_LINKS.length - 1 && (
-                        <span className="text-gray-500 ml-4">|</span>
+                        <span className="text-muted-foreground/50 ml-4">|</span>
                     )}
                 </span>
             ))}
@@ -229,7 +229,7 @@ function AppStoreButtons() {
                     key={app.name}
                     variant="secondary"
                     size="sm"
-                    className="bg-gray-800 text-white text-xs hover:bg-gray-700 transition-colors duration-200"
+                    className="text-xs transition-colors duration-200"
                     asChild
                 >
                     <Link href={app.href} className="flex items-center">
@@ -246,7 +246,7 @@ export function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-gray-900 text-white" role="contentinfo">
+        <footer className="bg-background border-t" role="contentinfo">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 {/* Main footer content */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -256,11 +256,11 @@ export function Footer() {
                 </div>
 
                 {/* Footer bottom section */}
-                <div className="mt-12 pt-8 border-t border-gray-800">
+                <div className="mt-12 pt-8 border-t border-border">
                     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-6 lg:space-y-0">
                         {/* Copyright and legal links */}
                         <div className="flex-1">
-                            <p className="text-sm text-gray-400 mb-2">
+                            <p className="text-sm text-muted-foreground mb-2">
                                 © {currentYear} Go Event City | Part of
                                 Fibonacco
                             </p>

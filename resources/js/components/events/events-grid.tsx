@@ -67,12 +67,12 @@ const EventsGrid = () => {
 
     const renderEventContent = (event: Event) => (
         <>
-            <div className="flex items-center text-sm text-gray-600 mb-1">
+            <div className="flex items-center text-sm text-muted-foreground mb-1">
                 <CalendarIcon className="h-4 w-4 mr-1" />
                 {event.date}
             </div>
             <div className="flex items-center justify-between">
-                <div className="flex items-center text-sm text-gray-600">
+                <div className="flex items-center text-sm text-muted-foreground">
                     <MapPinIcon className="h-4 w-4 mr-1" />
                     {event.venue}
                 </div>
@@ -87,7 +87,7 @@ const EventsGrid = () => {
                 variant="ghost"
                 size="icon"
                 onClick={(e) => handleShareEvent(e, event)}
-                className="text-gray-500 hover:text-primary-600 p-1 h-8 w-8"
+                className="text-muted-foreground hover:text-primary p-1 h-8 w-8"
                 title="Share Event"
             >
                 {shareSuccess === event.id ? (
@@ -101,7 +101,7 @@ const EventsGrid = () => {
                 variant="ghost"
                 size="icon"
                 onClick={(e) => handleAddToCalendar(e, event, event.id)}
-                className="text-gray-500 hover:text-primary-600 p-1 h-8 w-8"
+                className="text-muted-foreground hover:text-primary p-1 h-8 w-8"
                 title="Add to Calendar"
             >
                 {calendarSuccess === event.id ? (
@@ -120,7 +120,7 @@ const EventsGrid = () => {
             viewAllText="View all events"
             promoteHref="/advertise/event-promotion"
             promoteText="Promote your event here"
-            className="bg-gray-50"
+            className="bg-muted/50"
         >
             {featuredEvents?.map((event) => (
                 <GridCard

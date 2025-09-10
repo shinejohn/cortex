@@ -18,19 +18,19 @@ const VenuesGrid = () => {
 
     const renderVenueContent = (venue: Venue) => (
         <>
-            <div className="flex items-center text-sm text-gray-600 mb-1">
+            <div className="flex items-center text-sm text-muted-foreground mb-1">
                 <MapPinIcon className="h-4 w-4 mr-1" />
                 {venue.location}
             </div>
             <div className="flex items-center justify-between">
-                <div className="flex items-center text-sm text-gray-600">
+                <div className="flex items-center text-sm text-muted-foreground">
                     <Building2Icon className="h-4 w-4 mr-1" />
                     Capacity: {venue.capacity}
                 </div>
                 <div className="flex items-center">
                     <StarIcon className="h-4 w-4 text-yellow-500 mr-1" />
                     <span className="text-sm font-medium">{venue.rating}</span>
-                    <span className="text-xs text-gray-500 ml-1">
+                    <span className="text-xs text-muted-foreground ml-1">
                         ({venue.reviewCount})
                     </span>
                 </div>
@@ -45,7 +45,7 @@ const VenuesGrid = () => {
             viewAllText="View all venues"
             promoteHref="/advertise/venue-promotion"
             promoteText="Promote your venue here"
-            className="bg-white"
+            className="bg-background"
         >
             {featuredVenues?.map((venue) => (
                 <GridCard

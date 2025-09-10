@@ -15,6 +15,8 @@ interface GridCardProps {
     readonly actions?: ReactNode;
     readonly detailsButton?: boolean;
     readonly className?: string;
+    readonly imageOverlay?: ReactNode;
+    readonly hideTitle?: boolean;
 }
 
 export const GridCard = ({
@@ -28,11 +30,13 @@ export const GridCard = ({
     actions,
     detailsButton = true,
     className = "",
+    imageOverlay,
+    hideTitle = false,
 }: GridCardProps) => {
     return (
         <Card
             key={id}
-            className={`gap-0 bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer p-0 border-0 ${className}`}
+            className={`gap-0 bg-card rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer p-0 border-0 ${className}`}
         >
             <Link href={href} className="block">
                 <div className="h-48 overflow-hidden relative">
@@ -51,27 +55,30 @@ export const GridCard = ({
                             </Badge>
                         </div>
                     )}
+                    {imageOverlay}
                 </div>
             </Link>
 
             <CardContent className="p-3">
-                <Link href={href} className="block">
-                    <h3 className="font-bold text-lg text-gray-900 mb-1 hover:text-primary-600 transition-colors">
-                        {title}
-                    </h3>
-                </Link>
+                {!hideTitle && (
+                    <Link href={href} className="block">
+                        <h3 className="font-bold text-lg text-foreground mb-1 hover:text-primary transition-colors">
+                            {title}
+                        </h3>
+                    </Link>
+                )}
 
                 {children}
 
                 {(actions || detailsButton) && (
-                    <div className="flex justify-between items-center mt-3 pt-3 border-t border-gray-100">
+                    <div className="flex justify-between items-center mt-3 pt-3 border-t border-border">
                         {actions && <div className="flex gap-2">{actions}</div>}
                         {detailsButton && (
                             <Button
                                 variant="secondary"
                                 size="sm"
                                 asChild
-                                className="text-xs bg-primary-100 text-primary-700 hover:bg-primary-200 border-0 ml-auto"
+                                className="text-xs border-0 ml-auto"
                             >
                                 <Link href={href}>Details</Link>
                             </Button>

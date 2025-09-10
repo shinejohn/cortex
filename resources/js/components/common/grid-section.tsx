@@ -29,10 +29,10 @@ export const GridSection = ({
             <div className="max-w-7xl mx-auto px-3 sm:px-4">
                 <div className="flex justify-between items-center mb-3">
                     <div>
-                        <h2 className="text-xl font-bold text-gray-900">
+                        <h2 className="text-xl font-bold text-foreground">
                             {title}
                         </h2>
-                        <p className="text-xs text-gray-500 mt-0.5 flex items-center">
+                        <p className="text-xs text-muted-foreground mt-0.5 flex items-center">
                             <TagIcon className="h-3 w-3 mr-1" />
                             {description}
                         </p>
@@ -41,7 +41,7 @@ export const GridSection = ({
                         variant="link"
                         size="sm"
                         asChild
-                        className="text-primary hover:text-primary-800 font-medium text-sm p-0"
+                        className="text-primary hover:text-primary/80 font-medium text-sm p-0"
                     >
                         <Link href={viewAllHref}>
                             {viewAllText}
@@ -59,7 +59,7 @@ export const GridSection = ({
                         variant="link"
                         size="sm"
                         asChild
-                        className="text-primary-600 hover:text-primary-800 text-sm font-medium p-0"
+                        className="text-primary hover:text-primary/80 text-sm font-medium p-0"
                     >
                         <Link href={promoteHref}>{promoteText}</Link>
                     </Button>
