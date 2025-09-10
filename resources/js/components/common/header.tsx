@@ -1,21 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link, router } from "@inertiajs/react";
+import { route } from "ziggy-js";
 
 import {
     Bell,
-    BookOpen,
-    Calendar,
     ChevronDown,
     LogOut,
     MapPin,
-    Megaphone,
     Menu,
     MessageSquare,
-    Music,
     Plus,
     Search,
-    ShoppingBag,
-    Ticket,
     Users,
 } from "lucide-react";
 
@@ -43,16 +38,17 @@ import { UserMenuContent } from "../user-menu-content";
 import { BreadcrumbItem, type Auth } from "@/types";
 import AppLogo from "../app-logo";
 import AppLogoIcon from "../app-logo-icon";
+import BottomNavigation from "./bottom-navigation";
 
-interface Location {
-    readonly name: string;
-    readonly eventCount: number;
-}
-
-interface Notifications {
-    readonly count: number;
-    readonly hasUnread: boolean;
-}
+// Re-import navigation items for mobile menu
+import {
+    BookOpen,
+    Calendar,
+    Megaphone,
+    Music,
+    ShoppingBag,
+    Ticket,
+} from "lucide-react";
 
 type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
 
@@ -67,26 +63,7 @@ interface NavItem {
     readonly highlight?: boolean;
 }
 
-interface HeaderProps {
-    readonly auth: Auth;
-    readonly breadcrumbs?: BreadcrumbItem[];
-    readonly location?: Location;
-    readonly notifications?: Notifications;
-    readonly unreadMessages?: number;
-}
-
-// Constants
-const DEFAULT_LOCATION: Location = {
-    name: "Clearwater, FL",
-    eventCount: 427,
-};
-
-const DEFAULT_NOTIFICATIONS: Notifications = {
-    count: 0,
-    hasUnread: false,
-};
-
-const NAVIGATION_ITEMS: NavItem[] = [
+const MOBILE_NAV_ITEMS: NavItem[] = [
     {
         title: "Events",
         href: "/events",
@@ -142,6 +119,35 @@ const NAVIGATION_ITEMS: NavItem[] = [
     },
 ];
 
+interface Location {
+    readonly name: string;
+    readonly eventCount: number;
+}
+
+interface Notifications {
+    readonly count: number;
+    readonly hasUnread: boolean;
+}
+
+interface HeaderProps {
+    readonly auth: Auth;
+    readonly breadcrumbs?: BreadcrumbItem[];
+    readonly location?: Location;
+    readonly notifications?: Notifications;
+    readonly unreadMessages?: number;
+}
+
+// Constants
+const DEFAULT_LOCATION: Location = {
+    name: "Clearwater, FL",
+    eventCount: 427,
+};
+
+const DEFAULT_NOTIFICATIONS: Notifications = {
+    count: 0,
+    hasUnread: false,
+};
+
 // Utilities
 const navigate = (href: string): void => {
     try {
@@ -175,10 +181,6 @@ interface NotificationBellProps {
 
 interface MessagesButtonProps {
     readonly unreadCount?: number;
-}
-
-interface NavItemProps {
-    readonly item: NavItem;
 }
 
 interface MobileNavigationProps {
@@ -285,24 +287,6 @@ function MessagesButton({ unreadCount = 0 }: MessagesButtonProps) {
     );
 }
 
-function NavItem({ item }: NavItemProps) {
-    return (
-        <Button
-            variant="ghost"
-            onClick={() => navigate(item.href)}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 hover:bg-muted/80"
-        >
-            {item.icon}
-            <span className="hidden sm:inline">{item.title}</span>
-            {item.badge && (
-                <Badge variant={item.badge.variant} className="ml-1 text-xs">
-                    {item.badge.text}
-                </Badge>
-            )}
-        </Button>
-    );
-}
-
 function MobileNavigation({
     auth,
     location,
@@ -335,9 +319,9 @@ function MobileNavigation({
                         </div>
                     </div>
 
-                    {/* Nav Items */}
+                    {/* Navigation Items */}
                     <nav className="space-y-2">
-                        {NAVIGATION_ITEMS.map((item) => (
+                        {MOBILE_NAV_ITEMS.map((item) => (
                             <Button
                                 key={item.href}
                                 variant="ghost"
@@ -541,15 +525,7 @@ export function Header({
                 </div>
 
                 {/* Bottom Row - Navigation */}
-                <div className="border-t bg-gradient-to-r from-background/50 via-background to-background/50">
-                    <div className="container mx-auto px-4">
-                        <nav className="flex flex-wrap items-center justify-center gap-2 py-3">
-                            {NAVIGATION_ITEMS.map((item) => (
-                                <NavItem key={item.href} item={item} />
-                            ))}
-                        </nav>
-                    </div>
-                </div>
+                <BottomNavigation />
             </div>
 
             {/* Mobile Header */}
