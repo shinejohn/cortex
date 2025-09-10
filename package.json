@@ -4,7 +4,7 @@
     "scripts": {
         "build": "vite build",
         "build:ssr": "vite build && vite build --ssr",
-        "dev": "vite --host",
+        "dev": "vite",
         "format": "biome format --write resources/",
         "check": "biome check --write resources/",
         "lint": "biome lint --write resources/",
