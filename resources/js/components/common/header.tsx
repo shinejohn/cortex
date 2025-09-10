@@ -509,15 +509,12 @@ export function Header({
                                 </>
                             ) : (
                                 <div className="flex items-center gap-3">
-                                    <Button
-                                        variant="ghost"
-                                        onClick={() => navigate("/login")}
-                                    >
-                                        Log In
-                                    </Button>
-                                    <Button onClick={() => navigate("/signup")}>
-                                        Sign Up
-                                    </Button>
+                                    <Link href={route("login")}>
+                                        <Button variant="ghost">Log In</Button>
+                                    </Link>
+                                    <Link href={route("register")}>
+                                        <Button>Sign Up</Button>
+                                    </Link>
                                 </div>
                             )}
                         </div>

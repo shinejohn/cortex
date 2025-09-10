@@ -39,7 +39,7 @@ final class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', Rules\Password::defaults()],
             'invitation' => 'nullable|string|max:255',
         ]);
@@ -65,14 +65,14 @@ final class RegisteredUserController extends Controller
             $result = $invitationService->acceptInvitationByToken($invitationToken, $user);
 
             if ($result->wasSuccessful()) {
-                return redirect()->route('dashboard')
+                return redirect()->route('home')
                     ->with('success', 'Welcome! You have successfully joined the workspace.');
             }
 
-            return redirect()->route('dashboard')
+            return redirect()->route('home')
                 ->with('warning', 'Account created successfully, but could not join workspace. The invitation may be invalid or expired.');
         }
 
-        return redirect()->route('dashboard');
+        return redirect()->route('home');
     }
 }
