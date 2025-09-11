@@ -66,7 +66,7 @@ interface NavItem {
 const MOBILE_NAV_ITEMS: NavItem[] = [
     {
         title: "Events",
-        href: "/events",
+        href: route("events"),
         icon: <Calendar className="size-4" />,
     },
     {
@@ -420,7 +420,6 @@ function MobileNavigation({
 // Main Header Component
 export function Header({
     auth,
-    breadcrumbs = [],
     location = DEFAULT_LOCATION,
     notifications = DEFAULT_NOTIFICATIONS,
     unreadMessages = 0,

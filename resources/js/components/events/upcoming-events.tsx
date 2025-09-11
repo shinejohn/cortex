@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { GridCard } from "@/components/common/grid-card";
 import { GridSection } from "@/components/common/grid-section";
-import type { Event, UpcomingEventsProps } from "@/types/home";
+import type { Event, UpcomingEventsProps, DayEvents } from "@/types/events";
 import { Link, usePage } from "@inertiajs/react";
 import {
     CalendarIcon,
@@ -11,13 +11,6 @@ import {
     ArrowRightIcon,
 } from "lucide-react";
 import { useState } from "react";
-
-interface DayEvents {
-    readonly date: string;
-    readonly dayName: string;
-    readonly displayName: string;
-    readonly events: Event[];
-}
 
 const UpcomingEvents = () => {
     const { upcomingEvents = [] } = usePage<UpcomingEventsProps>().props;

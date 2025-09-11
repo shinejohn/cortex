@@ -1,15 +1,5 @@
 import { SharedData } from "./index";
 
-export interface Event {
-    id: string;
-    title: string;
-    date: string;
-    venue: string;
-    price: string;
-    category: string;
-    image: string;
-}
-
 export interface Venue {
     id: string;
     name: string;
@@ -35,18 +25,10 @@ export interface Performer {
     };
 }
 
-export interface EventsGridProps extends SharedData {
-    featuredEvents?: Event[];
-}
-
 export interface VenuesGridProps extends SharedData {
     featuredVenues?: Venue[];
 }
 
 export interface PerformersGridProps extends SharedData {
     featuredPerformers?: Performer[];
-}
-
-export interface UpcomingEventsProps extends SharedData {
-    upcomingEvents?: Event[];
 }

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { GridCard } from "@/components/common/grid-card";
 import { GridSection } from "@/components/common/grid-section";
-import type { Event, EventsGridProps } from "@/types/home";
+import type { Event, EventsGridProps } from "@/types/events";
 import { usePage } from "@inertiajs/react";
 import { CalendarIcon, CheckIcon, MapPinIcon, ShareIcon } from "lucide-react";
 import { useState } from "react";
