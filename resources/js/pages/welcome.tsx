@@ -1,10 +1,12 @@
+import DateSelector from "@/components/common/date-selector";
+import CategoryFilter from "@/components/common/category-filter";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
 import EventsGrid from "@/components/events/events-grid";
 import PerformersGrid from "@/components/performers/performers-grid";
 import VenuesGrid from "@/components/venues/venues-grid";
 import { type SharedData } from "@/types";
-import { Head, Link, usePage } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;
@@ -14,6 +16,17 @@ export default function Welcome() {
             <Head title="Home" />
 
             <Header auth={auth} />
+
+            <CategoryFilter
+                selectedCategory="All"
+                onCategoryChange={() => void 0}
+            />
+
+            <DateSelector
+                onDateChange={() => void 0}
+                currentView="daily"
+                setCurrentView={() => void 0}
+            />
 
             <EventsGrid />
 
