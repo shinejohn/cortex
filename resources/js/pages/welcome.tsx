@@ -1,8 +1,10 @@
 import DateSelector from "@/components/common/date-selector";
 import CategoryFilter from "@/components/common/category-filter";
+import CTASection from "@/components/common/cta-section";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
 import EventsGrid from "@/components/events/events-grid";
+import UpcomingEvents from "@/components/events/upcoming-events";
 import PerformersGrid from "@/components/performers/performers-grid";
 import VenuesGrid from "@/components/venues/venues-grid";
 import { type SharedData } from "@/types";
@@ -33,6 +35,10 @@ export default function Welcome() {
             <VenuesGrid />
 
             <PerformersGrid />
+
+            <UpcomingEvents />
+
+            <CTASection />
 
             <Footer />
         </>

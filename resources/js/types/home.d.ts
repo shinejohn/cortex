@@ -46,3 +46,7 @@ export interface VenuesGridProps extends SharedData {
 export interface PerformersGridProps extends SharedData {
     featuredPerformers?: Performer[];
 }
+
+export interface UpcomingEventsProps extends SharedData {
+    upcomingEvents?: Event[];
+}
