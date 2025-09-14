@@ -36,7 +36,7 @@ export const GridCard = ({
     return (
         <Card
             key={id}
-            className={`gap-0 bg-card rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer p-0 border-0 ${className}`}
+            className={`gap-0 bg-card rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer p-0 border-0 flex flex-col h-full ${className}`}
         >
             <Link href={href} className="block">
                 <div className="h-48 overflow-hidden relative">
@@ -59,16 +59,18 @@ export const GridCard = ({
                 </div>
             </Link>
 
-            <CardContent className="p-3">
-                {!hideTitle && (
-                    <Link href={href} className="block">
-                        <h3 className="font-bold text-lg text-foreground mb-1 hover:text-primary transition-colors">
-                            {title}
-                        </h3>
-                    </Link>
-                )}
+            <CardContent className="p-3 flex flex-col h-full">
+                <div className="flex-grow">
+                    {!hideTitle && (
+                        <Link href={href} className="block">
+                            <h3 className="font-bold text-lg text-foreground mb-1 hover:text-primary transition-colors">
+                                {title}
+                            </h3>
+                        </Link>
+                    )}
 
-                {children}
+                    {children}
+                </div>
 
                 {(actions || detailsButton) && (
                     <div className="flex justify-between items-center mt-3 pt-3 border-t border-border">

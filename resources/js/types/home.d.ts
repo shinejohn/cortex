@@ -1,34 +1,20 @@
-import { SharedData } from "./index";
+import type { SharedData } from "./index";
+import type { Performer, PerformersGridProps } from "./performers";
 
 export interface Venue {
-    id: string;
-    name: string;
-    location: string;
-    capacity: string;
-    venueType: string;
-    rating: string;
-    reviewCount: string;
-    image: string;
-}
-
-export interface Performer {
-    id: string;
-    name: string;
-    homeCity: string;
-    genres: string[];
-    rating: string;
-    reviewCount: string;
-    image: string;
-    upcomingShow: {
-        date: string;
-        venue?: string;
-    };
+    readonly id: string;
+    readonly name: string;
+    readonly location: string;
+    readonly capacity: string;
+    readonly venueType: string;
+    readonly rating: string;
+    readonly reviewCount: string;
+    readonly image: string;
 }
 
 export interface VenuesGridProps extends SharedData {
-    featuredVenues?: Venue[];
+    readonly featuredVenues?: Venue[];
 }
 
-export interface PerformersGridProps extends SharedData {
-    featuredPerformers?: Performer[];
-}
+// Re-export for backward compatibility
+export type { Performer, PerformersGridProps };

@@ -76,7 +76,7 @@ const MOBILE_NAV_ITEMS: NavItem[] = [
     },
     {
         title: "Performers",
-        href: "/performers",
+        href: route("performers"),
         icon: <Music className="size-4" />,
     },
     {
