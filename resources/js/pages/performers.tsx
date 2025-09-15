@@ -65,9 +65,6 @@ export default function Performers() {
             {/* Browse by Category */}
             <CategoryCards className="bg-muted/30" />
 
-            {/* Join as Performer CTA */}
-            <JoinCta />
-
             {/* Featured Performers Section */}
             <div className="py-12">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
@@ -120,6 +117,9 @@ export default function Performers() {
                     )}
                 </div>
             </div>
+
+            {/* Join as Performer CTA */}
+            <JoinCta />
 
             <CTASection />
 

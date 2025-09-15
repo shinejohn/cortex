@@ -35,7 +35,13 @@ const PerformersGrid = () => {
             <div className="flex items-center justify-between">
                 <div className="flex items-center text-sm text-muted-foreground">
                     <CalendarIcon className="h-4 w-4 mr-1" />
-                    Next show: {formatDate(performer.upcomingShow.date)}
+                    {performer.upcomingShow ? (
+                        <>
+                            Next show: {formatDate(performer.upcomingShow.date)}
+                        </>
+                    ) : (
+                        "No upcoming shows"
+                    )}
                 </div>
                 <div className="flex items-center">
                     <StarIcon className="h-4 w-4 text-yellow-500 mr-1" />

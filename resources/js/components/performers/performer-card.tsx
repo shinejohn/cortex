@@ -93,8 +93,14 @@ export function PerformerCard({
             <div className="flex items-center text-sm text-muted-foreground">
                 <CalendarIcon className="h-4 w-4 mr-1" />
                 <span className="text-xs">
-                    Next: {formatDate(performer.upcomingShow.date)} at{" "}
-                    {performer.upcomingShow.venue || "Capitol Theatre"}
+                    {performer.upcomingShow ? (
+                        <>
+                            Next: {formatDate(performer.upcomingShow.date)} at{" "}
+                            {performer.upcomingShow.venue || "Capitol Theatre"}
+                        </>
+                    ) : (
+                        "No upcoming shows"
+                    )}
                 </span>
             </div>
         </>

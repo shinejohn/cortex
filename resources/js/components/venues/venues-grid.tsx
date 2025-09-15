@@ -1,6 +1,6 @@
 import { GridCard } from "@/components/common/grid-card";
 import { GridSection } from "@/components/common/grid-section";
-import type { Venue, VenuesGridProps } from "@/types/home";
+import type { Venue, VenuesGridProps, FullVenue } from "@/types/home";
 import { usePage } from "@inertiajs/react";
 import { Building2Icon, MapPinIcon, StarIcon } from "lucide-react";
 
@@ -16,27 +16,47 @@ const VenuesGrid = () => {
             .padStart(2, "0")}`;
     };
 
-    const renderVenueContent = (venue: Venue) => (
-        <>
-            <div className="flex items-center text-sm text-muted-foreground mb-1">
-                <MapPinIcon className="h-4 w-4 mr-1" />
-                {venue.location}
-            </div>
-            <div className="flex items-center justify-between">
-                <div className="flex items-center text-sm text-muted-foreground">
-                    <Building2Icon className="h-4 w-4 mr-1" />
-                    Capacity: {venue.capacity}
+    const renderVenueContent = (venue: Venue | FullVenue) => {
+        // Handle both old and new venue formats
+        const location =
+            typeof venue.location === "string"
+                ? venue.location
+                : (venue as FullVenue).location?.address || "Location TBD";
+        const capacity =
+            typeof venue.capacity === "string"
+                ? venue.capacity
+                : String((venue as FullVenue).capacity || "TBD");
+        const rating =
+            typeof venue.rating === "string"
+                ? venue.rating
+                : String((venue as FullVenue).rating || "0.0");
+        const reviewCount =
+            typeof venue.reviewCount === "string"
+                ? venue.reviewCount
+                : String((venue as FullVenue).reviewCount || "0");
+
+        return (
+            <>
+                <div className="flex items-center text-sm text-muted-foreground mb-1">
+                    <MapPinIcon className="h-4 w-4 mr-1" />
+                    {location}
                 </div>
-                <div className="flex items-center">
-                    <StarIcon className="h-4 w-4 text-yellow-500 mr-1" />
-                    <span className="text-sm font-medium">{venue.rating}</span>
-                    <span className="text-xs text-muted-foreground ml-1">
-                        ({venue.reviewCount})
-                    </span>
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center text-sm text-muted-foreground">
+                        <Building2Icon className="h-4 w-4 mr-1" />
+                        Capacity: {capacity}
+                    </div>
+                    <div className="flex items-center">
+                        <StarIcon className="h-4 w-4 text-yellow-500 mr-1" />
+                        <span className="text-sm font-medium">{rating}</span>
+                        <span className="text-xs text-muted-foreground ml-1">
+                            ({reviewCount})
+                        </span>
+                    </div>
                 </div>
-            </div>
-        </>
-    );
+            </>
+        );
+    };
 
     return (
         <GridSection

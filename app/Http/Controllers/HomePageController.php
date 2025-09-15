@@ -4,128 +4,127 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
+use App\Models\Performer;
+use App\Models\Venue;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 final class HomePageController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $featuredEvents = collect(range(1, 4))->map(function ($index) {
-            $categories = ['Music', 'Technology', 'Art', 'Food'];
-            $venues = [
-                'Central Park Amphitheater',
-                'Convention Center Downtown',
-                'Gallery District',
-                'Riverside Plaza',
-            ];
-            $images = [
-                'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop',
-            ];
+        // Get current workspace
+        $currentWorkspace = null;
+        if ($request->user()) {
+            $user = $request->user();
+            $currentWorkspace = $user->currentWorkspace ?? $user->workspaces->first();
+        }
 
-            return [
-                'id' => (string) $index,
-                'title' => fake()->catchPhrase(),
-                'date' => fake()->dateTimeBetween('now', '+3 months')->format('F j, Y'),
-                'venue' => $venues[$index - 1],
-                'price' => fake()->randomElement(['Free', '$' . fake()->numberBetween(10, 150)]),
-                'category' => $categories[$index - 1],
-                'image' => $images[$index - 1],
-            ];
-        })->toArray();
+        // Get featured events from the database
+        $featuredEvents = Event::when($currentWorkspace, function ($query, $workspace) {
+            return $query->where('workspace_id', $workspace->id);
+        })
+            ->published()
+            ->upcoming()
+            ->with(['venue', 'performer'])
+            ->take(4)
+            ->get()
+            ->map(function ($event) {
+                return [
+                    'id' => $event->id,
+                    'title' => $event->title,
+                    'date' => $event->event_date->format('F j, Y'),
+                    'venue' => $event->venue?->name ?? 'TBA',
+                    'price' => $event->is_free ? 'Free' : '$' . number_format((float) ($event->price_min ?? 0)),
+                    'category' => $event->category,
+                    'image' => $event->image,
+                ];
+            })
+            ->toArray();
 
-        $featuredVenues = collect(range(1, 4))->map(function ($index) {
-            $venueTypes = ['Outdoor', 'Convention Center', 'Gallery', 'Plaza'];
-            $locations = ['New York, NY', 'Chicago, IL', 'Los Angeles, CA', 'Austin, TX'];
-            $names = [
-                'Central Park Amphitheater',
-                'Convention Center Downtown',
-                'Gallery District',
-                'Riverside Plaza',
-            ];
-            $images = [
-                'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1578321272176-b7bbc0679853?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop',
-            ];
+        // Get featured venues from the database
+        $featuredVenues = Venue::when($currentWorkspace, function ($query, $workspace) {
+            return $query->where('workspace_id', $workspace->id);
+        })
+            ->active()
+            ->orderBy('average_rating', 'desc')
+            ->take(4)
+            ->get()
+            ->map(function ($venue) {
+                return [
+                    'id' => $venue->id,
+                    'name' => $venue->name,
+                    'location' => $venue->address,
+                    'capacity' => number_format($venue->capacity),
+                    'venueType' => $venue->venue_type,
+                    'rating' => round((float) ($venue->average_rating ?? 0), 1),
+                    'reviewCount' => (string) $venue->total_reviews,
+                    'image' => is_array($venue->images) && count($venue->images) > 0
+                        ? $venue->images[0]
+                        : 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
+                ];
+            })
+            ->toArray();
 
-            return [
-                'id' => (string) $index,
-                'name' => $names[$index - 1],
-                'location' => $locations[$index - 1],
-                'capacity' => number_format(fake()->numberBetween(500, 15000)),
-                'venueType' => $venueTypes[$index - 1],
-                'rating' => fake()->randomFloat(1, 4.5, 5.0),
-                'reviewCount' => (string) fake()->numberBetween(100, 800),
-                'image' => $images[$index - 1],
-            ];
-        })->toArray();
-
-        $featuredPerformers = collect(range(1, 4))->map(function ($index) {
-            $genreGroups = [
-                ['Rock', 'Alternative'],
-                ['Jazz', 'Blues'],
-                ['Classical', 'Symphony'],
-                ['Electronic', 'House'],
-            ];
-            $cities = ['Nashville, TN', 'New Orleans, LA', 'Boston, MA', 'Miami, FL'];
-            $venues = [
-                'Madison Square Garden',
-                'Blue Note',
-                'Symphony Hall',
-                'Club Paradise',
-            ];
-
-            return [
-                'id' => (string) $index,
-                'name' => fake()->name(),
-                'homeCity' => $cities[$index - 1],
-                'genres' => $genreGroups[$index - 1],
-                'rating' => fake()->randomFloat(1, 4.5, 5.0),
-                'reviewCount' => (string) fake()->numberBetween(150, 500),
-                'image' => 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
-                'upcomingShow' => [
-                    'date' => fake()->dateTimeBetween('now', '+3 months')->format('F j, Y'),
-                    'venue' => $venues[$index - 1],
-                ],
-            ];
-        })->toArray();
-
-        $upcomingEvents = collect(range(1, 7))->flatMap(function ($dayIndex) {
-            $categories = ['Jazz', 'Comedy', 'Community', 'Music', 'Art', 'Food & Drink', 'Literature'];
-            $images = [
-                'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop',
-                'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop',
-            ];
-            $fallbackImage = 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop';
-
-            $eventsPerDay = fake()->numberBetween(1, 4);
-
-            return collect(range(1, $eventsPerDay))->map(function ($eventIndex) use ($dayIndex, $categories, $images, $fallbackImage) {
-                $baseDate = now()->addDays($dayIndex - 1);
-                $eventTime = $baseDate->copy()->setTime(
-                    fake()->numberBetween(10, 23),
-                    fake()->randomElement([0, 15, 30, 45])
-                );
+        // Get featured performers from the database
+        $featuredPerformers = Performer::when($currentWorkspace, function ($query, $workspace) {
+            return $query->where('workspace_id', $workspace->id);
+        })
+            ->active()
+            ->verified()
+            ->with('upcomingShows')
+            ->orderBy('average_rating', 'desc')
+            ->take(4)
+            ->get()
+            ->map(function ($performer) {
+                $upcomingShow = $performer->upcomingShows->first();
 
                 return [
-                    'id' => (string) (($dayIndex - 1) * 10 + $eventIndex),
-                    'title' => fake()->catchPhrase(),
-                    'date' => $eventTime->format('Y-m-d\TH:i:s.000\Z'),
-                    'venue' => fake()->company() . ' ' . fake()->randomElement(['Club', 'Arena', 'Hall', 'Center', 'Theater']),
-                    'price' => fake()->randomElement(['Free', '$' . fake()->numberBetween(10, 150)]),
-                    'category' => fake()->randomElement($categories),
-                    'image' => fake()->randomElement(array_merge($images, [$fallbackImage])),
+                    'id' => $performer->id,
+                    'name' => $performer->name,
+                    'homeCity' => $performer->home_city,
+                    'genres' => is_array($performer->genres) ? $performer->genres : [$performer->genres],
+                    'rating' => round((float) ($performer->average_rating ?? 0), 1),
+                    'reviewCount' => (string) $performer->total_reviews,
+                    'image' => $performer->profile_image ?? 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
+                    'upcomingShow' => $upcomingShow ? [
+                        'date' => $upcomingShow->date->format('F j, Y'),
+                        'venue' => $upcomingShow->venue,
+                    ] : null,
                 ];
-            });
-        })->toArray();
+            })
+            ->toArray();
+
+        // Get upcoming events from the database (next 7 days)
+        $upcomingEvents = Event::when($currentWorkspace, function ($query, $workspace) {
+            return $query->where('workspace_id', $workspace->id);
+        })
+            ->published()
+            ->upcoming()
+            ->with(['venue', 'performer'])
+            ->whereBetween('event_date', [now(), now()->addDays(7)])
+            ->orderBy('event_date')
+            ->orderBy('time')
+            ->get()
+            ->map(function ($event) {
+                $eventDateTime = $event->event_date->copy();
+                if ($event->time) {
+                    $timeParts = explode(':', $event->time);
+                    $eventDateTime->setTime((int) $timeParts[0], (int) $timeParts[1]);
+                }
+
+                return [
+                    'id' => $event->id,
+                    'title' => $event->title,
+                    'date' => $eventDateTime->format('Y-m-d\TH:i:s.000\Z'),
+                    'venue' => $event->venue?->name ?? 'TBA',
+                    'price' => $event->is_free ? 'Free' : '$' . number_format((float) ($event->price_min ?? 0)),
+                    'category' => $event->category,
+                    'image' => $event->image ?? 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop',
+                ];
+            })
+            ->toArray();
 
         return Inertia::render('welcome', [
             'featuredEvents' => $featuredEvents,
