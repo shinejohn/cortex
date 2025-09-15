@@ -24,7 +24,9 @@ RUN docker-php-serversideup-set-id www-data $USER_ID:$GROUP_ID && \
 
 WORKDIR /var/www/html
 COPY --chown=www-data:www-data composer.json composer.lock ./
-RUN composer install --no-dev --no-interaction --no-plugins --no-scripts --prefer-dist
+
+#--no-dev add this back
+RUN composer install --no-interaction --no-plugins --no-scripts --prefer-dist
 
 USER www-data
 
