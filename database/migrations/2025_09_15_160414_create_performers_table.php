@@ -61,7 +61,6 @@ return new class extends Migration
 
             // Indexes
             $table->index(['status', 'available_for_booking']);
-            $table->index('rating');
             $table->index('trending_score');
             $table->index('home_city');
             $table->index('is_verified');

@@ -55,7 +55,6 @@ return new class extends Migration
             // Indexes
             $table->index(['venue_type', 'status']);
             $table->index(['latitude', 'longitude']);
-            $table->index('rating');
             $table->index('capacity');
         });
     }
