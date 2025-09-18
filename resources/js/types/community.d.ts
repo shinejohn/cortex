@@ -12,13 +12,7 @@ export const THREAD_TYPES = {
 export type ThreadType = (typeof THREAD_TYPES)[keyof typeof THREAD_TYPES];
 
 /** Available thread types array for easier iteration */
-export const THREAD_TYPE_ARRAY: ThreadType[] = [
-    "Discussion",
-    "Question",
-    "Announcement",
-    "Resource",
-    "Event",
-];
+export const THREAD_TYPE_ARRAY: ThreadType[] = ["Discussion", "Question", "Announcement", "Resource", "Event"];
 
 /** Community thread author information */
 export interface ThreadAuthor {
@@ -34,6 +28,7 @@ export interface CommunityThreadReply {
     readonly content: string;
     readonly images: readonly string[];
     readonly likesCount: number;
+    readonly isLiked: boolean; // Indicates if current user liked this reply
     readonly isSolution: boolean;
     readonly isPinned: boolean;
     readonly isEdited: boolean;
@@ -52,7 +47,7 @@ export interface CommunityThread {
     readonly preview: string;
     readonly type: ThreadType;
     readonly tags: readonly string[];
-    readonly views: number;
+    readonly viewsCount: number; // Renamed from views
     readonly replyCount: number;
     readonly isPinned: boolean;
     readonly isLocked: boolean;
@@ -125,10 +120,7 @@ export interface CommunityShowPageProps extends SharedData {
 
 /** Props for creating a new thread */
 export interface CreateCommunityThreadPageProps extends SharedData {
-    readonly community: Pick<
-        Community,
-        "id" | "name" | "threadTypes" | "popularTags"
-    >;
+    readonly community: Pick<Community, "id" | "name" | "threadTypes" | "popularTags">;
 }
 
 /** Props for viewing a single thread */

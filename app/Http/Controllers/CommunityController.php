@@ -8,13 +8,19 @@ use App\Http\Requests\StoreCommunityThreadReplyRequest;
 use App\Models\Community;
 use App\Models\CommunityThread;
 use App\Models\CommunityThreadReply;
+use App\Models\CommunityThreadReplyLike;
+use App\Models\CommunityThreadView;
 use App\Models\Event;
 use App\Models\Performer;
+use App\Models\User;
 use App\Models\Venue;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Inertia\Inertia; // Added missing import for User model
 use Inertia\Response;
+
+ // Added missing import for Carbon
 
 final class CommunityController extends Controller
 {
@@ -23,14 +29,8 @@ final class CommunityController extends Controller
      */
     public function index(Request $request): Response
     {
-        $currentWorkspace = $request->user()?->currentWorkspace;
-
         $communitiesQuery = Community::active()
-            ->with(['threads' => fn($q) => $q->latest()->limit(5)]);
-
-        if ($currentWorkspace) {
-            $communitiesQuery->where('workspace_id', $currentWorkspace->id);
-        }
+            ->with(['threads' => fn ($q) => $q->latest()->limit(5)]);
 
         $communities = $communitiesQuery->withCount(['activeMembers', 'threads'])->get()->map(function ($community) {
             return [
@@ -52,7 +52,6 @@ final class CommunityController extends Controller
                 'popularTags' => $community->popular_tags ?? [],
             ];
         });
-
         // Get showcase data from featured communities or recent events
         $showcaseData = $this->getShowcaseData();
 
@@ -75,7 +74,7 @@ final class CommunityController extends Controller
         // Build the threads query
         $query = CommunityThread::where('community_id', $community->id)
             ->with(['author', 'community'])
-            ->withCount('replies');
+            ->withCount(['replies', 'views']);
 
         // Apply filters
         if ($request->filled('type')) {
@@ -132,11 +131,12 @@ final class CommunityController extends Controller
             return [
                 'id' => $thread->id,
                 'title' => $thread->title,
-                'preview' => $thread->preview ?? mb_substr(strip_tags($thread->content), 0, 200) . '...',
+                'preview' => $thread->preview ?? mb_substr(strip_tags($thread->content), 0, 200).'...',
                 'type' => $thread->type,
                 'tags' => $thread->tags ?? [],
                 'views' => $thread->views,
                 'replyCount' => $thread->replies_count,
+                'viewsCount' => $thread->views_count,
                 'isPinned' => $thread->is_pinned,
                 'isLocked' => $thread->is_locked,
                 'createdAt' => $thread->created_at->toISOString(),
@@ -216,7 +216,7 @@ final class CommunityController extends Controller
 
         $thread = CommunityThread::create([
             ...$validated,
-            'preview' => mb_substr(strip_tags($validated['content']), 0, 200) . '...',
+            'preview' => mb_substr(strip_tags($validated['content']), 0, 200).'...',
             'community_id' => $community->id,
             'author_id' => $request->user()->id,
         ]);
@@ -234,22 +234,23 @@ final class CommunityController extends Controller
         $thread = CommunityThread::where('id', $threadId)
             ->where('community_id', $community->id)
             ->with(['author', 'community'])
-            ->withCount('replies')
+            ->withCount(['views', 'replies'])
             ->firstOrFail();
 
-        // Increment view count
-        $thread->increment('views');
+        // Record a view for the thread
+        $this->recordThreadView($thread, $request);
 
         // Get replies with nested structure (parent replies with their children)
         $replies = $thread->replies()
             ->with(['author', 'replies.author'])
+            ->withCount('likes') // Eager load likes count for replies
             ->whereNull('reply_to_id') // Only get top-level replies
             ->orderBy('created_at', 'asc')
             ->get();
 
         // Transform replies to frontend format
-        $repliesData = $replies->map(function ($reply) {
-            return $this->transformReplyToFrontend($reply);
+        $repliesData = $replies->map(function ($reply) use ($request) {
+            return $this->transformReplyToFrontend($reply, $request->user());
         });
 
         return Inertia::render('community/thread', [
@@ -263,7 +264,7 @@ final class CommunityController extends Controller
                 'content' => $thread->content,
                 'type' => $thread->type,
                 'tags' => $thread->tags ?? [],
-                'views' => $thread->views,
+                'viewsCount' => $thread->views_count,
                 'replyCount' => $thread->replies_count,
                 'isPinned' => $thread->is_pinned,
                 'isLocked' => $thread->is_locked,
@@ -291,7 +292,7 @@ final class CommunityController extends Controller
             return back()->with('error', 'This thread is locked and cannot accept new replies.');
         }
 
-        $reply = CommunityThreadReply::create([
+        CommunityThreadReply::create([
             'thread_id' => $thread->id,
             'user_id' => auth()->id(),
             'content' => $request->validated()['content'],
@@ -339,12 +340,29 @@ final class CommunityController extends Controller
     public function likeReply(string $replyId): RedirectResponse
     {
         $reply = CommunityThreadReply::findOrFail($replyId);
+        $user = auth()->user();
 
-        // For now, just increment likes count
-        // In a full implementation, you'd check if user already liked it
-        $reply->increment('likes_count');
+        if (! $user) {
+            return back()->with('error', 'You must be logged in to like a reply.');
+        }
 
-        return back()->with('success', 'Reply liked!');
+        // Toggle like: if user already liked, unlike; otherwise, like
+        $like = CommunityThreadReplyLike::where('reply_id', $reply->id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if ($like) {
+            $like->delete();
+            $message = 'Reply unliked!';
+        } else {
+            CommunityThreadReplyLike::create([
+                'reply_id' => $reply->id,
+                'user_id' => $user->id,
+            ]);
+            $message = 'Reply liked!';
+        }
+
+        return back()->with('success', $message);
     }
 
     /**
@@ -404,13 +422,14 @@ final class CommunityController extends Controller
     /**
      * Transform a reply model to frontend format
      */
-    private function transformReplyToFrontend(CommunityThreadReply $reply): array
+    private function transformReplyToFrontend(CommunityThreadReply $reply, ?User $user = null): array
     {
         return [
             'id' => $reply->id,
             'content' => $reply->content,
             'images' => $reply->images ?? [],
-            'likesCount' => $reply->likes_count,
+            'likesCount' => $reply->likes_count, // Use the computed attribute
+            'isLiked' => $user ? $reply->likes()->where('user_id', $user->id)->exists() : false,
             'isSolution' => $reply->is_solution,
             'isPinned' => $reply->is_pinned,
             'isEdited' => $reply->is_edited,
@@ -419,13 +438,38 @@ final class CommunityController extends Controller
             'author' => [
                 'id' => $reply->author->id,
                 'name' => $reply->author->name,
-                'avatar' => $reply->author->avatar ?? 'https://api.dicebear.com/9.x/glass/svg?seed={$reply->author->id}',
+                'avatar' => $reply->author->avatar ?? 'https://api.dicebear.com/9.x/glass/svg?seed='.$reply->author->id,
                 'role' => 'Community Member',
             ],
             'replyToId' => $reply->reply_to_id,
-            'replies' => $reply->replies->map(function ($childReply) {
-                return $this->transformReplyToFrontend($childReply);
+            'replies' => $reply->replies->map(function ($childReply) use ($user) {
+                return $this->transformReplyToFrontend($childReply, $user);
             })->toArray(),
         ];
+    }
+
+    /**
+     * Record a view for a given thread.
+     */
+    private function recordThreadView(CommunityThread $thread, Request $request): void
+    {
+        $userId = $request->user()?->id;
+        $sessionId = session()->getId();
+
+        // Check if a view already exists for this user/session within a reasonable timeframe (e.g., last hour)
+        $existingView = CommunityThreadView::where('thread_id', $thread->id)
+            ->when($userId, fn ($query) => $query->where('user_id', $userId))
+            ->when(! $userId, fn ($query) => $query->where('session_id', $sessionId))
+            ->where('created_at', '>=', Carbon::now()->subHour())
+            ->first();
+
+        if (! $existingView) {
+            CommunityThreadView::create([
+                'thread_id' => $thread->id,
+                'user_id' => $userId,
+                'session_id' => $sessionId,
+                'viewed_at' => Carbon::now(),
+            ]);
+        }
     }
 }

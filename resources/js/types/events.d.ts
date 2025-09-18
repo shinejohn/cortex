@@ -1,6 +1,6 @@
 import type { SharedData } from "./index";
-import type { Venue } from "./venues";
 import type { Performer } from "./performers";
+import type { Venue } from "./venues";
 
 /** Core location information */
 export interface Location {
@@ -36,8 +36,7 @@ export const EVENT_BADGE_TYPES = {
     COMMUNITY_EVENT: "Community Event",
 } as const;
 
-export type EventBadge =
-    (typeof EVENT_BADGE_TYPES)[keyof typeof EVENT_BADGE_TYPES];
+export type EventBadge = (typeof EVENT_BADGE_TYPES)[keyof typeof EVENT_BADGE_TYPES];
 
 /** Enhanced Event interface matching mock data structure */
 export interface Event {

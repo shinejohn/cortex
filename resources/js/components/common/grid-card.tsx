@@ -40,17 +40,10 @@ export const GridCard = ({
         >
             <Link href={href} className="block">
                 <div className="h-48 overflow-hidden relative">
-                    <img
-                        src={image}
-                        alt={imageAlt}
-                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                    />
+                    <img src={image} alt={imageAlt} className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
                     {badge && (
                         <div className="absolute top-2 right-2">
-                            <Badge
-                                variant="secondary"
-                                className="px-2 py-1 bg-black/30 backdrop-blur-sm text-white text-xs rounded-full border-0"
-                            >
+                            <Badge variant="secondary" className="px-2 py-1 bg-black/30 backdrop-blur-sm text-white text-xs rounded-full border-0">
                                 {badge}
                             </Badge>
                         </div>
@@ -63,9 +56,7 @@ export const GridCard = ({
                 <div className="flex-grow">
                     {!hideTitle && (
                         <Link href={href} className="block">
-                            <h3 className="font-bold text-lg text-foreground mb-1 hover:text-primary transition-colors">
-                                {title}
-                            </h3>
+                            <h3 className="font-bold text-lg text-foreground mb-1 hover:text-primary transition-colors">{title}</h3>
                         </Link>
                     )}
 
@@ -76,12 +67,7 @@ export const GridCard = ({
                     <div className="flex justify-between items-center mt-3 pt-3 border-t border-border">
                         {actions && <div className="flex gap-2">{actions}</div>}
                         {detailsButton && (
-                            <Button
-                                variant="secondary"
-                                size="sm"
-                                asChild
-                                className="text-xs border-0 ml-auto"
-                            >
+                            <Button variant="secondary" size="sm" asChild className="text-xs border-0 ml-auto">
                                 <Link href={href}>Details</Link>
                             </Button>
                         )}

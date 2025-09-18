@@ -114,7 +114,6 @@ final class CommunityThreadFactory extends Factory
             'preview' => $preview,
             'type' => $type,
             'tags' => $selectedTags,
-            'views' => fake()->numberBetween(1, 1000),
             'is_pinned' => fake()->boolean(5), // 5% pinned
             'is_locked' => fake()->boolean(2), // 2% locked
             'community_id' => null, // Will be set in seeder
@@ -139,15 +138,15 @@ final class CommunityThreadFactory extends Factory
     public function popular(): static
     {
         return $this->state(fn (array $attributes) => [
-            'views' => fake()->numberBetween(500, 2000),
-            'reply_count' => fake()->numberBetween(10, 100),
+            // 'views' will be managed by CommunityThreadViewSeeder
+            // 'reply_count' will be managed by CommunityThreadReplySeeder
         ]);
     }
 
     public function unanswered(): static
     {
         return $this->state(fn (array $attributes) => [
-            'reply_count' => 0,
+            // 'reply_count' will be managed by CommunityThreadReplySeeder
         ]);
     }
 

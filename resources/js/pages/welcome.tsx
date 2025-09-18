@@ -1,6 +1,6 @@
-import DateSelector from "@/components/common/date-selector";
 import CategoryFilter from "@/components/common/category-filter";
 import CTASection from "@/components/common/cta-section";
+import DateSelector from "@/components/common/date-selector";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
 import EventsGrid from "@/components/events/events-grid";
@@ -19,16 +19,9 @@ export default function Welcome() {
 
             <Header auth={auth} />
 
-            <CategoryFilter
-                selectedCategory="All"
-                onCategoryChange={() => void 0}
-            />
+            <CategoryFilter selectedCategory="All" onCategoryChange={() => void 0} />
 
-            <DateSelector
-                onDateChange={() => void 0}
-                currentView="daily"
-                setCurrentView={() => void 0}
-            />
+            <DateSelector onDateChange={() => void 0} currentView="daily" setCurrentView={() => void 0} />
 
             <EventsGrid />
 

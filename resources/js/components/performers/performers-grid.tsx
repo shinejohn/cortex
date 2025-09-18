@@ -1,6 +1,6 @@
-import { Badge } from "@/components/ui/badge";
 import { GridCard } from "@/components/common/grid-card";
 import { GridSection } from "@/components/common/grid-section";
+import { Badge } from "@/components/ui/badge";
 import type { Performer, PerformersGridProps } from "@/types/home";
 import { usePage } from "@inertiajs/react";
 import { CalendarIcon, MicIcon, StarIcon } from "lucide-react";
@@ -10,11 +10,7 @@ const PerformersGrid = () => {
 
     const formatDate = (dateString: string): string => {
         const date = new Date(dateString);
-        return `${date.getDate().toString().padStart(2, "0")}/${(
-            date.getMonth() + 1
-        )
-            .toString()
-            .padStart(2, "0")}`;
+        return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1).toString().padStart(2, "0")}`;
     };
 
     const renderPerformerContent = (performer: Performer) => (
@@ -35,22 +31,12 @@ const PerformersGrid = () => {
             <div className="flex items-center justify-between">
                 <div className="flex items-center text-sm text-muted-foreground">
                     <CalendarIcon className="h-4 w-4 mr-1" />
-                    {performer.upcomingShow ? (
-                        <>
-                            Next show: {formatDate(performer.upcomingShow.date)}
-                        </>
-                    ) : (
-                        "No upcoming shows"
-                    )}
+                    {performer.upcomingShow ? <>Next show: {formatDate(performer.upcomingShow.date)}</> : "No upcoming shows"}
                 </div>
                 <div className="flex items-center">
                     <StarIcon className="h-4 w-4 text-yellow-500 mr-1" />
-                    <span className="text-sm font-medium">
-                        {performer.rating}
-                    </span>
-                    <span className="text-xs text-muted-foreground ml-1">
-                        ({performer.reviewCount})
-                    </span>
+                    <span className="text-sm font-medium">{performer.rating}</span>
+                    <span className="text-xs text-muted-foreground ml-1">({performer.reviewCount})</span>
                 </div>
             </div>
         </>
@@ -77,9 +63,7 @@ const PerformersGrid = () => {
                     detailsButton={false}
                     imageOverlay={
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                            <h3 className="font-bold text-lg text-white">
-                                {performer.name}
-                            </h3>
+                            <h3 className="font-bold text-lg text-white">{performer.name}</h3>
                         </div>
                     }
                 >

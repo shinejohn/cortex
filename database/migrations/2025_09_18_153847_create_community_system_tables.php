@@ -43,7 +43,6 @@ return new class extends Migration
             $table->string('type'); // Discussion, Question, Announcement, Resource, Event
             $table->json('tags')->nullable();
             $table->json('images')->nullable();
-            $table->integer('views')->default(0);
             $table->boolean('is_pinned')->default(false);
             $table->boolean('is_locked')->default(false);
             $table->boolean('is_featured')->default(false);
@@ -57,6 +56,26 @@ return new class extends Migration
             $table->index(['community_id', 'created_at']);
             $table->index(['community_id', 'type']);
             $table->index(['community_id', 'is_pinned']);
+        });
+
+        // Create community_thread_views table
+        Schema::create('community_thread_views', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('thread_id')->constrained('community_threads')->cascadeOnDelete();
+            $table->foreignUuid('user_id')->nullable()->constrained('users')->nullOnDelete(); // Nullable for guest views
+            $table->string('session_id')->nullable(); // For tracking guest views
+            $table->timestamp('viewed_at')->useCurrent();
+            $table->timestamps();
+
+            // Remove the combined unique constraint
+            // $table->unique(['thread_id', 'user_id', 'session_id']);
+            $table->index(['thread_id', 'viewed_at']);
+        });
+
+        // Add conditional unique constraints after table creation
+        Schema::table('community_thread_views', function (Blueprint $table) {
+            $table->unique(['thread_id', 'user_id'])->whereNotNull('user_id');
+            $table->unique(['thread_id', 'session_id'])->whereNotNull('session_id');
         });
 
         // Create community_members table
@@ -86,12 +105,11 @@ return new class extends Migration
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->text('content');
             $table->json('images')->nullable();
-            $table->integer('likes_count')->default(0);
             $table->boolean('is_solution')->default(false); // For question threads
             $table->boolean('is_pinned')->default(false);
             $table->boolean('is_edited')->default(false);
             $table->timestamp('edited_at')->nullable();
-            $table->foreignUuid('reply_to_id')->nullable()->constrained('community_thread_replies')->nullOnDelete();
+            $table->uuid('reply_to_id')->nullable(); // Define the column first
             $table->timestamps();
 
             // Indexes for performance
@@ -101,6 +119,24 @@ return new class extends Migration
             $table->index(['user_id', 'created_at']);
             $table->index('reply_to_id');
         });
+
+        // Create community_thread_reply_likes table
+        Schema::create('community_thread_reply_likes', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('reply_id')->constrained('community_thread_replies')->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->timestamps();
+
+            $table->unique(['reply_id', 'user_id']); // Prevent duplicate likes
+        });
+
+        // Add the self-referencing foreign key constraint after the table is created for PostgreSQL compatibility
+        Schema::table('community_thread_replies', function (Blueprint $table) {
+            $table->foreign('reply_to_id')
+                ->references('id')
+                ->on('community_thread_replies')
+                ->nullOnDelete();
+        });
     }
 
     /**
@@ -108,9 +144,23 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Drop the foreign key before dropping the table
+        Schema::table('community_thread_replies', function (Blueprint $table) {
+            $table->dropForeign(['community_thread_replies_reply_to_id_foreign']);
+        });
+
+        Schema::dropIfExists('community_thread_reply_likes');
         Schema::dropIfExists('community_thread_replies');
         Schema::dropIfExists('community_members');
+
+        // Drop conditional unique constraints
+        Schema::table('community_thread_views', function (Blueprint $table) {
+            $table->dropUnique(['thread_id', 'user_id']);
+            $table->dropUnique(['thread_id', 'session_id']);
+        });
+
         Schema::dropIfExists('community_threads');
+        Schema::dropIfExists('community_thread_views');
         Schema::dropIfExists('communities');
     }
 };

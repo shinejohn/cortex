@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { GridCard } from "@/components/common/grid-card";
 import { GridSection } from "@/components/common/grid-section";
+import { Button } from "@/components/ui/button";
 import type { Event, EventsGridProps } from "@/types/events";
 import { usePage } from "@inertiajs/react";
 import { CalendarIcon, CheckIcon, MapPinIcon, ShareIcon } from "lucide-react";
@@ -27,17 +27,11 @@ const EventsGrid = () => {
             });
         } else {
             // Fallback: copy to clipboard
-            navigator.clipboard.writeText(
-                `${window.location.origin}/events/${event.id}`
-            );
+            navigator.clipboard.writeText(`${window.location.origin}/events/${event.id}`);
         }
     };
 
-    const handleAddToCalendar = (
-        e: React.MouseEvent,
-        event: Event,
-        eventId: string
-    ): void => {
+    const handleAddToCalendar = (e: React.MouseEvent, event: Event, eventId: string): void => {
         e.stopPropagation();
         e.preventDefault();
 
@@ -45,22 +39,12 @@ const EventsGrid = () => {
         setTimeout(() => setCalendarSuccess(null), 2000);
 
         // Calendar logic here
-        const startDate =
-            new Date(event.date)
-                .toISOString()
-                .replace(/[-:]/g, "")
-                .split(".")[0] + "Z";
-        const endDate =
-            new Date(new Date(event.date).getTime() + 2 * 60 * 60 * 1000)
-                .toISOString()
-                .replace(/[-:]/g, "")
-                .split(".")[0] + "Z";
+        const startDate = new Date(event.date).toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+        const endDate = new Date(new Date(event.date).getTime() + 2 * 60 * 60 * 1000).toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
 
         const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-            event.title
-        )}&dates=${startDate}/${endDate}&details=${encodeURIComponent(
-            `Event at ${event.venue}`
-        )}&location=${encodeURIComponent(event.venue)}`;
+            event.title,
+        )}&dates=${startDate}/${endDate}&details=${encodeURIComponent(`Event at ${event.venue}`)}&location=${encodeURIComponent(event.venue)}`;
 
         window.open(googleCalendarUrl, "_blank");
     };
@@ -90,11 +74,7 @@ const EventsGrid = () => {
                 className="text-muted-foreground hover:text-primary p-1 h-8 w-8"
                 title="Share Event"
             >
-                {shareSuccess === event.id ? (
-                    <CheckIcon className="h-4 w-4 text-green-500" />
-                ) : (
-                    <ShareIcon className="h-4 w-4" />
-                )}
+                {shareSuccess === event.id ? <CheckIcon className="h-4 w-4 text-green-500" /> : <ShareIcon className="h-4 w-4" />}
             </Button>
 
             <Button
@@ -104,11 +84,7 @@ const EventsGrid = () => {
                 className="text-muted-foreground hover:text-primary p-1 h-8 w-8"
                 title="Add to Calendar"
             >
-                {calendarSuccess === event.id ? (
-                    <CheckIcon className="h-4 w-4 text-green-500" />
-                ) : (
-                    <CalendarIcon className="h-4 w-4" />
-                )}
+                {calendarSuccess === event.id ? <CheckIcon className="h-4 w-4 text-green-500" /> : <CalendarIcon className="h-4 w-4" />}
             </Button>
         </>
     );

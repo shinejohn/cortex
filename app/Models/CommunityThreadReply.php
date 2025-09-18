@@ -20,7 +20,6 @@ final class CommunityThreadReply extends Model
         'user_id',
         'content',
         'images',
-        'likes_count',
         'is_solution',
         'is_pinned',
         'is_edited',
@@ -51,6 +50,17 @@ final class CommunityThreadReply extends Model
     public function replies(): HasMany
     {
         return $this->hasMany(self::class, 'reply_to_id');
+    }
+
+    public function likes(): HasMany
+    {
+        return $this->hasMany(CommunityThreadReplyLike::class, 'reply_id');
+    }
+
+    // Computed attributes
+    public function getLikesCountAttribute(): int
+    {
+        return $this->likes()->count();
     }
 
     // Scopes

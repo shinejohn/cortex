@@ -1,21 +1,12 @@
-import React, { useEffect, useState } from "react";
-import {
-    CalendarIcon,
-    ChevronLeftIcon,
-    ChevronRightIcon,
-    ClockIcon,
-} from "lucide-react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Badge } from "../ui/badge";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-import { Separator } from "../ui/separator";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon, ClockIcon } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Input } from "../ui/input";
+import { Separator } from "../ui/separator";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import CategoryFilter from "./category-filter";
 
 type DateSelectorProps = {
@@ -26,13 +17,7 @@ type DateSelectorProps = {
     selectedCategory?: string;
 };
 
-const DateSelector = ({
-    onDateChange,
-    currentView,
-    setCurrentView,
-    onCategoryChange,
-    selectedCategory = "All",
-}: DateSelectorProps) => {
+const DateSelector = ({ onDateChange, currentView, setCurrentView, onCategoryChange, selectedCategory = "All" }: DateSelectorProps) => {
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -76,11 +61,7 @@ const DateSelector = ({
 
     const isToday = (date: Date): boolean => {
         const today = new Date();
-        return (
-            date.getDate() === today.getDate() &&
-            date.getMonth() === today.getMonth() &&
-            date.getFullYear() === today.getFullYear()
-        );
+        return date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
     };
 
     return (
@@ -90,10 +71,7 @@ const DateSelector = ({
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
                     {/* Date Display and Navigation */}
                     <div className="flex items-center gap-4">
-                        <DropdownMenu
-                            open={showDatePicker}
-                            onOpenChange={setShowDatePicker}
-                        >
+                        <DropdownMenu open={showDatePicker} onOpenChange={setShowDatePicker}>
                             <DropdownMenuTrigger asChild>
                                 <Button
                                     variant="ghost"
@@ -101,10 +79,7 @@ const DateSelector = ({
                                 >
                                     <CalendarIcon className="h-5 w-5 text-primary" />
                                     {isToday(selectedDate) ? (
-                                        <Badge
-                                            variant="secondary"
-                                            className="text-sm font-medium"
-                                        >
+                                        <Badge variant="secondary" className="text-sm font-medium">
                                             Today
                                         </Badge>
                                     ) : (
@@ -112,18 +87,8 @@ const DateSelector = ({
                                     )}
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                                align="start"
-                                className="w-auto p-4"
-                            >
-                                <Input
-                                    type="date"
-                                    value={
-                                        selectedDate.toISOString().split("T")[0]
-                                    }
-                                    onChange={handleDateSelect}
-                                    className="w-full"
-                                />
+                            <DropdownMenuContent align="start" className="w-auto p-4">
+                                <Input type="date" value={selectedDate.toISOString().split("T")[0]} onChange={handleDateSelect} className="w-full" />
                             </DropdownMenuContent>
                         </DropdownMenu>
 
@@ -156,31 +121,19 @@ const DateSelector = ({
                         type="single"
                         value={currentView}
                         onValueChange={(value) => {
-                            if (value)
-                                handleViewChange(
-                                    value as "daily" | "weekly" | "monthly"
-                                );
+                            if (value) handleViewChange(value as "daily" | "weekly" | "monthly");
                         }}
                         variant="outline"
                         size="sm"
                         className="bg-background/80 backdrop-blur-sm border border-border/50"
                     >
-                        <ToggleGroupItem
-                            value="daily"
-                            className="text-sm font-medium"
-                        >
+                        <ToggleGroupItem value="daily" className="text-sm font-medium">
                             Daily
                         </ToggleGroupItem>
-                        <ToggleGroupItem
-                            value="weekly"
-                            className="text-sm font-medium"
-                        >
+                        <ToggleGroupItem value="weekly" className="text-sm font-medium">
                             Next 7 Days
                         </ToggleGroupItem>
-                        <ToggleGroupItem
-                            value="monthly"
-                            className="text-sm font-medium"
-                        >
+                        <ToggleGroupItem value="monthly" className="text-sm font-medium">
                             This Month
                         </ToggleGroupItem>
                     </ToggleGroup>
@@ -223,12 +176,7 @@ const DateSelector = ({
             </div>
 
             {/* Event Categories Filter */}
-            {onCategoryChange && selectedCategory && (
-                <CategoryFilter
-                    selectedCategory={selectedCategory}
-                    onCategoryChange={onCategoryChange}
-                />
-            )}
+            {onCategoryChange && selectedCategory && <CategoryFilter selectedCategory={selectedCategory} onCategoryChange={onCategoryChange} />}
         </div>
     );
 };

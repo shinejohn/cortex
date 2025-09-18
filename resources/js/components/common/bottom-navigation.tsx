@@ -1,14 +1,5 @@
 import { router } from "@inertiajs/react";
-import {
-    BookOpen,
-    Calendar,
-    MapPin,
-    Megaphone,
-    Music,
-    ShoppingBag,
-    Ticket,
-    Users,
-} from "lucide-react";
+import { BookOpen, Calendar, MapPin, Megaphone, Music, ShoppingBag, Ticket, Users } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -124,12 +115,7 @@ function NavItem({ item }: NavItemProps) {
 
 export function BottomNavigation({ className }: BottomNavigationProps) {
     return (
-        <div
-            className={cn(
-                "border-t bg-gradient-to-r from-background/50 via-background to-background/50",
-                className
-            )}
-        >
+        <div className={cn("border-t bg-gradient-to-r from-background/50 via-background to-background/50", className)}>
             <div className="container mx-auto px-4">
                 <nav className="flex flex-wrap items-center justify-center gap-2 py-3">
                     {NAVIGATION_ITEMS.map((item) => (

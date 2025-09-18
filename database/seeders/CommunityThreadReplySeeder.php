@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Models\CommunityThread;
 use App\Models\CommunityThreadReply;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 final class CommunityThreadReplySeeder extends Seeder
@@ -38,15 +39,14 @@ final class CommunityThreadReplySeeder extends Seeder
             for ($i = 0; $i < $replyCount; $i++) {
                 $user = $users->random();
 
-                $reply = CommunityThreadReply::create([
+                CommunityThreadReply::create([
                     'thread_id' => $thread->id,
                     'user_id' => $user->id,
                     'content' => fake()->paragraphs(fake()->numberBetween(1, 4), true),
-                    'likes_count' => fake()->numberBetween(0, 20),
                     'is_solution' => $thread->type === 'Question' && fake()->boolean(10), // 10% chance for questions
                     'is_pinned' => $i === 0 && fake()->boolean(20), // 20% chance for first reply to be pinned
                     'is_edited' => fake()->boolean(15), // 15% chance of being edited
-                    'created_at' => fake()->dateTimeBetween($thread->created_at, 'now'),
+                    'created_at' => fake()->dateTimeBetween(Carbon::parse($thread->created_at), Carbon::now()->addDay()),
                 ]);
 
                 // Add some nested replies (replies to replies)
@@ -61,9 +61,8 @@ final class CommunityThreadReplySeeder extends Seeder
                             'thread_id' => $thread->id,
                             'user_id' => $users->random()->id,
                             'content' => fake()->paragraphs(fake()->numberBetween(1, 2), true),
-                            'likes_count' => fake()->numberBetween(0, 10),
                             'reply_to_id' => $parentReply->id,
-                            'created_at' => fake()->dateTimeBetween($parentReply->created_at, 'now'),
+                            'created_at' => fake()->dateTimeBetween(Carbon::parse($parentReply->created_at), Carbon::now()->addDay()),
                         ]);
                     }
                 }

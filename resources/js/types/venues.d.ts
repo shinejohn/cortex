@@ -1,5 +1,5 @@
-import type { SharedData } from "./index";
 import type { Location } from "./events";
+import type { SharedData } from "./index";
 
 /** Address and location information for venues */
 export interface VenueLocation {
@@ -32,8 +32,7 @@ export const VENUE_AMENITIES = {
     DRESSING_ROOMS: "Dressing Rooms",
 } as const;
 
-export type VenueAmenity =
-    (typeof VENUE_AMENITIES)[keyof typeof VENUE_AMENITIES];
+export type VenueAmenity = (typeof VENUE_AMENITIES)[keyof typeof VENUE_AMENITIES];
 
 /** Event types that venues support */
 export const VENUE_EVENT_TYPES = {
@@ -49,8 +48,7 @@ export const VENUE_EVENT_TYPES = {
     EXHIBITION: "Exhibition",
 } as const;
 
-export type VenueEventType =
-    (typeof VENUE_EVENT_TYPES)[keyof typeof VENUE_EVENT_TYPES];
+export type VenueEventType = (typeof VENUE_EVENT_TYPES)[keyof typeof VENUE_EVENT_TYPES];
 
 /** Venue types/categories */
 export const VENUE_TYPES = {

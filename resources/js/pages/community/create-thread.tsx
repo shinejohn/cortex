@@ -1,25 +1,15 @@
-import { useState } from "react";
-import { Head, usePage, useForm } from "@inertiajs/react";
+import { Footer } from "@/components/common/footer";
+import Header from "@/components/common/header";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import Header from "@/components/common/header";
-import { Footer } from "@/components/common/footer";
-import type {
-    CreateCommunityThreadPageProps,
-    ThreadType,
-    THREAD_TYPES,
-} from "@/types/community";
-import { ArrowLeftIcon, XIcon, PlusIcon } from "lucide-react";
+import type { CreateCommunityThreadPageProps, THREAD_TYPES, ThreadType } from "@/types/community";
+import { Head, useForm, usePage } from "@inertiajs/react";
+import { ArrowLeftIcon, PlusIcon, XIcon } from "lucide-react";
+import { useState } from "react";
 
 export default function CreateThread() {
     const { auth, community } = usePage<CreateCommunityThreadPageProps>().props;
@@ -85,15 +75,9 @@ export default function CreateThread() {
 
                     {/* Header */}
                     <div className="mb-8">
-                        <h1 className="text-3xl font-bold">
-                            Start a New Thread
-                        </h1>
+                        <h1 className="text-3xl font-bold">Start a New Thread</h1>
                         <p className="mt-2 text-muted-foreground">
-                            Share your thoughts, ask questions, or start a
-                            discussion in the{" "}
-                            <span className="font-medium">
-                                {community.name}
-                            </span>{" "}
+                            Share your thoughts, ask questions, or start a discussion in the <span className="font-medium">{community.name}</span>{" "}
                             community.
                         </p>
                     </div>
@@ -104,12 +88,7 @@ export default function CreateThread() {
                             {/* Thread Type */}
                             <div className="space-y-2">
                                 <Label htmlFor="type">Thread Type</Label>
-                                <Select
-                                    value={data.type}
-                                    onValueChange={(value) =>
-                                        setData("type", value as ThreadType)
-                                    }
-                                >
+                                <Select value={data.type} onValueChange={(value) => setData("type", value as ThreadType)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a thread type" />
                                     </SelectTrigger>
@@ -121,11 +100,7 @@ export default function CreateThread() {
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                {errors.type && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.type}
-                                    </p>
-                                )}
+                                {errors.type && <p className="text-sm text-destructive">{errors.type}</p>}
                             </div>
 
                             {/* Title */}
@@ -135,18 +110,10 @@ export default function CreateThread() {
                                     id="title"
                                     placeholder="Enter a clear, descriptive title for your thread"
                                     value={data.title}
-                                    onChange={(e) =>
-                                        setData("title", e.target.value)
-                                    }
-                                    className={
-                                        errors.title ? "border-destructive" : ""
-                                    }
+                                    onChange={(e) => setData("title", e.target.value)}
+                                    className={errors.title ? "border-destructive" : ""}
                                 />
-                                {errors.title && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.title}
-                                    </p>
-                                )}
+                                {errors.title && <p className="text-sm text-destructive">{errors.title}</p>}
                             </div>
 
                             {/* Content */}
@@ -156,21 +123,11 @@ export default function CreateThread() {
                                     id="content"
                                     placeholder="Share your thoughts, provide details, or ask your question..."
                                     value={data.content}
-                                    onChange={(e) =>
-                                        setData("content", e.target.value)
-                                    }
+                                    onChange={(e) => setData("content", e.target.value)}
                                     rows={10}
-                                    className={
-                                        errors.content
-                                            ? "border-destructive"
-                                            : ""
-                                    }
+                                    className={errors.content ? "border-destructive" : ""}
                                 />
-                                {errors.content && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.content}
-                                    </p>
-                                )}
+                                {errors.content && <p className="text-sm text-destructive">{errors.content}</p>}
                             </div>
 
                             {/* Tags */}
@@ -179,51 +136,31 @@ export default function CreateThread() {
                                 <div className="space-y-3">
                                     {/* Popular Tags */}
                                     <div>
-                                        <p className="text-sm text-muted-foreground mb-2">
-                                            Popular tags in this community:
-                                        </p>
+                                        <p className="text-sm text-muted-foreground mb-2">Popular tags in this community:</p>
                                         <div className="flex flex-wrap gap-2">
-                                            {community.popularTags.map(
-                                                (tag) => (
-                                                    <Button
-                                                        key={tag}
-                                                        type="button"
-                                                        variant={
-                                                            selectedTags.includes(
-                                                                tag
-                                                            )
-                                                                ? "default"
-                                                                : "outline"
-                                                        }
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            selectedTags.includes(
-                                                                tag
-                                                            )
-                                                                ? removeTag(tag)
-                                                                : addTag(tag)
-                                                        }
-                                                        className="text-xs"
-                                                    >
-                                                        {tag}
-                                                    </Button>
-                                                )
-                                            )}
+                                            {community.popularTags.map((tag) => (
+                                                <Button
+                                                    key={tag}
+                                                    type="button"
+                                                    variant={selectedTags.includes(tag) ? "default" : "outline"}
+                                                    size="sm"
+                                                    onClick={() => (selectedTags.includes(tag) ? removeTag(tag) : addTag(tag))}
+                                                    className="text-xs"
+                                                >
+                                                    {tag}
+                                                </Button>
+                                            ))}
                                         </div>
                                     </div>
 
                                     {/* Custom Tag Input */}
                                     <div>
-                                        <p className="text-sm text-muted-foreground mb-2">
-                                            Or add your own tags:
-                                        </p>
+                                        <p className="text-sm text-muted-foreground mb-2">Or add your own tags:</p>
                                         <div className="flex gap-2">
                                             <Input
                                                 placeholder="Add a custom tag"
                                                 value={customTag}
-                                                onChange={(e) =>
-                                                    setCustomTag(e.target.value)
-                                                }
+                                                onChange={(e) => setCustomTag(e.target.value)}
                                                 onKeyPress={handleTagKeyPress}
                                                 className="flex-1"
                                             />
@@ -231,13 +168,8 @@ export default function CreateThread() {
                                                 type="button"
                                                 variant="outline"
                                                 size="icon"
-                                                onClick={() =>
-                                                    addTag(customTag.trim())
-                                                }
-                                                disabled={
-                                                    !customTag.trim() ||
-                                                    selectedTags.length >= 10
-                                                }
+                                                onClick={() => addTag(customTag.trim())}
+                                                disabled={!customTag.trim() || selectedTags.length >= 10}
                                             >
                                                 <PlusIcon className="h-4 w-4" />
                                             </Button>
@@ -247,25 +179,12 @@ export default function CreateThread() {
                                     {/* Selected Tags */}
                                     {selectedTags.length > 0 && (
                                         <div>
-                                            <p className="text-sm text-muted-foreground mb-2">
-                                                Selected tags (
-                                                {selectedTags.length}/10):
-                                            </p>
+                                            <p className="text-sm text-muted-foreground mb-2">Selected tags ({selectedTags.length}/10):</p>
                                             <div className="flex flex-wrap gap-2">
                                                 {selectedTags.map((tag) => (
-                                                    <Badge
-                                                        key={tag}
-                                                        variant="secondary"
-                                                        className="flex items-center gap-1"
-                                                    >
+                                                    <Badge key={tag} variant="secondary" className="flex items-center gap-1">
                                                         {tag}
-                                                        <button
-                                                            type="button"
-                                                            onClick={() =>
-                                                                removeTag(tag)
-                                                            }
-                                                            className="hover:text-destructive"
-                                                        >
+                                                        <button type="button" onClick={() => removeTag(tag)} className="hover:text-destructive">
                                                             <XIcon className="h-3 w-3" />
                                                         </button>
                                                     </Badge>
@@ -274,21 +193,13 @@ export default function CreateThread() {
                                         </div>
                                     )}
                                 </div>
-                                {errors.tags && (
-                                    <p className="text-sm text-destructive">
-                                        {errors.tags}
-                                    </p>
-                                )}
+                                {errors.tags && <p className="text-sm text-destructive">{errors.tags}</p>}
                             </div>
                         </div>
 
                         {/* Actions */}
                         <div className="flex justify-between items-center">
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                onClick={() => window.history.back()}
-                            >
+                            <Button type="button" variant="ghost" onClick={() => window.history.back()}>
                                 Cancel
                             </Button>
                             <Button type="submit" disabled={processing}>
@@ -299,26 +210,13 @@ export default function CreateThread() {
 
                     {/* Guidelines */}
                     <div className="mt-8 bg-muted/50 rounded-lg p-6">
-                        <h3 className="font-medium mb-3">
-                            Community Guidelines
-                        </h3>
+                        <h3 className="font-medium mb-3">Community Guidelines</h3>
                         <ul className="text-sm text-muted-foreground space-y-1">
-                            <li>
-                                • Be respectful and constructive in your
-                                discussions
-                            </li>
+                            <li>• Be respectful and constructive in your discussions</li>
                             <li>• Stay on topic and use appropriate tags</li>
-                            <li>
-                                • Search existing threads before creating new
-                                ones
-                            </li>
-                            <li>
-                                • Provide clear, detailed descriptions for
-                                questions
-                            </li>
-                            <li>
-                                • Follow community-specific rules and guidelines
-                            </li>
+                            <li>• Search existing threads before creating new ones</li>
+                            <li>• Provide clear, detailed descriptions for questions</li>
+                            <li>• Follow community-specific rules and guidelines</li>
                         </ul>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
-import type { SharedData } from "./index";
 import type { Event } from "./events";
-import type { Venue } from "./venues";
+import type { SharedData } from "./index";
 import type { Performer } from "./performers";
+import type { Venue } from "./venues";
 
 /** Booking status types */
 export const BOOKING_STATUS = {
@@ -13,8 +13,7 @@ export const BOOKING_STATUS = {
     REFUNDED: "refunded",
 } as const;
 
-export type BookingStatus =
-    (typeof BOOKING_STATUS)[keyof typeof BOOKING_STATUS];
+export type BookingStatus = (typeof BOOKING_STATUS)[keyof typeof BOOKING_STATUS];
 
 /** Booking type discriminator */
 export const BOOKING_TYPE = {
@@ -35,8 +34,7 @@ export const PAYMENT_STATUS = {
     CANCELLED: "cancelled",
 } as const;
 
-export type PaymentStatus =
-    (typeof PAYMENT_STATUS)[keyof typeof PAYMENT_STATUS];
+export type PaymentStatus = (typeof PAYMENT_STATUS)[keyof typeof PAYMENT_STATUS];
 
 /** Contact information for bookings */
 export interface BookingContact {

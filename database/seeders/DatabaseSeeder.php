@@ -75,6 +75,8 @@ final class DatabaseSeeder extends Seeder
             CommunityThreadSeeder::class,
             CommunityMemberSeeder::class,
             CommunityThreadReplySeeder::class,
+            CommunityThreadViewSeeder::class,
+            CommunityThreadReplyLikeSeeder::class,
         ]);
     }
 }

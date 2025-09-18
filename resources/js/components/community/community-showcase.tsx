@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { router } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
+import { router } from "@inertiajs/react";
 import { ArrowRightIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface ShowcaseItem {
     readonly id: number;
@@ -19,9 +19,7 @@ interface CommunityShowcaseProps {
     readonly showcaseData?: ShowcaseItem[];
 }
 
-export function CommunityShowcase({
-    showcaseData = [],
-}: CommunityShowcaseProps) {
+export function CommunityShowcase({ showcaseData = [] }: CommunityShowcaseProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     // Auto-rotate images
@@ -29,9 +27,7 @@ export function CommunityShowcase({
         if (showcaseData.length === 0) return;
 
         const interval = setInterval(() => {
-            setCurrentIndex(
-                (prevIndex) => (prevIndex + 1) % showcaseData.length
-            );
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % showcaseData.length);
         }, 5000);
         return () => clearInterval(interval);
     }, [showcaseData.length]);
@@ -63,45 +59,28 @@ export function CommunityShowcase({
                 <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
                     Featured Event
                 </div>
-                <h1 className="text-4xl font-bold mb-4">
-                    {currentShowcase.title}
-                </h1>
-                <Button
-                    variant="secondary"
-                    className="mt-4 backdrop-blur-sm"
-                    onClick={handleEventClick}
-                >
+                <h1 className="text-4xl font-bold mb-4">{currentShowcase.title}</h1>
+                <Button variant="secondary" className="mt-4 backdrop-blur-sm" onClick={handleEventClick}>
                     View Event Details
                     <ArrowRightIcon className="ml-2 h-4 w-4" />
                 </Button>
                 <div className="grid grid-cols-3 gap-8 mt-8">
                     <div className="text-center">
-                        <div className="text-4xl font-bold">
-                            {currentShowcase.stats.events}
-                        </div>
+                        <div className="text-4xl font-bold">{currentShowcase.stats.events}</div>
                         <div className="text-sm mt-1">Events Today</div>
                     </div>
                     <div className="text-center">
-                        <div className="text-4xl font-bold">
-                            {currentShowcase.stats.venues}
-                        </div>
+                        <div className="text-4xl font-bold">{currentShowcase.stats.venues}</div>
                         <div className="text-sm mt-1">Local Venues</div>
                     </div>
                     <div className="text-center">
-                        <div className="text-4xl font-bold">
-                            {currentShowcase.stats.performers}
-                        </div>
+                        <div className="text-4xl font-bold">{currentShowcase.stats.performers}</div>
                         <div className="text-sm mt-1">Performers</div>
                     </div>
                 </div>
                 <div className="mt-12 text-center">
-                    <div className="text-lg font-medium mb-2">
-                        Join your local community
-                    </div>
-                    <div className="text-sm opacity-80">
-                        Discover events, connect with others, and never miss
-                        what's happening
-                    </div>
+                    <div className="text-lg font-medium mb-2">Join your local community</div>
+                    <div className="text-sm opacity-80">Discover events, connect with others, and never miss what's happening</div>
                 </div>
             </div>
             <div className="absolute bottom-8 left-0 right-0 flex justify-center z-20">
@@ -109,11 +88,7 @@ export function CommunityShowcase({
                     {showcaseData.map((_, index) => (
                         <button
                             key={index}
-                            className={`h-2 w-2 rounded-full ${
-                                index === currentIndex
-                                    ? "bg-foreground"
-                                    : "bg-foreground/50"
-                            }`}
+                            className={`h-2 w-2 rounded-full ${index === currentIndex ? "bg-foreground" : "bg-foreground/50"}`}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setCurrentIndex(index);

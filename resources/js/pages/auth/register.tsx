@@ -23,14 +23,8 @@ interface RegisterProps extends SharedData {
     invitation?: string;
 }
 
-export default function Register({
-    providers,
-    invitation,
-    auth,
-}: RegisterProps) {
-    const { data, setData, post, processing, errors, reset } = useForm<
-        Required<RegisterForm>
-    >({
+export default function Register({ providers, invitation, auth }: RegisterProps) {
+    const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
         name: "",
         email: "",
         password: "",
@@ -45,10 +39,7 @@ export default function Register({
     };
 
     return (
-        <AuthLayout
-            title="Create an account"
-            description="Enter your details below to create your account"
-        >
+        <AuthLayout title="Create an account" description="Enter your details below to create your account">
             <Head title="Register" />
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
@@ -94,36 +85,22 @@ export default function Register({
                             tabIndex={3}
                             autoComplete="new-password"
                             value={data.password}
-                            onChange={(e) =>
-                                setData("password", e.target.value)
-                            }
+                            onChange={(e) => setData("password", e.target.value)}
                             disabled={processing}
                             placeholder="Password"
                         />
                         <InputError message={errors.password} />
                     </div>
 
-                    <Button
-                        type="submit"
-                        className="mt-2 w-full"
-                        tabIndex={5}
-                        disabled={processing}
-                    >
-                        {processing && (
-                            <LoaderCircle className="h-4 w-4 animate-spin" />
-                        )}
-                        {invitation
-                            ? "Create Account & Join Workspace"
-                            : "Create account"}
+                    <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
+                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                        {invitation ? "Create Account & Join Workspace" : "Create account"}
                     </Button>
                 </div>
 
                 <div className="text-muted-foreground text-center text-sm">
                     Already have an account?{" "}
-                    <TextLink
-                        href={route("login", invitation ? { invitation } : {})}
-                        tabIndex={6}
-                    >
+                    <TextLink href={route("login", invitation ? { invitation } : {})} tabIndex={6}>
                         Log in
                     </TextLink>
                 </div>
@@ -132,9 +109,7 @@ export default function Register({
             {(providers || auth.magicLinkEnabled) && (
                 <>
                     <div className="before:bg-border after:bg-border flex items-center gap-3 before:h-px before:flex-1 after:h-px after:flex-1 my-4">
-                        <span className="text-muted-foreground text-xs">
-                            Or continue with
-                        </span>
+                        <span className="text-muted-foreground text-xs">Or continue with</span>
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -148,11 +123,7 @@ export default function Register({
 
                         <div className="flex gap-2">
                             {providers?.map((provider) => (
-                                <SocialButton
-                                    key={provider}
-                                    provider={provider}
-                                    invitation={invitation}
-                                />
+                                <SocialButton key={provider} provider={provider} invitation={invitation} />
                             ))}
                         </div>
                     </div>

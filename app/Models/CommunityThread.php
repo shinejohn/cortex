@@ -22,7 +22,6 @@ final class CommunityThread extends Model
         'type',
         'tags',
         'images',
-        'views',
         'is_pinned',
         'is_locked',
         'is_featured',
@@ -52,6 +51,11 @@ final class CommunityThread extends Model
         return $this->hasMany(CommunityThreadReply::class, 'thread_id');
     }
 
+    public function views(): HasMany
+    {
+        return $this->hasMany(CommunityThreadView::class, 'thread_id');
+    }
+
     public function topLevelReplies(): HasMany
     {
         return $this->hasMany(CommunityThreadReply::class, 'thread_id')->topLevel();
@@ -63,6 +67,11 @@ final class CommunityThread extends Model
     }
 
     // Computed attributes
+    public function getViewsCountAttribute(): int
+    {
+        return $this->views()->count();
+    }
+
     public function getReplyCountAttribute(): int
     {
         return $this->replies()->count();

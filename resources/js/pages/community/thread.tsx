@@ -1,38 +1,37 @@
-import { useState } from "react";
-import { Head, usePage, router } from "@inertiajs/react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
-import Header from "@/components/common/header";
 import { Footer } from "@/components/common/footer";
+import Header from "@/components/common/header";
 import { ThreadReply } from "@/components/community/thread-reply";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import type { ThreadPageProps } from "@/types/community";
+import { Head, router, usePage } from "@inertiajs/react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import type { ThreadPageProps } from "@/types/community";
 import {
-    ArrowLeftIcon,
-    MessageCircleIcon,
-    EyeIcon,
-    CalendarIcon,
-    ShareIcon,
-    BookmarkIcon,
     AlertCircleIcon,
-    PinIcon,
-    LockIcon,
-    HelpCircleIcon,
+    ArrowLeftIcon,
+    BookmarkIcon,
     BriefcaseIcon,
+    CalendarIcon,
+    EyeIcon,
+    HelpCircleIcon,
+    LockIcon,
+    MessageCircleIcon,
     MessageSquareIcon,
+    PinIcon,
+    ShareIcon,
 } from "lucide-react";
+import { useState } from "react";
 
 // Initialize dayjs plugins
 dayjs.extend(relativeTime);
 
 export default function ThreadDetail() {
-    const { auth, community, thread, replies } =
-        usePage<ThreadPageProps>().props;
+    const { auth, community, thread, replies } = usePage<ThreadPageProps>().props;
     const [replyContent, setReplyContent] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -108,7 +107,7 @@ export default function ThreadDetail() {
             {
                 onSuccess: () => setReplyContent(""),
                 onFinish: () => setIsSubmitting(false),
-            }
+            },
         );
     };
 
@@ -133,17 +132,13 @@ export default function ThreadDetail() {
                         <Button
                             variant="link"
                             size="sm"
-                            onClick={() =>
-                                router.visit(`/community/${community.id}`)
-                            }
+                            onClick={() => router.visit(`/community/${community.id}`)}
                             className="p-0 h-auto text-muted-foreground hover:text-foreground"
                         >
                             {community.name}
                         </Button>
                         <span className="text-muted-foreground">/</span>
-                        <span className="font-medium text-foreground">
-                            Thread
-                        </span>
+                        <span className="font-medium text-foreground">Thread</span>
                     </div>
 
                     {/* Main Thread Content */}
@@ -154,51 +149,28 @@ export default function ThreadDetail() {
                                     {getThreadTypeIcon(thread.type)}
                                     <div>
                                         <div className="flex flex-wrap items-center gap-2 mb-1">
-                                            <Badge
-                                                className={getThreadTypeBadgeColor(
-                                                    thread.type
-                                                )}
-                                            >
-                                                {thread.type}
-                                            </Badge>
+                                            <Badge className={getThreadTypeBadgeColor(thread.type)}>{thread.type}</Badge>
                                             {thread.isPinned && (
-                                                <Badge
-                                                    variant="outline"
-                                                    className="flex items-center gap-1"
-                                                >
+                                                <Badge variant="outline" className="flex items-center gap-1">
                                                     <PinIcon className="h-3 w-3" />
                                                     Pinned
                                                 </Badge>
                                             )}
                                             {thread.isLocked && (
-                                                <Badge
-                                                    variant="outline"
-                                                    className="flex items-center gap-1"
-                                                >
+                                                <Badge variant="outline" className="flex items-center gap-1">
                                                     <LockIcon className="h-3 w-3" />
                                                     Locked
                                                 </Badge>
                                             )}
                                         </div>
-                                        <h1 className="text-2xl font-bold leading-tight">
-                                            {thread.title}
-                                        </h1>
+                                        <h1 className="text-2xl font-bold leading-tight">{thread.title}</h1>
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-2">
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={handleShare}
-                                        aria-label="Share thread"
-                                    >
+                                    <Button variant="ghost" size="icon" onClick={handleShare} aria-label="Share thread">
                                         <ShareIcon className="h-4 w-4" />
                                     </Button>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        aria-label="Bookmark thread"
-                                    >
+                                    <Button variant="ghost" size="icon" aria-label="Bookmark thread">
                                         <BookmarkIcon className="h-4 w-4" />
                                     </Button>
                                 </div>
@@ -209,36 +181,21 @@ export default function ThreadDetail() {
                                 <div className="flex items-center space-x-4">
                                     <div className="flex items-center">
                                         <Avatar className="h-6 w-6 mr-2">
-                                            <AvatarImage
-                                                src={thread.author.avatar}
-                                                alt={thread.author.name}
-                                            />
-                                            <AvatarFallback>
-                                                {thread.author.name
-                                                    .charAt(0)
-                                                    .toUpperCase()}
-                                            </AvatarFallback>
+                                            <AvatarImage src={thread.author.avatar} alt={thread.author.name} />
+                                            <AvatarFallback>{thread.author.name.charAt(0).toUpperCase()}</AvatarFallback>
                                         </Avatar>
-                                        <span className="font-medium text-foreground">
-                                            {thread.author.name}
-                                        </span>
-                                        {thread.author.role && (
-                                            <span className="ml-1 text-muted-foreground">
-                                                • {thread.author.role}
-                                            </span>
-                                        )}
+                                        <span className="font-medium text-foreground">{thread.author.name}</span>
+                                        {thread.author.role && <span className="ml-1 text-muted-foreground">• {thread.author.role}</span>}
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <CalendarIcon className="h-4 w-4" />
-                                        <span>
-                                            {formatDate(thread.createdAt)}
-                                        </span>
+                                        <span>{formatDate(thread.createdAt)}</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-4">
                                     <div className="flex items-center gap-1">
                                         <EyeIcon className="h-4 w-4" />
-                                        <span>{thread.views}</span>
+                                        <span>{thread.viewsCount}</span>
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <MessageCircleIcon className="h-4 w-4" />
@@ -252,10 +209,7 @@ export default function ThreadDetail() {
                                 <div className="mt-4 pt-4 border-t border-border">
                                     <div className="flex flex-wrap gap-2">
                                         {thread.tags.map((tag, index) => (
-                                            <Badge
-                                                key={index}
-                                                variant="secondary"
-                                            >
+                                            <Badge key={index} variant="secondary">
                                                 {tag}
                                             </Badge>
                                         ))}
@@ -269,10 +223,7 @@ export default function ThreadDetail() {
                             <div
                                 className="prose prose-slate dark:prose-invert max-w-none"
                                 dangerouslySetInnerHTML={{
-                                    __html: thread.content.replace(
-                                        /\n/g,
-                                        "<br>"
-                                    ),
+                                    __html: thread.content.replace(/\n/g, "<br>"),
                                 }}
                             />
                         </CardContent>
@@ -284,34 +235,19 @@ export default function ThreadDetail() {
                                     {auth.user ? (
                                         <Button
                                             disabled={thread.isLocked}
-                                            onClick={() =>
-                                                router.visit(
-                                                    `/community/${community.id}/thread/${thread.id}#reply-form`
-                                                )
-                                            }
+                                            onClick={() => router.visit(`/community/${community.id}/thread/${thread.id}#reply-form`)}
                                         >
                                             <MessageCircleIcon className="h-4 w-4 mr-2" />
                                             Reply to Thread
                                         </Button>
                                     ) : (
-                                        <Button
-                                            variant="outline"
-                                            onClick={() =>
-                                                router.visit("/login")
-                                            }
-                                        >
+                                        <Button variant="outline" onClick={() => router.visit("/login")}>
                                             Sign in to Reply
                                         </Button>
                                     )}
-                                    {thread.isLocked && (
-                                        <p className="text-sm text-muted-foreground ml-2">
-                                            This thread is locked.
-                                        </p>
-                                    )}
+                                    {thread.isLocked && <p className="text-sm text-muted-foreground ml-2">This thread is locked.</p>}
                                 </div>
-                                <span className="text-xs text-muted-foreground">
-                                    Thread ID: {thread.id}
-                                </span>
+                                <span className="text-xs text-muted-foreground">Thread ID: {thread.id}</span>
                             </div>
                         </CardContent>
                     </Card>
@@ -320,36 +256,21 @@ export default function ThreadDetail() {
                     <div className="mt-8">
                         <Card>
                             <CardHeader className="px-6 py-4">
-                                <h3 className="text-lg font-semibold">
-                                    Replies ({thread.replyCount})
-                                </h3>
+                                <h3 className="text-lg font-semibold">Replies ({thread.replyCount})</h3>
                             </CardHeader>
                             <CardContent className="px-6 py-4">
                                 {/* Main Reply Form */}
                                 {auth.user && !thread.isLocked && (
-                                    <div
-                                        id="reply-form"
-                                        className="mb-6 p-4 border rounded-lg bg-secondary/20"
-                                    >
+                                    <div id="reply-form" className="mb-6 p-4 border rounded-lg bg-secondary/20">
                                         <Textarea
                                             value={replyContent}
-                                            onChange={(e) =>
-                                                setReplyContent(e.target.value)
-                                            }
+                                            onChange={(e) => setReplyContent(e.target.value)}
                                             placeholder="Share your thoughts on this thread..."
                                             className="min-h-24 mb-3"
                                         />
                                         <div className="flex justify-end">
-                                            <Button
-                                                onClick={handleSubmitReply}
-                                                disabled={
-                                                    !replyContent.trim() ||
-                                                    isSubmitting
-                                                }
-                                            >
-                                                {isSubmitting
-                                                    ? "Posting..."
-                                                    : "Post Reply"}
+                                            <Button onClick={handleSubmitReply} disabled={!replyContent.trim() || isSubmitting}>
+                                                {isSubmitting ? "Posting..." : "Post Reply"}
                                             </Button>
                                         </div>
                                     </div>
@@ -359,21 +280,10 @@ export default function ThreadDetail() {
                                 {replies.length === 0 ? (
                                     <div className="text-center py-8 text-muted-foreground">
                                         <MessageCircleIcon className="mx-auto h-12 w-12 mb-2" />
-                                        <h4 className="mt-2 text-lg font-medium">
-                                            No replies yet
-                                        </h4>
-                                        <p className="mt-1 text-sm">
-                                            Be the first to share your thoughts
-                                            on this thread.
-                                        </p>
+                                        <h4 className="mt-2 text-lg font-medium">No replies yet</h4>
+                                        <p className="mt-1 text-sm">Be the first to share your thoughts on this thread.</p>
                                         {!auth.user && (
-                                            <Button
-                                                variant="outline"
-                                                className="mt-4"
-                                                onClick={() =>
-                                                    router.visit("/login")
-                                                }
-                                            >
+                                            <Button variant="outline" className="mt-4" onClick={() => router.visit("/login")}>
                                                 Sign in to Reply
                                             </Button>
                                         )}
@@ -381,12 +291,7 @@ export default function ThreadDetail() {
                                 ) : (
                                     <div className="space-y-6">
                                         {replies.map((reply) => (
-                                            <ThreadReply
-                                                key={reply.id}
-                                                reply={reply}
-                                                threadId={thread.id}
-                                                currentUserId={auth.user?.id}
-                                            />
+                                            <ThreadReply key={reply.id} reply={reply} threadId={thread.id} currentUserId={auth.user?.id} />
                                         ))}
                                     </div>
                                 )}
@@ -398,24 +303,12 @@ export default function ThreadDetail() {
                     <div className="mt-8">
                         <Card>
                             <CardHeader className="px-6 py-4">
-                                <h3 className="text-lg font-semibold">
-                                    Related Threads
-                                </h3>
+                                <h3 className="text-lg font-semibold">Related Threads</h3>
                             </CardHeader>
                             <CardContent className="px-6 py-4">
                                 <div className="text-center py-8 text-muted-foreground">
-                                    <p className="mb-2">
-                                        Related threads will appear here based
-                                        on tags and content similarity.
-                                    </p>
-                                    <Button
-                                        variant="outline"
-                                        onClick={() =>
-                                            router.visit(
-                                                `/community/${community.id}`
-                                            )
-                                        }
-                                    >
+                                    <p className="mb-2">Related threads will appear here based on tags and content similarity.</p>
+                                    <Button variant="outline" onClick={() => router.visit(`/community/${community.id}`)}>
                                         View All {community.name} Threads
                                     </Button>
                                 </div>

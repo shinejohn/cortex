@@ -1,16 +1,7 @@
-import React from "react";
-import {
-    StarIcon,
-    MusicIcon,
-    UtensilsIcon,
-    PaletteIcon,
-    UserIcon,
-    GlassWaterIcon,
-    SunIcon,
-    HeartIcon,
-} from "lucide-react";
-import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { GlassWaterIcon, HeartIcon, MusicIcon, PaletteIcon, StarIcon, SunIcon, UserIcon, UtensilsIcon } from "lucide-react";
+import React from "react";
+import { Button } from "../ui/button";
 
 type Category = {
     name: string;
@@ -139,11 +130,7 @@ type CategoryFilterProps = {
     className?: string;
 };
 
-export const CategoryFilter = ({
-    selectedCategory,
-    onCategoryChange,
-    className,
-}: CategoryFilterProps) => {
+export const CategoryFilter = ({ selectedCategory, onCategoryChange, className }: CategoryFilterProps) => {
     return (
         <div className={cn("py-4", className)}>
             <div className="max-w-4xl mx-auto px-3 sm:px-4">
@@ -162,12 +149,7 @@ export const CategoryFilter = ({
                                     "hover:scale-105 hover:shadow-md active:scale-95",
                                     "focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2",
                                     // Base colors (unselected state)
-                                    !isSelected && [
-                                        colors.bg,
-                                        colors.text,
-                                        colors.border,
-                                        colors.bgHover,
-                                    ],
+                                    !isSelected && [colors.bg, colors.text, colors.border, colors.bgHover],
                                     // Active colors (selected state)
                                     isSelected && [
                                         colors.bgActive,
@@ -175,33 +157,21 @@ export const CategoryFilter = ({
                                         colors.borderActive,
                                         "shadow-lg ring-2 ring-offset-2",
                                         // Dynamic ring color based on category
-                                        category.name === "All" &&
-                                            "ring-slate-900/20 dark:ring-slate-100/20",
-                                        category.name === "Music" &&
-                                            "ring-purple-600/20",
-                                        category.name === "Food & Drink" &&
-                                            "ring-orange-600/20",
-                                        category.name === "Arts" &&
-                                            "ring-pink-600/20",
-                                        category.name === "Family" &&
-                                            "ring-green-600/20",
-                                        category.name === "Nightlife" &&
-                                            "ring-indigo-600/20",
-                                        category.name === "Outdoor" &&
-                                            "ring-blue-600/20",
-                                        category.name === "Free" &&
-                                            "ring-red-600/20",
-                                    ]
+                                        category.name === "All" && "ring-slate-900/20 dark:ring-slate-100/20",
+                                        category.name === "Music" && "ring-purple-600/20",
+                                        category.name === "Food & Drink" && "ring-orange-600/20",
+                                        category.name === "Arts" && "ring-pink-600/20",
+                                        category.name === "Family" && "ring-green-600/20",
+                                        category.name === "Nightlife" && "ring-indigo-600/20",
+                                        category.name === "Outdoor" && "ring-blue-600/20",
+                                        category.name === "Free" && "ring-red-600/20",
+                                    ],
                                 )}
                                 aria-label={`Filter by ${category.name}`}
                                 type="button"
                             >
-                                <div className="mb-1 flex-shrink-0">
-                                    {category.icon}
-                                </div>
-                                <span className="text-xs font-medium text-center leading-tight truncate w-full">
-                                    {category.name}
-                                </span>
+                                <div className="mb-1 flex-shrink-0">{category.icon}</div>
+                                <span className="text-xs font-medium text-center leading-tight truncate w-full">{category.name}</span>
 
                                 {/* Selection indicator dot */}
                                 {isSelected && (

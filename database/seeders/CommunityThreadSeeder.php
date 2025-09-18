@@ -42,13 +42,6 @@ final class CommunityThreadSeeder extends Seeder
                     'is_pinned' => $isPinned,
                     'is_locked' => $isLocked,
                 ]);
-
-                // Make some threads more popular
-                if ($i % 4 === 0) {
-                    $thread->update([
-                        'views' => fake()->numberBetween(500, 2000),
-                    ]);
-                }
             }
 
             $this->command->info("Created {$threadCount} threads for community: {$community->name}");

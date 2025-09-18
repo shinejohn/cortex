@@ -1,18 +1,8 @@
-import { useEffect, useState } from "react";
 import { Link, router } from "@inertiajs/react";
+import { useEffect, useState } from "react";
 import { route } from "ziggy-js";
 
-import {
-    Bell,
-    ChevronDown,
-    LogOut,
-    MapPin,
-    Menu,
-    MessageSquare,
-    Plus,
-    Search,
-    Users,
-} from "lucide-react";
+import { Bell, ChevronDown, LogOut, MapPin, Menu, MessageSquare, Plus, Search, Users } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -26,29 +16,16 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-    Sheet,
-    SheetContent,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { UserMenuContent } from "../user-menu-content";
-import { BreadcrumbItem, type Auth } from "@/types";
+import { type Auth, BreadcrumbItem } from "@/types";
 import AppLogo from "../app-logo";
 import AppLogoIcon from "../app-logo-icon";
+import { UserMenuContent } from "../user-menu-content";
 import BottomNavigation from "./bottom-navigation";
 
 // Re-import navigation items for mobile menu
-import {
-    BookOpen,
-    Calendar,
-    Megaphone,
-    Music,
-    ShoppingBag,
-    Ticket,
-} from "lucide-react";
+import { BookOpen, Calendar, Megaphone, Music, ShoppingBag, Ticket } from "lucide-react";
 
 type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
 
@@ -194,17 +171,12 @@ function LocationSelector({ location }: LocationSelectorProps) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button
-                    variant="ghost"
-                    className="flex w-full items-center justify-between gap-2 text-sm"
-                >
+                <Button variant="ghost" className="flex w-full items-center justify-between gap-2 text-sm">
                     <div className="flex items-center gap-2">
                         <MapPin className="size-4" />
                         <div className="text-left">
                             <div className="font-medium">{location.name}</div>
-                            <div className="text-xs text-muted-foreground">
-                                {location.eventCount} events
-                            </div>
+                            <div className="text-xs text-muted-foreground">{location.eventCount} events</div>
                         </div>
                     </div>
                     <ChevronDown className="size-4" />
@@ -251,18 +223,9 @@ function NotificationBell({ notifications }: NotificationBellProps) {
     const hasNotifications = notifications.count > 0;
 
     return (
-        <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/notifications")}
-            className="relative"
-        >
+        <Button variant="ghost" size="icon" onClick={() => navigate("/notifications")} className="relative">
             <Bell className="size-5" />
-            {hasNotifications && (
-                <Badge className="absolute -right-1 -top-1 h-5 min-w-[1.25rem] px-1 text-xs">
-                    {notifications.count}
-                </Badge>
-            )}
+            {hasNotifications && <Badge className="absolute -right-1 -top-1 h-5 min-w-[1.25rem] px-1 text-xs">{notifications.count}</Badge>}
         </Button>
     );
 }
@@ -271,28 +234,14 @@ function MessagesButton({ unreadCount = 0 }: MessagesButtonProps) {
     const hasUnread = unreadCount > 0;
 
     return (
-        <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/messages")}
-            className="relative"
-        >
+        <Button variant="ghost" size="icon" onClick={() => navigate("/messages")} className="relative">
             <MessageSquare className="size-5" />
-            {hasUnread && (
-                <Badge className="absolute -right-1 -top-1 h-5 min-w-[1.25rem] px-1 text-xs">
-                    {unreadCount}
-                </Badge>
-            )}
+            {hasUnread && <Badge className="absolute -right-1 -top-1 h-5 min-w-[1.25rem] px-1 text-xs">{unreadCount}</Badge>}
         </Button>
     );
 }
 
-function MobileNavigation({
-    auth,
-    location,
-    notifications,
-    unreadMessages = 0,
-}: MobileNavigationProps) {
+function MobileNavigation({ auth, location, notifications, unreadMessages = 0 }: MobileNavigationProps) {
     const user = auth.user;
 
     return (
@@ -322,19 +271,11 @@ function MobileNavigation({
                     {/* Navigation Items */}
                     <nav className="space-y-2">
                         {MOBILE_NAV_ITEMS.map((item) => (
-                            <Button
-                                key={item.href}
-                                variant="ghost"
-                                onClick={() => navigate(item.href)}
-                                className="w-full justify-start gap-3"
-                            >
+                            <Button key={item.href} variant="ghost" onClick={() => navigate(item.href)} className="w-full justify-start gap-3">
                                 {item.icon}
                                 <span>{item.title}</span>
                                 {item.badge && (
-                                    <Badge
-                                        variant={item.badge.variant}
-                                        className="ml-auto"
-                                    >
+                                    <Badge variant={item.badge.variant} className="ml-auto">
                                         {item.badge.text}
                                     </Badge>
                                 )}
@@ -345,39 +286,19 @@ function MobileNavigation({
                     {/* User Actions */}
                     {user && (
                         <div className="border-t pt-4 space-y-2">
-                            <Button
-                                variant="ghost"
-                                onClick={() => navigate("/events/create")}
-                                className="w-full justify-start gap-3"
-                            >
+                            <Button variant="ghost" onClick={() => navigate("/events/create")} className="w-full justify-start gap-3">
                                 <Plus className="size-4" />
                                 Create Event
                             </Button>
-                            <Button
-                                variant="ghost"
-                                onClick={() => navigate("/notifications")}
-                                className="w-full justify-start gap-3"
-                            >
+                            <Button variant="ghost" onClick={() => navigate("/notifications")} className="w-full justify-start gap-3">
                                 <Bell className="size-4" />
                                 Notifications
-                                {notifications.count > 0 && (
-                                    <Badge className="ml-auto">
-                                        {notifications.count}
-                                    </Badge>
-                                )}
+                                {notifications.count > 0 && <Badge className="ml-auto">{notifications.count}</Badge>}
                             </Button>
-                            <Button
-                                variant="ghost"
-                                onClick={() => navigate("/messages")}
-                                className="w-full justify-start gap-3"
-                            >
+                            <Button variant="ghost" onClick={() => navigate("/messages")} className="w-full justify-start gap-3">
                                 <MessageSquare className="size-4" />
                                 Messages
-                                {unreadMessages > 0 && (
-                                    <Badge className="ml-auto">
-                                        {unreadMessages}
-                                    </Badge>
-                                )}
+                                {unreadMessages > 0 && <Badge className="ml-auto">{unreadMessages}</Badge>}
                             </Button>
                         </div>
                     )}
@@ -395,17 +316,10 @@ function MobileNavigation({
                             </Button>
                         ) : (
                             <div className="space-y-2 px-2">
-                                <Button
-                                    onClick={() => navigate("/signup")}
-                                    className="w-full"
-                                >
+                                <Button onClick={() => navigate("/signup")} className="w-full">
                                     Sign Up
                                 </Button>
-                                <Button
-                                    variant="outline"
-                                    onClick={() => navigate("/login")}
-                                    className="w-full"
-                                >
+                                <Button variant="outline" onClick={() => navigate("/login")} className="w-full">
                                     Log In
                                 </Button>
                             </div>
@@ -418,12 +332,7 @@ function MobileNavigation({
 }
 
 // Main Header Component
-export function Header({
-    auth,
-    location = DEFAULT_LOCATION,
-    notifications = DEFAULT_NOTIFICATIONS,
-    unreadMessages = 0,
-}: HeaderProps) {
+export function Header({ auth, location = DEFAULT_LOCATION, notifications = DEFAULT_NOTIFICATIONS, unreadMessages = 0 }: HeaderProps) {
     const [isScrolled, setIsScrolled] = useState(false);
     const { user } = auth;
 
@@ -440,7 +349,7 @@ export function Header({
         <header
             className={cn(
                 "sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-all duration-200",
-                isScrolled && "shadow-sm"
+                isScrolled && "shadow-sm",
             )}
         >
             {/* Desktop Header */}
@@ -462,46 +371,22 @@ export function Header({
 
                             {user ? (
                                 <>
-                                    <Button
-                                        variant={"secondary"}
-                                        onClick={() =>
-                                            navigate("/events/create")
-                                        }
-                                        className="flex items-center gap-2"
-                                    >
+                                    <Button variant={"secondary"} onClick={() => navigate("/events/create")} className="flex items-center gap-2">
                                         <Plus className="size-4" />
                                         Create Event
                                     </Button>
-                                    <NotificationBell
-                                        notifications={notifications}
-                                    />
-                                    <MessagesButton
-                                        unreadCount={unreadMessages}
-                                    />
+                                    <NotificationBell notifications={notifications} />
+                                    <MessagesButton unreadCount={unreadMessages} />
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="relative"
-                                            >
+                                            <Button variant="ghost" size="icon" className="relative">
                                                 <Avatar className="size-8">
-                                                    <AvatarImage
-                                                        src={user.avatar}
-                                                        alt={user.name}
-                                                    />
-                                                    <AvatarFallback className="text-xs">
-                                                        {user.name
-                                                            .charAt(0)
-                                                            .toUpperCase()}
-                                                    </AvatarFallback>
+                                                    <AvatarImage src={user.avatar} alt={user.name} />
+                                                    <AvatarFallback className="text-xs">{user.name.charAt(0).toUpperCase()}</AvatarFallback>
                                                 </Avatar>
                                             </Button>
                                         </DropdownMenuTrigger>
-                                        <DropdownMenuContent
-                                            align="end"
-                                            className="w-56"
-                                        >
+                                        <DropdownMenuContent align="end" className="w-56">
                                             <UserMenuContent user={user} />
                                         </DropdownMenuContent>
                                     </DropdownMenu>
@@ -529,12 +414,7 @@ export function Header({
                 <div className="container mx-auto px-4">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center gap-3">
-                            <MobileNavigation
-                                auth={auth}
-                                location={location}
-                                notifications={notifications}
-                                unreadMessages={unreadMessages}
-                            />
+                            <MobileNavigation auth={auth} location={location} notifications={notifications} unreadMessages={unreadMessages} />
                             <Link href={route("home")}>
                                 <AppLogoIcon className="text-lg" />
                             </Link>
@@ -544,33 +424,21 @@ export function Header({
                             {user ? (
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button
-                                            variant="ghost"
-                                            className="size-10 rounded-full p-1"
-                                        >
+                                        <Button variant="ghost" className="size-10 rounded-full p-1">
                                             <Avatar className="size-8 overflow-hidden rounded-full">
-                                                <AvatarImage
-                                                    src={user.avatar}
-                                                    alt={user.name}
-                                                />
+                                                <AvatarImage src={user.avatar} alt={user.name} />
                                                 <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
                                                     {getUserInitials(user.name)}
                                                 </AvatarFallback>
                                             </Avatar>
                                         </Button>
                                     </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        className="w-56"
-                                        align="end"
-                                    >
+                                    <DropdownMenuContent className="w-56" align="end">
                                         <UserMenuContent user={user} />
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             ) : (
-                                <Button
-                                    size="sm"
-                                    onClick={() => navigate("/login")}
-                                >
+                                <Button size="sm" onClick={() => navigate("/login")}>
                                     Login
                                 </Button>
                             )}

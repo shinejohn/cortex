@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { SearchIcon, XIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { SearchIcon, XIcon } from "lucide-react";
+import { useState } from "react";
 
 interface SearchBarProps {
     placeholder?: string;
@@ -10,11 +10,7 @@ interface SearchBarProps {
     className?: string;
 }
 
-export function SearchBar({
-    placeholder = "Search performers, genres, or locations...",
-    onSearch,
-    className,
-}: SearchBarProps) {
+export function SearchBar({ placeholder = "Search performers, genres, or locations...", onSearch, className }: SearchBarProps) {
     const [query, setQuery] = useState("");
 
     const handleSubmit = (e: React.FormEvent) => {

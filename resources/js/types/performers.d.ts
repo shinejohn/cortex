@@ -18,8 +18,7 @@ export const PERFORMER_GENRES = {
     WORLD: "World Music",
 } as const;
 
-export type PerformerGenre =
-    (typeof PERFORMER_GENRES)[keyof typeof PERFORMER_GENRES];
+export type PerformerGenre = (typeof PERFORMER_GENRES)[keyof typeof PERFORMER_GENRES];
 
 /** Upcoming show information */
 export interface UpcomingShow {

@@ -1,15 +1,9 @@
+import { GridCard } from "@/components/common/grid-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { GridCard } from "@/components/common/grid-card";
 import type { Performer } from "@/types/performers";
-import {
-    CalendarIcon,
-    MicIcon,
-    StarIcon,
-    ShareIcon,
-    HeartIcon,
-} from "lucide-react";
 import { Link } from "@inertiajs/react";
+import { CalendarIcon, HeartIcon, MicIcon, ShareIcon, StarIcon } from "lucide-react";
 import { useState } from "react";
 
 interface PerformerCardProps {
@@ -17,10 +11,7 @@ interface PerformerCardProps {
     showActions?: boolean;
 }
 
-export function PerformerCard({
-    performer,
-    showActions = true,
-}: PerformerCardProps) {
+export function PerformerCard({ performer, showActions = true }: PerformerCardProps) {
     const [isLiked, setIsLiked] = useState(false);
 
     const formatDate = (dateString: string): string => {
@@ -42,9 +33,7 @@ export function PerformerCard({
                 url: window.location.origin + `/performers/${performer.id}`,
             });
         } else {
-            navigator.clipboard.writeText(
-                `${window.location.origin}/performers/${performer.id}`
-            );
+            navigator.clipboard.writeText(`${window.location.origin}/performers/${performer.id}`);
         }
     };
 
@@ -80,12 +69,8 @@ export function PerformerCard({
             <div className="flex items-center mb-2">
                 <div className="flex items-center">
                     <StarIcon className="h-4 w-4 text-yellow-500 mr-1" />
-                    <span className="text-sm font-medium">
-                        {performer.rating}
-                    </span>
-                    <span className="text-xs text-muted-foreground ml-1">
-                        ({performer.reviewCount} reviews)
-                    </span>
+                    <span className="text-sm font-medium">{performer.rating}</span>
+                    <span className="text-xs text-muted-foreground ml-1">({performer.reviewCount} reviews)</span>
                 </div>
             </div>
 
@@ -95,8 +80,7 @@ export function PerformerCard({
                 <span className="text-xs">
                     {performer.upcomingShow ? (
                         <>
-                            Next: {formatDate(performer.upcomingShow.date)} at{" "}
-                            {performer.upcomingShow.venue || "Capitol Theatre"}
+                            Next: {formatDate(performer.upcomingShow.date)} at {performer.upcomingShow.venue || "Capitol Theatre"}
                         </>
                     ) : (
                         "No upcoming shows"
@@ -125,16 +109,10 @@ export function PerformerCard({
                     variant="ghost"
                     size="icon"
                     onClick={handleLike}
-                    className={`text-muted-foreground hover:text-primary p-1 h-8 w-8 ${
-                        isLiked ? "text-red-500 hover:text-red-600" : ""
-                    }`}
-                    title={
-                        isLiked ? "Remove from favorites" : "Add to favorites"
-                    }
+                    className={`text-muted-foreground hover:text-primary p-1 h-8 w-8 ${isLiked ? "text-red-500 hover:text-red-600" : ""}`}
+                    title={isLiked ? "Remove from favorites" : "Add to favorites"}
                 >
-                    <HeartIcon
-                        className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`}
-                    />
+                    <HeartIcon className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
                 </Button>
             </>
         );
@@ -152,12 +130,8 @@ export function PerformerCard({
             actions={renderPerformerActions()}
             imageOverlay={
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
-                    <h3 className="font-bold text-lg text-white mb-0.5">
-                        {performer.name}
-                    </h3>
-                    <p className="text-white/80 text-sm">
-                        {performer.homeCity}
-                    </p>
+                    <h3 className="font-bold text-lg text-white mb-0.5">{performer.name}</h3>
+                    <p className="text-white/80 text-sm">{performer.homeCity}</p>
                 </div>
             }
         >

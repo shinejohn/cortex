@@ -1,5 +1,5 @@
 import AppLayoutTemplate from "@/layouts/app/app-header-layout";
-import { Auth, SharedData, type BreadcrumbItem } from "@/types";
+import { Auth, type BreadcrumbItem, SharedData } from "@/types";
 import { usePage } from "@inertiajs/react";
 import { type ReactNode } from "react";
 
