@@ -51,7 +51,7 @@ final class User extends Authenticatable
 
     public function getAvatarAttribute(): string
     {
-        return $this->socialAccounts()->first()?->avatar ?? "https://api.dicebear.com/9.x/glass/svg?seed={$this->id}";
+        return $this->socialAccounts()->first()?->avatar ?? "https://api.dicebear.com/9.x/fun-emoji/svg?seed={$this->id}&flip=true&backgroundType=solid,gradientLinear&eyes=closed,cute,glasses,love,pissed,plain,sad,shades,sleepClose,tearDrop,wink,wink2,closed2&mouth=cute,kissHeart,lilSmile,plain,shy,smileLol,smileTeeth,tongueOut,wideSmile";
     }
 
     public function workspaces(): HasMany
@@ -105,7 +105,7 @@ final class User extends Authenticatable
         return $this->workspaceMemberships()
             ->where('workspace_id', $workspaceId)
             ->get()
-            ->some(fn ($membership) => collect($permissions)->some(fn ($permission) => in_array($permission, $membership->permissions)));
+            ->some(fn($membership) => collect($permissions)->some(fn($permission) => in_array($permission, $membership->permissions)));
     }
 
     public function hasAllPermissions(array $permissions, ?string $workspaceId): bool
@@ -117,7 +117,7 @@ final class User extends Authenticatable
         return $this->workspaceMemberships()
             ->where('workspace_id', $workspaceId)
             ->get()
-            ->every(fn ($membership) => collect($permissions)->every(fn ($permission) => in_array($permission, $membership->permissions)));
+            ->every(fn($membership) => collect($permissions)->every(fn($permission) => in_array($permission, $membership->permissions)));
     }
 
     public function isOwnerOfWorkspace(?string $workspaceId): bool

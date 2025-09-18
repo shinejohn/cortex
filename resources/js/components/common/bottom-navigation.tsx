@@ -55,7 +55,7 @@ const NAVIGATION_ITEMS: NavItem[] = [
     },
     {
         title: "Communities",
-        href: "/hubs",
+        href: "/community",
         icon: <Users className="size-4" />,
         highlight: true,
     },

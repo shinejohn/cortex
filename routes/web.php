@@ -3,11 +3,13 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\PerformerController;
 use App\Http\Controllers\VenueController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 // Public routes
 Route::get('/', [HomePageController::class, 'index'])->name('home');
@@ -17,6 +19,14 @@ Route::get('/performers', [PerformerController::class, 'publicIndex'])->name('pe
 Route::get('/performers/{performer}', [PerformerController::class, 'show'])->name('performers.show')->can('view', 'performer');
 Route::get('/venues', [VenueController::class, 'publicIndex'])->name('venues');
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show')->can('view', 'venue');
+
+// Community routes (publicly accessible)
+Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
+Route::get('/community/impact', function () {
+    return Inertia::render('Community/Impact');
+})->name('community.impact');
+Route::get('/community/{id}', [CommunityController::class, 'show'])->name('community.show');
+Route::get('/community/{id}/thread/{threadId}', [CommunityController::class, 'showThread'])->name('community.thread.show');
 
 // API routes for frontend data
 Route::middleware(['auth'])->group(function () {
@@ -33,6 +43,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('performers', PerformerController::class)->except(['index', 'show']);
     Route::resource('events', EventController::class)->except(['index', 'show']);
     Route::resource('bookings', BookingController::class);
+
+    // Community thread management routes (require authentication)
+    Route::get('/community/{id}/new-thread', [CommunityController::class, 'createThread'])->name('community.thread.create');
+    Route::post('/community/{id}/threads', [CommunityController::class, 'storeThread'])->name('community.thread.store');
+
+    // Community thread reply routes (require authentication)
+    Route::post('/community/thread/{threadId}/replies', [CommunityController::class, 'storeReply'])->name('community.thread.reply.store');
+    Route::patch('/community/reply/{replyId}', [CommunityController::class, 'updateReply'])->name('community.reply.update');
+    Route::delete('/community/reply/{replyId}', [CommunityController::class, 'destroyReply'])->name('community.reply.destroy');
+    Route::post('/community/reply/{replyId}/like', [CommunityController::class, 'likeReply'])->name('community.reply.like');
 
     // Admin routes for events, performers, and venues management
     Route::get('/admin/events', [EventController::class, 'index'])->name('admin.events.index');

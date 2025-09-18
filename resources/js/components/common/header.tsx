@@ -81,7 +81,7 @@ const MOBILE_NAV_ITEMS: NavItem[] = [
     },
     {
         title: "Communities",
-        href: "/hubs",
+        href: "/community",
         icon: <Users className="size-4" />,
         highlight: true,
     },

@@ -68,5 +68,13 @@ final class DatabaseSeeder extends Seeder
             EventSeeder::class,
             BookingSeeder::class,
         ]);
+
+        // Seed community data
+        $this->call([
+            CommunitySeeder::class,
+            CommunityThreadSeeder::class,
+            CommunityMemberSeeder::class,
+            CommunityThreadReplySeeder::class,
+        ]);
     }
 }
