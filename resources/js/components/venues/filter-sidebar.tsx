@@ -1,12 +1,12 @@
-import { cn } from "@/lib/utils";
-import { VenueFilters, VENUE_TYPES, VENUE_AMENITIES } from "@/types/venues.d";
-import { SearchIcon, FilterIcon, XIcon } from "lucide-react";
-import React from "react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
+import { cn } from "@/lib/utils";
+import { VENUE_AMENITIES, VENUE_TYPES, VenueFilters } from "@/types/venues.d";
+import { FilterIcon, SearchIcon, XIcon } from "lucide-react";
+import React from "react";
 
 interface FilterSidebarProps {
     filters: VenueFilters;
@@ -31,16 +31,8 @@ const PRICE_RANGES = [
     { label: "$1000+", min: 1000, max: 5000 },
 ];
 
-export const FilterSidebar = ({
-    filters,
-    onFilterChange,
-    onClearFilters,
-    className,
-}: FilterSidebarProps) => {
-    const capacityRange = [
-        filters.min_capacity || 1,
-        filters.max_capacity || 1000,
-    ];
+export const FilterSidebar = ({ filters, onFilterChange, onClearFilters, className }: FilterSidebarProps) => {
+    const capacityRange = [filters.min_capacity || 1, filters.max_capacity || 1000];
     const priceRange = [filters.min_price || 0, filters.max_price || 5000];
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,9 +41,7 @@ export const FilterSidebar = ({
 
     const handleVenueTypeChange = (venueType: string, checked: boolean) => {
         const currentTypes = filters.venue_types || [];
-        const newTypes = checked
-            ? [...currentTypes, venueType]
-            : currentTypes.filter((type) => type !== venueType);
+        const newTypes = checked ? [...currentTypes, venueType] : currentTypes.filter((type) => type !== venueType);
 
         onFilterChange({
             venue_types: newTypes.length > 0 ? newTypes : undefined,
@@ -60,9 +50,7 @@ export const FilterSidebar = ({
 
     const handleAmenityChange = (amenity: string, checked: boolean) => {
         const currentAmenities = filters.amenities || [];
-        const newAmenities = checked
-            ? [...currentAmenities, amenity]
-            : currentAmenities.filter((a) => a !== amenity);
+        const newAmenities = checked ? [...currentAmenities, amenity] : currentAmenities.filter((a) => a !== amenity);
 
         onFilterChange({
             amenities: newAmenities.length > 0 ? newAmenities : undefined,
@@ -151,27 +139,13 @@ export const FilterSidebar = ({
                 <Label className="text-sm font-medium">Venue Type</Label>
                 <div className="space-y-2">
                     {Object.values(VENUE_TYPES).map((venueType) => (
-                        <div
-                            key={venueType}
-                            className="flex items-center space-x-2"
-                        >
+                        <div key={venueType} className="flex items-center space-x-2">
                             <Checkbox
                                 id={`venue-type-${venueType}`}
-                                checked={
-                                    filters.venue_types?.includes(venueType) ||
-                                    false
-                                }
-                                onCheckedChange={(checked) =>
-                                    handleVenueTypeChange(
-                                        venueType,
-                                        checked as boolean
-                                    )
-                                }
+                                checked={filters.venue_types?.includes(venueType) || false}
+                                onCheckedChange={(checked) => handleVenueTypeChange(venueType, checked as boolean)}
                             />
-                            <Label
-                                htmlFor={`venue-type-${venueType}`}
-                                className="text-sm font-normal cursor-pointer"
-                            >
+                            <Label htmlFor={`venue-type-${venueType}`} className="text-sm font-normal cursor-pointer">
                                 {venueType}
                             </Label>
                         </div>
@@ -184,14 +158,7 @@ export const FilterSidebar = ({
                 <Label className="text-sm font-medium">Capacity</Label>
                 <div className="space-y-3">
                     <div className="px-2">
-                        <Slider
-                            value={capacityRange}
-                            onValueChange={handleCapacityChange}
-                            max={1000}
-                            min={1}
-                            step={1}
-                            className="w-full"
-                        />
+                        <Slider value={capacityRange} onValueChange={handleCapacityChange} max={1000} min={1} step={1} className="w-full" />
                         <div className="flex justify-between text-xs text-muted-foreground mt-2">
                             <span>{capacityRange[0]}</span>
                             <span>{capacityRange[1]}</span>
@@ -203,17 +170,12 @@ export const FilterSidebar = ({
                                 key={range.label}
                                 variant="outline"
                                 size="sm"
-                                onClick={() =>
-                                    handleCapacityQuickSelect(
-                                        range.min,
-                                        range.max
-                                    )
-                                }
+                                onClick={() => handleCapacityQuickSelect(range.min, range.max)}
                                 className={cn(
                                     "text-xs h-8",
                                     capacityRange[0] === range.min &&
                                         capacityRange[1] === range.max &&
-                                        "bg-primary text-primary-foreground border-primary"
+                                        "bg-primary text-primary-foreground border-primary",
                                 )}
                             >
                                 {range.label}
@@ -228,14 +190,7 @@ export const FilterSidebar = ({
                 <Label className="text-sm font-medium">Price per Hour</Label>
                 <div className="space-y-3">
                     <div className="px-2">
-                        <Slider
-                            value={priceRange}
-                            onValueChange={handlePriceChange}
-                            max={5000}
-                            min={0}
-                            step={10}
-                            className="w-full"
-                        />
+                        <Slider value={priceRange} onValueChange={handlePriceChange} max={5000} min={0} step={10} className="w-full" />
                         <div className="flex justify-between text-xs text-muted-foreground mt-2">
                             <span>${priceRange[0]}</span>
                             <span>${priceRange[1]}</span>
@@ -247,14 +202,10 @@ export const FilterSidebar = ({
                                 key={range.label}
                                 variant="outline"
                                 size="sm"
-                                onClick={() =>
-                                    handlePriceQuickSelect(range.min, range.max)
-                                }
+                                onClick={() => handlePriceQuickSelect(range.min, range.max)}
                                 className={cn(
                                     "text-xs h-8",
-                                    priceRange[0] === range.min &&
-                                        priceRange[1] === range.max &&
-                                        "bg-primary text-primary-foreground border-primary"
+                                    priceRange[0] === range.min && priceRange[1] === range.max && "bg-primary text-primary-foreground border-primary",
                                 )}
                             >
                                 {range.label}
@@ -269,27 +220,13 @@ export const FilterSidebar = ({
                 <Label className="text-sm font-medium">Amenities</Label>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
                     {Object.values(VENUE_AMENITIES).map((amenity) => (
-                        <div
-                            key={amenity}
-                            className="flex items-center space-x-2"
-                        >
+                        <div key={amenity} className="flex items-center space-x-2">
                             <Checkbox
                                 id={`amenity-${amenity}`}
-                                checked={
-                                    filters.amenities?.includes(amenity) ||
-                                    false
-                                }
-                                onCheckedChange={(checked) =>
-                                    handleAmenityChange(
-                                        amenity,
-                                        checked as boolean
-                                    )
-                                }
+                                checked={filters.amenities?.includes(amenity) || false}
+                                onCheckedChange={(checked) => handleAmenityChange(amenity, checked as boolean)}
                             />
-                            <Label
-                                htmlFor={`amenity-${amenity}`}
-                                className="text-sm font-normal cursor-pointer"
-                            >
+                            <Label htmlFor={`amenity-${amenity}`} className="text-sm font-normal cursor-pointer">
                                 {amenity}
                             </Label>
                         </div>
@@ -308,10 +245,7 @@ export const FilterSidebar = ({
                         })
                     }
                 />
-                <Label
-                    htmlFor="verified-only"
-                    className="text-sm font-normal cursor-pointer"
-                >
+                <Label htmlFor="verified-only" className="text-sm font-normal cursor-pointer">
                     Verified venues only
                 </Label>
             </div>

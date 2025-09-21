@@ -1,8 +1,8 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
-import { XIcon } from "lucide-react";
 import { FilterSidebar } from "@/components/venues/filter-sidebar";
 import { VenueFilters } from "@/types/venues";
+import { XIcon } from "lucide-react";
+import React from "react";
 
 interface MobileFilterSidebarProps {
     filters: VenueFilters;
@@ -10,11 +10,7 @@ interface MobileFilterSidebarProps {
     onClose: () => void;
 }
 
-export const MobileFilterSidebar = ({
-    filters,
-    onFilterChange,
-    onClose,
-}: MobileFilterSidebarProps) => (
+export const MobileFilterSidebar = ({ filters, onFilterChange, onClose }: MobileFilterSidebarProps) => (
     <div className="fixed inset-0 z-40 lg:hidden">
         <div className="fixed inset-0 bg-black/30" onClick={onClose}></div>
         <div className="relative w-full max-w-xs p-4 h-full bg-background overflow-y-auto border-r border-border">

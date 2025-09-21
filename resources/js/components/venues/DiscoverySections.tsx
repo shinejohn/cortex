@@ -1,9 +1,9 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { ArrowRightIcon, MapPinIcon, StarIcon } from "lucide-react";
-import { TrendingVenue, NewVenue } from "@/types/venues";
 import { GridCard } from "@/components/common/grid-card";
 import { GridSection } from "@/components/common/grid-section";
+import { Button } from "@/components/ui/button";
+import { NewVenue, TrendingVenue } from "@/types/venues";
+import { ArrowRightIcon, MapPinIcon, StarIcon } from "lucide-react";
+import React from "react";
 
 interface DiscoverySectionsProps {
     trendingVenues: readonly TrendingVenue[];
@@ -12,11 +12,7 @@ interface DiscoverySectionsProps {
     onCollectionClick: (collectionPath: string) => void;
 }
 
-export const DiscoverySections = ({
-    trendingVenues,
-    newVenues,
-    onVenueClick,
-}: DiscoverySectionsProps) => (
+export const DiscoverySections = ({ trendingVenues, newVenues, onVenueClick }: DiscoverySectionsProps) => (
     <div className="space-y-16">
         {/* Trending Venues */}
         {trendingVenues.length > 0 && (
@@ -34,9 +30,7 @@ export const DiscoverySections = ({
                         key={venue.id}
                         id={String(venue.id)}
                         href={`/venues/${venue.id}`}
-                        image={
-                            venue.images[0] || "/images/venue-placeholder.jpg"
-                        }
+                        image={venue.images[0] || "/images/venue-placeholder.jpg"}
                         imageAlt={venue.name}
                         badge={`Trending #${index + 1}`}
                         title={venue.name}
@@ -63,9 +57,7 @@ export const DiscoverySections = ({
                         <div className="flex items-center">
                             <StarIcon className="h-4 w-4 text-yellow-400 fill-current mr-1" />
                             <span className="font-medium">{venue.rating}</span>
-                            <span className="text-muted-foreground ml-1">
-                                ({venue.reviewCount})
-                            </span>
+                            <span className="text-muted-foreground ml-1">({venue.reviewCount})</span>
                         </div>
                     </GridCard>
                 ))}
@@ -87,9 +79,7 @@ export const DiscoverySections = ({
                         key={venue.id}
                         id={String(venue.id)}
                         href={`/venues/${venue.id}`}
-                        image={
-                            venue.images[0] || "/images/venue-placeholder.jpg"
-                        }
+                        image={venue.images[0] || "/images/venue-placeholder.jpg"}
                         imageAlt={venue.name}
                         badge="New Venue"
                         title={venue.name}
@@ -115,13 +105,10 @@ export const DiscoverySections = ({
                         </div>
                         <div className="text-sm text-green-600 font-medium">
                             Just added{" "}
-                            {new Date(venue.listedDate).toLocaleDateString(
-                                "en-US",
-                                {
-                                    month: "short",
-                                    day: "numeric",
-                                }
-                            )}
+                            {new Date(venue.listedDate).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                            })}
                         </div>
                     </GridCard>
                 ))}
