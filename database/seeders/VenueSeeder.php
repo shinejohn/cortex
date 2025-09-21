@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Models\Review;
 use App\Models\User;
+use App\Models\Venue;
 use App\Models\Workspace;
 use Exception;
 use Illuminate\Database\Seeder;
@@ -24,8 +26,8 @@ final class VenueSeeder extends Seeder
             throw new Exception('Demo workspace and users must be created first');
         }
 
-        // Create some featured venues
-        \App\Models\Venue::factory()
+        // Create some featured venues with reviews
+        $featuredVenues = Venue::factory()
             ->count(15)
             ->state([
                 'verified' => true,
@@ -35,8 +37,48 @@ final class VenueSeeder extends Seeder
             ])
             ->create();
 
-        // Create additional regular venues
-        \App\Models\Venue::factory()
+        // Create reviews for featured venues
+        $featuredVenues->each(function ($venue) use ($users) {
+            $reviewCount = fake()->numberBetween(5, 50);
+
+            // Create reviews and calculate averages
+            $reviews = collect();
+            $usedUsers = collect();
+
+            for ($i = 0; $i < $reviewCount; $i++) {
+                // Find a user that hasn't reviewed this venue yet
+                $availableUsers = $users->whereNotIn('id', $usedUsers);
+                if ($availableUsers->isEmpty()) {
+                    break; // Can't create more reviews without duplicate users
+                }
+
+                $user = $availableUsers->random();
+                $usedUsers->push($user->id);
+
+                $review = Review::factory()
+                    ->state([
+                        'reviewable_type' => Venue::class,
+                        'reviewable_id' => $venue->id,
+                        'user_id' => $user->id,
+                    ])
+                    ->approved()
+                    ->create();
+
+                $reviews->push($review);
+            }
+
+            // Update venue with calculated averages
+            if ($reviews->isNotEmpty()) {
+                $averageRating = $reviews->avg('rating');
+                $venue->update([
+                    'average_rating' => round($averageRating, 2),
+                    'total_reviews' => $reviews->count(),
+                ]);
+            }
+        });
+
+        // Create additional regular venues with fewer reviews
+        $regularVenues = Venue::factory()
             ->count(35)
             ->state([
                 'workspace_id' => $workspace->id,
@@ -44,8 +86,48 @@ final class VenueSeeder extends Seeder
             ])
             ->create();
 
+        // Create reviews for regular venues (fewer reviews)
+        $regularVenues->each(function ($venue) use ($users) {
+            $reviewCount = fake()->numberBetween(0, min(15, $users->count()));
+
+            if ($reviewCount > 0) {
+                $reviews = collect();
+                $usedUsers = collect();
+
+                for ($i = 0; $i < $reviewCount; $i++) {
+                    $availableUsers = $users->whereNotIn('id', $usedUsers);
+                    if ($availableUsers->isEmpty()) {
+                        break;
+                    }
+
+                    $user = $availableUsers->random();
+                    $usedUsers->push($user->id);
+
+                    $review = Review::factory()
+                        ->state([
+                            'reviewable_type' => Venue::class,
+                            'reviewable_id' => $venue->id,
+                            'user_id' => $user->id,
+                        ])
+                        ->create();
+
+                    $reviews->push($review);
+                }
+
+                // Calculate and update averages
+                $approvedReviews = $reviews->where('status', 'approved');
+                if ($approvedReviews->count() > 0) {
+                    $averageRating = $approvedReviews->avg('rating');
+                    $venue->update([
+                        'average_rating' => round($averageRating, 2),
+                        'total_reviews' => $approvedReviews->count(),
+                    ]);
+                }
+            }
+        });
+
         // Create a specific venue matching the mock data
-        \App\Models\Venue::factory()->create([
+        $grandBallroom = Venue::factory()->create([
             'name' => 'The Grand Ballroom',
             'description' => 'An elegant ballroom with crystal chandeliers, perfect for weddings, galas, and corporate events. Features a grand staircase entrance and state-of-the-art sound system.',
             'images' => [
@@ -59,8 +141,6 @@ final class VenueSeeder extends Seeder
             'price_per_hour' => 800,
             'price_per_event' => 5000,
             'price_per_day' => 8000,
-            'average_rating' => 4.9,
-            'total_reviews' => 124,
             'workspace_id' => $workspace->id,
             'created_by' => $users->first()->id,
             'address' => '123 Main St, Clearwater, FL 33755',
@@ -75,5 +155,49 @@ final class VenueSeeder extends Seeder
             'listed_date' => '2023-01-15',
             'status' => 'active',
         ]);
+
+        // Create high-quality reviews for The Grand Ballroom
+        $grandBallroomReviews = collect();
+        $usedUsers = collect();
+        $targetReviewCount = min(124, $users->count());
+
+        for ($i = 0; $i < $targetReviewCount; $i++) {
+            $availableUsers = $users->whereNotIn('id', $usedUsers);
+            if ($availableUsers->isEmpty()) {
+                break;
+            }
+
+            $user = $availableUsers->random();
+            $usedUsers->push($user->id);
+
+            $review = Review::factory()
+                ->state([
+                    'reviewable_type' => Venue::class,
+                    'reviewable_id' => $grandBallroom->id,
+                    'user_id' => $user->id,
+                    'rating' => fake()->randomElement([4, 5, 5, 5]), // Mostly 5 stars
+                ])
+                ->approved()
+                ->create();
+
+            $grandBallroomReviews->push($review);
+        }
+
+        // Update The Grand Ballroom with calculated averages
+        if ($grandBallroomReviews->isNotEmpty()) {
+            $grandBallroom->update([
+                'average_rating' => round($grandBallroomReviews->avg('rating'), 2),
+                'total_reviews' => $grandBallroomReviews->count(),
+            ]);
+
+            // Create some featured reviews for The Grand Ballroom (from existing reviews)
+            $grandBallroomReviews->take(3)->each(function ($review) {
+                $review->update([
+                    'is_featured' => true,
+                    'is_verified' => true,
+                    'rating' => 5,
+                ]);
+            });
+        }
     }
 }

@@ -23,75 +23,194 @@ final class VenueController extends Controller
             $currentWorkspace = $user->currentWorkspace ?? $user->workspaces->first();
         }
 
-        // Get featured venues
-        $featuredVenues = Venue::when($currentWorkspace, function ($query, $workspace) {
+        // Build the venues query
+        $query = Venue::when($currentWorkspace, function ($query, $workspace) {
             return $query->where('workspace_id', $workspace->id);
         })
             ->active()
-            ->verified()
-            ->orderBy('average_rating', 'desc')
-            ->take(6)
+            ->with(['reviews' => fn ($q) => $q->approved()->latest()->limit(3)]);
+
+        // Apply search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('venue_type', 'like', "%{$search}%")
+                    ->orWhere('address', 'like', "%{$search}%")
+                    ->orWhere('neighborhood', 'like', "%{$search}%");
+            });
+        }
+
+        // Apply venue type filter
+        if ($request->filled('venue_types') && is_array($request->venue_types)) {
+            $query->whereIn('venue_type', $request->venue_types);
+        }
+
+        // Apply capacity filter
+        if ($request->filled('min_capacity')) {
+            $query->where('capacity', '>=', $request->integer('min_capacity'));
+        }
+        if ($request->filled('max_capacity')) {
+            $query->where('capacity', '<=', $request->integer('max_capacity'));
+        }
+
+        // Apply price filter
+        if ($request->filled('min_price')) {
+            $query->where('price_per_hour', '>=', $request->float('min_price'));
+        }
+        if ($request->filled('max_price')) {
+            $query->where('price_per_hour', '<=', $request->float('max_price'));
+        }
+
+        // Apply amenities filter
+        if ($request->filled('amenities') && is_array($request->amenities)) {
+            $amenities = $request->amenities;
+            $query->where(function ($q) use ($amenities) {
+                foreach ($amenities as $amenity) {
+                    $q->whereJsonContains('amenities', $amenity);
+                }
+            });
+        }
+
+        // Apply verified filter
+        if ($request->filled('verified')) {
+            $query->where('verified', $request->boolean('verified'));
+        }
+
+        // Apply date availability filter
+        if ($request->filled('date')) {
+            $date = $request->date;
+            $query->where(function ($q) use ($date) {
+                $q->whereNull('unavailable_dates')
+                    ->orWhere(function ($q) use ($date) {
+                        $q->whereNotNull('unavailable_dates')
+                            ->whereRaw('NOT JSON_CONTAINS(unavailable_dates, ?)', [json_encode($date)]);
+                    });
+            });
+        }
+
+        // Apply sorting
+        $sortBy = $request->get('sort', 'popular');
+        match ($sortBy) {
+            'popular' => $query->orderByRaw('(total_reviews * 0.3 + average_rating * 0.7) DESC'),
+            'recommended' => $query->orderByRaw('(average_rating * 0.7 + total_reviews * 0.3) DESC'),
+            'newest' => $query->orderBy('listed_date', 'desc'),
+            'price_low' => $query->orderBy('price_per_hour', 'asc'),
+            'price_high' => $query->orderBy('price_per_hour', 'desc'),
+            'distance' => $query->orderBy('id'), // Placeholder for distance sorting
+            'rating' => $query->orderBy('average_rating', 'desc'),
+            'capacity' => $query->orderBy('capacity', 'desc'),
+            default => $query->orderByRaw('(total_reviews * 0.3 + average_rating * 0.7) DESC'),
+        };
+
+        // Get paginated venues
+        $venues = $query->paginate(12)->withQueryString();
+
+        // Transform venues for frontend
+        $venues->getCollection()->transform(function ($venue) {
+            return [
+                'id' => $venue->id,
+                'name' => $venue->name,
+                'description' => $venue->description,
+                'venueType' => $venue->venue_type,
+                'capacity' => $venue->capacity,
+                'rating' => round((float) ($venue->average_rating ?? 0), 1),
+                'reviewCount' => $venue->total_reviews ?? 0,
+                'images' => $venue->images ?? [],
+                'verified' => $venue->verified,
+                'location' => [
+                    'address' => $venue->address,
+                    'neighborhood' => $venue->neighborhood,
+                    'coordinates' => [
+                        'lat' => $venue->latitude,
+                        'lng' => $venue->longitude,
+                    ],
+                ],
+                'amenities' => $venue->amenities ?? [],
+                'eventTypes' => $venue->event_types ?? [],
+                'pricing' => [
+                    'pricePerHour' => $venue->price_per_hour,
+                    'pricePerEvent' => $venue->price_per_event,
+                    'pricePerDay' => $venue->price_per_day,
+                ],
+                'availability' => [
+                    'unavailableDates' => $venue->unavailable_dates ?? [],
+                    'responseTimeHours' => $venue->response_time_hours,
+                ],
+                'lastBookedDaysAgo' => $venue->last_booked_days_ago,
+                'listedDate' => $venue->listed_date?->toISOString(),
+                'distance' => 0, // Placeholder - would be calculated based on user location
+            ];
+        });
+
+        // Get trending venues (most popular recently)
+        $trendingVenues = Venue::when($currentWorkspace, function ($query, $workspace) {
+            return $query->where('workspace_id', $workspace->id);
+        })
+            ->active()
+            ->where('last_booked_days_ago', '<=', 30)
+            ->orderByRaw('(total_reviews / GREATEST(last_booked_days_ago, 1)) DESC')
+            ->limit(4)
             ->get()
             ->map(function ($venue) {
                 return [
                     'id' => $venue->id,
                     'name' => $venue->name,
                     'venueType' => $venue->venue_type,
-                    'capacity' => $venue->capacity,
-                    'rating' => (string) round((float) ($venue->average_rating ?? 0), 1),
-                    'reviewCount' => (string) $venue->total_reviews,
-                    'image' => $venue->images[0] ?? 'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=400&h=300&fit=crop',
+                    'images' => $venue->images ?? [],
                     'location' => [
-                        'address' => $venue->address,
                         'neighborhood' => $venue->neighborhood,
                     ],
-                    'pricing' => [
-                        'pricePerHour' => $venue->price_per_hour,
-                        'pricePerEvent' => $venue->price_per_event,
-                        'pricePerDay' => $venue->price_per_day,
-                    ],
+                    'rating' => round((float) ($venue->average_rating ?? 0), 1),
+                    'reviewCount' => $venue->total_reviews ?? 0,
                 ];
-            })
-            ->toArray();
+            });
 
-        $venueCategories = [
-            [
-                'id' => 'bars',
-                'name' => 'Bars & Pubs',
-                'icon' => 'beer',
-                'count' => Venue::when($currentWorkspace, fn($q, $w) => $q->where('workspace_id', $w->id))
-                    ->where('venue_type', 'bar')->count(),
-                'color' => 'orange',
-            ],
-            [
-                'id' => 'restaurants',
-                'name' => 'Restaurants',
-                'icon' => 'utensils',
-                'count' => Venue::when($currentWorkspace, fn($q, $w) => $q->where('workspace_id', $w->id))
-                    ->where('venue_type', 'restaurant')->count(),
-                'color' => 'red',
-            ],
-            [
-                'id' => 'venues',
-                'name' => 'Event Venues',
-                'icon' => 'building',
-                'count' => Venue::when($currentWorkspace, fn($q, $w) => $q->where('workspace_id', $w->id))
-                    ->where('venue_type', 'event_space')->count(),
-                'color' => 'purple',
-            ],
-            [
-                'id' => 'outdoor',
-                'name' => 'Outdoor Spaces',
-                'icon' => 'tree',
-                'count' => Venue::when($currentWorkspace, fn($q, $w) => $q->where('workspace_id', $w->id))
-                    ->where('venue_type', 'outdoor')->count(),
-                'color' => 'green',
-            ],
-        ];
+        // Get new venues (added in the last 90 days)
+        $newVenues = Venue::when($currentWorkspace, function ($query, $workspace) {
+            return $query->where('workspace_id', $workspace->id);
+        })
+            ->active()
+            ->where('listed_date', '>=', now()->subDays(90))
+            ->orderBy('listed_date', 'desc')
+            ->limit(4)
+            ->get()
+            ->map(function ($venue) {
+                return [
+                    'id' => $venue->id,
+                    'name' => $venue->name,
+                    'venueType' => $venue->venue_type,
+                    'images' => $venue->images ?? [],
+                    'location' => [
+                        'neighborhood' => $venue->neighborhood,
+                    ],
+                    'listedDate' => $venue->listed_date?->toISOString(),
+                ];
+            });
+
+        // Get venue statistics
+        $totalVenues = Venue::when($currentWorkspace, fn ($q, $w) => $q->where('workspace_id', $w->id))->active()->count();
+        $newVenuesThisWeek = Venue::when($currentWorkspace, fn ($q, $w) => $q->where('workspace_id', $w->id))
+            ->active()
+            ->where('listed_date', '>=', now()->subWeek())
+            ->count();
+
+        // Get upcoming events at venues (mock data for now)
+        $upcomingEvents = [];
 
         return Inertia::render('venues', [
-            'featuredVenues' => $featuredVenues,
-            'venueCategories' => $venueCategories,
+            'venues' => $venues,
+            'trendingVenues' => $trendingVenues,
+            'newVenues' => $newVenues,
+            'upcomingEvents' => $upcomingEvents,
+            'stats' => [
+                'totalVenues' => $totalVenues,
+                'eventsThisWeek' => 427, // Mock data
+                'newVenuesThisWeek' => $newVenuesThisWeek,
+            ],
+            'filters' => $request->only(['search', 'venue_types', 'min_capacity', 'max_capacity', 'min_price', 'max_price', 'amenities', 'verified', 'date']),
+            'sort' => $sortBy,
         ]);
     }
 
@@ -104,7 +223,7 @@ final class VenueController extends Controller
         }
 
         $query = Venue::where('workspace_id', $currentWorkspace->id)
-            ->with(['workspace', 'createdBy', 'approvedReviews' => fn($q) => $q->latest()->limit(3)])
+            ->with(['workspace', 'createdBy', 'approvedReviews' => fn ($q) => $q->latest()->limit(3)])
             ->withCount(['reviews as total_reviews', 'ratings as total_ratings']);
 
         // Apply filters
@@ -169,8 +288,8 @@ final class VenueController extends Controller
             'createdBy',
             'approvedReviews.user',
             'ratings.user',
-            'events' => fn($q) => $q->published()->upcoming()->limit(5),
-            'bookings' => fn($q) => $q->confirmed()->limit(10),
+            'events' => fn ($q) => $q->published()->upcoming()->limit(5),
+            'bookings' => fn ($q) => $q->confirmed()->limit(10),
         ]);
 
         $ratingStats = [

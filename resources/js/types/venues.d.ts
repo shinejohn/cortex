@@ -66,9 +66,9 @@ export const VENUE_TYPES = {
 
 export type VenueType = (typeof VENUE_TYPES)[keyof typeof VENUE_TYPES];
 
-/** Enhanced Venue interface matching mock data structure */
+/** Enhanced Venue interface matching Laravel controller structure */
 export interface Venue {
-    readonly id: string;
+    readonly id: number;
     readonly name: string;
     readonly description: string;
     readonly images: readonly string[];
@@ -82,19 +82,17 @@ export interface Venue {
     readonly distance: number; // in miles
     readonly amenities: readonly VenueAmenity[];
     readonly eventTypes: readonly VenueEventType[];
-    readonly unavailableDates: readonly string[];
+    readonly availability: {
+        readonly unavailableDates: readonly string[];
+        readonly responseTimeHours: number;
+    };
     readonly lastBookedDaysAgo: number;
-    readonly responseTimeHours: number;
     readonly listedDate: string;
     // Laravel model fields
     readonly status?: "active" | "inactive" | "pending" | "suspended";
     readonly ownerId?: string;
     readonly createdAt?: string;
     readonly updatedAt?: string;
-    // Computed/derived fields for compatibility
-    readonly pricePerHour: number;
-    readonly pricePerEvent: number;
-    readonly pricePerDay: number;
 }
 
 /** Venue category for filtering and organization */
@@ -106,8 +104,21 @@ export interface VenueCategory {
     readonly color: string;
 }
 
-/** Venue filters */
+/** Venue filters matching Laravel controller parameters */
 export interface VenueFilters {
+    readonly search?: string;
+    readonly venue_types?: string[];
+    readonly min_capacity?: number;
+    readonly max_capacity?: number;
+    readonly min_price?: number;
+    readonly max_price?: number;
+    readonly amenities?: string[];
+    readonly verified?: boolean;
+    readonly date?: string;
+}
+
+/** Legacy venue filters for compatibility */
+export interface VenueFiltersLegacy {
     readonly venueType?: VenueType;
     readonly capacity?: {
         readonly min: number;
@@ -130,12 +141,79 @@ export interface VenueFilters {
     readonly verified?: boolean;
 }
 
-/** Page Props */
+/** Trending venue for homepage */
+export interface TrendingVenue {
+    readonly id: number;
+    readonly name: string;
+    readonly venueType: string;
+    readonly images: readonly string[];
+    readonly location: {
+        readonly neighborhood: string;
+    };
+    readonly rating: number;
+    readonly reviewCount: number;
+}
+
+/** New venue for homepage */
+export interface NewVenue {
+    readonly id: number;
+    readonly name: string;
+    readonly venueType: string;
+    readonly images: readonly string[];
+    readonly location: {
+        readonly neighborhood: string;
+    };
+    readonly listedDate: string;
+}
+
+/** Venue statistics */
+export interface VenueStats {
+    readonly totalVenues: number;
+    readonly eventsThisWeek: number;
+    readonly newVenuesThisWeek: number;
+}
+
+/** Pagination link */
+export interface PaginationLink {
+    readonly url: string | null;
+    readonly label: string;
+    readonly active: boolean;
+}
+
+/** Pagination meta information */
+export interface PaginationMeta {
+    readonly current_page: number;
+    readonly last_page: number;
+    readonly per_page: number;
+    readonly total: number;
+    readonly from: number;
+    readonly to: number;
+}
+
+/** Paginated venues response */
+export interface PaginatedVenues {
+    readonly data: readonly Venue[];
+    readonly links: readonly PaginationLink[];
+    readonly meta: PaginationMeta;
+}
+
+/** Main venues page props matching Laravel controller */
 export interface VenuesPageProps extends SharedData {
+    readonly venues: PaginatedVenues;
+    readonly trendingVenues: readonly TrendingVenue[];
+    readonly newVenues: readonly NewVenue[];
+    readonly upcomingEvents: readonly unknown[];
+    readonly stats: VenueStats;
+    readonly filters: VenueFilters;
+    readonly sort: string;
+}
+
+/** Legacy page props for compatibility */
+export interface VenuesPagePropsLegacy extends SharedData {
     readonly featuredVenues?: readonly Venue[];
     readonly allVenues?: readonly Venue[];
     readonly venueCategories?: readonly VenueCategory[];
-    readonly filters?: VenueFilters;
+    readonly filters?: VenueFiltersLegacy;
 }
 
 export interface VenuesGridProps extends SharedData {
