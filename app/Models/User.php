@@ -10,6 +10,7 @@ use App\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -105,7 +106,7 @@ final class User extends Authenticatable
         return $this->workspaceMemberships()
             ->where('workspace_id', $workspaceId)
             ->get()
-            ->some(fn($membership) => collect($permissions)->some(fn($permission) => in_array($permission, $membership->permissions)));
+            ->some(fn ($membership) => collect($permissions)->some(fn ($permission) => in_array($permission, $membership->permissions)));
     }
 
     public function hasAllPermissions(array $permissions, ?string $workspaceId): bool
@@ -117,7 +118,7 @@ final class User extends Authenticatable
         return $this->workspaceMemberships()
             ->where('workspace_id', $workspaceId)
             ->get()
-            ->every(fn($membership) => collect($permissions)->every(fn($permission) => in_array($permission, $membership->permissions)));
+            ->every(fn ($membership) => collect($permissions)->every(fn ($permission) => in_array($permission, $membership->permissions)));
     }
 
     public function isOwnerOfWorkspace(?string $workspaceId): bool
@@ -132,6 +133,100 @@ final class User extends Authenticatable
             ->exists();
     }
 
+    // Social relationships
+    public function socialPosts(): HasMany
+    {
+        return $this->hasMany(SocialPost::class);
+    }
+
+    public function socialProfile(): HasOne
+    {
+        return $this->hasOne(SocialUserProfile::class);
+    }
+
+    public function friendships(): HasMany
+    {
+        return $this->hasMany(SocialFriendship::class);
+    }
+
+    public function friendshipRequests(): HasMany
+    {
+        return $this->hasMany(SocialFriendship::class, 'friend_id');
+    }
+
+    public function followers(): HasMany
+    {
+        return $this->hasMany(SocialUserFollow::class, 'following_id');
+    }
+
+    public function following(): HasMany
+    {
+        return $this->hasMany(SocialUserFollow::class, 'follower_id');
+    }
+
+    public function socialGroups(): HasMany
+    {
+        return $this->hasMany(SocialGroup::class, 'creator_id');
+    }
+
+    public function groupMemberships(): HasMany
+    {
+        return $this->hasMany(SocialGroupMember::class);
+    }
+
+    public function socialActivities(): HasMany
+    {
+        return $this->hasMany(SocialActivity::class);
+    }
+
+    public function actorActivities(): HasMany
+    {
+        return $this->hasMany(SocialActivity::class, 'actor_id');
+    }
+
+    // Social helper methods
+    public function isFriendsWith(self $user): bool
+    {
+        return $this->friendships()
+            ->where('friend_id', $user->id)
+            ->where('status', 'accepted')
+            ->exists() ||
+            $this->friendshipRequests()
+                ->where('user_id', $user->id)
+                ->where('status', 'accepted')
+                ->exists();
+    }
+
+    public function hasPendingFriendRequestWith(self $user): bool
+    {
+        return $this->friendships()
+            ->where('friend_id', $user->id)
+            ->where('status', 'pending')
+            ->exists() ||
+            $this->friendshipRequests()
+                ->where('user_id', $user->id)
+                ->where('status', 'pending')
+                ->exists();
+    }
+
+    public function isFollowing(self $user): bool
+    {
+        return $this->following()->where('following_id', $user->id)->exists();
+    }
+
+    public function isMemberOfGroup(SocialGroup $group): bool
+    {
+        return $this->groupMemberships()
+            ->where('group_id', $group->id)
+            ->where('status', 'approved')
+            ->exists();
+    }
+
+    public function unreadActivitiesCount(): int
+    {
+        return $this->socialActivities()->unread()->count();
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -142,6 +237,10 @@ final class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_private_profile' => 'boolean',
+            'allow_friend_requests' => 'boolean',
+            'allow_group_invites' => 'boolean',
+            'last_active_at' => 'datetime',
         ];
     }
 }

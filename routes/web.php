@@ -7,6 +7,8 @@ use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\PerformerController;
+use App\Http\Controllers\SocialController;
+use App\Http\Controllers\SocialGroupController;
 use App\Http\Controllers\VenueController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -62,8 +64,48 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Additional booking actions
     Route::patch('/bookings/{booking}/confirm', [BookingController::class, 'confirm'])->name('bookings.confirm');
     Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
+
+    // Social media routes
+    Route::prefix('social')->name('social.')->group(function () {
+        // Social feed and posts
+        Route::get('/', [SocialController::class, 'index'])->name('index');
+        Route::post('/posts', [SocialController::class, 'createPost'])->name('posts.create');
+        Route::post('/posts/{post}/like', [SocialController::class, 'likePost'])->name('posts.like');
+        Route::delete('/posts/{post}/like', [SocialController::class, 'unlikePost'])->name('posts.unlike');
+        Route::post('/posts/{post}/comments', [SocialController::class, 'createComment'])->name('posts.comments.create');
+        Route::delete('/comments/{comment}', [SocialController::class, 'deleteComment'])->name('comments.delete');
+
+        // Friend management
+        Route::post('/users/{user}/friend-request', [SocialController::class, 'sendFriendRequest'])->name('friend.request');
+        Route::patch('/friendships/{friendship}/accept', [SocialController::class, 'acceptFriendRequest'])->name('friend.accept');
+
+        // User profiles
+        Route::get('/profile/{user}', [SocialController::class, 'profile'])->name('profile');
+        Route::patch('/profile', [SocialController::class, 'updateProfile'])->name('profile.update');
+
+        // Activity feed/notifications
+        Route::get('/activities', [SocialController::class, 'activities'])->name('activities');
+        Route::patch('/activities/read', [SocialController::class, 'markActivitiesAsRead'])->name('activities.read');
+
+        // Friends management
+        Route::prefix('friends')->name('friends.')->group(function () {
+            Route::get('/', function () {
+                return Inertia::render('social/friends-index');
+            })->name('index');
+        });
+
+        // Groups
+        Route::prefix('groups')->name('groups.')->group(function () {
+            Route::get('/', [SocialGroupController::class, 'index'])->name('index');
+            Route::get('/create', [SocialGroupController::class, 'create'])->name('create');
+            Route::post('/', [SocialGroupController::class, 'store'])->name('store');
+            Route::get('/{group}', [SocialGroupController::class, 'show'])->name('show');
+            Route::post('/{group}/join', [SocialGroupController::class, 'join'])->name('join');
+            Route::delete('/{group}/leave', [SocialGroupController::class, 'leave'])->name('leave');
+        });
+    });
 });
 
-require __DIR__ . '/workspace.php';
-require __DIR__ . '/settings.php';
-require __DIR__ . '/auth.php';
+require __DIR__.'/workspace.php';
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';
