@@ -8,7 +8,10 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\PerformerController;
 use App\Http\Controllers\SocialController;
+use App\Http\Controllers\SocialFeedController;
 use App\Http\Controllers\SocialGroupController;
+use App\Http\Controllers\SocialGroupPostController;
+use App\Http\Controllers\SocialMessageController;
 use App\Http\Controllers\VenueController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,6 +40,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/venues/featured', [VenueController::class, 'featured'])->name('api.venues.featured');
     Route::get('/api/performers/featured', [PerformerController::class, 'featured'])->name('api.performers.featured');
     Route::get('/api/performers/trending', [PerformerController::class, 'trending'])->name('api.performers.trending');
+
+    // Engagement tracking API routes
+    Route::post('/api/engagement/track', [App\Http\Controllers\EngagementController::class, 'track'])->name('api.engagement.track');
+    Route::post('/api/engagement/session/start', [App\Http\Controllers\EngagementController::class, 'sessionStart'])->name('api.engagement.session.start');
+    Route::post('/api/engagement/session/end', [App\Http\Controllers\EngagementController::class, 'sessionEnd'])->name('api.engagement.session.end');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -69,6 +77,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('social')->name('social.')->group(function () {
         // Social feed and posts
         Route::get('/', [SocialController::class, 'index'])->name('index');
+
+        // Feed algorithms
+        Route::get('/feed', [SocialFeedController::class, 'index'])->name('feed.index');
+        Route::get('/feed/for-you', [SocialFeedController::class, 'forYou'])->name('feed.for-you');
+        Route::get('/feed/followed', [SocialFeedController::class, 'followed'])->name('feed.followed');
+
         Route::post('/posts', [SocialController::class, 'createPost'])->name('posts.create');
         Route::post('/posts/{post}/like', [SocialController::class, 'likePost'])->name('posts.like');
         Route::delete('/posts/{post}/like', [SocialController::class, 'unlikePost'])->name('posts.unlike');
@@ -89,9 +103,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Friends management
         Route::prefix('friends')->name('friends.')->group(function () {
-            Route::get('/', function () {
-                return Inertia::render('social/friends-index');
-            })->name('index');
+            Route::get('/', [SocialController::class, 'friendsIndex'])->name('index');
+            Route::patch('/{user}/accept', [SocialController::class, 'acceptFriendRequest'])->name('accept');
+            Route::delete('/{user}/decline', [SocialController::class, 'declineFriendRequest'])->name('decline');
+            Route::delete('/{user}/cancel', [SocialController::class, 'cancelFriendRequest'])->name('cancel');
+            Route::delete('/{user}/remove', [SocialController::class, 'removeFriend'])->name('remove');
+        });
+
+        // Messages
+        Route::prefix('messages')->name('messages.')->group(function () {
+            Route::get('/', [SocialMessageController::class, 'index'])->name('index');
+            Route::get('/new', [SocialMessageController::class, 'newMessage'])->name('new');
+            Route::get('/{conversation}', [SocialMessageController::class, 'show'])->name('show');
+            Route::post('/{conversation}', [SocialMessageController::class, 'sendMessage'])->name('send');
         });
 
         // Groups
@@ -102,6 +126,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/{group}', [SocialGroupController::class, 'show'])->name('show');
             Route::post('/{group}/join', [SocialGroupController::class, 'join'])->name('join');
             Route::delete('/{group}/leave', [SocialGroupController::class, 'leave'])->name('leave');
+
+            // Group invitations
+            Route::post('/{group}/invite', [SocialGroupController::class, 'invite'])->name('invite');
+            Route::patch('/invitations/{invitation}/respond', [SocialGroupController::class, 'respondToInvitation'])->name('invitations.respond');
+            Route::get('/search-users', [SocialGroupController::class, 'searchUsers'])->name('search.users');
+
+            // Group posts
+            Route::get('/{group}/posts', [SocialGroupPostController::class, 'index'])->name('posts.index');
+            Route::post('/{group}/posts', [SocialGroupPostController::class, 'store'])->name('posts.store');
+            Route::get('/{group}/posts/{post}', [SocialGroupPostController::class, 'show'])->name('posts.show');
+            Route::patch('/{group}/posts/{post}', [SocialGroupPostController::class, 'update'])->name('posts.update');
+            Route::delete('/{group}/posts/{post}', [SocialGroupPostController::class, 'destroy'])->name('posts.destroy');
+            Route::patch('/{group}/posts/{post}/pin', [SocialGroupPostController::class, 'pin'])->name('posts.pin');
         });
     });
 });

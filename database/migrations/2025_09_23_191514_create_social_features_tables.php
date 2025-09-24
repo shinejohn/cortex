@@ -172,6 +172,22 @@ return new class extends Migration
             $table->index(['following_id', 'created_at']);
         });
 
+        // Group invitations table
+        Schema::create('social_group_invitations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignUuid('group_id')->constrained('social_groups')->cascadeOnDelete();
+            $table->foreignUuid('inviter_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignUuid('invited_id')->constrained('users')->cascadeOnDelete();
+            $table->string('message')->nullable();
+            $table->enum('status', ['pending', 'accepted', 'declined'])->default('pending');
+            $table->timestamp('expires_at')->nullable();
+            $table->timestamps();
+
+            $table->unique(['group_id', 'invited_id']);
+            $table->index(['invited_id', 'status']);
+            $table->index(['group_id', 'status']);
+        });
+
         // Activity feed/notifications table
         Schema::create('social_activities', function (Blueprint $table) {
             $table->uuid('id')->primary();
@@ -183,7 +199,9 @@ return new class extends Migration
                 'group_invite', 'group_join', 'group_post',
                 'profile_follow',
             ]);
-            $table->morphs('subject'); // The thing that was acted upon (post, comment, etc.)
+            $table->string('subject_type');
+            $table->uuid('subject_id'); // The thing that was acted upon (post, comment, etc.)
+            $table->index(['subject_type', 'subject_id']);
             $table->json('data')->nullable(); // Additional data specific to the activity type
             $table->boolean('is_read')->default(false);
             $table->timestamps();
@@ -209,6 +227,7 @@ return new class extends Migration
     {
         // Drop tables in reverse order to handle foreign key constraints
         Schema::dropIfExists('social_activities');
+        Schema::dropIfExists('social_group_invitations');
         Schema::dropIfExists('social_user_follows');
         Schema::dropIfExists('social_user_profiles');
         Schema::dropIfExists('social_group_posts');

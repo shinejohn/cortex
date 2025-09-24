@@ -280,7 +280,7 @@ it('has emails', function (string $email) {
 
 ## Inertia + React
 
-- Use `router.visit()` or `<Link>` for navigation instead of traditional links.
+- Use `<Link>` for navigation instead of traditional links.
 
 <code-snippet lang="react" name="Inertia Client Navigation">
     import { Link } from '@inertiajs/react'
@@ -292,7 +292,8 @@ it('has emails', function (string $email) {
 
 <code-snippet lang="react" name="Inertia React Form Example">
 import { useState } from 'react'
-import { router } from '@inertiajs/react'
+import { route } from 'ziggy-js'
+import axios from 'axios
 
 export default function Edit() {
     const [values, setValues] = useState({
@@ -314,7 +315,7 @@ export default function Edit() {
     function handleSubmit(e) {
         e.preventDefault()
 
-        router.post('/users', values)
+        axios.post(route('users.update'), values)
     }
 
     return (

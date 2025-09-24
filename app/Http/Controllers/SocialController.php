@@ -291,6 +291,11 @@ final class SocialController extends Controller
                 'has_pending_friend_request' => $currentUser->hasPendingFriendRequestWith($user),
             ],
             'posts' => $posts,
+            'current_user' => [
+                'id' => $currentUser->id,
+                'name' => $currentUser->name,
+                'avatar' => $currentUser->avatar,
+            ],
         ]);
     }
 
@@ -334,5 +339,82 @@ final class SocialController extends Controller
             ->update(['is_read' => true]);
 
         return response()->json(['message' => 'Activities marked as read']);
+    }
+
+    public function friendsIndex(): Response
+    {
+        $user = Auth::user();
+
+        // Get accepted friends only
+        $friends = User::whereHas('friendships', function ($query) use ($user) {
+            $query->where(function ($q) use ($user) {
+                $q->where('user_id', $user->id)->orWhere('friend_id', $user->id);
+            })->where('status', 'accepted');
+        })
+            ->with(['socialProfile'])
+            ->get()
+            ->map(function ($friend) {
+                return [
+                    'id' => $friend->id,
+                    'name' => $friend->name,
+                    'username' => $friend->username ?? str_replace('@', '', explode('@', $friend->email)[0]),
+                    'avatar' => $friend->avatar,
+                    'location' => $friend->socialProfile?->location,
+                    'status' => 'friend',
+                ];
+            });
+
+        return Inertia::render('social/friends-index', [
+            'friends' => $friends,
+        ]);
+    }
+
+    public function declineFriendRequest(User $user): JsonResponse
+    {
+        $currentUser = Auth::user();
+
+        $friendship = SocialFriendship::where('user_id', $user->id)
+            ->where('friend_id', $currentUser->id)
+            ->where('status', 'pending')
+            ->first();
+
+        if (! $friendship) {
+            return response()->json(['error' => 'Friend request not found'], 404);
+        }
+
+        $friendship->delete();
+
+        return response()->json(['message' => 'Friend request declined']);
+    }
+
+    public function cancelFriendRequest(User $friendUser): JsonResponse
+    {
+        $user = Auth::user();
+
+        $friendship = SocialFriendship::where('user_id', $user->id)
+            ->where('friend_id', $friendUser->id)
+            ->where('status', 'pending')
+            ->first();
+
+        if (! $friendship) {
+            return response()->json(['error' => 'Friend request not found'], 404);
+        }
+
+        $friendship->delete();
+
+        return response()->json(['message' => 'Friend request cancelled']);
+    }
+
+    public function removeFriend(User $friendUser): JsonResponse
+    {
+        $user = Auth::user();
+
+        SocialFriendship::where(function ($query) use ($user, $friendUser) {
+            $query->where('user_id', $user->id)->where('friend_id', $friendUser->id);
+        })->orWhere(function ($query) use ($user, $friendUser) {
+            $query->where('user_id', $friendUser->id)->where('friend_id', $user->id);
+        })->where('status', 'accepted')->delete();
+
+        return response()->json(['message' => 'Friend removed']);
     }
 }

@@ -6,8 +6,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Social\CreateGroupRequest;
 use App\Models\SocialGroup;
+use App\Models\SocialGroupInvitation;
 use App\Models\SocialGroupMember;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -20,16 +23,37 @@ final class SocialGroupController extends Controller
 
         $myGroups = SocialGroup::whereHas('members', function ($query) use ($user) {
             $query->where('user_id', $user->id)->where('status', 'approved');
-        })->with(['creator', 'members'])->get();
+        })
+            ->with(['creator', 'members'])
+            ->withCount('approvedMembers')
+            ->get()
+            ->map(function ($group) {
+                return [
+                    ...$group->toArray(),
+                    'members_count' => $group->approved_members_count,
+                    'href' => route('social.groups.show', $group->id),
+                ];
+            });
 
         $suggestedGroups = SocialGroup::where('privacy', 'public')
+            ->where('is_active', true)
             ->whereDoesntHave('members', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
-            ->limit(10)
-            ->get();
+            ->with(['creator'])
+            ->withCount('approvedMembers')
+            ->orderByDesc('approved_members_count')
+            ->limit(20)
+            ->get()
+            ->map(function ($group) {
+                return [
+                    ...$group->toArray(),
+                    'members_count' => $group->approved_members_count,
+                    'href' => route('social.groups.show', $group->id),
+                ];
+            });
 
-        return Inertia::render('social/groups/index', [
+        return Inertia::render('social/groups-index', [
             'my_groups' => $myGroups,
             'suggested_groups' => $suggestedGroups,
         ]);
@@ -125,5 +149,110 @@ final class SocialGroupController extends Controller
         $membership->delete();
 
         return response()->json(['message' => 'Left group successfully']);
+    }
+
+    public function invite(SocialGroup $group, Request $request): JsonResponse
+    {
+        $user = Auth::user();
+
+        $membership = $group->members()->where('user_id', $user->id)->first();
+        if (! $membership || ! in_array($membership->role, ['admin', 'moderator'])) {
+            return response()->json(['error' => 'No permission to invite users'], 403);
+        }
+
+        $request->validate([
+            'user_ids' => ['required', 'array'],
+            'user_ids.*' => ['required', 'uuid', 'exists:users,id'],
+            'message' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $invitedCount = 0;
+        foreach ($request->user_ids as $userId) {
+            if ($userId === $user->id) {
+                continue;
+            }
+
+            $targetUser = User::find($userId);
+            if (! $targetUser || $targetUser->isMemberOfGroup($group)) {
+                continue;
+            }
+
+            $existingInvitation = SocialGroupInvitation::where('group_id', $group->id)
+                ->where('invited_id', $userId)
+                ->pending()
+                ->notExpired()
+                ->first();
+
+            if ($existingInvitation) {
+                continue;
+            }
+
+            SocialGroupInvitation::create([
+                'group_id' => $group->id,
+                'inviter_id' => $user->id,
+                'invited_id' => $userId,
+                'message' => $request->message,
+                'expires_at' => now()->addDays(7),
+            ]);
+
+            $invitedCount++;
+        }
+
+        return response()->json([
+            'message' => "Invited {$invitedCount} user(s) to the group",
+            'invited_count' => $invitedCount,
+        ]);
+    }
+
+    public function respondToInvitation(SocialGroupInvitation $invitation, Request $request): JsonResponse
+    {
+        $user = Auth::user();
+
+        if ($invitation->invited_id !== $user->id) {
+            return response()->json(['error' => 'Not authorized'], 403);
+        }
+
+        if (! $invitation->isPending() || $invitation->isExpired()) {
+            return response()->json(['error' => 'Invalid invitation'], 400);
+        }
+
+        $request->validate([
+            'action' => ['required', 'in:accept,decline'],
+        ]);
+
+        if ($request->action === 'accept') {
+            $invitation->update(['status' => 'accepted']);
+
+            SocialGroupMember::create([
+                'group_id' => $invitation->group_id,
+                'user_id' => $user->id,
+                'role' => 'member',
+                'status' => 'approved',
+                'joined_at' => now(),
+            ]);
+
+            return response()->json(['message' => 'Invitation accepted']);
+        }
+        $invitation->update(['status' => 'declined']);
+
+        return response()->json(['message' => 'Invitation declined']);
+
+    }
+
+    public function searchUsers(Request $request): JsonResponse
+    {
+        $query = $request->get('q', '');
+
+        if (mb_strlen($query) < 2) {
+            return response()->json(['users' => []]);
+        }
+
+        $users = User::where('name', 'ILIKE', "%{$query}%")
+            ->orWhere('email', 'ILIKE', "%{$query}%")
+            ->select(['id', 'name', 'email'])
+            ->limit(10)
+            ->get();
+
+        return response()->json(['users' => $users]);
     }
 }

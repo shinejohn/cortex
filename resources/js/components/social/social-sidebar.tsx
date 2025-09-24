@@ -2,11 +2,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import type { SocialUserProfile, User, UserWithSocial } from "@/types/social";
+import type { SocialUserProfile, UserWithSocial } from "@/types/social";
 import { Link, router } from "@inertiajs/react";
-import { route } from "ziggy-js";
 import axios from "axios";
-import { UsersIcon, CalendarIcon, MapPinIcon, LinkIcon } from "lucide-react";
+import { CalendarIcon, LinkIcon, MapPinIcon, UsersIcon } from "lucide-react";
+import { route } from "ziggy-js";
 
 interface SocialSidebarProps {
     currentUser: User;
@@ -197,16 +197,6 @@ export function SocialSidebar({ currentUser, userProfile, suggestedFriends }: So
                             >
                                 <UsersIcon className="h-4 w-4 mr-2" />
                                 Find Friends
-                            </Button>
-                        </Link>
-                        <Link href={route('social.activities')}>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="w-full justify-start"
-                            >
-                                <CalendarIcon className="h-4 w-4 mr-2" />
-                                Activity Feed
                             </Button>
                         </Link>
                     </div>

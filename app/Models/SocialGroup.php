@@ -39,6 +39,11 @@ final class SocialGroup extends Model
         return $this->hasMany(SocialGroupPost::class, 'group_id');
     }
 
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(SocialGroupInvitation::class, 'group_id');
+    }
+
     public function approvedMembers(): HasMany
     {
         return $this->members()->where('status', 'approved');

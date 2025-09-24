@@ -78,5 +78,10 @@ final class DatabaseSeeder extends Seeder
             CommunityThreadViewSeeder::class,
             CommunityThreadReplyLikeSeeder::class,
         ]);
+
+        // Seed social features data
+        $this->call([
+            SocialSeeder::class,
+        ]);
     }
 }

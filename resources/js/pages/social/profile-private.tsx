@@ -1,0 +1,92 @@
+import { Head, router } from '@inertiajs/react';
+import { LockIcon, UserPlusIcon } from 'lucide-react';
+import AppLayout from '@/layouts/app-layout';
+import { Button } from '@/components/ui/button';
+
+interface User {
+    id: string;
+    name: string;
+    username?: string;
+    avatar: string;
+}
+
+interface Props {
+    profile_user: User;
+}
+
+export default function ProfilePrivate({ profile_user }: Props) {
+    const handleSendFriendRequest = () => {
+        router.post(`/social/users/${profile_user.id}/friend-request`);
+    };
+
+    return (
+        <AppLayout>
+            <Head title={`${profile_user.name} - Profile`} />
+            <div className="min-h-screen bg-gray-50">
+                <div className="max-w-2xl mx-auto pt-20">
+                    <div className="bg-white rounded-lg shadow p-8 text-center">
+                        {/* Profile photo */}
+                        <div className="relative mb-6">
+                            <img
+                                src={profile_user.avatar}
+                                alt={profile_user.name}
+                                className="w-24 h-24 rounded-full mx-auto object-cover"
+                            />
+                            <div className="absolute -bottom-1 -right-1 bg-gray-600 rounded-full p-2">
+                                <LockIcon className="h-4 w-4 text-white" />
+                            </div>
+                        </div>
+
+                        {/* Profile info */}
+                        <div className="mb-6">
+                            <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                                {profile_user.name}
+                            </h1>
+                            {profile_user.username && (
+                                <p className="text-gray-600">@{profile_user.username}</p>
+                            )}
+                        </div>
+
+                        {/* Private profile message */}
+                        <div className="mb-8">
+                            <div className="bg-gray-50 rounded-lg p-6 mb-4">
+                                <LockIcon className="h-8 w-8 text-gray-400 mx-auto mb-3" />
+                                <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                                    This Profile is Private
+                                </h2>
+                                <p className="text-gray-600">
+                                    You need to be friends with {profile_user.name} to see their profile content.
+                                    Send a friend request to connect with them.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Action buttons */}
+                        <div className="flex justify-center space-x-3">
+                            <Button onClick={handleSendFriendRequest}>
+                                <UserPlusIcon className="h-4 w-4 mr-2" />
+                                Send Friend Request
+                            </Button>
+                            <Button variant="outline" onClick={() => window.history.back()}>
+                                Go Back
+                            </Button>
+                        </div>
+
+                        {/* Additional info */}
+                        <div className="mt-8 pt-6 border-t border-gray-200">
+                            <p className="text-sm text-gray-500">
+                                Once {profile_user.name} accepts your friend request, you'll be able to:
+                            </p>
+                            <ul className="text-sm text-gray-600 mt-2 space-y-1">
+                                <li>• See their posts and photos</li>
+                                <li>• Send them messages</li>
+                                <li>• View their activity</li>
+                                <li>• See mutual friends</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </AppLayout>
+    );
+}

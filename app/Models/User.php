@@ -174,6 +174,16 @@ final class User extends Authenticatable
         return $this->hasMany(SocialGroupMember::class);
     }
 
+    public function groupInvitations(): HasMany
+    {
+        return $this->hasMany(SocialGroupInvitation::class, 'invited_id');
+    }
+
+    public function sentGroupInvitations(): HasMany
+    {
+        return $this->hasMany(SocialGroupInvitation::class, 'inviter_id');
+    }
+
     public function socialActivities(): HasMany
     {
         return $this->hasMany(SocialActivity::class);
@@ -225,6 +235,18 @@ final class User extends Authenticatable
     public function unreadActivitiesCount(): int
     {
         return $this->socialActivities()->unread()->count();
+    }
+
+    public function acceptedFriends(): HasMany
+    {
+        return $this->hasMany(SocialFriendship::class)
+            ->where('status', 'accepted');
+    }
+
+    public function blockedUsers(): HasMany
+    {
+        return $this->hasMany(SocialFriendship::class)
+            ->where('status', 'blocked');
     }
 
     /**

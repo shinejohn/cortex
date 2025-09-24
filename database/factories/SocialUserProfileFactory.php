@@ -19,7 +19,7 @@ final class SocialUserProfileFactory extends Factory
             'bio' => $this->faker->optional(0.7)->sentence(10),
             'website' => $this->faker->optional(0.3)->url(),
             'location' => $this->faker->optional(0.6)->city(),
-            'birth_date' => $this->faker->optional(0.5)->dateTimeBetween('-60 years', '-18 years')->format('Y-m-d'),
+            'birth_date' => $this->faker->optional(0.5)->dateTimeBetween('-60 years', '-18 years')?->format('Y-m-d'),
             'profile_visibility' => $this->faker->randomElement(['public', 'friends', 'private']),
             'interests' => $this->faker->optional(0.6)->randomElements([
                 'Music', 'Sports', 'Travel', 'Food', 'Technology', 'Art', 'Reading',

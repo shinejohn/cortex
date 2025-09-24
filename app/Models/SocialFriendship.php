@@ -30,6 +30,16 @@ final class SocialFriendship extends Model
         return $this->belongsTo(User::class, 'friend_id');
     }
 
+    public function requester(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function recipient(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'friend_id');
+    }
+
     public function isPending(): bool
     {
         return $this->status === 'pending';

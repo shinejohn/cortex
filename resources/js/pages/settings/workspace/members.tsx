@@ -2,6 +2,7 @@ import { Head, router, useForm } from "@inertiajs/react";
 import { Crown, Mail, MoreVertical, Shield, Trash2, User, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { route } from "ziggy-js";
 
 import HeadingSmall from "@/components/heading-small";
 import InputError from "@/components/input-error";
