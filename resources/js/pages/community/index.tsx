@@ -4,15 +4,12 @@ import Header from "@/components/common/header";
 import { CommunityShowcase } from "@/components/community/community-showcase";
 import { Button } from "@/components/ui/button";
 import type { Community, CommunityIndexPageProps } from "@/types/community";
-import { Head, router, usePage } from "@inertiajs/react";
+import { Head, usePage, Link } from "@inertiajs/react";
 import { ArrowRightIcon, MessageCircleIcon, TrendingUpIcon, UsersIcon } from "lucide-react";
 
 export default function CommunityIndex() {
     const { auth, communities = [], showcaseData = [] } = usePage<CommunityIndexPageProps>().props;
 
-    const handleCommunityClick = (community: Community): void => {
-        router.visit(`/community/${community.id}`);
-    };
 
     const renderCommunityContent = (community: Community) => (
         <>
@@ -54,10 +51,12 @@ export default function CommunityIndex() {
                                 Join conversations and connect with like-minded people in our community discussions.
                             </p>
                         </div>
-                        <Button onClick={() => router.visit("/community/impact")} variant="outline" className="flex items-center gap-2">
-                            <TrendingUpIcon className="h-4 w-4" />
-                            Community Impact
-                        </Button>
+                        <Link href="/community/impact">
+                            <Button variant="outline" className="flex items-center gap-2">
+                                <TrendingUpIcon className="h-4 w-4" />
+                                Community Impact
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </div>

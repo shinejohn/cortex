@@ -1,5 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
+import axios from 'axios';
 import { SearchIcon, ArrowLeftIcon, MessageCircleIcon, UserPlusIcon } from 'lucide-react';
 import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
@@ -29,7 +30,7 @@ export default function MessagesNew({ friends }: Props) {
         );
     };
 
-    const handleStartConversation = () => {
+    const handleStartConversation = async () => {
         if (selectedFriends.length === 0) return;
 
         if (selectedFriends.length === 1) {
@@ -37,10 +38,15 @@ export default function MessagesNew({ friends }: Props) {
             router.visit(`/social/messages/user-${selectedFriends[0]}`);
         } else {
             // Group conversation
-            router.post('/social/messages', {
-                participants: selectedFriends,
-                type: 'group'
-            });
+            try {
+                await axios.post('/social/messages', {
+                    participants: selectedFriends,
+                    type: 'group'
+                });
+                router.visit('/social/messages');
+            } catch (error) {
+                console.error('Failed to create conversation:', error);
+            }
         }
     };
 

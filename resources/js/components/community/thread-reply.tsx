@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import type { CommunityThreadReply } from "@/types/community";
-import { router } from "@inertiajs/react";
+import axios from 'axios';
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { HeartIcon, MessageCircleIcon, MoreHorizontalIcon, PencilIcon, PinIcon, StarIcon, TrashIcon } from "lucide-react";
@@ -35,44 +35,56 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
         if (!replyContent.trim() || isSubmitting) return;
 
         setIsSubmitting(true);
-        router.post(
-            `/community/thread/${threadId}/replies`,
-            {
+        try {
+            await axios.post(`/community/thread/${threadId}/replies`, {
                 content: replyContent.trim(),
                 reply_to_id: reply.id,
-            },
-            {
-                onSuccess: () => {
-                    setReplyContent("");
-                    setIsReplying(false);
-                },
-                onFinish: () => setIsSubmitting(false),
-            },
-        );
+            });
+            setReplyContent("");
+            setIsReplying(false);
+            window.location.reload();
+        } catch (error) {
+            console.error('Failed to submit reply:', error);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleEdit = async (): Promise<void> => {
         if (!editContent.trim() || isSubmitting) return;
 
         setIsSubmitting(true);
-        router.patch(
-            `/community/reply/${reply.id}`,
-            { content: editContent.trim() },
-            {
-                onSuccess: () => setIsEditing(false),
-                onFinish: () => setIsSubmitting(false),
-            },
-        );
-    };
-
-    const handleDelete = (): void => {
-        if (confirm("Are you sure you want to delete this reply?")) {
-            router.delete(`/community/reply/${reply.id}`);
+        try {
+            await axios.patch(`/community/reply/${reply.id}`, {
+                content: editContent.trim()
+            });
+            setIsEditing(false);
+            window.location.reload();
+        } catch (error) {
+            console.error('Failed to edit reply:', error);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
-    const handleLike = (): void => {
-        router.post(`/community/reply/${reply.id}/like`);
+    const handleDelete = async (): Promise<void> => {
+        if (confirm("Are you sure you want to delete this reply?")) {
+            try {
+                await axios.delete(`/community/reply/${reply.id}`);
+                window.location.reload();
+            } catch (error) {
+                console.error('Failed to delete reply:', error);
+            }
+        }
+    };
+
+    const handleLike = async (): Promise<void> => {
+        try {
+            await axios.post(`/community/reply/${reply.id}/like`);
+            window.location.reload();
+        } catch (error) {
+            console.error('Failed to like reply:', error);
+        }
     };
 
     return (

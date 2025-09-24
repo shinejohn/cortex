@@ -3,10 +3,9 @@ import Header from "@/components/common/header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { SharedData } from "@/types";
-import { Head, router } from "@inertiajs/react";
+import { Head } from "@inertiajs/react";
 import { Briefcase, Calendar, Globe, Heart, Landmark, Leaf, TrendingUp, Users } from "lucide-react";
 
-interface ImpactPageProps extends SharedData {}
 
 interface ImpactStat {
     readonly number: string;
@@ -100,7 +99,7 @@ export default function CommunityImpact() {
     ];
 
     const navigateTo = (path: string): void => {
-        router.visit(path);
+        window.location.href = path;
     };
 
     return (

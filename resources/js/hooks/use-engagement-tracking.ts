@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
-import type { SocialPost, User } from '@/types/social';
-import { router } from '@inertiajs/react';
+import type { SocialPost } from '@/types/social';
+import type { User } from '@/types';
 
 interface EngagementData {
     user_id: string;

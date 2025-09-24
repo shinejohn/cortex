@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { CommunityFilters, CommunityShowPageProps, CommunityThread, ThreadAuthor } from "@/types/community";
-import { Head, router, usePage } from "@inertiajs/react";
+import { Head, usePage, Link, router } from "@inertiajs/react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
@@ -47,17 +47,13 @@ export default function CommunityShow() {
         setLocalFilters(newFilters);
 
         // Update URL with new filters
-        router.get(
-            window.location.pathname,
-            {
-                ...newFilters,
-                search: searchQuery,
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-            },
-        );
+        const searchParams = new URLSearchParams();
+        Object.entries({ ...newFilters, search: searchQuery }).forEach(([key, value]) => {
+            if (value) {
+                searchParams.append(key, value.toString());
+            }
+        });
+        window.location.href = `${window.location.pathname}?${searchParams.toString()}`;
     };
 
     const clearFilters = (): void => {
@@ -69,33 +65,21 @@ export default function CommunityShow() {
             sortBy: "recent",
         });
         setSearchQuery("");
-
-        router.get(
-            window.location.pathname,
-            {},
-            {
-                preserveState: true,
-                preserveScroll: true,
-            },
-        );
+        window.location.href = window.location.pathname;
     };
 
     const handleSearch = (): void => {
-        router.get(
-            window.location.pathname,
-            {
-                ...localFilters,
-                search: searchQuery,
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-            },
-        );
+        const searchParams = new URLSearchParams();
+        Object.entries({ ...localFilters, search: searchQuery }).forEach(([key, value]) => {
+            if (value) {
+                searchParams.append(key, value.toString());
+            }
+        });
+        window.location.href = `${window.location.pathname}?${searchParams.toString()}`;
     };
 
     const handleStartThread = (): void => {
-        router.visit(`/community/${community.id}/new-thread`);
+        window.location.href = `/community/${community.id}/new-thread`;
     };
 
     const handleViewThread = (threadId: string): void => {
@@ -134,14 +118,13 @@ export default function CommunityShow() {
                 <div className="relative z-10">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                         <div className="flex items-center mb-4">
-                            <Button
-                                variant="ghost"
-                                onClick={() => router.visit("/community")}
-                                className="text-muted-foreground hover:text-foreground p-0"
+                            <Link
+                                href="/community"
+                                className="text-muted-foreground hover:text-foreground p-0 text-sm underline-offset-4 hover:underline"
                             >
                                 <ArrowLeftIcon className="h-4 w-4 mr-1" />
                                 Back to Communities
-                            </Button>
+                            </Link>
                         </div>
                         <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
                             <div>

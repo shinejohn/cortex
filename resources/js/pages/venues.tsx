@@ -13,7 +13,7 @@ import { FilterSidebar } from "@/components/venues/filter-sidebar";
 import { cn } from "@/lib/utils";
 import { SharedData } from "@/types";
 import { NewVenue, TrendingVenue, Venue, VenueFilters, VenuesPageProps } from "@/types/venues";
-import { Head, router, usePage } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import { FilterIcon, GridIcon, ListIcon, MapIcon, MapPinIcon, SearchIcon, SlidersIcon, StarIcon, XIcon } from "lucide-react";
 import React, { useState } from "react";
 
@@ -37,10 +37,17 @@ export default function VenuesPage() {
         setCurrentFilters(updatedFilters);
 
         // Update URL with new filters
-        router.get("/venues", updatedFilters, {
-            preserveState: true,
-            preserveScroll: true,
+        const searchParams = new URLSearchParams();
+        Object.entries(updatedFilters).forEach(([key, value]) => {
+            if (value) {
+                if (Array.isArray(value)) {
+                    value.forEach(v => searchParams.append(key + '[]', v.toString()));
+                } else {
+                    searchParams.append(key, value.toString());
+                }
+            }
         });
+        window.location.href = `/venues?${searchParams.toString()}`;
     };
 
     // Handle search
@@ -52,28 +59,25 @@ export default function VenuesPage() {
     // Handle sort change
     const handleSortChange = (newSort: SortOption) => {
         setSortBy(newSort);
-        router.get(
-            "/venues",
-            { ...currentFilters, sort: newSort },
-            {
-                preserveState: true,
-                preserveScroll: true,
-            },
-        );
+        const updatedFilters = { ...currentFilters, sort: newSort };
+        const searchParams = new URLSearchParams();
+        Object.entries(updatedFilters).forEach(([key, value]) => {
+            if (value) {
+                if (Array.isArray(value)) {
+                    value.forEach(v => searchParams.append(key + '[]', v.toString()));
+                } else {
+                    searchParams.append(key, value.toString());
+                }
+            }
+        });
+        window.location.href = `/venues?${searchParams.toString()}`;
     };
 
     // Clear all filters
     const clearAllFilters = () => {
         setCurrentFilters({});
         setSearchQuery("");
-        router.get(
-            "/venues",
-            {},
-            {
-                preserveState: true,
-                preserveScroll: true,
-            },
-        );
+        window.location.href = '/venues';
     };
 
     const renderVenueContent = (venue: Venue) => (
@@ -357,7 +361,7 @@ export default function VenuesPage() {
                                             key={index}
                                             variant={link.active ? "default" : "outline"}
                                             size="sm"
-                                            onClick={() => link.url && router.visit(link.url)}
+                                            onClick={() => link.url && (window.location.href = link.url)}
                                             disabled={!link.url}
                                             className={cn("px-3 py-2 text-sm", !link.url && "opacity-50 cursor-not-allowed")}
                                             dangerouslySetInnerHTML={{

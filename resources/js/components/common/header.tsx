@@ -1,4 +1,4 @@
-import { Link, router } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import { route } from "ziggy-js";
 
@@ -128,7 +128,7 @@ const DEFAULT_NOTIFICATIONS: Notifications = {
 // Utilities
 const navigate = (href: string): void => {
     try {
-        router.visit(href);
+        window.location.href = href;
     } catch (error) {
         console.error("Navigation error:", error);
         window.location.href = href;

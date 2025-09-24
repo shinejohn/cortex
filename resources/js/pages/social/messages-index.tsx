@@ -1,5 +1,6 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
 import {
     SearchIcon,
     PaperclipIcon,
@@ -123,17 +124,20 @@ export default function MessagesIndex({ conversations, selected_conversation, me
         return groups;
     };
 
-    const handleSendMessage = (e: React.FormEvent) => {
+    const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!messageText.trim() || !selected_conversation) return;
 
-        router.post(`/social/messages/${selected_conversation}`, {
-            message: messageText
-        }, {
-            onSuccess: () => {
-                setMessageText('');
-            }
-        });
+        try {
+            await axios.post(`/social/messages/${selected_conversation}`, {
+                message: messageText
+            });
+            setMessageText('');
+            // Optionally reload the page or fetch new messages
+            window.location.reload();
+        } catch (error) {
+            console.error('Failed to send message:', error);
+        }
     };
 
     const filteredConversations = conversations.filter(conv => {

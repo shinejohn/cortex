@@ -2,9 +2,9 @@ import { SocialPostCard } from "@/components/social/social-post-card";
 import { CreatePostModal } from "@/components/social/create-post-modal";
 import { Button } from "@/components/ui/button";
 import { Loader2, RefreshCw } from "lucide-react";
-import type { SocialPost, User } from "@/types/social";
+import type { SocialPost } from "@/types/social";
+import type { User } from "@/types";
 import { useEffect, useState, useCallback, useRef } from "react";
-import { router } from "@inertiajs/react";
 import { useEngagementTracking } from "@/hooks/use-engagement-tracking";
 
 interface AlgorithmicFeedProps {

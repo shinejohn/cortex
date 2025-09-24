@@ -1,4 +1,5 @@
-import { Head, router, useForm } from "@inertiajs/react";
+import { Head, useForm } from "@inertiajs/react";
+import axios from 'axios';
 import { Crown, Mail, MoreVertical, Shield, Trash2, User, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -109,64 +110,58 @@ export default function WorkspaceMembers({ members, pendingInvitations, canManag
         });
     };
 
-    const handleUpdateMemberRole = (memberId: string, newRole: string) => {
-        router.patch(
-            route("settings.workspace.members.update", {
-                membership: memberId,
-            }),
-            { role: newRole },
-            {
-                preserveScroll: true,
-                onSuccess: () => {
-                    toast.success("Member role updated successfully");
-                },
-                onError: () => {
-                    toast.error("Failed to update member role");
-                },
-            },
-        );
+    const handleUpdateMemberRole = async (memberId: string, newRole: string) => {
+        try {
+            await axios.patch(
+                route("settings.workspace.members.update", {
+                    membership: memberId,
+                }),
+                { role: newRole }
+            );
+            toast.success("Member role updated successfully");
+            window.location.reload();
+        } catch (error) {
+            console.error('Failed to update member role:', error);
+            toast.error("Failed to update member role");
+        }
     };
 
     const handleRemoveMember = (memberId: string, memberName: string) => {
         setConfirmDialog({ isOpen: true, memberId, memberName });
     };
 
-    const confirmRemoveMember = () => {
+    const confirmRemoveMember = async () => {
         if (confirmDialog) {
-            router.delete(
-                route("settings.workspace.members.remove", {
-                    membership: confirmDialog.memberId,
-                }),
-                {
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        toast.success("Member removed successfully");
-                        setConfirmDialog(null);
-                    },
-                    onError: () => {
-                        toast.error("Failed to remove member");
-                        setConfirmDialog(null);
-                    },
-                },
-            );
+            try {
+                await axios.delete(
+                    route("settings.workspace.members.remove", {
+                        membership: confirmDialog.memberId,
+                    })
+                );
+                toast.success("Member removed successfully");
+                setConfirmDialog(null);
+                window.location.reload();
+            } catch (error) {
+                console.error('Failed to remove member:', error);
+                toast.error("Failed to remove member");
+                setConfirmDialog(null);
+            }
         }
     };
 
-    const handleCancelInvitation = (invitationId: string) => {
-        router.delete(
-            route("settings.workspace.invitations.cancel", {
-                invitation: invitationId,
-            }),
-            {
-                preserveScroll: true,
-                onSuccess: () => {
-                    toast.success("Invitation cancelled successfully");
-                },
-                onError: () => {
-                    toast.error("Failed to cancel invitation");
-                },
-            },
-        );
+    const handleCancelInvitation = async (invitationId: string) => {
+        try {
+            await axios.delete(
+                route("settings.workspace.invitations.cancel", {
+                    invitation: invitationId,
+                })
+            );
+            toast.success("Invitation cancelled successfully");
+            window.location.reload();
+        } catch (error) {
+            console.error('Failed to cancel invitation:', error);
+            toast.error("Failed to cancel invitation");
+        }
     };
 
     return (

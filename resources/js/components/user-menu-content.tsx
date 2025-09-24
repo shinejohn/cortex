@@ -2,7 +2,7 @@ import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSep
 import { UserInfo } from "@/components/user-info";
 import { useMobileNavigation } from "@/hooks/use-mobile-navigation";
 import { type User } from "@/types";
-import { Link, router } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
 import {
     Bell,
     Building,
@@ -27,7 +27,9 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
 
     const handleLogout = () => {
         cleanup();
-        router.flushAll();
+        // Clear any cached data and perform logout
+        sessionStorage.clear();
+        localStorage.clear();
     };
 
     return (

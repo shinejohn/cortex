@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { router } from "@inertiajs/react";
 import { ArrowRightIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -40,7 +39,7 @@ export function CommunityShowcase({ showcaseData = [] }: CommunityShowcaseProps)
     const currentShowcase = showcaseData[currentIndex];
 
     const handleEventClick = (): void => {
-        router.visit(currentShowcase.eventUrl);
+        window.location.href = currentShowcase.eventUrl;
     };
 
     return (

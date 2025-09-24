@@ -1,10 +1,10 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { SharedData } from "@/types";
-import { router } from "@inertiajs/react";
+import axios from 'axios';
+import { route } from 'ziggy-js';
 import { CheckIcon, ChevronsUpDown, Loader2, PlusIcon, Users } from "lucide-react";
 import { useState } from "react";
-import { Button } from "./ui/button";
 import { CreateWorkspaceDialog } from "./workspace/create-workspace-dialog";
 
 export function WorkspaceSelector({
@@ -24,25 +24,23 @@ export function WorkspaceSelector({
 
     const isCollapsed = state === "collapsed";
 
-    const handleWorkspaceSwitch = (workspaceId: string) => {
+    const handleWorkspaceSwitch = async (workspaceId: string) => {
         if (workspaceId === currentWorkspace?.id || isLoading) {
             return;
         }
 
         setIsLoading(true);
 
-        router.post(
-            route("workspaces.switch"),
-            {
+        try {
+            await axios.post(route("workspaces.switch"), {
                 workspace_id: workspaceId,
-            },
-            {
-                preserveState: false,
-                onFinish: () => {
-                    setIsLoading(false);
-                },
-            },
-        );
+            });
+            window.location.reload();
+        } catch (error) {
+            console.error('Failed to switch workspace:', error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

@@ -1,4 +1,5 @@
-import { Head, router } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
+import axios from 'axios';
 import { LockIcon, UserPlusIcon } from 'lucide-react';
 import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
@@ -15,8 +16,15 @@ interface Props {
 }
 
 export default function ProfilePrivate({ profile_user }: Props) {
-    const handleSendFriendRequest = () => {
-        router.post(`/social/users/${profile_user.id}/friend-request`);
+    const handleSendFriendRequest = async () => {
+        try {
+            await axios.post(`/social/users/${profile_user.id}/friend-request`);
+            // Optionally show success message or update UI
+            alert('Friend request sent!');
+        } catch (error) {
+            console.error('Failed to send friend request:', error);
+            alert('Failed to send friend request. Please try again.');
+        }
     };
 
     return (

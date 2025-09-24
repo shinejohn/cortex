@@ -4,25 +4,25 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import type { SocialPost, SocialPostComment } from "@/types/social";
 import type { User } from "@/types";
-import { Link, router } from "@inertiajs/react";
-import { route } from "ziggy-js";
+import type { SocialPost, SocialPostComment } from "@/types/social";
+import { Link } from "@inertiajs/react";
 import axios from "axios";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { route } from "ziggy-js";
 
 dayjs.extend(relativeTime);
+import { useEngagementTracking } from "@/hooks/use-engagement-tracking";
 import {
     HeartIcon,
+    MapPinIcon,
     MessageCircleIcon,
-    ShareIcon,
     MoreHorizontalIcon,
     SendIcon,
-    MapPinIcon
+    ShareIcon
 } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
-import { useEngagementTracking } from "@/hooks/use-engagement-tracking";
+import { useEffect, useRef, useState } from "react";
 
 interface SocialPostCardProps {
     post: SocialPost;
@@ -333,11 +333,11 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
                                                         </button>
                                                     )}
                                                 </div>
-                                                <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground px-1">
+                                                {/* <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground px-1">
                                                     <span>{dayjs(comment.created_at).fromNow()}</span>
                                                     <button className="hover:underline font-medium">Like</button>
                                                     <button className="hover:underline font-medium">Reply</button>
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
                                     ))}

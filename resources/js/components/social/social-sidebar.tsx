@@ -2,8 +2,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import type { SocialUserProfile, UserWithSocial } from "@/types/social";
-import { Link, router } from "@inertiajs/react";
+import type { SocialUserProfile, UserWithSocial, User } from "@/types/social";
+import { Link } from "@inertiajs/react";
 import axios from "axios";
 import { CalendarIcon, LinkIcon, MapPinIcon, UsersIcon } from "lucide-react";
 import { route } from "ziggy-js";
@@ -19,7 +19,7 @@ export function SocialSidebar({ currentUser, userProfile, suggestedFriends }: So
         try {
             await axios.post(route('social.friend.request', userId));
             // Refresh the page or update the UI to reflect the sent request
-            router.reload({ only: ['suggestedFriends'] });
+            window.location.reload();
         } catch (error) {
             console.error('Error sending friend request:', error);
         }

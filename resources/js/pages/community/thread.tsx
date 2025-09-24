@@ -8,7 +8,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import type { ThreadPageProps } from "@/types/community";
-import { Head, router, usePage } from "@inertiajs/react";
+import { Head, usePage, Link, router } from "@inertiajs/react";
+import axios from 'axios';
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
@@ -88,7 +89,7 @@ export default function ThreadDetail() {
                     text: `Check out this thread: ${thread.title}`,
                     url: window.location.href,
                 });
-            } catch (err) {
+            } catch {
                 // User cancelled sharing
             }
         } else {
@@ -101,14 +102,17 @@ export default function ThreadDetail() {
         if (!replyContent.trim() || isSubmitting) return;
 
         setIsSubmitting(true);
-        router.post(
-            `/community/thread/${thread.id}/replies`,
-            { content: replyContent.trim() },
-            {
-                onSuccess: () => setReplyContent(""),
-                onFinish: () => setIsSubmitting(false),
-            },
-        );
+        try {
+            await axios.post(`/community/thread/${thread.id}/replies`, {
+                content: replyContent.trim()
+            });
+            setReplyContent("");
+            window.location.reload();
+        } catch (error) {
+            console.error('Failed to submit reply:', error);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -120,23 +124,19 @@ export default function ThreadDetail() {
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Breadcrumb Navigation and Back Button */}
                     <div className="flex items-center space-x-2 text-sm mb-6">
-                        <Button
-                            variant="link"
-                            size="sm"
-                            onClick={() => router.visit("/community")}
-                            className="p-0 h-auto text-muted-foreground hover:text-foreground"
+                        <Link
+                            href="/community"
+                            className="p-0 h-auto text-muted-foreground hover:text-foreground text-sm underline-offset-4 hover:underline"
                         >
                             Communities
-                        </Button>
+                        </Link>
                         <span className="text-muted-foreground">/</span>
-                        <Button
-                            variant="link"
-                            size="sm"
-                            onClick={() => router.visit(`/community/${community.id}`)}
-                            className="p-0 h-auto text-muted-foreground hover:text-foreground"
+                        <Link
+                            href={`/community/${community.id}`}
+                            className="p-0 h-auto text-muted-foreground hover:text-foreground text-sm underline-offset-4 hover:underline"
                         >
                             {community.name}
-                        </Button>
+                        </Link>
                         <span className="text-muted-foreground">/</span>
                         <span className="font-medium text-foreground">Thread</span>
                     </div>
@@ -241,9 +241,11 @@ export default function ThreadDetail() {
                                             Reply to Thread
                                         </Button>
                                     ) : (
-                                        <Button variant="outline" onClick={() => router.visit("/login")}>
-                                            Sign in to Reply
-                                        </Button>
+                                        <Link href="/login">
+                                            <Button variant="outline">
+                                                Sign in to Reply
+                                            </Button>
+                                        </Link>
                                     )}
                                     {thread.isLocked && <p className="text-sm text-muted-foreground ml-2">This thread is locked.</p>}
                                 </div>
@@ -283,9 +285,11 @@ export default function ThreadDetail() {
                                         <h4 className="mt-2 text-lg font-medium">No replies yet</h4>
                                         <p className="mt-1 text-sm">Be the first to share your thoughts on this thread.</p>
                                         {!auth.user && (
-                                            <Button variant="outline" className="mt-4" onClick={() => router.visit("/login")}>
-                                                Sign in to Reply
-                                            </Button>
+                                            <Link href="/login">
+                                                <Button variant="outline" className="mt-4">
+                                                    Sign in to Reply
+                                                </Button>
+                                            </Link>
                                         )}
                                     </div>
                                 ) : (
@@ -308,9 +312,11 @@ export default function ThreadDetail() {
                             <CardContent className="px-6 py-4">
                                 <div className="text-center py-8 text-muted-foreground">
                                     <p className="mb-2">Related threads will appear here based on tags and content similarity.</p>
-                                    <Button variant="outline" onClick={() => router.visit(`/community/${community.id}`)}>
-                                        View All {community.name} Threads
-                                    </Button>
+                                    <Link href={`/community/${community.id}`}>
+                                        <Button variant="outline">
+                                            View All {community.name} Threads
+                                        </Button>
+                                    </Link>
                                 </div>
                             </CardContent>
                         </Card>
