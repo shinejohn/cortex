@@ -29,8 +29,11 @@ final class SocialFeedAlgorithmService
     public function getForYouFeed(User $user, int $page = 1, int $perPage = 20): LengthAwarePaginator
     {
         $posts = $this->buildForYouQuery($user)
-            ->with(['user'])
-            ->get();
+            ->with(['user.socialProfile', 'likes.user', 'comments.user'])
+            ->get()
+            ->map(function ($post) use ($user) {
+                return $this->enrichPostData($post, $user);
+            });
 
         if ($posts->isEmpty()) {
             return $this->getFallbackFeed($user, $page, $perPage);
@@ -43,20 +46,26 @@ final class SocialFeedAlgorithmService
 
     public function getFollowedFeed(User $user, int $page = 1, int $perPage = 20): LengthAwarePaginator
     {
-        $followedUserIds = $user->following()->pluck('following_id');
-        $friendIds = $user->acceptedFriends()->pluck('friend_id');
-        $allFollowedIds = $followedUserIds->merge($friendIds)->unique();
+        $friendIds = $user->acceptedFriends()->pluck('friend_id')
+            ->merge($user->friendshipRequests()->where('status', 'accepted')->pluck('user_id'))
+            ->unique();
 
-        if ($allFollowedIds->isEmpty()) {
-            return $this->getFallbackFeed($user, $page, $perPage);
+        if ($friendIds->isEmpty()) {
+            return $this->getEmptyFeed($page, $perPage);
         }
 
-        $posts = SocialPost::whereIn('user_id', $allFollowedIds)
-            ->where('visibility', '!=', 'private')
+        $posts = SocialPost::whereIn('user_id', $friendIds)
             ->where('is_active', true)
-            ->where('created_at', '>=', now()->subDays(7)) // Only show recent posts
-            ->with(['user'])
-            ->get();
+            ->where('created_at', '>=', now()->subDays(7))
+            ->where(function ($query) {
+                $query->where('visibility', 'public')
+                    ->orWhere('visibility', 'friends');
+            })
+            ->with(['user.socialProfile', 'likes.user', 'comments.user'])
+            ->get()
+            ->map(function ($post) use ($user) {
+                return $this->enrichPostData($post, $user);
+            });
 
         $rankedPosts = $this->scorePostsSimply($posts);
 
@@ -70,8 +79,17 @@ final class SocialFeedAlgorithmService
             ->where('visibility', 'public')
             ->where('user_id', '!=', $user->id)
             ->where('created_at', '>=', now()->subDays(7))
-            ->with(['user'])
-            ->get();
+            ->where(function ($profileQuery) {
+                $profileQuery->whereDoesntHave('user.socialProfile')
+                    ->orWhereHas('user.socialProfile', function ($socialProfileQuery) {
+                        $socialProfileQuery->where('profile_visibility', '!=', 'private');
+                    });
+            })
+            ->with(['user.socialProfile', 'likes.user', 'comments.user'])
+            ->get()
+            ->map(function ($post) use ($user) {
+                return $this->enrichPostData($post, $user);
+            });
 
         $rankedPosts = $this->scorePostsSimply($posts);
 
@@ -80,11 +98,20 @@ final class SocialFeedAlgorithmService
 
     private function scorePostsSimply(Collection $posts): Collection
     {
-        return $posts->map(function (SocialPost $post) {
-            $score = $this->calculateSimpleScore($post);
-            $post->algorithm_score = $score;
+        return $posts->map(function ($post) {
+            $postModel = is_array($post) ? SocialPost::find($post['id']) : $post;
+            $score = $this->calculateSimpleScore($postModel);
 
-            return $post;
+            if (is_array($post)) {
+                $post['algorithm_score'] = $score;
+
+                return $post;
+            }
+            $postArray = $post->toArray();
+            $postArray['algorithm_score'] = $score;
+
+            return $postArray;
+
         })->sortByDesc('algorithm_score')->values();
     }
 
@@ -137,16 +164,28 @@ final class SocialFeedAlgorithmService
 
     private function buildForYouQuery(User $user): Builder
     {
-        $friendIds = $user->acceptedFriends()->pluck('friend_id');
+        $friendIds = $user->acceptedFriends()->pluck('friend_id')
+            ->merge($user->friendshipRequests()->where('status', 'accepted')->pluck('user_id'))
+            ->unique();
 
         return SocialPost::query()
             ->where('is_active', true)
             ->where('created_at', '>=', now()->subDays(7))
             ->where('user_id', '!=', $user->id)
             ->where(function ($query) use ($friendIds) {
-                $query->where('visibility', 'public')
-                    ->orWhere(function ($subQuery) use ($friendIds) {
-                        $subQuery->where('visibility', 'friends')
+                // Show public posts from non-private profiles
+                $query->where(function ($publicQuery) {
+                    $publicQuery->where('visibility', 'public')
+                        ->where(function ($profileQuery) {
+                            $profileQuery->whereDoesntHave('user.socialProfile')
+                                ->orWhereHas('user.socialProfile', function ($socialProfileQuery) {
+                                    $socialProfileQuery->where('profile_visibility', '!=', 'private');
+                                });
+                        });
+                })
+                // Show friends-only posts from actual friends
+                    ->orWhere(function ($friendsQuery) use ($friendIds) {
+                        $friendsQuery->where('visibility', 'friends')
                             ->whereIn('user_id', $friendIds);
                     });
             });
@@ -167,5 +206,30 @@ final class SocialFeedAlgorithmService
                 'pageName' => 'page',
             ]
         );
+    }
+
+    private function getEmptyFeed(int $page, int $perPage): LengthAwarePaginator
+    {
+        return new LengthAwarePaginator(
+            collect([]),
+            0,
+            $perPage,
+            $page,
+            [
+                'path' => request()->url(),
+                'pageName' => 'page',
+            ]
+        );
+    }
+
+    private function enrichPostData(SocialPost $post, User $user): array
+    {
+        return array_merge($post->toArray(), [
+            'likes_count' => $post->likesCount(),
+            'comments_count' => $post->commentsCount(),
+            'shares_count' => $post->sharesCount(),
+            'is_liked_by_user' => $post->isLikedBy($user),
+            'recent_comments' => $post->comments()->with('user')->latest()->limit(3)->get()->toArray(),
+        ]);
     }
 }

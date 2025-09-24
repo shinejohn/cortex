@@ -14,10 +14,12 @@ use App\Models\SocialPostComment;
 use App\Models\SocialPostLike;
 use App\Models\SocialUserProfile;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use Log;
 
 final class SocialController extends Controller
 {
@@ -364,8 +366,26 @@ final class SocialController extends Controller
                 ];
             });
 
+        // Get pending friend requests sent by current user
+        $sentRequests = User::whereHas('friendshipRequests', function ($query) use ($user) {
+            $query->where('user_id', $user->id)->where('status', 'pending');
+        })
+            ->with(['socialProfile'])
+            ->get()
+            ->map(function ($friend) {
+                return [
+                    'id' => $friend->id,
+                    'name' => $friend->name,
+                    'username' => $friend->username ?? str_replace('@', '', explode('@', $friend->email)[0]),
+                    'avatar' => $friend->avatar,
+                    'location' => $friend->socialProfile?->location,
+                    'status' => 'pending_sent',
+                ];
+            });
+
         return Inertia::render('social/friends-index', [
             'friends' => $friends,
+            'sentRequests' => $sentRequests,
         ]);
     }
 
@@ -387,9 +407,37 @@ final class SocialController extends Controller
         return response()->json(['message' => 'Friend request declined']);
     }
 
-    public function cancelFriendRequest(User $friendUser): JsonResponse
+    public function cancelFriendRequest(?User $friendUser = null): JsonResponse
     {
         $user = Auth::user();
+
+        // Check if route model binding failed, try manual resolution
+        if (! $friendUser) {
+            $rawUserId = request()->route('user');
+
+            Log::warning('Route model binding failed, attempting manual resolution', [
+                'requester_id' => $user->id,
+                'raw_user_parameter' => $rawUserId,
+                'parameter_type' => gettype($rawUserId),
+                'request_path' => request()->path(),
+            ]);
+
+            // Try to manually find the user
+            if ($rawUserId) {
+                try {
+                    $friendUser = User::find($rawUserId);
+                } catch (Exception $e) {
+                    Log::error('Manual user resolution failed', [
+                        'user_id' => $rawUserId,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+
+            if (! $friendUser) {
+                return response()->json(['error' => 'Invalid user ID provided'], 400);
+            }
+        }
 
         $friendship = SocialFriendship::where('user_id', $user->id)
             ->where('friend_id', $friendUser->id)
@@ -397,6 +445,13 @@ final class SocialController extends Controller
             ->first();
 
         if (! $friendship) {
+            Log::warning('Friend request not found', [
+                'requester_id' => $user->id,
+                'friend_id' => $friendUser->id,
+                'friend_name' => $friendUser->name,
+                'existing_friendships' => SocialFriendship::where('user_id', $user->id)->orWhere('friend_id', $user->id)->get()->toArray(),
+            ]);
+
             return response()->json(['error' => 'Friend request not found'], 404);
         }
 

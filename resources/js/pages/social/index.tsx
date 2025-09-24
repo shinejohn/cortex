@@ -56,9 +56,9 @@ export default function SocialIndex() {
                                         <Sparkles className="h-4 w-4" />
                                         For You
                                     </TabsTrigger>
-                                    <TabsTrigger value="following" className="flex items-center gap-2">
+                                    <TabsTrigger value="friends" className="flex items-center gap-2">
                                         <Users className="h-4 w-4" />
-                                        Following
+                                        Friends
                                     </TabsTrigger>
                                 </TabsList>
 
@@ -71,7 +71,7 @@ export default function SocialIndex() {
                                     />
                                 </TabsContent>
 
-                                <TabsContent value="following" className="mt-0">
+                                <TabsContent value="friends" className="mt-0">
                                     <AlgorithmicFeed
                                         feedType="followed"
                                         currentUser={auth.user}

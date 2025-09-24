@@ -82,7 +82,7 @@ return new class extends Migration
 
         // Friends/connections table
         Schema::create('social_friendships', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignUuid('friend_id')->constrained('users')->cascadeOnDelete();
             $table->enum('status', ['pending', 'accepted', 'blocked'])->default('pending');

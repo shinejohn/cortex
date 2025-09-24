@@ -62,14 +62,47 @@ interface Props {
 
 export default function Profile({ profile_user, posts, current_user }: Props) {
     const [activeTab, setActiveTab] = useState('posts');
+    const [friendshipStatus, setFriendshipStatus] = useState({
+        is_friend: profile_user.is_friend_with_user || false,
+        has_pending_request: profile_user.has_pending_friend_request || false
+    });
+    const [loading, setLoading] = useState(false);
     const isOwnProfile = profile_user.id === current_user.id;
 
-    const handleSendFriendRequest = () => {
-        axios.post(`/social/users/${profile_user.id}/friend-request`);
+    const handleSendFriendRequest = async () => {
+        if (loading) return;
+        setLoading(true);
+
+        try {
+            const response = await axios.post(`/social/users/${profile_user.id}/friend-request`);
+            setFriendshipStatus({
+                is_friend: false,
+                has_pending_request: true
+            });
+        } catch (error) {
+            console.error('Error sending friend request:', error);
+            alert('Failed to send friend request. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleRemoveFriend = () => {
-        axios.delete(`/social/friendships/${profile_user.id}`);
+    const handleRemoveFriend = async () => {
+        if (loading || !confirm('Are you sure you want to remove this friend?')) return;
+        setLoading(true);
+
+        try {
+            await axios.delete(`/social/friends/${profile_user.id}/remove`);
+            setFriendshipStatus({
+                is_friend: false,
+                has_pending_request: false
+            });
+        } catch (error) {
+            console.error('Error removing friend:', error);
+            alert('Failed to remove friend. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleLikePost = (postId: string) => {
@@ -195,20 +228,27 @@ export default function Profile({ profile_user, posts, current_user }: Props) {
                                     </Link>
                                 ) : (
                                     <>
-                                        {profile_user.is_friend_with_user ? (
-                                            <Button variant="outline" onClick={handleRemoveFriend}>
+                                        {friendshipStatus.is_friend ? (
+                                            <Button
+                                                variant="outline"
+                                                onClick={handleRemoveFriend}
+                                                disabled={loading}
+                                            >
                                                 <UsersIcon className="h-4 w-4 mr-2" />
-                                                Friends
+                                                {loading ? 'Removing...' : 'Friends'}
                                             </Button>
-                                        ) : profile_user.has_pending_friend_request ? (
+                                        ) : friendshipStatus.has_pending_request ? (
                                             <Button variant="outline" disabled>
                                                 <UserPlusIcon className="h-4 w-4 mr-2" />
                                                 Request Sent
                                             </Button>
                                         ) : (
-                                            <Button onClick={handleSendFriendRequest}>
+                                            <Button
+                                                onClick={handleSendFriendRequest}
+                                                disabled={loading}
+                                            >
                                                 <UserPlusIcon className="h-4 w-4 mr-2" />
-                                                Add Friend
+                                                {loading ? 'Sending...' : 'Add Friend'}
                                             </Button>
                                         )}
                                         <Link href={`/social/messages/${profile_user.id}`}>
