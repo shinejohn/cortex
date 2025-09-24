@@ -5,7 +5,6 @@ import { Loader2, RefreshCw } from "lucide-react";
 import type { SocialPost } from "@/types/social";
 import type { User } from "@/types";
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useEngagementTracking } from "@/hooks/use-engagement-tracking";
 
 interface AlgorithmicFeedProps {
     feedType: 'for-you' | 'followed';
@@ -39,9 +38,7 @@ export function AlgorithmicFeed({
     const [error, setError] = useState<string | null>(null);
     const [refreshing, setRefreshing] = useState(false);
 
-    const { trackPostView, trackScrollDepth } = useEngagementTracking(currentUser);
     const observer = useRef<IntersectionObserver>();
-    const viewedPosts = useRef(new Set<string>());
 
     // Ref for the last post element to trigger infinite scroll
     const lastPostElementRef = useCallback((node: HTMLDivElement) => {
@@ -110,46 +107,14 @@ export function AlgorithmicFeed({
 
     // Refresh feed
     const handleRefresh = useCallback(() => {
-        viewedPosts.current.clear();
         loadFeed(1, true);
     }, [loadFeed]);
 
-    // Track post views using intersection observer
-    const trackPostInView = useCallback((postId: string, post: SocialPost) => {
-        if (!viewedPosts.current.has(postId)) {
-            viewedPosts.current.add(postId);
-            trackPostView(post);
-        }
-    }, [trackPostView]);
 
     // Initialize feed
     useEffect(() => {
         loadFeed(1);
-    }, [feedType]);
-
-    // Track scroll depth for engagement
-    useEffect(() => {
-        let scrollTimeout: NodeJS.Timeout;
-
-        const handleScroll = () => {
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {
-                const scrollPercentage = Math.round(
-                    (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100
-                );
-
-                if (scrollPercentage > 0 && scrollPercentage % 25 === 0) {
-                    trackScrollDepth(scrollPercentage, Array.from(viewedPosts.current));
-                }
-            }, 100);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-            clearTimeout(scrollTimeout);
-        };
-    }, [trackScrollDepth]);
+    }, [loadFeed]);
 
     const handleNewPost = (newPost: SocialPost) => {
         setPosts(prev => [newPost, ...prev]);
@@ -164,7 +129,6 @@ export function AlgorithmicFeed({
 
     const handlePostDelete = (postId: string) => {
         setPosts(prev => prev.filter(post => post.id !== postId));
-        viewedPosts.current.delete(postId);
     };
 
     if (error && posts.length === 0) {
@@ -274,12 +238,11 @@ export function AlgorithmicFeed({
                         key={post.id}
                         ref={index === posts.length - 1 ? lastPostElementRef : null}
                     >
-                        <PostWithTracking
+                        <SocialPostCard
                             post={post}
                             currentUser={currentUser}
                             onUpdate={handlePostUpdate}
                             onDelete={handlePostDelete}
-                            onView={trackPostInView}
                         />
                     </div>
                 ))}
@@ -307,54 +270,6 @@ export function AlgorithmicFeed({
                 onClose={onCloseCreatePost}
                 onPost={handleNewPost}
                 currentUser={currentUser}
-            />
-        </div>
-    );
-}
-
-// Component to track when posts come into view
-interface PostWithTrackingProps {
-    post: SocialPost;
-    currentUser: User;
-    onUpdate: (post: SocialPost) => void;
-    onDelete: (postId: string) => void;
-    onView: (postId: string, post: SocialPost) => void;
-}
-
-function PostWithTracking({ post, currentUser, onUpdate, onDelete, onView }: PostWithTrackingProps) {
-    const elementRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const element = elementRef.current;
-        if (!element) return;
-
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    // Post is in view for at least 50% and 1 second
-                    const timer = setTimeout(() => {
-                        if (entry.isIntersecting) {
-                            onView(post.id, post);
-                        }
-                    }, 1000);
-
-                    return () => clearTimeout(timer);
-                }
-            },
-            { threshold: 0.5 }
-        );
-
-        observer.observe(element);
-        return () => observer.disconnect();
-    }, [post.id, post, onView]);
-
-    return (
-        <div ref={elementRef}>
-            <SocialPostCard
-                post={post}
-                currentUser={currentUser}
-                onUpdate={onUpdate}
-                onDelete={onDelete}
             />
         </div>
     );

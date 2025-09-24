@@ -13,7 +13,6 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { route } from "ziggy-js";
 
 dayjs.extend(relativeTime);
-import { useEngagementTracking } from "@/hooks/use-engagement-tracking";
 import {
     HeartIcon,
     MapPinIcon,
@@ -39,9 +38,6 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
     const [comments, setComments] = useState<SocialPostComment[]>(post.recent_comments || []);
     const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
-    const { trackPostInteraction, trackTimeSpent } = useEngagementTracking(currentUser);
-    const postViewStartTime = useRef<Date>(new Date());
-    const timeSpentInterval = useRef<NodeJS.Timeout>();
 
     const handleLike = async () => {
         try {
@@ -54,7 +50,6 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
                 setIsLiked(response.data.liked);
                 setLikesCount(response.data.likes_count);
                 // Track like engagement
-                trackPostInteraction(post, 'post_like');
             }
         } catch (error) {
             console.error('Error toggling like:', error);
@@ -71,8 +66,6 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
             });
             if (response.data.comment) {
                 setComments(prev => [...prev, response.data.comment]);
-                // Track comment engagement
-                trackPostInteraction(post, 'post_comment');
             }
             setCommentText("");
             setShowComments(true);
@@ -95,9 +88,6 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
     };
 
     const handleShare = () => {
-        // Track share engagement
-        trackPostInteraction(post, 'post_share');
-
         if (navigator.share) {
             navigator.share({
                 title: `${post.user.name}'s post`,
@@ -118,30 +108,6 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
 
     const isOwner = post.user_id === currentUser.id;
 
-    // Track time spent on post
-    useEffect(() => {
-        postViewStartTime.current = new Date();
-
-        // Track time every 10 seconds
-        timeSpentInterval.current = setInterval(() => {
-            const timeSpent = Math.floor((new Date().getTime() - postViewStartTime.current.getTime()) / 1000);
-            if (timeSpent >= 10) { // Only track if user spent at least 10 seconds
-                trackTimeSpent(post, timeSpent);
-                postViewStartTime.current = new Date(); // Reset timer
-            }
-        }, 10000);
-
-        return () => {
-            if (timeSpentInterval.current) {
-                clearInterval(timeSpentInterval.current);
-                // Track final time spent when component unmounts
-                const timeSpent = Math.floor((new Date().getTime() - postViewStartTime.current.getTime()) / 1000);
-                if (timeSpent >= 3) { // Track if spent at least 3 seconds
-                    trackTimeSpent(post, timeSpent);
-                }
-            }
-        };
-    }, [post.id, trackTimeSpent, post]);
 
     return (
         <Card className="w-full rounded-xl border shadow-sm hover:shadow-md transition-shadow duration-200">

@@ -1,11 +1,13 @@
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
+import { AlgorithmicFeed } from "@/components/social/algorithmic-feed";
 import { SocialFeed } from "@/components/social/social-feed";
 import { SocialSidebar } from "@/components/social/social-sidebar";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { SocialFeedPageProps } from "@/types/social";
 import { Head, usePage } from "@inertiajs/react";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, Sparkles, Users } from "lucide-react";
 import { useState } from "react";
 
 export default function SocialIndex() {
@@ -47,13 +49,37 @@ export default function SocialIndex() {
                                 </div>
                             </div>
 
-                            {/* Feed */}
-                            <SocialFeed
-                                posts={posts}
-                                currentUser={auth.user}
-                                showCreatePost={showCreatePost}
-                                onCloseCreatePost={() => setShowCreatePost(false)}
-                            />
+                            {/* Feed Tabs */}
+                            <Tabs defaultValue="for-you" className="w-full">
+                                <TabsList className="grid w-full grid-cols-2 mb-6">
+                                    <TabsTrigger value="for-you" className="flex items-center gap-2">
+                                        <Sparkles className="h-4 w-4" />
+                                        For You
+                                    </TabsTrigger>
+                                    <TabsTrigger value="following" className="flex items-center gap-2">
+                                        <Users className="h-4 w-4" />
+                                        Following
+                                    </TabsTrigger>
+                                </TabsList>
+
+                                <TabsContent value="for-you" className="mt-0">
+                                    <AlgorithmicFeed
+                                        feedType="for-you"
+                                        currentUser={auth.user}
+                                        showCreatePost={showCreatePost}
+                                        onCloseCreatePost={() => setShowCreatePost(false)}
+                                    />
+                                </TabsContent>
+
+                                <TabsContent value="following" className="mt-0">
+                                    <AlgorithmicFeed
+                                        feedType="followed"
+                                        currentUser={auth.user}
+                                        showCreatePost={showCreatePost}
+                                        onCloseCreatePost={() => setShowCreatePost(false)}
+                                    />
+                                </TabsContent>
+                            </Tabs>
                         </div>
 
                         {/* Sidebar */}
