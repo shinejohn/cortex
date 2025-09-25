@@ -6,6 +6,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomePageController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PerformerController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\SocialFeedController;
@@ -45,6 +46,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/api/engagement/track', [App\Http\Controllers\EngagementController::class, 'track'])->name('api.engagement.track');
     Route::post('/api/engagement/session/start', [App\Http\Controllers\EngagementController::class, 'sessionStart'])->name('api.engagement.session.start');
     Route::post('/api/engagement/session/end', [App\Http\Controllers\EngagementController::class, 'sessionEnd'])->name('api.engagement.session.end');
+
+    // Notification API routes
+    Route::get('/api/notifications/unread', [NotificationController::class, 'getUnread'])->name('api.notifications.unread');
+    Route::patch('/api/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('api.notifications.read');
+    Route::patch('/api/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('api.notifications.mark-all-read');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -63,6 +69,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/community/reply/{replyId}', [CommunityController::class, 'updateReply'])->name('community.reply.update');
     Route::delete('/community/reply/{replyId}', [CommunityController::class, 'destroyReply'])->name('community.reply.destroy');
     Route::post('/community/reply/{replyId}/like', [CommunityController::class, 'likeReply'])->name('community.reply.like');
+
+    // Notifications
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 
     // Admin routes for events, performers, and venues management
     Route::get('/admin/events', [EventController::class, 'index'])->name('admin.events.index');

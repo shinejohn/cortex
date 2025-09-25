@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
@@ -55,6 +56,7 @@ final class HandleInertiaRequests extends Middleware
                 'magicLinkEnabled' => config('makerkit.auth.magiclink.enabled'),
             ],
             'workspaces' => $workspaces,
+            'notifications' => fn() => $this->getUserNotifications($user),
             'ziggy' => fn(): array => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
@@ -98,6 +100,26 @@ final class HandleInertiaRequests extends Middleware
             'all' => $workspaces,
             'current' => $currentWorkspace,
             'canCreateWorkspaces' => config('makerkit.workspaces.can_create_workspaces'),
+        ];
+    }
+
+    private function getUserNotifications(?User $user): ?array
+    {
+        if (! $user) {
+            return null;
+        }
+
+        $notifications = Notification::forUser($user->id)
+            ->unread()
+            ->latest()
+            ->limit(10)
+            ->get();
+
+        $unreadCount = Notification::forUser($user->id)->unread()->count();
+
+        return [
+            'notifications' => $notifications->toArray(),
+            'unread_count' => $unreadCount,
         ];
     }
 }

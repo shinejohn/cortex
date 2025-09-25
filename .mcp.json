@@ -1,15 +1,21 @@
 {
-  "mcpServers": {
-    "laravel-boost": {
-      "command": "php",
-      "args": [
-        "./artisan",
-        "boost:mcp"
-      ],
-      "alwaysAllow": [
-        "list-routes",
-        "database-schema"
-      ]
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "php",
+            "args": ["./artisan", "boost:mcp"],
+            "alwaysAllow": ["list-routes", "database-schema"]
+        },
+        "ultracite": {
+            "command": "bunx",
+            "args": ["-y", "mcp-remote", "https://www.ultracite.ai/api/mcp/mcp"]
+        },
+        "memory": {
+            "command": "bunx",
+            "args": ["-y", "@modelcontextprotocol/server-memory"]
+        },
+        "sequential-thinking": {
+            "command": "bunx",
+            "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+        }
     }
-  }
 }

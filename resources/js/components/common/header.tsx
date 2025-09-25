@@ -18,7 +18,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { type Auth, BreadcrumbItem } from "@/types";
+import { type Auth, BreadcrumbItem, SharedData } from "@/types";
+import { usePage } from "@inertiajs/react";
+import { NotificationDropdown } from "../NotificationDropdown";
 import AppLogo from "../app-logo";
 import AppLogoIcon from "../app-logo-icon";
 import { UserMenuContent } from "../user-menu-content";
@@ -101,28 +103,17 @@ interface Location {
     readonly eventCount: number;
 }
 
-interface Notifications {
-    readonly count: number;
-    readonly hasUnread: boolean;
-}
 
 interface HeaderProps {
     readonly auth: Auth;
     readonly breadcrumbs?: BreadcrumbItem[];
     readonly location?: Location;
-    readonly notifications?: Notifications;
-    readonly unreadMessages?: number;
 }
 
 // Constants
 const DEFAULT_LOCATION: Location = {
     name: "Clearwater, FL",
     eventCount: 427,
-};
-
-const DEFAULT_NOTIFICATIONS: Notifications = {
-    count: 0,
-    hasUnread: false,
 };
 
 // Utilities
@@ -152,19 +143,10 @@ interface SearchBarProps {
     readonly className?: string;
 }
 
-interface NotificationBellProps {
-    readonly notifications: Notifications;
-}
-
-interface MessagesButtonProps {
-    readonly unreadCount?: number;
-}
 
 interface MobileNavigationProps {
     readonly auth: Auth;
     readonly location: Location;
-    readonly notifications: Notifications;
-    readonly unreadMessages?: number;
 }
 
 function LocationSelector({ location }: LocationSelectorProps) {
@@ -219,30 +201,26 @@ function SearchBar({ className }: SearchBarProps) {
     );
 }
 
-function NotificationBell({ notifications }: NotificationBellProps) {
-    const hasNotifications = notifications.count > 0;
+function MessagesButton({ notifications }: { notifications?: any }) {
+    const messageNotifications = notifications?.notifications?.filter((n: any) => n.type === 'message') || [];
+    const unreadMessageCount = messageNotifications.filter((n: any) => !n.read).length;
 
     return (
-        <Button variant="ghost" size="icon" onClick={() => navigate("/notifications")} className="relative">
-            <Bell className="size-5" />
-            {hasNotifications && <Badge className="absolute -right-1 -top-1 h-5 min-w-[1.25rem] px-1 text-xs">{notifications.count}</Badge>}
-        </Button>
+        <NotificationDropdown
+            initialNotifications={messageNotifications}
+            initialUnreadCount={unreadMessageCount}
+            filterType="message"
+            icon={<MessageSquare className="size-5" />}
+            title="Messages"
+            emptyMessage="No new messages"
+        />
     );
 }
 
-function MessagesButton({ unreadCount = 0 }: MessagesButtonProps) {
-    const hasUnread = unreadCount > 0;
-
-    return (
-        <Button variant="ghost" size="icon" onClick={() => navigate("/messages")} className="relative">
-            <MessageSquare className="size-5" />
-            {hasUnread && <Badge className="absolute -right-1 -top-1 h-5 min-w-[1.25rem] px-1 text-xs">{unreadCount}</Badge>}
-        </Button>
-    );
-}
-
-function MobileNavigation({ auth, location, notifications, unreadMessages = 0 }: MobileNavigationProps) {
+function MobileNavigation({ auth, location }: MobileNavigationProps) {
     const user = auth.user;
+    const { props } = usePage<SharedData>();
+    const sharedNotifications = props.notifications;
 
     return (
         <Sheet>
@@ -293,12 +271,16 @@ function MobileNavigation({ auth, location, notifications, unreadMessages = 0 }:
                             <Button variant="ghost" onClick={() => navigate("/notifications")} className="w-full justify-start gap-3">
                                 <Bell className="size-4" />
                                 Notifications
-                                {notifications.count > 0 && <Badge className="ml-auto">{notifications.count}</Badge>}
+                                {(sharedNotifications?.unread_count || 0) > 0 && <Badge className="ml-auto">{sharedNotifications?.unread_count}</Badge>}
                             </Button>
-                            <Button variant="ghost" onClick={() => navigate("/messages")} className="w-full justify-start gap-3">
+                            <Button variant="ghost" onClick={() => navigate("/social/messages")} className="w-full justify-start gap-3">
                                 <MessageSquare className="size-4" />
                                 Messages
-                                {unreadMessages > 0 && <Badge className="ml-auto">{unreadMessages}</Badge>}
+                                {(sharedNotifications?.notifications?.filter(n => n.type === 'message' && !n.read).length || 0) > 0 && (
+                                    <Badge className="ml-auto">
+                                        {sharedNotifications?.notifications?.filter(n => n.type === 'message' && !n.read).length}
+                                    </Badge>
+                                )}
                             </Button>
                         </div>
                     )}
@@ -332,9 +314,11 @@ function MobileNavigation({ auth, location, notifications, unreadMessages = 0 }:
 }
 
 // Main Header Component
-export function Header({ auth, location = DEFAULT_LOCATION, notifications = DEFAULT_NOTIFICATIONS, unreadMessages = 0 }: HeaderProps) {
+export function Header({ auth, location = DEFAULT_LOCATION }: HeaderProps) {
     const [isScrolled, setIsScrolled] = useState(false);
     const { user } = auth;
+    const { props } = usePage<SharedData>();
+    const sharedNotifications = props.notifications;
 
     useEffect(() => {
         const handleScroll = () => {
@@ -375,8 +359,11 @@ export function Header({ auth, location = DEFAULT_LOCATION, notifications = DEFA
                                         <Plus className="size-4" />
                                         Create Event
                                     </Button>
-                                    <NotificationBell notifications={notifications} />
-                                    <MessagesButton unreadCount={unreadMessages} />
+                                    <NotificationDropdown
+                                        initialNotifications={sharedNotifications?.notifications}
+                                        initialUnreadCount={sharedNotifications?.unread_count}
+                                    />
+                                    <MessagesButton notifications={sharedNotifications} />
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
                                             <Button variant="ghost" size="icon" className="relative">
@@ -414,7 +401,7 @@ export function Header({ auth, location = DEFAULT_LOCATION, notifications = DEFA
                 <div className="container mx-auto px-4">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center gap-3">
-                            <MobileNavigation auth={auth} location={location} notifications={notifications} unreadMessages={unreadMessages} />
+                            <MobileNavigation auth={auth} location={location} />
                             <Link href={route("home")}>
                                 <AppLogoIcon className="text-lg" />
                             </Link>

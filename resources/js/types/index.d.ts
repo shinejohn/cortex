@@ -1,6 +1,7 @@
 import { LucideIcon } from "lucide-react";
 import type { Config } from "ziggy-js";
 import { Permission } from "./permissions";
+import { NotificationSummary } from "./notifications";
 
 export interface Auth {
     user: User;
@@ -45,6 +46,7 @@ export interface SharedData {
         current: (Workspace & { permissions: Permission[] }) | null;
         canCreateWorkspaces: boolean;
     };
+    notifications?: NotificationSummary;
     [key: string]: unknown;
 }
 
