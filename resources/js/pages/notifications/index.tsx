@@ -26,9 +26,7 @@ export default function NotificationsIndex({ notifications }: NotificationsIndex
             try {
                 await axios.patch(`/api/notifications/${notification.id}/read`);
 
-                setNotificationList(prev =>
-                    prev.map(n => n.id === notification.id ? { ...n, read: true } : n)
-                );
+                setNotificationList((prev) => prev.map((n) => (n.id === notification.id ? { ...n, read: true } : n)));
             } catch (error) {
                 console.error("Failed to mark notification as read:", error);
             }
@@ -67,7 +65,7 @@ export default function NotificationsIndex({ notifications }: NotificationsIndex
         try {
             await axios.patch("/api/notifications/mark-all-read");
 
-            setNotificationList(prev => prev.map(n => ({ ...n, read: true })));
+            setNotificationList((prev) => prev.map((n) => ({ ...n, read: true })));
         } catch (error) {
             console.error("Failed to mark all notifications as read:", error);
         }
@@ -111,7 +109,7 @@ export default function NotificationsIndex({ notifications }: NotificationsIndex
         }
     };
 
-    const unreadCount = notificationList.filter(n => !n.read).length;
+    const unreadCount = notificationList.filter((n) => !n.read).length;
 
     return (
         <Layout>
@@ -129,8 +127,7 @@ export default function NotificationsIndex({ notifications }: NotificationsIndex
                             <p className="text-muted-foreground mt-1">
                                 {notifications.total > 0
                                     ? `${unreadCount} unread of ${notifications.total} total notifications`
-                                    : "No notifications yet"
-                                }
+                                    : "No notifications yet"}
                             </p>
                         </div>
 
@@ -176,19 +173,17 @@ export default function NotificationsIndex({ notifications }: NotificationsIndex
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-start justify-between gap-4">
                                                     <div className="flex-1">
-                                                        <h3 className={`font-semibold text-lg leading-tight mb-1 ${
-                                                            !notification.read ? "text-foreground" : "text-muted-foreground"
-                                                        }`}>
+                                                        <h3
+                                                            className={`font-semibold text-lg leading-tight mb-1 ${
+                                                                !notification.read ? "text-foreground" : "text-muted-foreground"
+                                                            }`}
+                                                        >
                                                             {notification.title}
                                                         </h3>
-                                                        <p className="text-muted-foreground mb-3">
-                                                            {notification.message}
-                                                        </p>
+                                                        <p className="text-muted-foreground mb-3">{notification.message}</p>
 
                                                         <div className="flex items-center gap-3">
-                                                            <Badge variant="outline">
-                                                                {getNotificationTypeLabel(notification.type)}
-                                                            </Badge>
+                                                            <Badge variant="outline">{getNotificationTypeLabel(notification.type)}</Badge>
                                                             <span className="text-xs text-muted-foreground">
                                                                 {dayjs(notification.created_at).fromNow()}
                                                             </span>

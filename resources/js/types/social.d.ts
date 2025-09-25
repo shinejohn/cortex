@@ -5,7 +5,7 @@ export interface SocialPost {
     user_id: number;
     content: string;
     media?: string[];
-    visibility: 'public' | 'friends' | 'private';
+    visibility: "public" | "friends" | "private";
     location?: {
         name: string;
         lat: number;
@@ -73,7 +73,7 @@ export interface SocialFriendship {
     id: number;
     user_id: number;
     friend_id: number;
-    status: 'pending' | 'accepted' | 'blocked';
+    status: "pending" | "accepted" | "blocked";
     requested_at: string;
     responded_at?: string;
     created_at: string;
@@ -88,7 +88,7 @@ export interface SocialGroup {
     description?: string;
     cover_image?: string;
     creator_id: number;
-    privacy: 'public' | 'private' | 'secret';
+    privacy: "public" | "private" | "secret";
     is_active: boolean;
     settings?: Record<string, any>;
     created_at: string;
@@ -103,8 +103,8 @@ export interface SocialGroupMember {
     id: number;
     group_id: string;
     user_id: number;
-    role: 'admin' | 'moderator' | 'member';
-    status: 'pending' | 'approved' | 'banned';
+    role: "admin" | "moderator" | "member";
+    status: "pending" | "approved" | "banned";
     joined_at: string;
     created_at: string;
     updated_at: string;
@@ -133,7 +133,7 @@ export interface SocialUserProfile {
     website?: string;
     location?: string;
     birth_date?: string;
-    profile_visibility: 'public' | 'friends' | 'private';
+    profile_visibility: "public" | "friends" | "private";
     interests?: string[];
     cover_photo?: string;
     social_links?: Record<string, string>;
@@ -158,7 +158,16 @@ export interface SocialActivity {
     id: string;
     user_id: number;
     actor_id: number;
-    type: 'post_like' | 'post_comment' | 'post_share' | 'friend_request' | 'friend_accept' | 'group_invite' | 'group_join' | 'group_post' | 'profile_follow';
+    type:
+        | "post_like"
+        | "post_comment"
+        | "post_share"
+        | "friend_request"
+        | "friend_accept"
+        | "group_invite"
+        | "group_join"
+        | "group_post"
+        | "profile_follow";
     subject_type: string;
     subject_id: string;
     data?: Record<string, any>;
@@ -220,7 +229,7 @@ export interface SocialActivitiesResponse {
 export interface CreatePostForm {
     content: string;
     media?: string[];
-    visibility: 'public' | 'friends' | 'private';
+    visibility: "public" | "friends" | "private";
     location?: {
         name: string;
         lat: number;
@@ -236,7 +245,7 @@ export interface CreateCommentForm {
 export interface CreateGroupForm {
     name: string;
     description?: string;
-    privacy: 'public' | 'private' | 'secret';
+    privacy: "public" | "private" | "secret";
     cover_image?: File;
 }
 
@@ -245,7 +254,7 @@ export interface UpdateProfileForm {
     website?: string;
     location?: string;
     birth_date?: string;
-    profile_visibility: 'public' | 'friends' | 'private';
+    profile_visibility: "public" | "friends" | "private";
     interests?: string[];
     cover_photo?: File;
     social_links?: Record<string, string>;

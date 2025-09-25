@@ -103,7 +103,6 @@ interface Location {
     readonly eventCount: number;
 }
 
-
 interface HeaderProps {
     readonly auth: Auth;
     readonly breadcrumbs?: BreadcrumbItem[];
@@ -142,7 +141,6 @@ interface LocationSelectorProps {
 interface SearchBarProps {
     readonly className?: string;
 }
-
 
 interface MobileNavigationProps {
     readonly auth: Auth;
@@ -202,7 +200,7 @@ function SearchBar({ className }: SearchBarProps) {
 }
 
 function MessagesButton({ notifications }: { notifications?: any }) {
-    const messageNotifications = notifications?.notifications?.filter((n: any) => n.type === 'message') || [];
+    const messageNotifications = notifications?.notifications?.filter((n: any) => n.type === "message") || [];
     const unreadMessageCount = messageNotifications.filter((n: any) => !n.read).length;
 
     return (
@@ -272,14 +270,16 @@ function MobileNavigation({ auth, location }: MobileNavigationProps) {
                             <Button variant="ghost" onClick={() => navigate("/notifications")} className="w-full justify-start gap-3">
                                 <Bell className="size-4" />
                                 Notifications
-                                {(sharedNotifications?.unread_count || 0) > 0 && <Badge className="ml-auto">{sharedNotifications?.unread_count}</Badge>}
+                                {(sharedNotifications?.unread_count || 0) > 0 && (
+                                    <Badge className="ml-auto">{sharedNotifications?.unread_count}</Badge>
+                                )}
                             </Button>
                             <Button variant="ghost" onClick={() => navigate("/social/messages")} className="w-full justify-start gap-3">
                                 <MessageSquare className="size-4" />
                                 Messages
-                                {(sharedNotifications?.notifications?.filter(n => n.type === 'message' && !n.read).length || 0) > 0 && (
+                                {(sharedNotifications?.notifications?.filter((n) => n.type === "message" && !n.read).length || 0) > 0 && (
                                     <Badge className="ml-auto">
-                                        {sharedNotifications?.notifications?.filter(n => n.type === 'message' && !n.read).length}
+                                        {sharedNotifications?.notifications?.filter((n) => n.type === "message" && !n.read).length}
                                     </Badge>
                                 )}
                             </Button>

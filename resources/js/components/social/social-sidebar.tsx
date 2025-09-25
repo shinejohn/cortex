@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import type { SocialUserProfile, UserWithSocial, User } from "@/types/social";
+import type { SocialUserProfile, User, UserWithSocial } from "@/types/social";
 import { Link } from "@inertiajs/react";
 import axios from "axios";
 import { CalendarIcon, LinkIcon, MapPinIcon, UsersIcon } from "lucide-react";
@@ -17,11 +17,11 @@ interface SocialSidebarProps {
 export function SocialSidebar({ currentUser, userProfile, suggestedFriends }: SocialSidebarProps) {
     const handleSendFriendRequest = async (userId: number) => {
         try {
-            await axios.post(route('social.friend.request', userId));
+            await axios.post(route("social.friend.request", userId));
             // Refresh the page or update the UI to reflect the sent request
             window.location.reload();
         } catch (error) {
-            console.error('Error sending friend request:', error);
+            console.error("Error sending friend request:", error);
         }
     };
 
@@ -42,9 +42,7 @@ export function SocialSidebar({ currentUser, userProfile, suggestedFriends }: So
                     </div>
                 </CardHeader>
                 <CardContent className="pt-0">
-                    {userProfile?.bio && (
-                        <p className="text-sm text-muted-foreground mb-3">{userProfile.bio}</p>
-                    )}
+                    {userProfile?.bio && <p className="text-sm text-muted-foreground mb-3">{userProfile.bio}</p>}
 
                     <div className="space-y-2 text-sm">
                         {userProfile?.location && (
@@ -57,12 +55,7 @@ export function SocialSidebar({ currentUser, userProfile, suggestedFriends }: So
                         {userProfile?.website && (
                             <div className="flex items-center text-muted-foreground">
                                 <LinkIcon className="h-4 w-4 mr-2" />
-                                <a
-                                    href={userProfile.website}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="hover:underline"
-                                >
+                                <a href={userProfile.website} target="_blank" rel="noopener noreferrer" className="hover:underline">
                                     {userProfile.website}
                                 </a>
                             </div>
@@ -70,21 +63,18 @@ export function SocialSidebar({ currentUser, userProfile, suggestedFriends }: So
 
                         <div className="flex items-center text-muted-foreground">
                             <CalendarIcon className="h-4 w-4 mr-2" />
-                            Joined {new Date(currentUser.created_at).toLocaleDateString('en-US', {
-                                month: 'long',
-                                year: 'numeric'
+                            Joined{" "}
+                            {new Date(currentUser.created_at).toLocaleDateString("en-US", {
+                                month: "long",
+                                year: "numeric",
                             })}
                         </div>
                     </div>
 
                     <Separator className="my-4" />
 
-                    <Link href={route('social.profile', currentUser.id)}>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full"
-                        >
+                    <Link href={route("social.profile", currentUser.id)}>
+                        <Button variant="outline" size="sm" className="w-full">
                             View Profile
                         </Button>
                     </Link>
@@ -139,9 +129,7 @@ export function SocialSidebar({ currentUser, userProfile, suggestedFriends }: So
                                         <div>
                                             <div className="font-medium text-sm">{friend.name}</div>
                                             {friend.social_profile?.location && (
-                                                <div className="text-xs text-muted-foreground">
-                                                    {friend.social_profile.location}
-                                                </div>
+                                                <div className="text-xs text-muted-foreground">{friend.social_profile.location}</div>
                                             )}
                                         </div>
                                     </div>
@@ -151,19 +139,15 @@ export function SocialSidebar({ currentUser, userProfile, suggestedFriends }: So
                                         onClick={() => handleSendFriendRequest(friend.id)}
                                         disabled={friend.has_pending_friend_request}
                                     >
-                                        {friend.has_pending_friend_request ? 'Pending' : 'Add'}
+                                        {friend.has_pending_friend_request ? "Pending" : "Add"}
                                     </Button>
                                 </div>
                             ))}
                         </div>
 
                         {suggestedFriends.length > 3 && (
-                            <Link href={route('social.friends.index')}>
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="w-full mt-4"
-                                >
+                            <Link href={route("social.friends.index")}>
+                                <Button variant="ghost" size="sm" className="w-full mt-4">
                                     See All Suggestions
                                 </Button>
                             </Link>
@@ -179,22 +163,14 @@ export function SocialSidebar({ currentUser, userProfile, suggestedFriends }: So
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-2">
-                        <Link href={route('social.groups.index')}>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="w-full justify-start"
-                            >
+                        <Link href={route("social.groups.index")}>
+                            <Button variant="ghost" size="sm" className="w-full justify-start">
                                 <UsersIcon className="h-4 w-4 mr-2" />
                                 Browse Groups
                             </Button>
                         </Link>
-                        <Link href={route('social.friends.index')}>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="w-full justify-start"
-                            >
+                        <Link href={route("social.friends.index")}>
+                            <Button variant="ghost" size="sm" className="w-full justify-start">
                                 <UsersIcon className="h-4 w-4 mr-2" />
                                 Find Friends
                             </Button>

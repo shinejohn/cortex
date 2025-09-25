@@ -1,7 +1,7 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import AppLayout from '@/layouts/app-layout';
-import { Head, Link } from '@inertiajs/react';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import AppLayout from "@/layouts/app-layout";
+import { Head, Link } from "@inertiajs/react";
 import axios from "axios";
 import {
     BriefcaseIcon,
@@ -18,9 +18,9 @@ import {
     ThumbsUpIcon,
     UserMinusIcon,
     UserPlusIcon,
-    UsersIcon
-} from 'lucide-react';
-import { useState } from 'react';
+    UsersIcon,
+} from "lucide-react";
+import { useState } from "react";
 
 interface User {
     id: string;
@@ -32,15 +32,17 @@ interface User {
         bio?: string;
         location?: string;
         website?: string;
-        work?: string;
-        education?: string;
-        relationship_status?: string;
-        birthday?: string;
+        birth_date?: string;
         profile_visibility: string;
         interests?: string[];
+        social_links?: string[];
+        show_email?: boolean;
+        show_location?: boolean;
+        cover_photo?: string;
     };
     is_friend_with_user?: boolean;
     has_pending_friend_request?: boolean;
+    created_at?: string;
 }
 
 interface Post {
@@ -54,17 +56,24 @@ interface Post {
     is_liked_by_user: boolean;
 }
 
+interface Friend {
+    id: string;
+    name: string;
+    avatar: string;
+}
+
 interface Props {
     profile_user: User;
     posts: Post[];
     current_user: User;
+    friends: Friend[];
+    friends_count: number;
 }
 
-export default function Profile({ profile_user, posts, current_user }: Props) {
-    const [activeTab, setActiveTab] = useState('posts');
+export default function Profile({ profile_user, posts, current_user, friends, friends_count }: Props) {
     const [friendshipStatus, setFriendshipStatus] = useState({
         is_friend: profile_user.is_friend_with_user || false,
-        has_pending_request: profile_user.has_pending_friend_request || false
+        has_pending_request: profile_user.has_pending_friend_request || false,
     });
     const [loading, setLoading] = useState(false);
     const isOwnProfile = profile_user.id === current_user.id;
@@ -77,29 +86,29 @@ export default function Profile({ profile_user, posts, current_user }: Props) {
             const response = await axios.post(`/social/users/${profile_user.id}/friend-request`);
             setFriendshipStatus({
                 is_friend: false,
-                has_pending_request: true
+                has_pending_request: true,
             });
         } catch (error) {
-            console.error('Error sending friend request:', error);
-            alert('Failed to send friend request. Please try again.');
+            console.error("Error sending friend request:", error);
+            alert("Failed to send friend request. Please try again.");
         } finally {
             setLoading(false);
         }
     };
 
     const handleRemoveFriend = async () => {
-        if (loading || !confirm('Are you sure you want to remove this friend?')) return;
+        if (loading || !confirm("Are you sure you want to remove this friend?")) return;
         setLoading(true);
 
         try {
             await axios.delete(`/social/friends/${profile_user.id}/remove`);
             setFriendshipStatus({
                 is_friend: false,
-                has_pending_request: false
+                has_pending_request: false,
             });
         } catch (error) {
-            console.error('Error removing friend:', error);
-            alert('Failed to remove friend. Please try again.');
+            console.error("Error removing friend:", error);
+            alert("Failed to remove friend. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -121,7 +130,7 @@ export default function Profile({ profile_user, posts, current_user }: Props) {
         const diffHours = Math.floor(diffMins / 60);
         const diffDays = Math.floor(diffHours / 24);
 
-        if (diffMins < 1) return 'Just now';
+        if (diffMins < 1) return "Just now";
         if (diffMins < 60) return `${diffMins}m ago`;
         if (diffHours < 24) return `${diffHours}h ago`;
         if (diffDays < 7) return `${diffDays}d ago`;
@@ -163,12 +172,8 @@ export default function Profile({ profile_user, posts, current_user }: Props) {
                             {/* Profile info */}
                             <div className="flex-1 text-center sm:text-left">
                                 <h1 className="text-2xl font-bold text-gray-900">{profile_user.name}</h1>
-                                {profile_user.username && (
-                                    <p className="text-gray-600">@{profile_user.username}</p>
-                                )}
-                                {profile_user.social_profile?.bio && (
-                                    <p className="text-gray-700 mt-2">{profile_user.social_profile.bio}</p>
-                                )}
+                                {profile_user.username && <p className="text-gray-600">@{profile_user.username}</p>}
+                                {profile_user.social_profile?.bio && <p className="text-gray-700 mt-2">{profile_user.social_profile.bio}</p>}
 
                                 {/* Profile details */}
                                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 mt-3 text-sm text-gray-600">
@@ -178,10 +183,10 @@ export default function Profile({ profile_user, posts, current_user }: Props) {
                                             {profile_user.social_profile.location}
                                         </div>
                                     )}
-                                    {profile_user.social_profile?.work && (
+                                    {profile_user.social_profile?.location && profile_user.social_profile.show_location && (
                                         <div className="flex items-center">
                                             <BriefcaseIcon className="h-4 w-4 mr-1" />
-                                            {profile_user.social_profile.work}
+                                            {profile_user.social_profile.location}
                                         </div>
                                     )}
                                     {profile_user.social_profile?.website && (
@@ -197,10 +202,12 @@ export default function Profile({ profile_user, posts, current_user }: Props) {
                                             </a>
                                         </div>
                                     )}
-                                    <div className="flex items-center">
-                                        <CalendarIcon className="h-4 w-4 mr-1" />
-                                        Joined January 2024
-                                    </div>
+                                    {profile_user.created_at && (
+                                        <div className="flex items-center">
+                                            <CalendarIcon className="h-4 w-4 mr-1" />
+                                            Joined {new Date(profile_user.created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Interests */}
@@ -229,13 +236,9 @@ export default function Profile({ profile_user, posts, current_user }: Props) {
                                 ) : (
                                     <>
                                         {friendshipStatus.is_friend ? (
-                                            <Button
-                                                variant="outline"
-                                                onClick={handleRemoveFriend}
-                                                disabled={loading}
-                                            >
+                                            <Button variant="outline" onClick={handleRemoveFriend} disabled={loading}>
                                                 <UsersIcon className="h-4 w-4 mr-2" />
-                                                {loading ? 'Removing...' : 'Friends'}
+                                                {loading ? "Removing..." : "Friends"}
                                             </Button>
                                         ) : friendshipStatus.has_pending_request ? (
                                             <Button variant="outline" disabled>
@@ -243,12 +246,9 @@ export default function Profile({ profile_user, posts, current_user }: Props) {
                                                 Request Sent
                                             </Button>
                                         ) : (
-                                            <Button
-                                                onClick={handleSendFriendRequest}
-                                                disabled={loading}
-                                            >
+                                            <Button onClick={handleSendFriendRequest} disabled={loading}>
                                                 <UserPlusIcon className="h-4 w-4 mr-2" />
-                                                {loading ? 'Sending...' : 'Add Friend'}
+                                                {loading ? "Sending..." : "Add Friend"}
                                             </Button>
                                         )}
                                         <Link href={`/social/messages/${profile_user.id}`}>
@@ -274,31 +274,40 @@ export default function Profile({ profile_user, posts, current_user }: Props) {
                                 <h3 className="text-lg font-semibold text-gray-900 mb-4">About</h3>
 
                                 <div className="space-y-4">
-                                    {profile_user.social_profile?.work && (
+                                    {profile_user.social_profile?.bio && (
                                         <div>
-                                            <h4 className="text-sm font-medium text-gray-700 mb-1">Work</h4>
-                                            <p className="text-sm text-gray-600">{profile_user.social_profile.work}</p>
+                                            <h4 className="text-sm font-medium text-gray-700 mb-1">Bio</h4>
+                                            <p className="text-sm text-gray-600">{profile_user.social_profile.bio}</p>
                                         </div>
                                     )}
 
-                                    {profile_user.social_profile?.education && (
+                                    {profile_user.social_profile?.location && profile_user.social_profile.show_location && (
                                         <div>
-                                            <h4 className="text-sm font-medium text-gray-700 mb-1">Education</h4>
-                                            <p className="text-sm text-gray-600">{profile_user.social_profile.education}</p>
+                                            <h4 className="text-sm font-medium text-gray-700 mb-1">Location</h4>
+                                            <p className="text-sm text-gray-600">{profile_user.social_profile.location}</p>
                                         </div>
                                     )}
 
-                                    {profile_user.social_profile?.relationship_status && (
+                                    {profile_user.social_profile?.website && (
                                         <div>
-                                            <h4 className="text-sm font-medium text-gray-700 mb-1">Relationship Status</h4>
-                                            <p className="text-sm text-gray-600">{profile_user.social_profile.relationship_status}</p>
+                                            <h4 className="text-sm font-medium text-gray-700 mb-1">Website</h4>
+                                            <a
+                                                href={profile_user.social_profile.website}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-sm text-primary hover:text-primary/80"
+                                            >
+                                                {profile_user.social_profile.website}
+                                            </a>
                                         </div>
                                     )}
 
-                                    {profile_user.social_profile?.birthday && (
+                                    {profile_user.social_profile?.birth_date && (
                                         <div>
                                             <h4 className="text-sm font-medium text-gray-700 mb-1">Birthday</h4>
-                                            <p className="text-sm text-gray-600">{profile_user.social_profile.birthday}</p>
+                                            <p className="text-sm text-gray-600">
+                                                {new Date(profile_user.social_profile.birth_date).toLocaleDateString()}
+                                            </p>
                                         </div>
                                     )}
                                 </div>
@@ -308,157 +317,99 @@ export default function Profile({ profile_user, posts, current_user }: Props) {
                             <div className="bg-white rounded-lg shadow p-6 mt-6">
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="text-lg font-semibold text-gray-900">Friends</h3>
-                                    <Link
-                                        href={`/social/profile/${profile_user.id}/friends`}
-                                        className="text-sm text-primary hover:text-primary/80"
-                                    >
+                                    <Link href={`/social/profile/${profile_user.id}/friends`} className="text-sm text-primary hover:text-primary/80">
                                         See all
                                     </Link>
                                 </div>
-                                <p className="text-sm text-gray-600 mb-4">347 friends</p>
-                                <div className="grid grid-cols-3 gap-2">
-                                    {/* Mock friend avatars */}
-                                    {[1, 2, 3, 4, 5, 6].map(i => (
-                                        <div key={i} className="aspect-square rounded-lg overflow-hidden bg-gray-200">
-                                            <img
-                                                src={`https://images.unsplash.com/photo-${1500000000000 + i}000-000000000000?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80`}
-                                                alt="Friend"
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
+                                <p className="text-sm text-gray-600 mb-4">
+                                    {friends_count} {friends_count === 1 ? "friend" : "friends"}
+                                </p>
+                                {friends.length > 0 ? (
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {friends.slice(0, 6).map((friend) => (
+                                            <Link key={friend.id} href={`/social/profile/${friend.id}`}>
+                                                <div className="aspect-square rounded-lg overflow-hidden bg-gray-200 hover:opacity-80 transition-opacity">
+                                                    <img
+                                                        src={friend.avatar}
+                                                        alt={friend.name}
+                                                        className="w-full h-full object-cover"
+                                                        title={friend.name}
+                                                    />
+                                                </div>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="text-sm text-gray-500">No friends yet</p>
+                                )}
                             </div>
                         </div>
 
                         {/* Main content - Posts */}
                         <div className="lg:col-span-2">
-                            {/* Tabs */}
-                            <div className="bg-white rounded-lg shadow mb-6">
-                                <div className="border-b border-gray-200">
-                                    <nav className="flex">
-                                        <button
-                                            onClick={() => setActiveTab('posts')}
-                                            className={`px-6 py-4 text-sm font-medium border-b-2 ${
-                                                activeTab === 'posts'
-                                                    ? 'border-primary text-primary'
-                                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                                            }`}
-                                        >
-                                            Posts
-                                        </button>
-                                        <button
-                                            onClick={() => setActiveTab('photos')}
-                                            className={`px-6 py-4 text-sm font-medium border-b-2 ${
-                                                activeTab === 'photos'
-                                                    ? 'border-primary text-primary'
-                                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                                            }`}
-                                        >
-                                            Photos
-                                        </button>
-                                        <button
-                                            onClick={() => setActiveTab('videos')}
-                                            className={`px-6 py-4 text-sm font-medium border-b-2 ${
-                                                activeTab === 'videos'
-                                                    ? 'border-primary text-primary'
-                                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                                            }`}
-                                        >
-                                            Videos
-                                        </button>
-                                    </nav>
-                                </div>
-                            </div>
-
-                            {/* Posts content */}
-                            {activeTab === 'posts' && (
-                                <div className="space-y-6">
-                                    {posts.length > 0 ? (
-                                        posts.map(post => (
-                                            <div key={post.id} className="bg-white rounded-lg shadow p-6">
-                                                {/* Post header */}
-                                                <div className="flex items-center justify-between mb-4">
-                                                    <div className="flex items-center space-x-3">
-                                                        <img
-                                                            src={profile_user.avatar}
-                                                            alt={profile_user.name}
-                                                            className="w-10 h-10 rounded-full"
-                                                        />
-                                                        <div>
-                                                            <h3 className="font-medium text-gray-900">{profile_user.name}</h3>
-                                                            <p className="text-sm text-gray-500">{formatDate(post.created_at)}</p>
-                                                        </div>
+                            <div className="space-y-6">
+                                {posts.length > 0 ? (
+                                    posts.map((post) => (
+                                        <div key={post.id} className="bg-white rounded-lg shadow p-6">
+                                            {/* Post header */}
+                                            <div className="flex items-center justify-between mb-4">
+                                                <div className="flex items-center space-x-3">
+                                                    <img src={profile_user.avatar} alt={profile_user.name} className="w-10 h-10 rounded-full" />
+                                                    <div>
+                                                        <h3 className="font-medium text-gray-900">{profile_user.name}</h3>
+                                                        <p className="text-sm text-gray-500">{formatDate(post.created_at)}</p>
                                                     </div>
-                                                    <button className="text-gray-400 hover:text-gray-600">
-                                                        <MoreHorizontalIcon className="h-5 w-5" />
-                                                    </button>
                                                 </div>
-
-                                                {/* Post content */}
-                                                <div className="mb-4">
-                                                    <p className="text-gray-800 whitespace-pre-line">{post.content}</p>
-                                                    {post.media && post.media.length > 0 && (
-                                                        <div className="mt-3 grid grid-cols-1 gap-2">
-                                                            {post.media.map((media, index) => (
-                                                                <img
-                                                                    key={index}
-                                                                    src={media}
-                                                                    alt="Post media"
-                                                                    className="rounded-lg w-full h-64 object-cover"
-                                                                />
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                {/* Post actions */}
-                                                <div className="flex items-center justify-between border-t border-gray-100 pt-3">
-                                                    <button
-                                                        onClick={() =>
-                                                            post.is_liked_by_user
-                                                                ? handleUnlikePost(post.id)
-                                                                : handleLikePost(post.id)
-                                                        }
-                                                        className={`flex items-center space-x-2 ${
-                                                            post.is_liked_by_user
-                                                                ? 'text-primary'
-                                                                : 'text-gray-500 hover:text-gray-700'
-                                                        }`}
-                                                    >
-                                                        <ThumbsUpIcon className="h-5 w-5" />
-                                                        <span>{post.likes_count}</span>
-                                                    </button>
-                                                    <button className="flex items-center space-x-2 text-gray-500 hover:text-gray-700">
-                                                        <MessageCircleIcon className="h-5 w-5" />
-                                                        <span>{post.comments_count}</span>
-                                                    </button>
-                                                    <button className="flex items-center space-x-2 text-gray-500 hover:text-gray-700">
-                                                        <ShareIcon className="h-5 w-5" />
-                                                        <span>{post.shares_count}</span>
-                                                    </button>
-                                                </div>
+                                                <button className="text-gray-400 hover:text-gray-600">
+                                                    <MoreHorizontalIcon className="h-5 w-5" />
+                                                </button>
                                             </div>
-                                        ))
-                                    ) : (
-                                        <div className="bg-white rounded-lg shadow p-8 text-center">
-                                            <p className="text-gray-500">No posts yet.</p>
+
+                                            {/* Post content */}
+                                            <div className="mb-4">
+                                                <p className="text-gray-800 whitespace-pre-line">{post.content}</p>
+                                                {post.media && post.media.length > 0 && (
+                                                    <div className="mt-3 grid grid-cols-1 gap-2">
+                                                        {post.media.map((media, index) => (
+                                                            <img
+                                                                key={index}
+                                                                src={media}
+                                                                alt="Post media"
+                                                                className="rounded-lg w-full h-64 object-cover"
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Post actions */}
+                                            <div className="flex items-center justify-between border-t border-gray-100 pt-3">
+                                                <button
+                                                    onClick={() => (post.is_liked_by_user ? handleUnlikePost(post.id) : handleLikePost(post.id))}
+                                                    className={`flex items-center space-x-2 ${
+                                                        post.is_liked_by_user ? "text-primary" : "text-gray-500 hover:text-gray-700"
+                                                    }`}
+                                                >
+                                                    <ThumbsUpIcon className="h-5 w-5" />
+                                                    <span>{post.likes_count}</span>
+                                                </button>
+                                                <button className="flex items-center space-x-2 text-gray-500 hover:text-gray-700">
+                                                    <MessageCircleIcon className="h-5 w-5" />
+                                                    <span>{post.comments_count}</span>
+                                                </button>
+                                                <button className="flex items-center space-x-2 text-gray-500 hover:text-gray-700">
+                                                    <ShareIcon className="h-5 w-5" />
+                                                    <span>{post.shares_count}</span>
+                                                </button>
+                                            </div>
                                         </div>
-                                    )}
-                                </div>
-                            )}
-
-                            {activeTab === 'photos' && (
-                                <div className="bg-white rounded-lg shadow p-6">
-                                    <p className="text-gray-500 text-center">No photos to show.</p>
-                                </div>
-                            )}
-
-                            {activeTab === 'videos' && (
-                                <div className="bg-white rounded-lg shadow p-6">
-                                    <p className="text-gray-500 text-center">No videos to show.</p>
-                                </div>
-                            )}
+                                    ))
+                                ) : (
+                                    <div className="bg-white rounded-lg shadow p-8 text-center">
+                                        <p className="text-gray-500">No posts yet.</p>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

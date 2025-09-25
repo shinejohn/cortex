@@ -8,8 +8,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import type { ThreadPageProps } from "@/types/community";
-import { Head, usePage, Link, router } from "@inertiajs/react";
-import axios from 'axios';
+import { Head, Link, router, usePage } from "@inertiajs/react";
+import axios from "axios";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
@@ -104,12 +104,12 @@ export default function ThreadDetail() {
         setIsSubmitting(true);
         try {
             await axios.post(`/community/thread/${thread.id}/replies`, {
-                content: replyContent.trim()
+                content: replyContent.trim(),
             });
             setReplyContent("");
             window.location.reload();
         } catch (error) {
-            console.error('Failed to submit reply:', error);
+            console.error("Failed to submit reply:", error);
         } finally {
             setIsSubmitting(false);
         }
@@ -242,9 +242,7 @@ export default function ThreadDetail() {
                                         </Button>
                                     ) : (
                                         <Link href="/login">
-                                            <Button variant="outline">
-                                                Sign in to Reply
-                                            </Button>
+                                            <Button variant="outline">Sign in to Reply</Button>
                                         </Link>
                                     )}
                                     {thread.isLocked && <p className="text-sm text-muted-foreground ml-2">This thread is locked.</p>}
@@ -313,9 +311,7 @@ export default function ThreadDetail() {
                                 <div className="text-center py-8 text-muted-foreground">
                                     <p className="mb-2">Related threads will appear here based on tags and content similarity.</p>
                                     <Link href={`/community/${community.id}`}>
-                                        <Button variant="outline">
-                                            View All {community.name} Threads
-                                        </Button>
+                                        <Button variant="outline">View All {community.name} Threads</Button>
                                     </Link>
                                 </div>
                             </CardContent>

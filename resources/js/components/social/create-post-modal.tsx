@@ -3,12 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import type { CreatePostForm, SocialPost } from "@/types/social";
 import type { User } from "@/types";
-import { route } from "ziggy-js";
+import type { CreatePostForm, SocialPost } from "@/types/social";
 import axios from "axios";
-import { ImageIcon, MapPinIcon, GlobeIcon, UsersIcon, LockIcon, X } from "lucide-react";
+import { GlobeIcon, ImageIcon, LockIcon, MapPinIcon, UsersIcon, X } from "lucide-react";
 import { useState } from "react";
+import { route } from "ziggy-js";
 
 interface CreatePostModalProps {
     isOpen: boolean;
@@ -19,8 +19,8 @@ interface CreatePostModalProps {
 
 export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: CreatePostModalProps) {
     const [formData, setFormData] = useState<CreatePostForm>({
-        content: '',
-        visibility: 'public',
+        content: "",
+        visibility: "public",
         media: undefined,
         location: undefined,
     });
@@ -32,19 +32,19 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
 
         setIsSubmitting(true);
         try {
-            const response = await axios.post(route('social.posts.create'), formData);
+            const response = await axios.post(route("social.posts.create"), formData);
             if (response.data.post) {
                 onPost(response.data.post);
                 setFormData({
-                    content: '',
-                    visibility: 'public',
+                    content: "",
+                    visibility: "public",
                     media: undefined,
                     location: undefined,
                 });
                 setMediaPreview([]);
             }
         } catch (error) {
-            console.error('Failed to create post:', error);
+            console.error("Failed to create post:", error);
         } finally {
             setIsSubmitting(false);
         }
@@ -55,27 +55,27 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
         if (files.length === 0) return;
 
         // Filter to only image files
-        const imageFiles = files.filter(file => file.type.startsWith('image/'));
+        const imageFiles = files.filter((file) => file.type.startsWith("image/"));
         if (imageFiles.length === 0) {
-            alert('Please select only image files');
+            alert("Please select only image files");
             return;
         }
 
         // Check if total would exceed 4 images
         const currentMediaCount = formData.media?.length || 0;
         if (currentMediaCount + imageFiles.length > 4) {
-            alert('You can upload a maximum of 4 images');
+            alert("You can upload a maximum of 4 images");
             return;
         }
 
         try {
             const uploadPromises = imageFiles.map(async (file) => {
                 const formData = new FormData();
-                formData.append('image', file);
+                formData.append("image", file);
 
-                const response = await axios.post(route('social.images.upload'), formData, {
+                const response = await axios.post(route("social.images.upload"), formData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        "Content-Type": "multipart/form-data",
                     },
                 });
 
@@ -85,35 +85,34 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
             const uploadedUrls = await Promise.all(uploadPromises);
 
             // Update form data with uploaded URLs (as strings, not files)
-            setFormData(prev => ({
+            setFormData((prev) => ({
                 ...prev,
-                media: [...(prev.media || []), ...uploadedUrls]
+                media: [...(prev.media || []), ...uploadedUrls],
             }));
 
             // Update preview with the same URLs
-            setMediaPreview(prev => [...prev, ...uploadedUrls]);
-
+            setMediaPreview((prev) => [...prev, ...uploadedUrls]);
         } catch (error) {
-            console.error('Failed to upload images:', error);
-            alert('Failed to upload images. Please try again.');
+            console.error("Failed to upload images:", error);
+            alert("Failed to upload images. Please try again.");
         }
     };
 
     const removeImage = (index: number) => {
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            media: prev.media?.filter((_, i) => i !== index)
+            media: prev.media?.filter((_, i) => i !== index),
         }));
-        setMediaPreview(prev => prev.filter((_, i) => i !== index));
+        setMediaPreview((prev) => prev.filter((_, i) => i !== index));
     };
 
     const visibilityOptions = [
-        { value: 'public', label: 'Public', icon: GlobeIcon, description: 'Anyone can see' },
-        { value: 'friends', label: 'Friends', icon: UsersIcon, description: 'Friends only' },
-        { value: 'private', label: 'Only me', icon: LockIcon, description: 'Only you can see' },
+        { value: "public", label: "Public", icon: GlobeIcon, description: "Anyone can see" },
+        { value: "friends", label: "Friends", icon: UsersIcon, description: "Friends only" },
+        { value: "private", label: "Only me", icon: LockIcon, description: "Only you can see" },
     ];
 
-    const selectedVisibility = visibilityOptions.find(option => option.value === formData.visibility);
+    const selectedVisibility = visibilityOptions.find((option) => option.value === formData.visibility);
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -133,16 +132,12 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
                             <div className="font-semibold">{currentUser.name}</div>
                             <Select
                                 value={formData.visibility}
-                                onValueChange={(value: 'public' | 'friends' | 'private') =>
-                                    setFormData(prev => ({ ...prev, visibility: value }))
-                                }
+                                onValueChange={(value: "public" | "friends" | "private") => setFormData((prev) => ({ ...prev, visibility: value }))}
                             >
                                 <SelectTrigger className="w-fit border-none p-0 h-auto shadow-none">
                                     <SelectValue>
                                         <div className="flex items-center text-sm text-muted-foreground">
-                                            {selectedVisibility && (
-                                                <selectedVisibility.icon className="h-3 w-3 mr-1" />
-                                            )}
+                                            {selectedVisibility && <selectedVisibility.icon className="h-3 w-3 mr-1" />}
                                             {selectedVisibility?.label}
                                         </div>
                                     </SelectValue>
@@ -154,9 +149,7 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
                                                 <option.icon className="h-4 w-4 mr-2" />
                                                 <div>
                                                     <div className="font-medium">{option.label}</div>
-                                                    <div className="text-xs text-muted-foreground">
-                                                        {option.description}
-                                                    </div>
+                                                    <div className="text-xs text-muted-foreground">{option.description}</div>
                                                 </div>
                                             </div>
                                         </SelectItem>
@@ -168,9 +161,9 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
 
                     {/* Content textarea */}
                     <Textarea
-                        placeholder={`What's on your mind, ${currentUser.name.split(' ')[0]}?`}
+                        placeholder={`What's on your mind, ${currentUser.name.split(" ")[0]}?`}
                         value={formData.content}
-                        onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, content: e.target.value }))}
                         className="min-h-[120px] border-none resize-none text-lg placeholder:text-lg focus-visible:ring-0"
                     />
 
@@ -179,11 +172,7 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
                         <div className="grid grid-cols-2 gap-2">
                             {mediaPreview.map((mediaUrl, index) => (
                                 <div key={index} className="relative">
-                                    <img
-                                        src={mediaUrl}
-                                        alt=""
-                                        className="rounded-lg object-cover w-full h-32"
-                                    />
+                                    <img src={mediaUrl} alt="" className="rounded-lg object-cover w-full h-32" />
                                     <Button
                                         variant="secondary"
                                         size="sm"
@@ -202,11 +191,7 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
                         <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                             <MapPinIcon className="h-4 w-4" />
                             <span>{formData.location.name}</span>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setFormData(prev => ({ ...prev, location: undefined }))}
-                            >
+                            <Button variant="ghost" size="sm" onClick={() => setFormData((prev) => ({ ...prev, location: undefined }))}>
                                 Remove
                             </Button>
                         </div>
@@ -220,14 +205,7 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
                                     <ImageIcon className="h-4 w-4 mr-2" />
                                     Photo
                                 </label>
-                                <input
-                                    id="media-upload"
-                                    type="file"
-                                    accept="image/*"
-                                    multiple
-                                    className="hidden"
-                                    onChange={handleMediaUpload}
-                                />
+                                <input id="media-upload" type="file" accept="image/*" multiple className="hidden" onChange={handleMediaUpload} />
                             </Button>
                             <Button
                                 variant="ghost"
@@ -235,9 +213,9 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
                                 className="text-muted-foreground"
                                 onClick={() => {
                                     // In a real app, you'd show a location picker
-                                    setFormData(prev => ({
+                                    setFormData((prev) => ({
                                         ...prev,
-                                        location: { name: 'Current Location', lat: 0, lng: 0 }
+                                        location: { name: "Current Location", lat: 0, lng: 0 },
                                     }));
                                 }}
                             >
@@ -246,12 +224,8 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
                             </Button>
                         </div>
 
-                        <Button
-                            onClick={handleSubmit}
-                            disabled={!formData.content.trim() || isSubmitting}
-                            className="min-w-[80px]"
-                        >
-                            {isSubmitting ? 'Posting...' : 'Post'}
+                        <Button onClick={handleSubmit} disabled={!formData.content.trim() || isSubmitting} className="min-w-[80px]">
+                            {isSubmitting ? "Posting..." : "Post"}
                         </Button>
                     </div>
                 </div>

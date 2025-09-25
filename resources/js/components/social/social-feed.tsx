@@ -1,6 +1,6 @@
 import { SocialPostCard } from "@/components/social/social-post-card";
 import type { SocialPost, User } from "@/types/social";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface SocialFeedProps {
     posts: SocialPost[];
@@ -14,18 +14,16 @@ export function SocialFeed({ posts, currentUser, newPosts = [] }: SocialFeedProp
     // Add new posts to the top of the feed when they're created
     useEffect(() => {
         if (newPosts.length > 0) {
-            setFeedPosts(prev => [...newPosts, ...prev]);
+            setFeedPosts((prev) => [...newPosts, ...prev]);
         }
     }, [newPosts]);
 
     const handlePostUpdate = (updatedPost: SocialPost) => {
-        setFeedPosts(prev => prev.map(post =>
-            post.id === updatedPost.id ? updatedPost : post
-        ));
+        setFeedPosts((prev) => prev.map((post) => (post.id === updatedPost.id ? updatedPost : post)));
     };
 
     const handlePostDelete = (postId: string) => {
-        setFeedPosts(prev => prev.filter(post => post.id !== postId));
+        setFeedPosts((prev) => prev.filter((post) => post.id !== postId));
     };
 
     return (
@@ -42,16 +40,9 @@ export function SocialFeed({ posts, currentUser, newPosts = [] }: SocialFeedProp
                 </div>
             ) : (
                 feedPosts.map((post) => (
-                    <SocialPostCard
-                        key={post.id}
-                        post={post}
-                        currentUser={currentUser}
-                        onUpdate={handlePostUpdate}
-                        onDelete={handlePostDelete}
-                    />
+                    <SocialPostCard key={post.id} post={post} currentUser={currentUser} onUpdate={handlePostUpdate} onDelete={handlePostDelete} />
                 ))
             )}
-
         </div>
     );
 }

@@ -41,7 +41,7 @@ export default function VenuesPage() {
         Object.entries(updatedFilters).forEach(([key, value]) => {
             if (value) {
                 if (Array.isArray(value)) {
-                    value.forEach(v => searchParams.append(key + '[]', v.toString()));
+                    value.forEach((v) => searchParams.append(key + "[]", v.toString()));
                 } else {
                     searchParams.append(key, value.toString());
                 }
@@ -64,7 +64,7 @@ export default function VenuesPage() {
         Object.entries(updatedFilters).forEach(([key, value]) => {
             if (value) {
                 if (Array.isArray(value)) {
-                    value.forEach(v => searchParams.append(key + '[]', v.toString()));
+                    value.forEach((v) => searchParams.append(key + "[]", v.toString()));
                 } else {
                     searchParams.append(key, value.toString());
                 }
@@ -77,7 +77,7 @@ export default function VenuesPage() {
     const clearAllFilters = () => {
         setCurrentFilters({});
         setSearchQuery("");
-        window.location.href = '/venues';
+        window.location.href = "/venues";
     };
 
     const renderVenueContent = (venue: Venue) => (

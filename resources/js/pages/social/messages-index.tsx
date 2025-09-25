@@ -1,27 +1,27 @@
-import { Head, Link } from '@inertiajs/react';
-import { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import AppLayout from "@/layouts/app-layout";
+import { Head, Link } from "@inertiajs/react";
+import axios from "axios";
 import {
-    SearchIcon,
-    PaperclipIcon,
-    SmileIcon,
-    SendIcon,
-    PhoneIcon,
-    VideoIcon,
-    InfoIcon,
-    MoreHorizontalIcon,
-    ImageIcon,
-    FileIcon,
-    MicIcon,
-    MapPinIcon,
     CheckIcon,
+    FileIcon,
+    ImageIcon,
+    InfoIcon,
+    MapPinIcon,
+    MessageCircleIcon,
+    MicIcon,
+    MoreHorizontalIcon,
+    PaperclipIcon,
+    PhoneIcon,
     PlusIcon,
+    SearchIcon,
+    SendIcon,
+    SmileIcon,
     UserPlusIcon,
-    MessageCircleIcon
-} from 'lucide-react';
-import AppLayout from '@/layouts/app-layout';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+    VideoIcon,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface Participant {
     id: string;
@@ -66,22 +66,22 @@ interface Props {
 }
 
 export default function MessagesIndex({ conversations, selected_conversation, messages = [], current_user }: Props) {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [messageText, setMessageText] = useState('');
+    const [searchQuery, setSearchQuery] = useState("");
+    const [messageText, setMessageText] = useState("");
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Scroll to bottom of messages
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({
-            behavior: 'smooth'
+            behavior: "smooth",
         });
     }, [messages]);
 
     const formatMessageTime = (timestamp: string) => {
         const date = new Date(timestamp);
         return date.toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit'
+            hour: "2-digit",
+            minute: "2-digit",
         });
     };
 
@@ -92,29 +92,29 @@ export default function MessagesIndex({ conversations, selected_conversation, me
         yesterday.setDate(yesterday.getDate() - 1);
 
         if (date.toDateString() === today.toDateString()) {
-            return 'Today';
+            return "Today";
         } else if (date.toDateString() === yesterday.toDateString()) {
-            return 'Yesterday';
+            return "Yesterday";
         } else {
             return date.toLocaleDateString(undefined, {
-                weekday: 'long',
-                month: 'long',
-                day: 'numeric'
+                weekday: "long",
+                month: "long",
+                day: "numeric",
             });
         }
     };
 
     const groupMessagesByDate = () => {
         const groups: { date: string; messages: Message[] }[] = [];
-        let currentDate = '';
+        let currentDate = "";
 
-        messages.forEach(message => {
+        messages.forEach((message) => {
             const messageDate = new Date(message.timestamp).toDateString();
             if (messageDate !== currentDate) {
                 currentDate = messageDate;
                 groups.push({
                     date: formatMessageDate(message.timestamp),
-                    messages: [message]
+                    messages: [message],
                 });
             } else {
                 groups[groups.length - 1].messages.push(message);
@@ -130,29 +130,27 @@ export default function MessagesIndex({ conversations, selected_conversation, me
 
         try {
             await axios.post(`/social/messages/${selected_conversation}`, {
-                message: messageText
+                message: messageText,
             });
-            setMessageText('');
+            setMessageText("");
             // Optionally reload the page or fetch new messages
             window.location.reload();
         } catch (error) {
-            console.error('Failed to send message:', error);
+            console.error("Failed to send message:", error);
         }
     };
 
-    const filteredConversations = conversations.filter(conv => {
+    const filteredConversations = conversations.filter((conv) => {
         if (!searchQuery) return true;
 
         if (conv.group && conv.name) {
             return conv.name.toLowerCase().includes(searchQuery.toLowerCase());
         }
 
-        return conv.participants.some(p =>
-            p.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        return conv.participants.some((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
     });
 
-    const currentConversation = conversations.find(c => c.id === selected_conversation);
+    const currentConversation = conversations.find((c) => c.id === selected_conversation);
 
     return (
         <AppLayout>
@@ -175,16 +173,9 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                     <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                                 </div>
                                 <div className="mt-2 flex justify-between">
-                                    <button className="text-sm text-primary font-medium">
-                                        All Messages
-                                    </button>
-                                    <button className="text-sm text-gray-600 font-medium">
-                                        Unread
-                                    </button>
-                                    <Link
-                                        href="/social/messages/new"
-                                        className="text-sm text-primary font-medium flex items-center"
-                                    >
+                                    <button className="text-sm text-primary font-medium">All Messages</button>
+                                    <button className="text-sm text-gray-600 font-medium">Unread</button>
+                                    <Link href="/social/messages/new" className="text-sm text-primary font-medium flex items-center">
                                         <PlusIcon className="h-4 w-4 mr-1" />
                                         New Message
                                     </Link>
@@ -192,14 +183,12 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                             </div>
 
                             <div className="overflow-y-auto flex-1">
-                                {filteredConversations.map(conversation => (
+                                {filteredConversations.map((conversation) => (
                                     <Link
                                         key={conversation.id}
                                         href={`/social/messages/${conversation.id}`}
                                         className={`block p-3 border-b border-gray-100 cursor-pointer ${
-                                            selected_conversation === conversation.id
-                                                ? 'bg-primary/10'
-                                                : 'hover:bg-gray-50'
+                                            selected_conversation === conversation.id ? "bg-primary/10" : "hover:bg-gray-50"
                                         }`}
                                     >
                                         <div className="flex items-center">
@@ -221,7 +210,7 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                                 {!conversation.group && conversation.participants[0].online && (
                                                     <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-400 ring-2 ring-white"></span>
                                                 )}
-                                                {conversation.participants[0].type === 'venue' && (
+                                                {conversation.participants[0].type === "venue" && (
                                                     <span className="absolute bottom-0 right-0 block h-5 w-5 rounded-full bg-blue-100 ring-2 ring-white text-blue-600 flex items-center justify-center text-xs">
                                                         V
                                                     </span>
@@ -232,21 +221,18 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                             <div className="ml-3 flex-1 overflow-hidden">
                                                 <div className="flex items-center justify-between">
                                                     <h3 className="text-sm font-medium text-gray-900 truncate">
-                                                        {conversation.group
-                                                            ? conversation.name
-                                                            : conversation.participants[0].name
-                                                        }
+                                                        {conversation.group ? conversation.name : conversation.participants[0].name}
                                                     </h3>
                                                     <span className="text-xs text-gray-500">
                                                         {formatMessageTime(conversation.last_message.timestamp)}
                                                     </span>
                                                 </div>
-                                                <p className={`text-sm truncate ${
-                                                    conversation.unread > 0
-                                                        ? 'font-medium text-gray-900'
-                                                        : 'text-gray-500'
-                                                }`}>
-                                                    {conversation.last_message.sender === current_user.id && 'You: '}
+                                                <p
+                                                    className={`text-sm truncate ${
+                                                        conversation.unread > 0 ? "font-medium text-gray-900" : "text-gray-500"
+                                                    }`}
+                                                >
+                                                    {conversation.last_message.sender === current_user.id && "You: "}
                                                     {conversation.last_message.text}
                                                 </p>
                                             </div>
@@ -277,12 +263,8 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                                     className="h-10 w-10 rounded-lg object-cover"
                                                 />
                                                 <div className="ml-3">
-                                                    <h2 className="text-lg font-medium text-gray-900">
-                                                        {currentConversation.name}
-                                                    </h2>
-                                                    <p className="text-xs text-gray-500">
-                                                        {currentConversation.participants.length} members
-                                                    </p>
+                                                    <h2 className="text-lg font-medium text-gray-900">{currentConversation.name}</h2>
+                                                    <p className="text-xs text-gray-500">{currentConversation.participants.length} members</p>
                                                 </div>
                                             </>
                                         ) : (
@@ -293,11 +275,9 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                                     className="h-10 w-10 rounded-full object-cover"
                                                 />
                                                 <div className="ml-3">
-                                                    <h2 className="text-lg font-medium text-gray-900">
-                                                        {currentConversation.participants[0].name}
-                                                    </h2>
+                                                    <h2 className="text-lg font-medium text-gray-900">{currentConversation.participants[0].name}</h2>
                                                     <p className="text-xs text-gray-500">
-                                                        {currentConversation.participants[0].online ? 'Online now' : 'Offline'}
+                                                        {currentConversation.participants[0].online ? "Online now" : "Offline"}
                                                     </p>
                                                 </div>
                                             </>
@@ -324,50 +304,42 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                     {groupMessagesByDate().map((group, groupIndex) => (
                                         <div key={groupIndex} className="mb-6">
                                             <div className="flex justify-center mb-4">
-                                                <span className="px-3 py-1 bg-gray-200 text-gray-600 text-xs rounded-full">
-                                                    {group.date}
-                                                </span>
+                                                <span className="px-3 py-1 bg-gray-200 text-gray-600 text-xs rounded-full">{group.date}</span>
                                             </div>
                                             {group.messages.map((message, messageIndex) => {
                                                 const isSelf = message.sender === current_user.id;
                                                 const showAvatar = messageIndex === 0 || group.messages[messageIndex - 1].sender !== message.sender;
 
                                                 return (
-                                                    <div
-                                                        key={message.id}
-                                                        className={`flex mb-4 ${isSelf ? 'justify-end' : 'justify-start'}`}
-                                                    >
+                                                    <div key={message.id} className={`flex mb-4 ${isSelf ? "justify-end" : "justify-start"}`}>
                                                         {!isSelf && showAvatar && (
                                                             <img
-                                                                src={currentConversation?.participants.find(p => p.id === message.sender)?.avatar || ''}
+                                                                src={
+                                                                    currentConversation?.participants.find((p) => p.id === message.sender)?.avatar ||
+                                                                    ""
+                                                                }
                                                                 alt="Avatar"
                                                                 className="h-8 w-8 rounded-full mr-2 mt-1"
                                                             />
                                                         )}
                                                         {!isSelf && !showAvatar && <div className="w-8 mr-2"></div>}
-                                                        <div className={`max-w-xs lg:max-w-md ${isSelf ? 'order-1' : 'order-2'}`}>
+                                                        <div className={`max-w-xs lg:max-w-md ${isSelf ? "order-1" : "order-2"}`}>
                                                             <div
                                                                 className={`px-4 py-2 rounded-lg ${
-                                                                    isSelf
-                                                                        ? 'bg-primary text-white'
-                                                                        : 'bg-white text-gray-800 border border-gray-200'
+                                                                    isSelf ? "bg-primary text-white" : "bg-white text-gray-800 border border-gray-200"
                                                                 }`}
                                                             >
                                                                 <p className="text-sm">{message.text}</p>
                                                             </div>
                                                             <div
                                                                 className={`text-xs mt-1 flex items-center ${
-                                                                    isSelf
-                                                                        ? 'justify-end text-gray-500'
-                                                                        : 'justify-start text-gray-500'
+                                                                    isSelf ? "justify-end text-gray-500" : "justify-start text-gray-500"
                                                                 }`}
                                                             >
                                                                 {formatMessageTime(message.timestamp)}
                                                                 {isSelf && (
                                                                     <CheckIcon
-                                                                        className={`h-3 w-3 ml-1 ${
-                                                                            message.read ? 'text-blue-500' : 'text-gray-400'
-                                                                        }`}
+                                                                        className={`h-3 w-3 ml-1 ${message.read ? "text-blue-500" : "text-gray-400"}`}
                                                                     />
                                                                 )}
                                                             </div>
@@ -401,7 +373,7 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                                 value={messageText}
                                                 onChange={(e) => setMessageText(e.target.value)}
                                                 onKeyDown={(e) => {
-                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                    if (e.key === "Enter" && !e.shiftKey) {
                                                         e.preventDefault();
                                                         handleSendMessage(e);
                                                     }
@@ -411,12 +383,7 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                                 <SmileIcon className="h-5 w-5" />
                                             </Button>
                                         </div>
-                                        <Button
-                                            type="submit"
-                                            className="ml-2 rounded-full"
-                                            size="sm"
-                                            disabled={!messageText.trim()}
-                                        >
+                                        <Button type="submit" className="ml-2 rounded-full" size="sm" disabled={!messageText.trim()}>
                                             <SendIcon className="h-5 w-5" />
                                         </Button>
                                     </form>
@@ -428,12 +395,8 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                     <div className="bg-primary/10 p-6 rounded-full inline-flex items-center justify-center mb-4">
                                         <MessageCircleIcon className="h-12 w-12 text-primary" />
                                     </div>
-                                    <h2 className="text-xl font-medium text-gray-900 mb-2">
-                                        Your Messages
-                                    </h2>
-                                    <p className="text-gray-600 mb-6">
-                                        Select a conversation or start a new one to begin messaging
-                                    </p>
+                                    <h2 className="text-xl font-medium text-gray-900 mb-2">Your Messages</h2>
+                                    <p className="text-gray-600 mb-6">Select a conversation or start a new one to begin messaging</p>
                                     <Link href="/social/messages/new">
                                         <Button>
                                             <UserPlusIcon className="h-5 w-5 mr-2" />

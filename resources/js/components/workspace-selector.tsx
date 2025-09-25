@@ -1,10 +1,10 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { SharedData } from "@/types";
-import axios from 'axios';
-import { route } from 'ziggy-js';
+import axios from "axios";
 import { CheckIcon, ChevronsUpDown, Loader2, PlusIcon, Users } from "lucide-react";
 import { useState } from "react";
+import { route } from "ziggy-js";
 import { CreateWorkspaceDialog } from "./workspace/create-workspace-dialog";
 
 export function WorkspaceSelector({
@@ -37,7 +37,7 @@ export function WorkspaceSelector({
             });
             window.location.reload();
         } catch (error) {
-            console.error('Failed to switch workspace:', error);
+            console.error("Failed to switch workspace:", error);
         } finally {
             setIsLoading(false);
         }

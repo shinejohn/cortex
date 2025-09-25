@@ -285,6 +285,23 @@ final class SocialController extends Controller
                 ];
             });
 
+        // Get accepted friends with their profiles
+        $friends = User::whereHas('friendships', function ($query) use ($user) {
+            $query->where(function ($q) use ($user) {
+                $q->where('user_id', $user->id)->orWhere('friend_id', $user->id);
+            })->where('status', 'accepted');
+        })
+            ->with(['socialProfile'])
+            ->limit(6) // Show first 6 friends for preview
+            ->get()
+            ->filter(fn ($friend) => $friend->id !== $user->id) // Remove self from friends list
+            ->values();
+
+        // Get total friends count
+        $friendsCount = SocialFriendship::where(function ($query) use ($user) {
+            $query->where('user_id', $user->id)->orWhere('friend_id', $user->id);
+        })->where('status', 'accepted')->count();
+
         return Inertia::render('social/profile', [
             'profile_user' => [
                 ...$user->toArray(),
@@ -293,6 +310,14 @@ final class SocialController extends Controller
                 'has_pending_friend_request' => $currentUser->hasPendingFriendRequestWith($user),
             ],
             'posts' => $posts,
+            'friends' => $friends->map(function ($friend) {
+                return [
+                    'id' => $friend->id,
+                    'name' => $friend->name,
+                    'avatar' => $friend->avatar,
+                ];
+            }),
+            'friends_count' => $friendsCount,
             'current_user' => [
                 'id' => $currentUser->id,
                 'name' => $currentUser->name,

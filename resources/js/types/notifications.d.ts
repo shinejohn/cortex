@@ -9,13 +9,7 @@ export interface NotificationData {
     data?: Record<string, unknown>;
 }
 
-export type NotificationType =
-    | 'message'
-    | 'friend_request'
-    | 'like'
-    | 'comment'
-    | 'share'
-    | 'group_invite';
+export type NotificationType = "message" | "friend_request" | "like" | "comment" | "share" | "group_invite";
 
 export interface NotificationSummary {
     notifications: NotificationData[];

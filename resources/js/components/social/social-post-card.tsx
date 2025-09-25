@@ -13,14 +13,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { route } from "ziggy-js";
 
 dayjs.extend(relativeTime);
-import {
-    HeartIcon,
-    MapPinIcon,
-    MessageCircleIcon,
-    MoreHorizontalIcon,
-    SendIcon,
-    ShareIcon
-} from "lucide-react";
+import { HeartIcon, MapPinIcon, MessageCircleIcon, MoreHorizontalIcon, SendIcon, ShareIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface SocialPostCardProps {
@@ -38,21 +31,20 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
     const [comments, setComments] = useState<SocialPostComment[]>(post.recent_comments || []);
     const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
-
     const handleLike = async () => {
         try {
             if (isLiked) {
-                const response = await axios.delete(route('social.posts.unlike', post.id));
+                const response = await axios.delete(route("social.posts.unlike", post.id));
                 setIsLiked(response.data.liked);
                 setLikesCount(response.data.likes_count);
             } else {
-                const response = await axios.post(route('social.posts.like', post.id));
+                const response = await axios.post(route("social.posts.like", post.id));
                 setIsLiked(response.data.liked);
                 setLikesCount(response.data.likes_count);
                 // Track like engagement
             }
         } catch (error) {
-            console.error('Error toggling like:', error);
+            console.error("Error toggling like:", error);
         }
     };
 
@@ -61,29 +53,29 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
 
         setIsSubmittingComment(true);
         try {
-            const response = await axios.post(route('social.posts.comments.create', post.id), {
-                content: commentText
+            const response = await axios.post(route("social.posts.comments.create", post.id), {
+                content: commentText,
             });
             if (response.data.comment) {
-                setComments(prev => [...prev, response.data.comment]);
+                setComments((prev) => [...prev, response.data.comment]);
             }
             setCommentText("");
             setShowComments(true);
         } catch (error) {
-            console.error('Error posting comment:', error);
+            console.error("Error posting comment:", error);
         } finally {
             setIsSubmittingComment(false);
         }
     };
 
     const handleDeleteComment = async (commentId: string) => {
-        if (!confirm('Are you sure you want to delete this comment?')) return;
+        if (!confirm("Are you sure you want to delete this comment?")) return;
 
         try {
-            await axios.delete(route('social.comments.delete', commentId));
-            setComments(prev => prev.filter(comment => comment.id !== commentId));
+            await axios.delete(route("social.comments.delete", commentId));
+            setComments((prev) => prev.filter((comment) => comment.id !== commentId));
         } catch (error) {
-            console.error('Error deleting comment:', error);
+            console.error("Error deleting comment:", error);
         }
     };
 
@@ -101,20 +93,19 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
     };
 
     const handleDelete = () => {
-        if (confirm('Are you sure you want to delete this post?')) {
+        if (confirm("Are you sure you want to delete this post?")) {
             onDelete(post.id);
         }
     };
 
     const isOwner = post.user_id === currentUser.id;
 
-
     return (
         <Card className="w-full rounded-xl border shadow-sm hover:shadow-md transition-shadow duration-200">
             <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                     <div className="flex items-start gap-3">
-                        <Link href={route('social.profile', post.user.id)}>
+                        <Link href={route("social.profile", post.user.id)}>
                             <Avatar className="cursor-pointer ring-2 ring-background hover:ring-primary/20 transition-all">
                                 <AvatarImage src={post.user.avatar} alt={post.user.name} />
                                 <AvatarFallback className="bg-primary/10 text-primary font-medium">
@@ -125,7 +116,7 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                                 <Link
-                                    href={route('social.profile', post.user.id)}
+                                    href={route("social.profile", post.user.id)}
                                     className="font-semibold text-card-foreground hover:underline truncate"
                                 >
                                     {post.user.name}
@@ -164,12 +155,7 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
                 {post.media && post.media.length > 0 && (
                     <div className="mt-4 grid grid-cols-2 gap-2">
                         {post.media.map((mediaUrl, index) => (
-                            <img
-                                key={index}
-                                src={mediaUrl}
-                                alt=""
-                                className="rounded-lg object-cover w-full h-48"
-                            />
+                            <img key={index} src={mediaUrl} alt="" className="rounded-lg object-cover w-full h-48" />
                         ))}
                     </div>
                 )}
@@ -192,11 +178,13 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
                                 <div className="flex gap-4">
                                     {post.comments_count > 0 && (
                                         <span className="hover:underline cursor-pointer" onClick={() => setShowComments(!showComments)}>
-                                            {post.comments_count} {post.comments_count === 1 ? 'comment' : 'comments'}
+                                            {post.comments_count} {post.comments_count === 1 ? "comment" : "comments"}
                                         </span>
                                     )}
                                     {post.shares_count > 0 && (
-                                        <span>{post.shares_count} {post.shares_count === 1 ? 'share' : 'shares'}</span>
+                                        <span>
+                                            {post.shares_count} {post.shares_count === 1 ? "share" : "shares"}
+                                        </span>
                                     )}
                                 </div>
                             </div>
@@ -257,7 +245,7 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
                                         onChange={(e) => setCommentText(e.target.value)}
                                         className="min-h-[40px] max-h-32 resize-none rounded-full border-border/50 bg-muted/30 focus:bg-background transition-colors px-4 py-2"
                                         onKeyDown={(e) => {
-                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                            if (e.key === "Enter" && !e.shiftKey) {
                                                 e.preventDefault();
                                                 handleComment();
                                             }

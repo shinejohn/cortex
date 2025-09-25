@@ -6,7 +6,6 @@ import type { SharedData } from "@/types";
 import { Head } from "@inertiajs/react";
 import { Briefcase, Calendar, Globe, Heart, Landmark, Leaf, TrendingUp, Users } from "lucide-react";
 
-
 interface ImpactStat {
     readonly number: string;
     readonly label: string;

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import type { CommunityThreadReply } from "@/types/community";
-import axios from 'axios';
+import axios from "axios";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { HeartIcon, MessageCircleIcon, MoreHorizontalIcon, PencilIcon, PinIcon, StarIcon, TrashIcon } from "lucide-react";
@@ -44,7 +44,7 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
             setIsReplying(false);
             window.location.reload();
         } catch (error) {
-            console.error('Failed to submit reply:', error);
+            console.error("Failed to submit reply:", error);
         } finally {
             setIsSubmitting(false);
         }
@@ -56,12 +56,12 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
         setIsSubmitting(true);
         try {
             await axios.patch(`/community/reply/${reply.id}`, {
-                content: editContent.trim()
+                content: editContent.trim(),
             });
             setIsEditing(false);
             window.location.reload();
         } catch (error) {
-            console.error('Failed to edit reply:', error);
+            console.error("Failed to edit reply:", error);
         } finally {
             setIsSubmitting(false);
         }
@@ -73,7 +73,7 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
                 await axios.delete(`/community/reply/${reply.id}`);
                 window.location.reload();
             } catch (error) {
-                console.error('Failed to delete reply:', error);
+                console.error("Failed to delete reply:", error);
             }
         }
     };
@@ -83,7 +83,7 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
             await axios.post(`/community/reply/${reply.id}/like`);
             window.location.reload();
         } catch (error) {
-            console.error('Failed to like reply:', error);
+            console.error("Failed to like reply:", error);
         }
     };
 

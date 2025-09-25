@@ -1,19 +1,14 @@
-import { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
-import { ArrowLeftIcon, MessageSquareIcon, PlusIcon, PinIcon, MoreHorizontalIcon, EditIcon, TrashIcon } from 'lucide-react';
-import axios from 'axios';
-import AppLayout from '@/layouts/app-layout';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Textarea } from "@/components/ui/textarea";
+import AppLayout from "@/layouts/app-layout";
+import { Head, Link } from "@inertiajs/react";
+import axios from "axios";
+import { ArrowLeftIcon, EditIcon, MessageSquareIcon, MoreHorizontalIcon, PinIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { useState } from "react";
 
 interface User {
     id: string;
@@ -38,8 +33,8 @@ interface GroupPost {
 interface GroupMember {
     id: string;
     user_id: string;
-    role: 'admin' | 'moderator' | 'member';
-    status: 'pending' | 'approved' | 'banned';
+    role: "admin" | "moderator" | "member";
+    status: "pending" | "approved" | "banned";
 }
 
 interface Group {
@@ -47,7 +42,7 @@ interface Group {
     name: string;
     description: string;
     cover_image?: string;
-    privacy: 'public' | 'private' | 'secret';
+    privacy: "public" | "private" | "secret";
     user_membership?: GroupMember;
 }
 
@@ -61,7 +56,7 @@ interface Props {
 }
 
 export default function GroupPosts({ group, posts }: Props) {
-    const [newPostContent, setNewPostContent] = useState('');
+    const [newPostContent, setNewPostContent] = useState("");
     const [isCreatingPost, setIsCreatingPost] = useState(false);
     const [showCreateForm, setShowCreateForm] = useState(false);
 
@@ -74,23 +69,23 @@ export default function GroupPosts({ group, posts }: Props) {
             await axios.post(`/social/groups/${group.id}/posts`, {
                 content: newPostContent,
             });
-            setNewPostContent('');
+            setNewPostContent("");
             setShowCreateForm(false);
             window.location.reload(); // Refresh to show new post
         } catch (error) {
-            console.error('Error creating post:', error);
+            console.error("Error creating post:", error);
         } finally {
             setIsCreatingPost(false);
         }
     };
 
     const handleDeletePost = async (postId: string) => {
-        if (confirm('Are you sure you want to delete this post?')) {
+        if (confirm("Are you sure you want to delete this post?")) {
             try {
                 await axios.delete(`/social/groups/${group.id}/posts/${postId}`);
                 window.location.reload(); // Refresh to remove deleted post
             } catch (error) {
-                console.error('Error deleting post:', error);
+                console.error("Error deleting post:", error);
             }
         }
     };
@@ -100,12 +95,12 @@ export default function GroupPosts({ group, posts }: Props) {
             await axios.patch(`/social/groups/${group.id}/posts/${postId}/pin`);
             window.location.reload(); // Refresh to show pin status change
         } catch (error) {
-            console.error('Error pinning post:', error);
+            console.error("Error pinning post:", error);
         }
     };
 
-    const canManage = group.user_membership?.role === 'admin' || group.user_membership?.role === 'moderator';
-    const isMember = group.user_membership?.status === 'approved';
+    const canManage = group.user_membership?.role === "admin" || group.user_membership?.role === "moderator";
+    const isMember = group.user_membership?.status === "approved";
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -114,7 +109,7 @@ export default function GroupPosts({ group, posts }: Props) {
         const hours = Math.floor(diff / (1000 * 60 * 60));
 
         if (hours < 1) {
-            return 'Just now';
+            return "Just now";
         } else if (hours < 24) {
             return `${hours}h ago`;
         } else {
@@ -135,11 +130,7 @@ export default function GroupPosts({ group, posts }: Props) {
                     {/* Header */}
                     <div className="mb-6">
                         <Link href={`/social/groups/${group.id}`}>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="mb-4"
-                            >
+                            <Button variant="ghost" size="sm" className="mb-4">
                                 <ArrowLeftIcon className="h-4 w-4 mr-2" />
                                 Back to {group.name}
                             </Button>
@@ -153,11 +144,7 @@ export default function GroupPosts({ group, posts }: Props) {
                         <Card className="mb-6">
                             <CardContent className="p-6">
                                 {!showCreateForm ? (
-                                    <Button
-                                        variant="outline"
-                                        className="w-full justify-start"
-                                        onClick={() => setShowCreateForm(true)}
-                                    >
+                                    <Button variant="outline" className="w-full justify-start" onClick={() => setShowCreateForm(true)}>
                                         <PlusIcon className="h-4 w-4 mr-2" />
                                         Share something with the group...
                                     </Button>
@@ -171,25 +158,20 @@ export default function GroupPosts({ group, posts }: Props) {
                                             maxLength={2000}
                                         />
                                         <div className="flex items-center justify-between">
-                                            <p className="text-xs text-muted-foreground">
-                                                {newPostContent.length}/2000 characters
-                                            </p>
+                                            <p className="text-xs text-muted-foreground">{newPostContent.length}/2000 characters</p>
                                             <div className="flex gap-2">
                                                 <Button
                                                     type="button"
                                                     variant="outline"
                                                     onClick={() => {
                                                         setShowCreateForm(false);
-                                                        setNewPostContent('');
+                                                        setNewPostContent("");
                                                     }}
                                                 >
                                                     Cancel
                                                 </Button>
-                                                <Button
-                                                    type="submit"
-                                                    disabled={isCreatingPost || !newPostContent.trim()}
-                                                >
-                                                    {isCreatingPost ? 'Posting...' : 'Post'}
+                                                <Button type="submit" disabled={isCreatingPost || !newPostContent.trim()}>
+                                                    {isCreatingPost ? "Posting..." : "Post"}
                                                 </Button>
                                             </div>
                                         </div>
@@ -214,9 +196,7 @@ export default function GroupPosts({ group, posts }: Props) {
                                                 <div>
                                                     <p className="font-medium">{post.user.name}</p>
                                                     <div className="flex items-center gap-2">
-                                                        <p className="text-sm text-muted-foreground">
-                                                            {formatDate(post.created_at)}
-                                                        </p>
+                                                        <p className="text-sm text-muted-foreground">{formatDate(post.created_at)}</p>
                                                         {post.is_pinned && (
                                                             <Badge variant="secondary" className="text-xs">
                                                                 <PinIcon className="h-3 w-3 mr-1" />
@@ -235,11 +215,9 @@ export default function GroupPosts({ group, posts }: Props) {
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
                                                         {canManage && (
-                                                            <DropdownMenuItem
-                                                                onClick={() => handlePinPost(post.id)}
-                                                            >
+                                                            <DropdownMenuItem onClick={() => handlePinPost(post.id)}>
                                                                 <PinIcon className="h-4 w-4 mr-2" />
-                                                                {post.is_pinned ? 'Unpin' : 'Pin'} Post
+                                                                {post.is_pinned ? "Unpin" : "Pin"} Post
                                                             </DropdownMenuItem>
                                                         )}
                                                         {post.user.id === group.user_membership?.user_id && (
@@ -249,10 +227,7 @@ export default function GroupPosts({ group, posts }: Props) {
                                                             </DropdownMenuItem>
                                                         )}
                                                         {(canManage || post.user.id === group.user_membership?.user_id) && (
-                                                            <DropdownMenuItem
-                                                                onClick={() => handleDeletePost(post.id)}
-                                                                className="text-destructive"
-                                                            >
+                                                            <DropdownMenuItem onClick={() => handleDeletePost(post.id)} className="text-destructive">
                                                                 <TrashIcon className="h-4 w-4 mr-2" />
                                                                 Delete Post
                                                             </DropdownMenuItem>
@@ -269,12 +244,7 @@ export default function GroupPosts({ group, posts }: Props) {
                                         {post.media && post.media.length > 0 && (
                                             <div className="mt-4 grid gap-2">
                                                 {post.media.map((mediaUrl, index) => (
-                                                    <img
-                                                        key={index}
-                                                        src={mediaUrl}
-                                                        alt="Post media"
-                                                        className="rounded-md max-w-full h-auto"
-                                                    />
+                                                    <img key={index} src={mediaUrl} alt="Post media" className="rounded-md max-w-full h-auto" />
                                                 ))}
                                             </div>
                                         )}
@@ -294,9 +264,7 @@ export default function GroupPosts({ group, posts }: Props) {
                                 <CardContent className="p-8 text-center">
                                     <MessageSquareIcon className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                                     <h3 className="text-lg font-medium mb-2">No posts yet</h3>
-                                    <p className="text-muted-foreground mb-4">
-                                        Be the first to share something with this group!
-                                    </p>
+                                    <p className="text-muted-foreground mb-4">Be the first to share something with this group!</p>
                                     {isMember && (
                                         <Button onClick={() => setShowCreateForm(true)}>
                                             <PlusIcon className="h-4 w-4 mr-2" />
@@ -311,7 +279,7 @@ export default function GroupPosts({ group, posts }: Props) {
                     {/* Pagination */}
                     {posts.links && posts.data.length > 0 && (
                         <div className="mt-8 flex justify-center gap-2">
-                            {posts.links.map((link: any, index: number) => (
+                            {posts.links.map((link: any, index: number) =>
                                 link.url ? (
                                     <Link key={index} href={link.url}>
                                         <Button
@@ -328,8 +296,8 @@ export default function GroupPosts({ group, posts }: Props) {
                                         disabled
                                         dangerouslySetInnerHTML={{ __html: link.label }}
                                     />
-                                )
-                            ))}
+                                ),
+                            )}
                         </div>
                     )}
                 </div>

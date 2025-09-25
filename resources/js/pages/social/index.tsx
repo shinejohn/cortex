@@ -15,7 +15,7 @@ export default function SocialIndex() {
     const [newPosts, setNewPosts] = useState<SocialPost[]>([]);
 
     const handleNewPost = (post: SocialPost) => {
-        setNewPosts(prev => [post, ...prev]);
+        setNewPosts((prev) => [post, ...prev]);
     };
 
     return (
@@ -29,11 +29,7 @@ export default function SocialIndex() {
                         {/* Main feed */}
                         <div className="lg:col-span-8">
                             {/* Create post section */}
-                            <InlinePostCreator
-                                currentUser={auth.user}
-                                onPost={handleNewPost}
-                                className="mb-4"
-                            />
+                            <InlinePostCreator currentUser={auth.user} onPost={handleNewPost} className="mb-4" />
 
                             {/* Feed Tabs */}
                             <Tabs defaultValue="for-you" className="w-full">
@@ -49,19 +45,11 @@ export default function SocialIndex() {
                                 </TabsList>
 
                                 <TabsContent value="for-you" className="mt-0">
-                                    <AlgorithmicFeed
-                                        feedType="for-you"
-                                        currentUser={auth.user}
-                                        newPosts={newPosts}
-                                    />
+                                    <AlgorithmicFeed feedType="for-you" currentUser={auth.user} newPosts={newPosts} />
                                 </TabsContent>
 
                                 <TabsContent value="friends" className="mt-0">
-                                    <AlgorithmicFeed
-                                        feedType="followed"
-                                        currentUser={auth.user}
-                                        newPosts={newPosts}
-                                    />
+                                    <AlgorithmicFeed feedType="followed" currentUser={auth.user} newPosts={newPosts} />
                                 </TabsContent>
                             </Tabs>
                         </div>
@@ -69,11 +57,7 @@ export default function SocialIndex() {
                         {/* Sidebar */}
                         <div className="lg:col-span-4">
                             <div className="sticky top-6">
-                                <SocialSidebar
-                                    currentUser={auth.user}
-                                    userProfile={user_profile}
-                                    suggestedFriends={suggested_friends}
-                                />
+                                <SocialSidebar currentUser={auth.user} userProfile={user_profile} suggestedFriends={suggested_friends} />
                             </div>
                         </div>
                     </div>
