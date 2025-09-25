@@ -1,23 +1,24 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { CreatePostForm, SocialPost } from "@/types/social";
 import type { User } from "@/types";
 import { route } from "ziggy-js";
 import axios from "axios";
-import { ImageIcon, MapPinIcon, GlobeIcon, UsersIcon, LockIcon, X } from "lucide-react";
+import { ImageIcon, MapPinIcon, GlobeIcon, UsersIcon, LockIcon, X, PlusIcon } from "lucide-react";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
-interface CreatePostModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onPost: (post: SocialPost) => void;
+interface InlinePostCreatorProps {
     currentUser: User;
+    onPost: (post: SocialPost) => void;
+    className?: string;
 }
 
-export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: CreatePostModalProps) {
+export function InlinePostCreator({ currentUser, onPost, className }: InlinePostCreatorProps) {
+    const [isExpanded, setIsExpanded] = useState(false);
     const [formData, setFormData] = useState<CreatePostForm>({
         content: '',
         visibility: 'public',
@@ -27,6 +28,21 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
     const [mediaPreview, setMediaPreview] = useState<string[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const handleExpand = () => {
+        setIsExpanded(true);
+    };
+
+    const handleCancel = () => {
+        setIsExpanded(false);
+        setFormData({
+            content: '',
+            visibility: 'public',
+            media: undefined,
+            location: undefined,
+        });
+        setMediaPreview([]);
+    };
+
     const handleSubmit = async () => {
         if (!formData.content.trim() || isSubmitting) return;
 
@@ -35,13 +51,7 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
             const response = await axios.post(route('social.posts.create'), formData);
             if (response.data.post) {
                 onPost(response.data.post);
-                setFormData({
-                    content: '',
-                    visibility: 'public',
-                    media: undefined,
-                    location: undefined,
-                });
-                setMediaPreview([]);
+                handleCancel(); // Reset and collapse
             }
         } catch (error) {
             console.error('Failed to create post:', error);
@@ -115,55 +125,92 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
 
     const selectedVisibility = visibilityOptions.find(option => option.value === formData.visibility);
 
-    return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[600px]">
-                <DialogHeader>
-                    <DialogTitle>Create post</DialogTitle>
-                </DialogHeader>
-
-                <div className="space-y-4">
-                    {/* User info */}
-                    <div className="flex items-center space-x-3">
+    if (!isExpanded) {
+        // Collapsed state - looks like the original trigger
+        return (
+            <Card className={cn("w-full rounded-xl border shadow-sm hover:shadow-md transition-all duration-200", className)}>
+                <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
                         <Avatar>
                             <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
                             <AvatarFallback>{currentUser.name.slice(0, 2).toUpperCase()}</AvatarFallback>
                         </Avatar>
-                        <div>
-                            <div className="font-semibold">{currentUser.name}</div>
-                            <Select
-                                value={formData.visibility}
-                                onValueChange={(value: 'public' | 'friends' | 'private') =>
-                                    setFormData(prev => ({ ...prev, visibility: value }))
-                                }
-                            >
-                                <SelectTrigger className="w-fit border-none p-0 h-auto shadow-none">
-                                    <SelectValue>
-                                        <div className="flex items-center text-sm text-muted-foreground">
-                                            {selectedVisibility && (
-                                                <selectedVisibility.icon className="h-3 w-3 mr-1" />
-                                            )}
-                                            {selectedVisibility?.label}
-                                        </div>
-                                    </SelectValue>
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {visibilityOptions.map((option) => (
-                                        <SelectItem key={option.value} value={option.value}>
-                                            <div className="flex items-center">
-                                                <option.icon className="h-4 w-4 mr-2" />
-                                                <div>
-                                                    <div className="font-medium">{option.label}</div>
-                                                    <div className="text-xs text-muted-foreground">
-                                                        {option.description}
+                        <button
+                            onClick={handleExpand}
+                            className="flex-1 bg-muted/50 hover:bg-muted/70 text-muted-foreground text-left px-4 py-3 rounded-full transition-all duration-200 hover:shadow-sm border border-border/50"
+                        >
+                            What's on your mind, {currentUser.name.split(' ')[0]}?
+                        </button>
+                        <Button
+                            onClick={handleExpand}
+                            size="sm"
+                            className="shrink-0 rounded-full px-6"
+                        >
+                            <PlusIcon className="h-4 w-4 mr-2" />
+                            Post
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    // Expanded state - full post creation form
+    return (
+        <Card className={cn("w-full rounded-xl border shadow-sm", className)}>
+            <CardContent className="p-6">
+                <div className="space-y-4">
+                    {/* User info and visibility */}
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                            <Avatar>
+                                <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
+                                <AvatarFallback>{currentUser.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                                <div className="font-semibold">{currentUser.name}</div>
+                                <Select
+                                    value={formData.visibility}
+                                    onValueChange={(value: 'public' | 'friends' | 'private') =>
+                                        setFormData(prev => ({ ...prev, visibility: value }))
+                                    }
+                                >
+                                    <SelectTrigger className="w-fit border-none p-0 h-auto shadow-none">
+                                        <SelectValue>
+                                            <div className="flex items-center text-sm text-muted-foreground">
+                                                {selectedVisibility && (
+                                                    <selectedVisibility.icon className="h-3 w-3 mr-1" />
+                                                )}
+                                                {selectedVisibility?.label}
+                                            </div>
+                                        </SelectValue>
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {visibilityOptions.map((option) => (
+                                            <SelectItem key={option.value} value={option.value}>
+                                                <div className="flex items-center">
+                                                    <option.icon className="h-4 w-4 mr-2" />
+                                                    <div>
+                                                        <div className="font-medium">{option.label}</div>
+                                                        <div className="text-xs text-muted-foreground">
+                                                            {option.description}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleCancel}
+                            className="rounded-full h-8 w-8 p-0"
+                        >
+                            <X className="h-4 w-4" />
+                        </Button>
                     </div>
 
                     {/* Content textarea */}
@@ -171,7 +218,8 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
                         placeholder={`What's on your mind, ${currentUser.name.split(' ')[0]}?`}
                         value={formData.content}
                         onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                        className="min-h-[120px] border-none resize-none text-lg placeholder:text-lg focus-visible:ring-0"
+                        className="min-h-[120px] border-none resize-none text-lg placeholder:text-lg focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
+                        autoFocus
                     />
 
                     {/* Media preview */}
@@ -246,16 +294,25 @@ export function CreatePostModal({ isOpen, onClose, onPost, currentUser }: Create
                             </Button>
                         </div>
 
-                        <Button
-                            onClick={handleSubmit}
-                            disabled={!formData.content.trim() || isSubmitting}
-                            className="min-w-[80px]"
-                        >
-                            {isSubmitting ? 'Posting...' : 'Post'}
-                        </Button>
+                        <div className="flex items-center gap-2">
+                            <Button
+                                variant="ghost"
+                                onClick={handleCancel}
+                                disabled={isSubmitting}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={handleSubmit}
+                                disabled={!formData.content.trim() || isSubmitting}
+                                className="min-w-[80px]"
+                            >
+                                {isSubmitting ? 'Posting...' : 'Post'}
+                            </Button>
+                        </div>
                     </div>
                 </div>
-            </DialogContent>
-        </Dialog>
+            </CardContent>
+        </Card>
     );
 }

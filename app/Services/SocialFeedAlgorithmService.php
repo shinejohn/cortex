@@ -39,7 +39,7 @@ final class SocialFeedAlgorithmService
             return $this->getFallbackFeed($user, $page, $perPage);
         }
 
-        $rankedPosts = $this->scorePostsSimply($posts);
+        $rankedPosts = $this->scorePostsWithUserBoost($posts, $user);
 
         return $this->paginateResults($rankedPosts, $page, $perPage);
     }
@@ -50,16 +50,16 @@ final class SocialFeedAlgorithmService
             ->merge($user->friendshipRequests()->where('status', 'accepted')->pluck('user_id'))
             ->unique();
 
-        if ($friendIds->isEmpty()) {
-            return $this->getEmptyFeed($page, $perPage);
-        }
+        // Include user's own posts alongside friends' posts
+        $userIds = $friendIds->push($user->id);
 
-        $posts = SocialPost::whereIn('user_id', $friendIds)
+        $posts = SocialPost::whereIn('user_id', $userIds)
             ->where('is_active', true)
             ->where('created_at', '>=', now()->subDays(7))
-            ->where(function ($query) {
+            ->where(function ($query) use ($user) {
                 $query->where('visibility', 'public')
-                    ->orWhere('visibility', 'friends');
+                    ->orWhere('visibility', 'friends')
+                    ->orWhere('user_id', $user->id); // Always show user's own posts
             })
             ->with(['user.socialProfile', 'likes.user', 'comments.user'])
             ->get()
@@ -67,7 +67,11 @@ final class SocialFeedAlgorithmService
                 return $this->enrichPostData($post, $user);
             });
 
-        $rankedPosts = $this->scorePostsSimply($posts);
+        if ($posts->isEmpty()) {
+            return $this->getEmptyFeed($page, $perPage);
+        }
+
+        $rankedPosts = $this->scorePostsWithUserBoost($posts, $user);
 
         return $this->paginateResults($rankedPosts, $page, $perPage);
     }
@@ -101,6 +105,30 @@ final class SocialFeedAlgorithmService
         return $posts->map(function ($post) {
             $postModel = is_array($post) ? SocialPost::find($post['id']) : $post;
             $score = $this->calculateSimpleScore($postModel);
+
+            if (is_array($post)) {
+                $post['algorithm_score'] = $score;
+
+                return $post;
+            }
+            $postArray = $post->toArray();
+            $postArray['algorithm_score'] = $score;
+
+            return $postArray;
+
+        })->sortByDesc('algorithm_score')->values();
+    }
+
+    private function scorePostsWithUserBoost(Collection $posts, User $user): Collection
+    {
+        return $posts->map(function ($post) use ($user) {
+            $postModel = is_array($post) ? SocialPost::find($post['id']) : $post;
+            $score = $this->calculateSimpleScore($postModel);
+
+            // Give user's own posts a boost to prioritize them
+            if ($postModel->user_id === $user->id) {
+                $score *= 1.5; // 50% boost for user's own posts
+            }
 
             if (is_array($post)) {
                 $post['algorithm_score'] = $score;
@@ -171,19 +199,21 @@ final class SocialFeedAlgorithmService
         return SocialPost::query()
             ->where('is_active', true)
             ->where('created_at', '>=', now()->subDays(7))
-            ->where('user_id', '!=', $user->id)
-            ->where(function ($query) use ($friendIds) {
-                // Show public posts from non-private profiles
-                $query->where(function ($publicQuery) {
-                    $publicQuery->where('visibility', 'public')
-                        ->where(function ($profileQuery) {
-                            $profileQuery->whereDoesntHave('user.socialProfile')
-                                ->orWhereHas('user.socialProfile', function ($socialProfileQuery) {
-                                    $socialProfileQuery->where('profile_visibility', '!=', 'private');
-                                });
-                        });
-                })
-                // Show friends-only posts from actual friends
+            ->where(function ($query) use ($friendIds, $user) {
+                // Show user's own posts
+                $query->where('user_id', $user->id)
+                    // Show public posts from non-private profiles
+                    ->orWhere(function ($publicQuery) use ($user) {
+                        $publicQuery->where('visibility', 'public')
+                            ->where('user_id', '!=', $user->id)
+                            ->where(function ($profileQuery) {
+                                $profileQuery->whereDoesntHave('user.socialProfile')
+                                    ->orWhereHas('user.socialProfile', function ($socialProfileQuery) {
+                                        $socialProfileQuery->where('profile_visibility', '!=', 'private');
+                                    });
+                            });
+                    })
+                    // Show friends-only posts from actual friends
                     ->orWhere(function ($friendsQuery) use ($friendIds) {
                         $friendsQuery->where('visibility', 'friends')
                             ->whereIn('user_id', $friendIds);

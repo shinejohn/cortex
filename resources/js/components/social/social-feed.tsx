@@ -1,22 +1,22 @@
 import { SocialPostCard } from "@/components/social/social-post-card";
-import { CreatePostModal } from "@/components/social/create-post-modal";
 import type { SocialPost, User } from "@/types/social";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface SocialFeedProps {
     posts: SocialPost[];
     currentUser: User;
-    showCreatePost: boolean;
-    onCloseCreatePost: () => void;
+    newPosts?: SocialPost[];
 }
 
-export function SocialFeed({ posts, currentUser, showCreatePost, onCloseCreatePost }: SocialFeedProps) {
+export function SocialFeed({ posts, currentUser, newPosts = [] }: SocialFeedProps) {
     const [feedPosts, setFeedPosts] = useState(posts);
 
-    const handleNewPost = (newPost: SocialPost) => {
-        setFeedPosts(prev => [newPost, ...prev]);
-        onCloseCreatePost();
-    };
+    // Add new posts to the top of the feed when they're created
+    useEffect(() => {
+        if (newPosts.length > 0) {
+            setFeedPosts(prev => [...newPosts, ...prev]);
+        }
+    }, [newPosts]);
 
     const handlePostUpdate = (updatedPost: SocialPost) => {
         setFeedPosts(prev => prev.map(post =>
@@ -52,12 +52,6 @@ export function SocialFeed({ posts, currentUser, showCreatePost, onCloseCreatePo
                 ))
             )}
 
-            <CreatePostModal
-                isOpen={showCreatePost}
-                onClose={onCloseCreatePost}
-                onPost={handleNewPost}
-                currentUser={currentUser}
-            />
         </div>
     );
 }

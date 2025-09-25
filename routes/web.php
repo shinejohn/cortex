@@ -8,6 +8,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PerformerController;
+use App\Http\Controllers\Social\ImageUploadController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\SocialFeedController;
 use App\Http\Controllers\SocialGroupController;
@@ -93,6 +94,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/feed/followed', [SocialFeedController::class, 'followed'])->name('feed.followed');
 
         Route::post('/posts', [SocialController::class, 'createPost'])->name('posts.create');
+        Route::post('/images/upload', [ImageUploadController::class, 'upload'])->name('images.upload');
         Route::post('/posts/{post}/like', [SocialController::class, 'likePost'])->name('posts.like');
         Route::delete('/posts/{post}/like', [SocialController::class, 'unlikePost'])->name('posts.unlike');
         Route::post('/posts/{post}/comments', [SocialController::class, 'createComment'])->name('posts.comments.create');

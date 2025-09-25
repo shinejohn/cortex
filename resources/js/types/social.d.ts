@@ -219,7 +219,7 @@ export interface SocialActivitiesResponse {
 // Form types
 export interface CreatePostForm {
     content: string;
-    media?: File[];
+    media?: string[];
     visibility: 'public' | 'friends' | 'private';
     location?: {
         name: string;

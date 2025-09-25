@@ -1,5 +1,4 @@
 import { SocialPostCard } from "@/components/social/social-post-card";
-import { CreatePostModal } from "@/components/social/create-post-modal";
 import { Button } from "@/components/ui/button";
 import { Loader2, RefreshCw } from "lucide-react";
 import type { SocialPost } from "@/types/social";
@@ -9,8 +8,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 interface AlgorithmicFeedProps {
     feedType: 'for-you' | 'followed';
     currentUser: User;
-    showCreatePost: boolean;
-    onCloseCreatePost: () => void;
+    newPosts?: SocialPost[];
 }
 
 interface FeedData {
@@ -27,8 +25,7 @@ interface FeedData {
 export function AlgorithmicFeed({
     feedType,
     currentUser,
-    showCreatePost,
-    onCloseCreatePost
+    newPosts = []
 }: AlgorithmicFeedProps) {
     const [posts, setPosts] = useState<SocialPost[]>([]);
     const [loading, setLoading] = useState(true);
@@ -116,10 +113,12 @@ export function AlgorithmicFeed({
         loadFeed(1);
     }, [loadFeed]);
 
-    const handleNewPost = (newPost: SocialPost) => {
-        setPosts(prev => [newPost, ...prev]);
-        onCloseCreatePost();
-    };
+    // Add new posts to the top of the feed when they're created
+    useEffect(() => {
+        if (newPosts.length > 0) {
+            setPosts(prev => [...newPosts, ...prev]);
+        }
+    }, [newPosts]);
 
     const handlePostUpdate = (updatedPost: SocialPost) => {
         setPosts(prev => prev.map(post =>
@@ -265,12 +264,6 @@ export function AlgorithmicFeed({
                 </div>
             )}
 
-            <CreatePostModal
-                isOpen={showCreatePost}
-                onClose={onCloseCreatePost}
-                onPost={handleNewPost}
-                currentUser={currentUser}
-            />
         </div>
     );
 }

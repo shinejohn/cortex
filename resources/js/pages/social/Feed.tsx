@@ -1,12 +1,11 @@
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
 import { AlgorithmicFeed } from "@/components/social/algorithmic-feed";
+import { InlinePostCreator } from "@/components/social/inline-post-creator";
 import { SocialSidebar } from "@/components/social/social-sidebar";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { User, SocialUserProfile } from "@/types/social";
+import type { User, SocialUserProfile, SocialPost } from "@/types/social";
 import { Head, usePage } from "@inertiajs/react";
-import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 
 interface SocialFeedPageProps {
@@ -20,8 +19,12 @@ interface SocialFeedPageProps {
 
 export default function Feed() {
     const { auth, user_profile, suggested_friends, currentFeed = 'for-you' } = usePage<SocialFeedPageProps>().props;
-    const [showCreatePost, setShowCreatePost] = useState(false);
+    const [newPosts, setNewPosts] = useState<SocialPost[]>([]);
     const [activeTab, setActiveTab] = useState(currentFeed);
+
+    const handleNewPost = (post: SocialPost) => {
+        setNewPosts(prev => [post, ...prev]);
+    };
 
     return (
         <>
@@ -34,29 +37,11 @@ export default function Feed() {
                         {/* Main feed */}
                         <div className="lg:col-span-8">
                             {/* Create post section */}
-                            <div className="bg-card rounded-xl border shadow-sm p-4 mb-6">
-                                <div className="flex items-center gap-3">
-                                    <img
-                                        src={auth.user.avatar}
-                                        alt={auth.user.name}
-                                        className="w-10 h-10 rounded-full ring-2 ring-background"
-                                    />
-                                    <button
-                                        onClick={() => setShowCreatePost(true)}
-                                        className="flex-1 bg-muted/50 hover:bg-muted/70 text-muted-foreground text-left px-4 py-3 rounded-full transition-all duration-200 hover:shadow-sm border border-border/50"
-                                    >
-                                        What's on your mind, {auth.user.name.split(' ')[0]}?
-                                    </button>
-                                    <Button
-                                        onClick={() => setShowCreatePost(true)}
-                                        size="sm"
-                                        className="shrink-0 rounded-full px-6"
-                                    >
-                                        <PlusIcon className="h-4 w-4 mr-2" />
-                                        Post
-                                    </Button>
-                                </div>
-                            </div>
+                            <InlinePostCreator
+                                currentUser={auth.user}
+                                onPost={handleNewPost}
+                                className="mb-6"
+                            />
 
                             {/* Feed Tabs */}
                             <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'for-you' | 'followed')} className="w-full">
@@ -83,8 +68,7 @@ export default function Feed() {
                                     <AlgorithmicFeed
                                         feedType="for-you"
                                         currentUser={auth.user}
-                                        showCreatePost={showCreatePost}
-                                        onCloseCreatePost={() => setShowCreatePost(false)}
+                                        newPosts={newPosts}
                                     />
                                 </TabsContent>
 
@@ -92,8 +76,7 @@ export default function Feed() {
                                     <AlgorithmicFeed
                                         feedType="followed"
                                         currentUser={auth.user}
-                                        showCreatePost={showCreatePost}
-                                        onCloseCreatePost={() => setShowCreatePost(false)}
+                                        newPosts={newPosts}
                                     />
                                 </TabsContent>
                             </Tabs>
