@@ -1,12 +1,12 @@
-import { useState, useEffect, useCallback } from "react";
 import { router } from "@inertiajs/react";
-import { Bell, Check } from "lucide-react";
+import axios from "axios";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import axios from "axios";
+import { Bell, Check } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -24,6 +24,7 @@ interface NotificationDropdownProps {
     filterType?: NotificationType | 'all';
     icon?: React.ReactNode;
     title?: string;
+    viewAllRoute?: string;
     emptyMessage?: string;
     className?: string;
 }
@@ -37,6 +38,7 @@ export function NotificationDropdown({
     filterType = 'all',
     icon = <Bell className="size-5" />,
     title = 'Notifications',
+    viewAllRoute = '/notifications',
     emptyMessage = 'No new notifications',
     className
 }: NotificationDropdownProps) {
@@ -226,7 +228,7 @@ export function NotificationDropdown({
 
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => {
-                    router.visit("/notifications");
+                    router.visit(viewAllRoute);
                     setIsOpen(false);
                 }}>
                     View all notifications

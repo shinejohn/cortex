@@ -123,6 +123,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::prefix('messages')->name('messages.')->group(function () {
             Route::get('/', [SocialMessageController::class, 'index'])->name('index');
             Route::get('/new', [SocialMessageController::class, 'newMessage'])->name('new');
+            Route::post('/start', [SocialMessageController::class, 'startConversation'])->name('start');
             Route::get('/{conversation}', [SocialMessageController::class, 'show'])->name('show');
             Route::post('/{conversation}', [SocialMessageController::class, 'sendMessage'])->name('send');
         });

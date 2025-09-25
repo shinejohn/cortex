@@ -212,6 +212,7 @@ function MessagesButton({ notifications }: { notifications?: any }) {
             filterType="message"
             icon={<MessageSquare className="size-5" />}
             title="Messages"
+            viewAllRoute="/social/messages"
             emptyMessage="No new messages"
         />
     );

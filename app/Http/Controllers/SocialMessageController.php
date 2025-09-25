@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SendMessageRequest;
+use App\Models\Conversation;
+use App\Models\ConversationParticipant;
+use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -17,86 +22,80 @@ final class SocialMessageController extends Controller
     {
         $user = Auth::user();
 
-        // Mock conversations for now - in a real app, you'd have a Conversation model
-        $conversations = [
-            [
-                'id' => 'conv-1',
-                'participants' => [
-                    [
-                        'id' => 'user-234',
-                        'name' => 'Jessica Taylor',
-                        'avatar' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-                        'online' => true,
-                    ],
-                ],
-                'last_message' => [
-                    'text' => 'Hey! Are you going to the concert tonight?',
-                    'timestamp' => now()->subMinutes(15)->toISOString(),
-                    'read' => true,
-                    'sender' => 'user-234',
-                ],
-                'unread' => 0,
-            ],
-            [
-                'id' => 'conv-2',
-                'participants' => [
-                    [
-                        'id' => 'user-345',
-                        'name' => 'Marcus Wilson',
-                        'avatar' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-                        'online' => false,
-                    ],
-                ],
-                'last_message' => [
-                    'text' => 'I just got tickets for the jazz festival next month!',
-                    'timestamp' => now()->subHours(2)->toISOString(),
-                    'read' => false,
-                    'sender' => 'user-345',
-                ],
-                'unread' => 3,
-            ],
-        ];
+        // Get user's conversations with eager loading
+        $conversations = $user->conversations()
+            ->with([
+                'participants' => function ($query) use ($user) {
+                    $query->where('user_id', '!=', $user->id);
+                },
+                'latestMessage.sender',
+            ])
+            ->orderBy('last_message_at', 'desc')
+            ->get()
+            ->map(function ($conversation) use ($user) {
+                $otherParticipants = $conversation->participants
+                    ->where('id', '!=', $user->id)
+                    ->map(function ($participant) {
+                        return [
+                            'id' => $participant->id,
+                            'name' => $participant->name,
+                            'avatar' => $participant->avatar,
+                            'online' => false, // TODO: implement online status tracking
+                        ];
+                    });
 
-        $selectedConversation = $request->route('conversation');
+                $lastMessage = $conversation->latestMessage;
+
+                return [
+                    'id' => $conversation->id,
+                    'type' => $conversation->type,
+                    'title' => $conversation->title,
+                    'participants' => $otherParticipants->values(),
+                    'last_message' => $lastMessage ? [
+                        'text' => $lastMessage->content,
+                        'timestamp' => $lastMessage->created_at->toISOString(),
+                        'sender' => $lastMessage->sender_id,
+                        'sender_name' => $lastMessage->sender->name,
+                    ] : null,
+                    'unread' => $conversation->getUnreadCountForUser($user->id),
+                ];
+            });
+
+        $selectedConversationId = $request->route('conversation');
         $messages = [];
 
-        if ($selectedConversation) {
-            // Mock messages for the selected conversation
-            $messages = [
-                [
-                    'id' => 'msg-1',
-                    'text' => 'Hey there! How are you doing?',
-                    'timestamp' => now()->subHours(2)->toISOString(),
-                    'sender' => 'user-234',
-                    'read' => true,
-                ],
-                [
-                    'id' => 'msg-2',
-                    'text' => 'I\'m doing great! Just got back from the venue tour.',
-                    'timestamp' => now()->subHours(1)->toISOString(),
-                    'sender' => $user->id,
-                    'read' => true,
-                ],
-                [
-                    'id' => 'msg-3',
-                    'text' => 'That sounds awesome! How was it?',
-                    'timestamp' => now()->subMinutes(30)->toISOString(),
-                    'sender' => 'user-234',
-                    'read' => true,
-                ],
-                [
-                    'id' => 'msg-4',
-                    'text' => 'It was amazing! The acoustics are incredible.',
-                    'timestamp' => now()->subMinutes(15)->toISOString(),
-                    'sender' => $user->id,
-                    'read' => false,
-                ],
-            ];
+        if ($selectedConversationId) {
+            $selectedConversation = $user->conversations()
+                ->where('conversations.id', $selectedConversationId)
+                ->first();
+
+            if ($selectedConversation) {
+                // Mark conversation as read
+                $selectedConversation->markAsReadForUser($user->id);
+
+                // Get messages for the conversation
+                $messages = $selectedConversation->messages()
+                    ->with('sender')
+                    ->orderBy('created_at', 'asc')
+                    ->get()
+                    ->map(function ($message) {
+                        return [
+                            'id' => $message->id,
+                            'text' => $message->content,
+                            'timestamp' => $message->created_at->toISOString(),
+                            'sender' => $message->sender_id,
+                            'sender_name' => $message->sender->name,
+                            'type' => $message->type,
+                            'metadata' => $message->metadata,
+                            'edited_at' => $message->edited_at?->toISOString(),
+                        ];
+                    });
+            }
         }
 
         return Inertia::render('social/messages-index', [
             'conversations' => $conversations,
-            'selected_conversation' => $selectedConversation,
+            'selected_conversation' => $selectedConversationId,
             'messages' => $messages,
             'current_user' => [
                 'id' => $user->id,
@@ -111,18 +110,50 @@ final class SocialMessageController extends Controller
         return $this->index(request()->merge(['conversation' => $conversationId]));
     }
 
-    public function sendMessage(Request $request, string $conversationId): JsonResponse
+    public function sendMessage(SendMessageRequest $request, string $conversationId): JsonResponse
     {
-        $request->validate([
-            'message' => 'required|string|max:1000',
+        $user = Auth::user();
+
+        // Verify user is participant in conversation
+        $conversation = $user->conversations()
+            ->where('conversations.id', $conversationId)
+            ->first();
+
+        if (! $conversation) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Conversation not found or access denied',
+            ], 404);
+        }
+
+        // Create the message
+        $message = Message::create([
+            'conversation_id' => $conversationId,
+            'sender_id' => $user->id,
+            'content' => $request->input('message'),
+            'type' => $request->input('type', 'text'),
+            'metadata' => $request->input('metadata'),
         ]);
 
-        // In a real app, you'd save the message to the database
-        // and potentially broadcast it via WebSocket/Pusher
+        // Update conversation's last message timestamp
+        $conversation->update([
+            'last_message_at' => now(),
+        ]);
+
+        // Load sender for response
+        $message->load('sender');
 
         return response()->json([
             'success' => true,
-            'message' => 'Message sent successfully',
+            'message' => [
+                'id' => $message->id,
+                'text' => $message->content,
+                'timestamp' => $message->created_at->toISOString(),
+                'sender' => $message->sender_id,
+                'sender_name' => $message->sender->name,
+                'type' => $message->type,
+                'metadata' => $message->metadata,
+            ],
         ]);
     }
 
@@ -130,15 +161,107 @@ final class SocialMessageController extends Controller
     {
         $user = Auth::user();
 
-        // Get friends to start new conversations with
+        // Get friends to start new conversations with (those who don't have existing conversations)
+        $existingConversationUserIds = $user->conversations()
+            ->where('type', 'private')
+            ->with('participants')
+            ->get()
+            ->flatMap(function ($conversation) use ($user) {
+                return $conversation->participants->where('id', '!=', $user->id)->pluck('id');
+            });
+
         $friends = User::whereHas('friendships', function ($query) use ($user) {
             $query->where(function ($q) use ($user) {
                 $q->where('user_id', $user->id)->orWhere('friend_id', $user->id);
             })->where('status', 'accepted');
-        })->limit(20)->get();
+        })
+            ->whereNotIn('id', $existingConversationUserIds)
+            ->select(['id', 'name', 'email'])
+            ->limit(20)
+            ->get()
+            ->map(function ($friend) {
+                return [
+                    'id' => $friend->id,
+                    'name' => $friend->name,
+                    'avatar' => $friend->avatar,
+                    'online' => false, // TODO: implement online status tracking
+                ];
+            });
 
         return Inertia::render('social/messages-new', [
             'friends' => $friends,
+        ]);
+    }
+
+    public function startConversation(Request $request): JsonResponse
+    {
+        $request->validate([
+            'user_id' => ['required', 'uuid', 'exists:users,id'],
+            'message' => ['required', 'string', 'max:1000'],
+        ]);
+
+        $user = Auth::user();
+        $friendId = $request->input('user_id');
+
+        // Check if users are friends
+        if (! $user->isFriendsWith(User::find($friendId))) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You can only start conversations with friends',
+            ], 403);
+        }
+
+        // Check if conversation already exists
+        $existingConversation = Conversation::where('type', 'private')
+            ->whereHas('participants', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->whereHas('participants', function ($query) use ($friendId) {
+                $query->where('user_id', $friendId);
+            })
+            ->first();
+
+        if ($existingConversation) {
+            return response()->json([
+                'success' => true,
+                'conversation_id' => $existingConversation->id,
+                'redirect_url' => route('social.messages.show', $existingConversation->id),
+            ]);
+        }
+
+        // Create new conversation
+        DB::transaction(function () use ($user, $friendId, $request, &$conversation) {
+            $conversation = Conversation::create([
+                'type' => 'private',
+                'last_message_at' => now(),
+            ]);
+
+            // Add participants
+            ConversationParticipant::create([
+                'conversation_id' => $conversation->id,
+                'user_id' => $user->id,
+                'joined_at' => now(),
+            ]);
+
+            ConversationParticipant::create([
+                'conversation_id' => $conversation->id,
+                'user_id' => $friendId,
+                'joined_at' => now(),
+            ]);
+
+            // Send first message
+            Message::create([
+                'conversation_id' => $conversation->id,
+                'sender_id' => $user->id,
+                'content' => $request->input('message'),
+                'type' => 'text',
+            ]);
+        });
+
+        return response()->json([
+            'success' => true,
+            'conversation_id' => $conversation->id,
+            'redirect_url' => route('social.messages.show', $conversation->id),
         ]);
     }
 }
