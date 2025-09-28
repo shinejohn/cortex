@@ -37,7 +37,7 @@ final class EventController extends Controller
                     'title' => $event->title,
                     'date' => $event->event_date->format('Y-m-d\TH:i:s.000\Z'),
                     'venue' => $event->venue?->name ?? 'TBA',
-                    'price' => $event->is_free ? 'Free' : '$' . number_format((float) ($event->price_min ?? 0)),
+                    'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
                     'category' => $event->category,
                     'image' => $event->image,
                 ];
@@ -64,7 +64,7 @@ final class EventController extends Controller
                     'title' => $event->title,
                     'date' => $eventDateTime->format('Y-m-d\TH:i:s.000\Z'),
                     'venue' => $event->venue?->name ?? 'TBA',
-                    'price' => $event->is_free ? 'Free' : '$' . number_format((float) ($event->price_min ?? 0)),
+                    'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
                     'category' => $event->category,
                     'image' => $event->image ?? 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop',
                 ];
@@ -140,7 +140,7 @@ final class EventController extends Controller
 
         $events = $query->paginate(12)->withQueryString();
 
-        return Inertia::render('Events/Index', [
+        return Inertia::render('events', [
             'events' => $events,
             'filters' => $request->only(['status', 'category', 'is_free', 'venue_id', 'performer_id', 'search', 'date_from', 'date_to']),
             'sort' => ['sort' => $sortBy, 'direction' => $sortDirection],
@@ -155,10 +155,34 @@ final class EventController extends Controller
             'workspace',
             'createdBy',
             'bookings.createdBy',
+            'ticketPlans' => function ($query) {
+                $query->where('is_active', true)->orderBy('sort_order');
+            },
         ]);
 
-        return Inertia::render('Events/Show', [
+        // Get similar events
+        $similarEvents = Event::published()
+            ->upcoming()
+            ->where('id', '!=', $event->id)
+            ->where('category', $event->category)
+            ->with(['venue', 'performer'])
+            ->take(6)
+            ->get()
+            ->map(function ($e) {
+                return [
+                    'id' => $e->id,
+                    'title' => $e->title,
+                    'date' => $e->event_date->format('Y-m-d\TH:i:s.000\Z'),
+                    'venue' => $e->venue?->name ?? 'TBA',
+                    'price' => $e->is_free ? 'Free' : '$'.number_format((float) ($e->price_min ?? 0)),
+                    'category' => $e->category,
+                    'image' => $e->image,
+                ];
+            });
+
+        return Inertia::render('events/event-detail', [
             'event' => $event,
+            'similarEvents' => $similarEvents,
         ]);
     }
 
@@ -302,7 +326,7 @@ final class EventController extends Controller
             'community_rating' => 0,
             'member_attendance' => 0,
             'member_recommendations' => 0,
-            'discussion_thread_id' => 'thread-' . fake()->randomNumber(6),
+            'discussion_thread_id' => 'thread-'.fake()->randomNumber(6),
         ]);
 
         return redirect()->route('events.show', $event)

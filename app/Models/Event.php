@@ -15,6 +15,14 @@ final class Event extends Model
     /** @use HasFactory<\Database\Factories\EventFactory> */
     use HasFactory, HasUuid;
 
+    protected $appends = [
+        'date',
+        'venue_info',
+        'price',
+        'location',
+        'venue_model',
+    ];
+
     protected $fillable = [
         'title',
         'image',
@@ -64,6 +72,16 @@ final class Event extends Model
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
+    }
+
+    public function ticketPlans(): HasMany
+    {
+        return $this->hasMany(TicketPlan::class);
+    }
+
+    public function ticketOrders(): HasMany
+    {
+        return $this->hasMany(TicketOrder::class);
     }
 
     // Computed attributes for frontend compatibility

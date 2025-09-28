@@ -77,7 +77,7 @@ const MOBILE_NAV_ITEMS: NavItem[] = [
     },
     {
         title: "Tickets",
-        href: "/tickets/buy",
+        href: "/tickets",
         icon: <Ticket className="size-4" />,
     },
     {

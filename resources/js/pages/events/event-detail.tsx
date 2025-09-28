@@ -1,0 +1,584 @@
+import { useState } from 'react';
+import { Link, router } from '@inertiajs/react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Header } from '@/components/common/header';
+import { Footer } from '@/components/common/footer';
+import { Auth } from '@/types';
+import {
+    Calendar,
+    Clock,
+    MapPin,
+    Users,
+    Heart,
+    Share2,
+    ChevronDown,
+    Ticket,
+    CheckCircle,
+    Sun,
+    Cloud,
+    CloudRain,
+    Flame,
+    ArrowRight,
+    X
+} from 'lucide-react';
+
+interface Event {
+    id: string;
+    title: string;
+    description: string;
+    event_date: string;
+    time: string;
+    image: string;
+    category: string;
+    badges: string[];
+    subcategories: string[];
+    is_free: boolean;
+    price_min: number;
+    price_max: number;
+    venue: {
+        id: string;
+        name: string;
+        address: string;
+        neighborhood: string;
+        latitude: number;
+        longitude: number;
+    };
+    performer: {
+        id: string;
+        name: string;
+        bio: string;
+        image: string;
+        verified: boolean;
+    };
+    ticket_plans: Array<{
+        id: string;
+        name: string;
+        description: string;
+        price: number;
+        max_quantity: number;
+        available_quantity: number;
+        is_active: boolean;
+    }>;
+}
+
+interface SimilarEvent {
+    id: string;
+    title: string;
+    date: string;
+    venue: string;
+    price: string;
+    category: string;
+    image: string;
+}
+
+interface Props {
+    auth: Auth;
+    event: Event;
+    similarEvents: SimilarEvent[];
+}
+
+export default function EventDetail({ auth, event, similarEvents }: Props) {
+    const [isSaved, setIsSaved] = useState(false);
+    const [activeTab, setActiveTab] = useState('overview');
+    const [showTicketModal, setShowTicketModal] = useState(false);
+
+    const formatEventDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    };
+
+    const formatEventTime = (timeString: string) => {
+        const [hours, minutes] = timeString.split(':');
+        const date = new Date();
+        date.setHours(parseInt(hours), parseInt(minutes));
+        return date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit'
+        });
+    };
+
+    const handleGetTickets = () => {
+        router.visit(`/events/${event.id}/tickets`);
+    };
+
+    const handleSave = () => {
+        setIsSaved(!isSaved);
+    };
+
+    const handleShare = async () => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: event.title,
+                    text: `Check out ${event.title}`,
+                    url: window.location.href
+                });
+            } catch (err) {
+                console.log('Error sharing:', err);
+            }
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+        }
+    };
+
+    const getTicketStatus = () => {
+        const hasTickets = event.ticket_plans && event.ticket_plans.length > 0;
+
+        if (!hasTickets && event.is_free) {
+            return {
+                text: 'Free Entry',
+                bgColor: 'bg-green-100',
+                textColor: 'text-green-800'
+            };
+        }
+
+        if (!hasTickets) {
+            return {
+                text: 'No Tickets Required',
+                bgColor: 'bg-gray-100',
+                textColor: 'text-gray-800'
+            };
+        }
+
+        const totalAvailable = event.ticket_plans.reduce((sum, plan) => sum + plan.available_quantity, 0);
+
+        if (totalAvailable === 0) {
+            return {
+                text: 'Sold Out',
+                bgColor: 'bg-red-100',
+                textColor: 'text-red-800'
+            };
+        }
+
+        const totalMax = event.ticket_plans.reduce((sum, plan) => sum + plan.max_quantity, 0);
+        const percentSold = ((totalMax - totalAvailable) / totalMax) * 100;
+
+        if (percentSold > 90) {
+            return {
+                text: 'Almost Sold Out',
+                bgColor: 'bg-red-100',
+                textColor: 'text-red-800'
+            };
+        }
+
+        if (percentSold > 70) {
+            return {
+                text: 'Selling Fast',
+                bgColor: 'bg-orange-100',
+                textColor: 'text-orange-800'
+            };
+        }
+
+        return {
+            text: 'Tickets Available',
+            bgColor: 'bg-indigo-100',
+            textColor: 'text-indigo-800'
+        };
+    };
+
+    const ticketStatus = getTicketStatus();
+
+    return (
+        <div className="min-h-screen bg-white">
+            <Header auth={auth} />
+            {/* Hero Section */}
+            <div className="relative h-96 overflow-hidden">
+                <img
+                    src={event.image || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=400&fit=crop'}
+                    alt={event.title}
+                    className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-40" />
+                <div className="absolute bottom-0 left-0 right-0 p-8">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="text-white">
+                            <h1 className="text-4xl font-bold mb-4">{event.title}</h1>
+                            <div className="flex flex-wrap items-center gap-4 text-lg">
+                                <div className="flex items-center">
+                                    <Calendar className="h-5 w-5 mr-2" />
+                                    {formatEventDate(event.event_date)}
+                                </div>
+                                <div className="flex items-center">
+                                    <Clock className="h-5 w-5 mr-2" />
+                                    {formatEventTime(event.time)}
+                                </div>
+                                <div className="flex items-center">
+                                    <MapPin className="h-5 w-5 mr-2" />
+                                    {event.venue?.name || 'TBA'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Context Bar */}
+            <div className="bg-indigo-50 py-3">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-wrap items-center justify-between gap-4">
+                        <div className="flex items-center text-sm">
+                            <Flame className="h-4 w-4 text-orange-500 mr-1" />
+                            <span className="font-medium text-gray-800">
+                                Popular in {event.category}
+                            </span>
+                        </div>
+                        {event.venue && (
+                            <div className="flex items-center text-sm text-gray-700">
+                                <MapPin className="h-4 w-4 text-gray-500 mr-1" />
+                                {event.venue.neighborhood}
+                            </div>
+                        )}
+                        <div className="flex items-center text-sm text-gray-700">
+                            <Sun className="h-4 w-4 text-yellow-500 mr-1" />
+                            Perfect weather expected
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Left Column */}
+                    <div className="lg:col-span-2">
+                        {/* Primary Information */}
+                        <Card className="mb-8">
+                            <CardContent className="p-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Price</h3>
+                                        <div className="flex flex-wrap gap-2">
+                                            {event.is_free ? (
+                                                <span className="text-lg font-semibold text-green-600">Free</span>
+                                            ) : (
+                                                <span className="text-base font-medium">
+                                                    ${event.price_min} - ${event.price_max}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Category</h3>
+                                        <Badge variant="secondary">{event.category}</Badge>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Duration</h3>
+                                        <div className="flex items-center">
+                                            <Clock className="h-4 w-4 text-gray-400 mr-1" />
+                                            <p className="text-base font-medium">3 hours</p>
+                                        </div>
+                                    </div>
+                                    {event.badges && event.badges.length > 0 && (
+                                        <div>
+                                            <h3 className="text-sm font-medium text-gray-500 mb-1">Badges</h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {event.badges.slice(0, 3).map((badge, index) => (
+                                                    <Badge key={index} variant="outline">{badge}</Badge>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {event.performer && (
+                                    <div className="flex items-center justify-between border-t border-gray-200 pt-6">
+                                        <div className="flex items-center">
+                                            <div className="h-10 w-10 rounded-full overflow-hidden mr-3">
+                                                <img
+                                                    src={event.performer.image || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face'}
+                                                    alt={event.performer.name}
+                                                    className="h-full w-full object-cover"
+                                                />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-900">Performer</p>
+                                                <div className="flex items-center">
+                                                    <span className="text-indigo-600 hover:text-indigo-800 font-medium">
+                                                        {event.performer.name}
+                                                    </span>
+                                                    {event.performer.verified && (
+                                                        <CheckCircle className="h-4 w-4 text-blue-500 ml-1" />
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+
+                        {/* Ticket Status */}
+                        {event.ticket_plans && event.ticket_plans.length > 0 && (
+                            <Card className={`mb-6 ${ticketStatus.bgColor}`}>
+                                <CardContent className="p-4">
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex items-center">
+                                            <Ticket className={`h-5 w-5 ${ticketStatus.textColor} mr-2`} />
+                                            <div>
+                                                <h3 className={`font-medium ${ticketStatus.textColor}`}>
+                                                    {ticketStatus.text}
+                                                </h3>
+                                                <p className="text-sm text-gray-700 mt-1">
+                                                    {event.is_free
+                                                        ? 'This is a free event, but registration is required.'
+                                                        : `Prices from $${Math.min(...event.ticket_plans.map(plan => plan.price))}`
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+                                        {ticketStatus.text !== 'Sold Out' && (
+                                            <Button onClick={handleGetTickets}>
+                                                {event.is_free ? 'Register' : 'Get Tickets'}
+                                            </Button>
+                                        )}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {/* Action Buttons */}
+                        <div className="flex flex-wrap gap-3 mb-8">
+                            <Button onClick={handleGetTickets} className="flex-1">
+                                <Ticket className="h-5 w-5 mr-2" />
+                                Get Tickets
+                            </Button>
+                            <Button
+                                variant={isSaved ? "default" : "outline"}
+                                onClick={handleSave}
+                            >
+                                <Heart className={`h-5 w-5 mr-2 ${isSaved ? 'fill-current' : ''}`} />
+                                Save
+                            </Button>
+                            <Button variant="outline" onClick={handleShare}>
+                                <Share2 className="h-5 w-5 mr-2" />
+                                Share
+                            </Button>
+                        </div>
+
+                        {/* Content Tabs */}
+                        <Tabs value={activeTab} onValueChange={setActiveTab}>
+                            <TabsList className="grid w-full grid-cols-3">
+                                <TabsTrigger value="overview">Overview</TabsTrigger>
+                                <TabsTrigger value="venue">Venue</TabsTrigger>
+                                <TabsTrigger value="performer">Performer</TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="overview" className="mt-6">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>About This Event</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <p className="text-gray-700 leading-relaxed">
+                                            {event.description || 'No description available for this event.'}
+                                        </p>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+
+                            <TabsContent value="venue" className="mt-6">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Venue Information</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        {event.venue ? (
+                                            <div>
+                                                <h4 className="font-medium text-gray-900 mb-2">
+                                                    {event.venue.name}
+                                                </h4>
+                                                <p className="text-gray-600 mb-4">{event.venue.address}</p>
+                                                <div className="h-64 bg-gray-200 rounded-lg mb-4">
+                                                    <div className="w-full h-full flex items-center justify-center text-gray-500">
+                                                        Map placeholder
+                                                    </div>
+                                                </div>
+                                                <Button variant="outline" asChild>
+                                                    <a
+                                                        href={`https://maps.google.com/?q=${event.venue.latitude},${event.venue.longitude}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        Get Directions
+                                                    </a>
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <p className="text-gray-500">Venue information not available</p>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+
+                            <TabsContent value="performer" className="mt-6">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Performer Information</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        {event.performer ? (
+                                            <div>
+                                                <div className="flex items-center mb-4">
+                                                    <div className="h-16 w-16 rounded-full overflow-hidden mr-4">
+                                                        <img
+                                                            src={event.performer.image || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face'}
+                                                            alt={event.performer.name}
+                                                            className="h-full w-full object-cover"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-medium text-gray-900 flex items-center">
+                                                            {event.performer.name}
+                                                            {event.performer.verified && (
+                                                                <CheckCircle className="h-5 w-5 text-blue-500 ml-2" />
+                                                            )}
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                                <p className="text-gray-700 leading-relaxed">
+                                                    {event.performer.bio || 'No performer information available.'}
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <p className="text-gray-500">Performer information not available</p>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+                        </Tabs>
+                    </div>
+
+                    {/* Right Column - Sidebar */}
+                    <div>
+                        {/* Ticket Information */}
+                        {event.ticket_plans && event.ticket_plans.length > 0 && (
+                            <Card className="mb-6">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center">
+                                        <Ticket className="h-5 w-5 text-indigo-500 mr-2" />
+                                        Ticket Information
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    {event.ticket_plans.map((plan) => (
+                                        <div key={plan.id} className="flex justify-between items-start">
+                                            <div>
+                                                <h4 className="font-medium text-gray-900">{plan.name}</h4>
+                                                <p className="text-sm text-gray-500">{plan.description}</p>
+                                                <p className="text-xs text-gray-400 mt-1">
+                                                    {plan.available_quantity} of {plan.max_quantity} available
+                                                </p>
+                                            </div>
+                                            <span className="font-bold text-gray-900">
+                                                {plan.price === 0 ? 'Free' : `$${plan.price}`}
+                                            </span>
+                                        </div>
+                                    ))}
+                                    <Separator />
+                                    <Button onClick={handleGetTickets} className="w-full">
+                                        {event.is_free ? 'Register Now' : 'Get Tickets'}
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {/* Venue Map Card */}
+                        {event.venue && (
+                            <Card className="mb-6">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center">
+                                        <MapPin className="h-5 w-5 text-gray-500 mr-2" />
+                                        Venue Location
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="h-48 bg-gray-200 rounded-lg mb-4">
+                                        <div className="w-full h-full flex items-center justify-center text-gray-500">
+                                            Map placeholder
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start justify-between">
+                                        <div>
+                                            <h4 className="font-medium text-gray-900">{event.venue.name}</h4>
+                                            <p className="text-sm text-gray-500">{event.venue.address}</p>
+                                        </div>
+                                        <Button variant="outline" size="sm" asChild>
+                                            <a
+                                                href={`https://maps.google.com/?q=${event.venue.latitude},${event.venue.longitude}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                Directions
+                                            </a>
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {/* Similar Events */}
+                        {similarEvents && similarEvents.length > 0 && (
+                            <Card>
+                                <CardHeader>
+                                    <div className="flex justify-between items-center">
+                                        <CardTitle>Similar Events</CardTitle>
+                                        <Link
+                                            href={`/events?category=${event.category}`}
+                                            className="text-sm text-indigo-600 hover:text-indigo-800 flex items-center"
+                                        >
+                                            View all
+                                            <ArrowRight className="h-4 w-4 ml-1" />
+                                        </Link>
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    {similarEvents.slice(0, 2).map((similarEvent) => (
+                                        <Link
+                                            key={similarEvent.id}
+                                            href={`/events/${similarEvent.id}`}
+                                            className="flex items-start hover:bg-gray-50 p-2 -mx-2 rounded-md"
+                                        >
+                                            <div className="h-14 w-14 rounded-md overflow-hidden flex-shrink-0 bg-gray-200">
+                                                <img
+                                                    src={similarEvent.image || 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6a3?w=56&h=56&fit=crop'}
+                                                    alt={similarEvent.title}
+                                                    className="h-full w-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="ml-3">
+                                                <h4 className="text-sm font-medium text-gray-900 line-clamp-1">
+                                                    {similarEvent.title}
+                                                </h4>
+                                                <p className="text-xs text-gray-500 line-clamp-1">
+                                                    {formatEventDate(similarEvent.date)} • {similarEvent.venue}
+                                                </p>
+                                                <div className="mt-1 flex items-center">
+                                                    <Badge variant="outline" className="text-xs">
+                                                        {similarEvent.category}
+                                                    </Badge>
+                                                    <span className="ml-2 text-xs text-gray-500">
+                                                        {similarEvent.price}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </CardContent>
+                            </Card>
+                        )}
+                    </div>
+                </div>
+            </div>
+            <Footer />
+        </div>
+    );
+}

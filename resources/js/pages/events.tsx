@@ -4,7 +4,6 @@ import { Footer } from "@/components/common/footer";
 import { GridCard } from "@/components/common/grid-card";
 import Header from "@/components/common/header";
 import { Button } from "@/components/ui/button";
-import { type SharedData } from "@/types";
 import { type DayEvents, type Event, type EventsPageProps } from "@/types/events";
 import { Head, usePage } from "@inertiajs/react";
 import { CalendarIcon, CheckIcon, MapPinIcon, ShareIcon } from "lucide-react";

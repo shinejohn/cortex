@@ -14,6 +14,9 @@ use App\Http\Controllers\SocialFeedController;
 use App\Http\Controllers\SocialGroupController;
 use App\Http\Controllers\SocialGroupPostController;
 use App\Http\Controllers\SocialMessageController;
+use App\Http\Controllers\TicketOrderController;
+use App\Http\Controllers\TicketPageController;
+use App\Http\Controllers\TicketPlanController;
 use App\Http\Controllers\VenueController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,6 +29,10 @@ Route::get('/performers', [PerformerController::class, 'publicIndex'])->name('pe
 Route::get('/performers/{performer}', [PerformerController::class, 'show'])->name('performers.show')->can('view', 'performer');
 Route::get('/venues', [VenueController::class, 'publicIndex'])->name('venues');
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show')->can('view', 'venue');
+
+// Ticket routes
+Route::get('/tickets', [TicketPageController::class, 'index'])->name('tickets.index');
+Route::get('/events/{event}/tickets', [TicketPageController::class, 'selection'])->name('events.tickets.selection');
 
 // Community routes (publicly accessible)
 Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
@@ -52,6 +59,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/notifications/unread', [NotificationController::class, 'getUnread'])->name('api.notifications.unread');
     Route::patch('/api/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('api.notifications.read');
     Route::patch('/api/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('api.notifications.mark-all-read');
+
+    // Ticket API routes
+    Route::get('/api/ticket-plans', [TicketPlanController::class, 'index'])->name('api.ticket-plans.index');
+    Route::get('/api/events/{event}/ticket-plans', [TicketPlanController::class, 'forEvent'])->name('api.events.ticket-plans');
+    Route::resource('/api/ticket-orders', TicketOrderController::class, ['as' => 'api']);
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -60,6 +72,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('performers', PerformerController::class)->except(['index', 'show']);
     Route::resource('events', EventController::class)->except(['index', 'show']);
     Route::resource('bookings', BookingController::class);
+
+    // Ticket management routes
+    Route::resource('ticket-plans', TicketPlanController::class);
+    Route::resource('ticket-orders', TicketOrderController::class);
+
+    // Authenticated ticket routes
+    Route::get('/tickets/my-tickets', [TicketPageController::class, 'myTickets'])->name('tickets.my-tickets');
 
     // Community thread management routes (require authentication)
     Route::get('/community/{id}/new-thread', [CommunityController::class, 'createThread'])->name('community.thread.create');
