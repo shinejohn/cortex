@@ -104,7 +104,7 @@ final class Performer extends Model
     {
         // This would be calculated based on user's location
         // For now, return a default value
-        return $this->attributes['distance_miles'] ?? 0.0;
+        return (float) ($this->attributes['distance_miles'] ?? 0.0);
     }
 
     // Scopes

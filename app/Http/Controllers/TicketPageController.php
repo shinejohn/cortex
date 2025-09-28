@@ -32,6 +32,14 @@ final class TicketPageController extends Controller
             $query->active()->available()->orderBySortOrder();
         }]);
 
+        // If event has pricing but no ticket plans, auto-generate basic plans
+        if ($event->ticketPlans->isEmpty() && ! $event->is_free && $event->price_min > 0) {
+            $this->generateBasicTicketPlans($event);
+            $event->load(['ticketPlans' => function ($query) {
+                $query->active()->available()->orderBySortOrder();
+            }]);
+        }
+
         return Inertia::render('ticket-selection', [
             'event' => $event,
             'ticketPlans' => $event->ticketPlans,
@@ -48,5 +56,32 @@ final class TicketPageController extends Controller
         return Inertia::render('my-tickets', [
             'orders' => $orders,
         ]);
+    }
+
+    private function generateBasicTicketPlans(Event $event): void
+    {
+        // Create General Admission ticket plan
+        $event->ticketPlans()->create([
+            'name' => 'General Admission',
+            'description' => 'Standard entry to the event',
+            'price' => $event->price_min,
+            'max_quantity' => 200,
+            'available_quantity' => 200,
+            'is_active' => true,
+            'sort_order' => 1,
+        ]);
+
+        // If there's a price range, create a VIP option
+        if ($event->price_max > $event->price_min) {
+            $event->ticketPlans()->create([
+                'name' => 'VIP Package',
+                'description' => 'Premium seating with exclusive access',
+                'price' => $event->price_max,
+                'max_quantity' => 50,
+                'available_quantity' => 50,
+                'is_active' => true,
+                'sort_order' => 2,
+            ]);
+        }
     }
 }

@@ -59,12 +59,12 @@ final class TicketPlan extends Model
 
     public function getIsFreeAttribute(): bool
     {
-        return $this->price === 0;
+        return (float) $this->price === 0.0;
     }
 
     public function getFormattedPriceAttribute(): string
     {
-        return $this->is_free ? 'Free' : '$'.number_format($this->price, 2);
+        return $this->is_free ? 'Free' : '$'.number_format((float) $this->price, 2);
     }
 
     protected function casts(): array

@@ -78,20 +78,21 @@ final class TicketOrderController extends Controller
                 $discount = $subtotal * 0.1;
             }
 
-            $total = $subtotal + $fees - $discount;
+            $total = round($subtotal + $fees - $discount, 2);
+            $isFree = $total <= 0;
 
             $order = TicketOrder::create([
                 'event_id' => $validated['event_id'],
                 'user_id' => $request->user()->id,
-                'status' => $total === 0 ? 'completed' : 'pending',
+                'status' => $isFree ? 'completed' : 'pending',
                 'subtotal' => $subtotal,
                 'fees' => $fees,
                 'discount' => $discount,
                 'total' => $total,
                 'promo_code' => $validated['promo_code'] ?? null,
                 'billing_info' => $validated['billing_info'] ?? null,
-                'payment_status' => $total === 0 ? 'completed' : 'pending',
-                'completed_at' => $total === 0 ? now() : null,
+                'payment_status' => $isFree ? 'completed' : 'pending',
+                'completed_at' => $isFree ? now() : null,
             ]);
 
             foreach ($orderItems as $item) {
