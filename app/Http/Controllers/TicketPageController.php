@@ -21,7 +21,7 @@ final class TicketPageController extends Controller
             ->take(6)
             ->get();
 
-        return Inertia::render('tickets', [
+        return Inertia::render('tickets/index', [
             'upcomingEvents' => $upcomingEvents,
         ]);
     }
@@ -40,7 +40,7 @@ final class TicketPageController extends Controller
             }]);
         }
 
-        return Inertia::render('ticket-selection', [
+        return Inertia::render('tickets/ticket-selection', [
             'event' => $event,
             'ticketPlans' => $event->ticketPlans,
         ]);
@@ -53,7 +53,7 @@ final class TicketPageController extends Controller
             ->latest()
             ->get();
 
-        return Inertia::render('my-tickets', [
+        return Inertia::render('tickets/my-tickets', [
             'orders' => $orders,
         ]);
     }

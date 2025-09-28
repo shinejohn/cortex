@@ -71,7 +71,7 @@ final class EventController extends Controller
             })
             ->toArray();
 
-        return Inertia::render('events', [
+        return Inertia::render('events/index', [
             'featuredEvents' => $featuredEvents,
             'upcomingEvents' => $upcomingEvents,
         ]);
@@ -140,7 +140,7 @@ final class EventController extends Controller
 
         $events = $query->paginate(12)->withQueryString();
 
-        return Inertia::render('events', [
+        return Inertia::render('events/index', [
             'events' => $events,
             'filters' => $request->only(['status', 'category', 'is_free', 'venue_id', 'performer_id', 'search', 'date_from', 'date_to']),
             'sort' => ['sort' => $sortBy, 'direction' => $sortDirection],
