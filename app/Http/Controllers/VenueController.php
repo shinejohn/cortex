@@ -304,7 +304,7 @@ final class VenueController extends Controller
             ],
         ];
 
-        return Inertia::render('Venues/Show', [
+        return Inertia::render('venues/show', [
             'venue' => $venue,
             'ratingStats' => $ratingStats,
         ]);
@@ -432,7 +432,7 @@ final class VenueController extends Controller
 
         $venue->delete();
 
-        return redirect()->route('venues.index')
+        return redirect()->route('venues')
             ->with('success', 'Venue deleted successfully!');
     }
 }
