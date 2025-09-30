@@ -77,6 +77,7 @@ export interface PerformerShowPageProps extends SharedData {
     performer: PerformerProfile;
     ratingStats: RatingStats;
     reviews: PerformerReview[];
+    isFollowing: boolean;
 }
 
 export type ProfileTab =

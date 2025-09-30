@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Follow;
 use App\Models\Performer;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,18 +17,8 @@ final class PerformerController extends Controller
      */
     public function publicIndex(Request $request): Response
     {
-        // Get current workspace
-        $currentWorkspace = null;
-        if ($request->user()) {
-            $user = $request->user();
-            $currentWorkspace = $user->currentWorkspace ?? $user->workspaces->first();
-        }
-
         // Get featured performers
-        $featuredPerformers = Performer::when($currentWorkspace, function ($query, $workspace) {
-            return $query->where('workspace_id', $workspace->id);
-        })
-            ->active()
+        $featuredPerformers = Performer::active()
             ->verified()
             ->with('upcomingShows')
             ->orderBy('average_rating', 'desc')
@@ -57,32 +48,28 @@ final class PerformerController extends Controller
                 'id' => 'bands',
                 'name' => 'Bands',
                 'icon' => 'music',
-                'count' => Performer::when($currentWorkspace, fn ($q, $w) => $q->where('workspace_id', $w->id))
-                    ->whereJsonContains('genres', 'Rock')->count(),
+                'count' => Performer::whereJsonContains('genres', 'Rock')->count(),
                 'color' => 'purple',
             ],
             [
                 'id' => 'solo-artists',
                 'name' => 'Solo Artists',
                 'icon' => 'mic',
-                'count' => Performer::when($currentWorkspace, fn ($q, $w) => $q->where('workspace_id', $w->id))
-                    ->whereJsonContains('genres', 'Singer-Songwriter')->count(),
+                'count' => Performer::whereJsonContains('genres', 'Singer-Songwriter')->count(),
                 'color' => 'blue',
             ],
             [
                 'id' => 'djs',
                 'name' => 'DJs',
                 'icon' => 'headphones',
-                'count' => Performer::when($currentWorkspace, fn ($q, $w) => $q->where('workspace_id', $w->id))
-                    ->whereJsonContains('genres', 'Electronic')->count(),
+                'count' => Performer::whereJsonContains('genres', 'Electronic')->count(),
                 'color' => 'green',
             ],
             [
                 'id' => 'acoustic',
                 'name' => 'Acoustic',
                 'icon' => 'guitar',
-                'count' => Performer::when($currentWorkspace, fn ($q, $w) => $q->where('workspace_id', $w->id))
-                    ->whereJsonContains('genres', 'Acoustic')->count(),
+                'count' => Performer::whereJsonContains('genres', 'Acoustic')->count(),
                 'color' => 'orange',
             ],
         ];
@@ -164,7 +151,7 @@ final class PerformerController extends Controller
         ]);
     }
 
-    public function show(Performer $performer): Response
+    public function show(Request $request, Performer $performer): Response
     {
         $performer->load([
             'workspace',
@@ -253,10 +240,19 @@ final class PerformerController extends Controller
             'events' => $events,
         ];
 
+        $isFollowing = false;
+        if ($request->user()) {
+            $isFollowing = Follow::where('user_id', $request->user()->id)
+                ->where('followable_type', Performer::class)
+                ->where('followable_id', $performer->id)
+                ->exists();
+        }
+
         return Inertia::render('performers/show', [
             'performer' => $performerData,
             'ratingStats' => $ratingStats,
             'reviews' => $reviews,
+            'isFollowing' => $isFollowing,
         ]);
     }
 

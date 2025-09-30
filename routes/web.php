@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PerformerController;
@@ -64,6 +65,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/ticket-plans', [TicketPlanController::class, 'index'])->name('api.ticket-plans.index');
     Route::get('/api/events/{event}/ticket-plans', [TicketPlanController::class, 'forEvent'])->name('api.events.ticket-plans');
     Route::resource('/api/ticket-orders', TicketOrderController::class, ['as' => 'api']);
+
+    // Follow API routes
+    Route::post('/api/follow/toggle', [FollowController::class, 'toggle'])->name('api.follow.toggle');
+    Route::get('/api/follow/status', [FollowController::class, 'checkStatus'])->name('api.follow.status');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {

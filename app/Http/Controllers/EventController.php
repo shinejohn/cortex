@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Follow;
 use App\Models\Performer;
 use App\Models\Venue;
 use Illuminate\Http\Request;
@@ -147,7 +148,7 @@ final class EventController extends Controller
         ]);
     }
 
-    public function show(Event $event): Response
+    public function show(Request $request, Event $event): Response
     {
         $event->load([
             'venue',
@@ -180,9 +181,18 @@ final class EventController extends Controller
                 ];
             });
 
+        $isFollowing = false;
+        if ($request->user()) {
+            $isFollowing = Follow::where('user_id', $request->user()->id)
+                ->where('followable_type', Event::class)
+                ->where('followable_id', $event->id)
+                ->exists();
+        }
+
         return Inertia::render('events/event-detail', [
             'event' => $event,
             'similarEvents' => $similarEvents,
+            'isFollowing' => $isFollowing,
         ]);
     }
 

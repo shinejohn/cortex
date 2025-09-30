@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Header } from '@/components/common/header';
 import { Footer } from '@/components/common/footer';
+import { FollowButton } from '@/components/common/follow-button';
 import { SharedData } from '@/types';
 import {
     Clock,
@@ -84,29 +85,18 @@ interface VenueShowProps extends SharedData {
             overall: number;
         };
     };
+    isFollowing: boolean;
 }
 
 export default function VenueShow() {
-    const { venue, ratingStats, auth } = usePage<VenueShowProps>().props;
+    const { venue, ratingStats, auth, isFollowing } = usePage<VenueShowProps>().props;
 
     const [activeTab, setActiveTab] = useState('overview');
-    const [isSaved, setIsSaved] = useState(false);
-    const [isFollowing, setIsFollowing] = useState(false);
     const [showContactForm, setShowContactForm] = useState(false);
 
     // Handle back navigation
     const handleBack = () => {
         window.history.back();
-    };
-
-    // Handle save to favorites
-    const handleSave = () => {
-        setIsSaved(!isSaved);
-    };
-
-    // Handle follow venue
-    const handleFollow = () => {
-        setIsFollowing(!isFollowing);
     };
 
     // Handle share functionality
@@ -279,13 +269,12 @@ export default function VenueShow() {
                                 <MessageCircle className="h-5 w-5 mr-2" />
                                 Contact Venue
                             </Button>
-                            <Button
-                                variant={isSaved ? "default" : "outline"}
-                                onClick={handleSave}
-                            >
-                                <Heart className={`h-5 w-5 mr-2 ${isSaved ? 'fill-current' : ''}`} />
-                                Save
-                            </Button>
+                            <FollowButton
+                                followableType="venue"
+                                followableId={venue.id.toString()}
+                                variant="default"
+                                initialFollowing={isFollowing}
+                            />
                             <Button variant="outline" onClick={handleShare}>
                                 <Share2 className="h-5 w-5 mr-2" />
                                 Share
@@ -543,14 +532,13 @@ export default function VenueShow() {
                                     <MessageCircle className="h-4 w-4 mr-2" />
                                     Contact Venue
                                 </Button>
-                                <Button
-                                    variant="outline"
-                                    onClick={handleFollow}
-                                    className={`w-full ${isFollowing ? 'bg-blue-50 text-blue-700 border-blue-200' : ''}`}
-                                >
-                                    <CalendarDays className="h-4 w-4 mr-2" />
-                                    {isFollowing ? 'Following' : 'Follow Updates'}
-                                </Button>
+                                <FollowButton
+                                    followableType="venue"
+                                    followableId={venue.id.toString()}
+                                    variant="text"
+                                    className="w-full"
+                                    initialFollowing={isFollowing}
+                                />
                             </CardContent>
                         </Card>
 

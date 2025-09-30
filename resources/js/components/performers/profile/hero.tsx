@@ -1,14 +1,17 @@
 import { Share2, CheckCircle, Plus, MapPin, Clock, Star, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { FollowButton } from '@/components/common/follow-button';
 import type { PerformerProfile } from '@/types/performer-profile';
+import { usePage } from '@inertiajs/react';
 
 interface PerformerHeroProps {
     performer: PerformerProfile;
     isFollowing: boolean;
-    onToggleFollow: () => void;
 }
 
-export function PerformerHero({ performer, isFollowing, onToggleFollow }: PerformerHeroProps) {
+export function PerformerHero({ performer, isFollowing }: PerformerHeroProps) {
+    const { auth } = usePage().props as { auth?: { user?: { id: string } } };
+
     const getYearsActiveString = () => {
         const currentYear = new Date().getFullYear();
         const startYear = currentYear - performer.yearsActive;
@@ -100,26 +103,13 @@ export function PerformerHero({ performer, isFollowing, onToggleFollow }: Perfor
                     </div>
 
                     <div className="flex gap-2 mt-2 md:mt-0">
-                        <Button
-                            onClick={onToggleFollow}
-                            className={
-                                isFollowing
-                                    ? 'bg-white text-indigo-600 hover:bg-gray-100'
-                                    : 'bg-indigo-600 text-white hover:bg-indigo-700'
-                            }
-                        >
-                            {isFollowing ? (
-                                <>
-                                    <CheckCircle className="h-4 w-4 mr-1" />
-                                    Following
-                                </>
-                            ) : (
-                                <>
-                                    <Plus className="h-4 w-4 mr-1" />
-                                    Follow
-                                </>
-                            )}
-                        </Button>
+                        <FollowButton
+                            followableType="performer"
+                            followableId={performer.id}
+                            variant="text"
+                            className="bg-indigo-600 text-white hover:bg-indigo-700"
+                            initialFollowing={isFollowing}
+                        />
                         <Button
                             onClick={handleShare}
                             variant="outline"

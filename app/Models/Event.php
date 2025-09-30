@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 final class Event extends Model
 {
@@ -82,6 +83,11 @@ final class Event extends Model
     public function ticketOrders(): HasMany
     {
         return $this->hasMany(TicketOrder::class);
+    }
+
+    public function follows(): MorphMany
+    {
+        return $this->morphMany(Follow::class, 'followable');
     }
 
     // Computed attributes for frontend compatibility

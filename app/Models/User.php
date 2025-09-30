@@ -269,6 +269,11 @@ final class User extends Authenticatable
         return $this->hasMany(ConversationParticipant::class);
     }
 
+    public function follows(): HasMany
+    {
+        return $this->hasMany(Follow::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

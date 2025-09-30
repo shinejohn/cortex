@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 final class Venue extends Model
 {
@@ -63,6 +64,11 @@ final class Venue extends Model
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
+    }
+
+    public function follows(): MorphMany
+    {
+        return $this->morphMany(Follow::class, 'followable');
     }
 
     // Computed attributes for frontend compatibility

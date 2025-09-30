@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Header } from '@/components/common/header';
 import { Footer } from '@/components/common/footer';
+import { FollowButton } from '@/components/common/follow-button';
 import { Auth } from '@/types';
 import {
     Calendar,
@@ -79,12 +80,11 @@ interface Props {
     auth: Auth;
     event: Event;
     similarEvents: SimilarEvent[];
+    isFollowing: boolean;
 }
 
-export default function EventDetail({ auth, event, similarEvents }: Props) {
-    const [isSaved, setIsSaved] = useState(false);
+export default function EventDetail({ auth, event, similarEvents, isFollowing }: Props) {
     const [activeTab, setActiveTab] = useState('overview');
-    const [showTicketModal, setShowTicketModal] = useState(false);
 
     const formatEventDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -108,10 +108,6 @@ export default function EventDetail({ auth, event, similarEvents }: Props) {
 
     const handleGetTickets = () => {
         router.visit(`/events/${event.id}/tickets`);
-    };
-
-    const handleSave = () => {
-        setIsSaved(!isSaved);
     };
 
     const handleShare = async () => {
@@ -355,13 +351,12 @@ export default function EventDetail({ auth, event, similarEvents }: Props) {
                                 <Ticket className="h-5 w-5 mr-2" />
                                 Get Tickets
                             </Button>
-                            <Button
-                                variant={isSaved ? "default" : "outline"}
-                                onClick={handleSave}
-                            >
-                                <Heart className={`h-5 w-5 mr-2 ${isSaved ? 'fill-current' : ''}`} />
-                                Save
-                            </Button>
+                            <FollowButton
+                                followableType="event"
+                                followableId={event.id}
+                                variant="default"
+                                initialFollowing={isFollowing}
+                            />
                             <Button variant="outline" onClick={handleShare}>
                                 <Share2 className="h-5 w-5 mr-2" />
                                 Share

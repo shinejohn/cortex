@@ -12,16 +12,11 @@ import { PerformerAbout } from '@/components/performers/profile/about';
 import type { PerformerShowPageProps, ProfileTab } from '@/types/performer-profile';
 
 export default function PerformerShow() {
-    const { performer, ratingStats, reviews, auth } = usePage<PerformerShowPageProps>().props;
+    const { performer, ratingStats, reviews, auth, isFollowing } = usePage<PerformerShowPageProps>().props;
     const [activeTab, setActiveTab] = useState<ProfileTab>('overview');
-    const [isFollowing, setIsFollowing] = useState(false);
 
     const handleTabChange = (tab: ProfileTab) => {
         setActiveTab(tab);
-    };
-
-    const toggleFollow = () => {
-        setIsFollowing(!isFollowing);
     };
 
     return (
@@ -30,11 +25,7 @@ export default function PerformerShow() {
             <Header auth={auth} />
 
             <div className="min-h-screen bg-gray-50">
-                <PerformerHero
-                    performer={performer}
-                    isFollowing={isFollowing}
-                    onToggleFollow={toggleFollow}
-                />
+                <PerformerHero performer={performer} isFollowing={isFollowing} />
 
                 <PerformerQuickStats performer={performer} />
 

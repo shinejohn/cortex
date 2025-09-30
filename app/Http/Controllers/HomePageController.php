@@ -14,18 +14,8 @@ final class HomePageController extends Controller
 {
     public function index(Request $request)
     {
-        // Get current workspace
-        $currentWorkspace = null;
-        if ($request->user()) {
-            $user = $request->user();
-            $currentWorkspace = $user->currentWorkspace ?? $user->workspaces->first();
-        }
-
         // Get featured events from the database
-        $featuredEvents = Event::when($currentWorkspace, function ($query, $workspace) {
-            return $query->where('workspace_id', $workspace->id);
-        })
-            ->published()
+        $featuredEvents = Event::published()
             ->upcoming()
             ->with(['venue', 'performer'])
             ->take(4)
@@ -36,7 +26,7 @@ final class HomePageController extends Controller
                     'title' => $event->title,
                     'date' => $event->event_date->format('F j, Y'),
                     'venue' => $event->venue?->name ?? 'TBA',
-                    'price' => $event->is_free ? 'Free' : '$' . number_format((float) ($event->price_min ?? 0)),
+                    'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
                     'category' => $event->category,
                     'image' => $event->image,
                 ];
@@ -44,10 +34,7 @@ final class HomePageController extends Controller
             ->toArray();
 
         // Get featured venues from the database
-        $featuredVenues = Venue::when($currentWorkspace, function ($query, $workspace) {
-            return $query->where('workspace_id', $workspace->id);
-        })
-            ->active()
+        $featuredVenues = Venue::active()
             ->orderBy('average_rating', 'desc')
             ->take(4)
             ->get()
@@ -68,10 +55,7 @@ final class HomePageController extends Controller
             ->toArray();
 
         // Get featured performers from the database
-        $featuredPerformers = Performer::when($currentWorkspace, function ($query, $workspace) {
-            return $query->where('workspace_id', $workspace->id);
-        })
-            ->active()
+        $featuredPerformers = Performer::active()
             ->verified()
             ->with('upcomingShows')
             ->orderBy('average_rating', 'desc')
@@ -97,10 +81,7 @@ final class HomePageController extends Controller
             ->toArray();
 
         // Get upcoming events from the database (next 7 days)
-        $upcomingEvents = Event::when($currentWorkspace, function ($query, $workspace) {
-            return $query->where('workspace_id', $workspace->id);
-        })
-            ->published()
+        $upcomingEvents = Event::published()
             ->upcoming()
             ->with(['venue', 'performer'])
             ->whereBetween('event_date', [now(), now()->addDays(7)])
@@ -119,7 +100,7 @@ final class HomePageController extends Controller
                     'title' => $event->title,
                     'date' => $eventDateTime->format('Y-m-d\TH:i:s.000\Z'),
                     'venue' => $event->venue?->name ?? 'TBA',
-                    'price' => $event->is_free ? 'Free' : '$' . number_format((float) ($event->price_min ?? 0)),
+                    'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
                     'category' => $event->category,
                     'image' => $event->image ?? 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop',
                 ];

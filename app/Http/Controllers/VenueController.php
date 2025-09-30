@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Follow;
 use App\Models\Venue;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,18 +17,8 @@ final class VenueController extends Controller
      */
     public function publicIndex(Request $request): Response
     {
-        // Get current workspace
-        $currentWorkspace = null;
-        if ($request->user()) {
-            $user = $request->user();
-            $currentWorkspace = $user->currentWorkspace ?? $user->workspaces->first();
-        }
-
         // Build the venues query
-        $query = Venue::when($currentWorkspace, function ($query, $workspace) {
-            return $query->where('workspace_id', $workspace->id);
-        })
-            ->active()
+        $query = Venue::active()
             ->with(['reviews' => fn ($q) => $q->approved()->latest()->limit(3)]);
 
         // Apply search filter
@@ -145,10 +136,7 @@ final class VenueController extends Controller
         });
 
         // Get trending venues (most popular recently)
-        $trendingVenues = Venue::when($currentWorkspace, function ($query, $workspace) {
-            return $query->where('workspace_id', $workspace->id);
-        })
-            ->active()
+        $trendingVenues = Venue::active()
             ->where('last_booked_days_ago', '<=', 30)
             ->orderByRaw('(total_reviews / GREATEST(last_booked_days_ago, 1)) DESC')
             ->limit(4)
@@ -168,10 +156,7 @@ final class VenueController extends Controller
             });
 
         // Get new venues (added in the last 90 days)
-        $newVenues = Venue::when($currentWorkspace, function ($query, $workspace) {
-            return $query->where('workspace_id', $workspace->id);
-        })
-            ->active()
+        $newVenues = Venue::active()
             ->where('listed_date', '>=', now()->subDays(90))
             ->orderBy('listed_date', 'desc')
             ->limit(4)
@@ -190,9 +175,8 @@ final class VenueController extends Controller
             });
 
         // Get venue statistics
-        $totalVenues = Venue::when($currentWorkspace, fn ($q, $w) => $q->where('workspace_id', $w->id))->active()->count();
-        $newVenuesThisWeek = Venue::when($currentWorkspace, fn ($q, $w) => $q->where('workspace_id', $w->id))
-            ->active()
+        $totalVenues = Venue::active()->count();
+        $newVenuesThisWeek = Venue::active()
             ->where('listed_date', '>=', now()->subWeek())
             ->count();
 
@@ -281,7 +265,7 @@ final class VenueController extends Controller
         ]);
     }
 
-    public function show(Venue $venue): Response
+    public function show(Request $request, Venue $venue): Response
     {
         $venue->load([
             'workspace',
@@ -304,9 +288,18 @@ final class VenueController extends Controller
             ],
         ];
 
+        $isFollowing = false;
+        if ($request->user()) {
+            $isFollowing = Follow::where('user_id', $request->user()->id)
+                ->where('followable_type', Venue::class)
+                ->where('followable_id', $venue->id)
+                ->exists();
+        }
+
         return Inertia::render('venues/show', [
             'venue' => $venue,
             'ratingStats' => $ratingStats,
+            'isFollowing' => $isFollowing,
         ]);
     }
 
