@@ -290,7 +290,10 @@ export default function EventDetail({ auth, event, similarEvents }: Props) {
                                 </div>
 
                                 {event.performer && (
-                                    <div className="flex items-center justify-between border-t border-gray-200 pt-6">
+                                    <Link
+                                        href={`/performers/${event.performer.id}`}
+                                        className="flex items-center justify-between border-t border-gray-200 pt-6 hover:bg-gray-50 -mx-6 -mb-6 px-6 pb-6 transition-colors"
+                                    >
                                         <div className="flex items-center">
                                             <div className="h-10 w-10 rounded-full overflow-hidden mr-3">
                                                 <img
@@ -311,7 +314,8 @@ export default function EventDetail({ auth, event, similarEvents }: Props) {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                        <ArrowRight className="h-5 w-5 text-gray-400" />
+                                    </Link>
                                 )}
                             </CardContent>
                         </Card>

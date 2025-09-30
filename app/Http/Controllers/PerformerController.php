@@ -169,7 +169,7 @@ final class PerformerController extends Controller
         $performer->load([
             'workspace',
             'createdBy',
-            'upcomingShows',
+            'upcomingShows' => fn ($q) => $q->orderBy('date', 'asc'),
             'approvedReviews.user',
             'ratings.user',
             'events' => fn ($q) => $q->published()->upcoming()->limit(5),
@@ -177,20 +177,86 @@ final class PerformerController extends Controller
         ]);
 
         $ratingStats = [
-            'average' => $performer->average_rating,
+            'average' => (float) ($performer->average_rating ?? 0),
             'total' => $performer->ratings()->count(),
             'distribution' => $performer->getRatingDistribution(),
             'by_context' => [
-                'performance' => $performer->getAverageRatingByContext('performance'),
-                'professionalism' => $performer->getAverageRatingByContext('professionalism'),
-                'value' => $performer->getAverageRatingByContext('value'),
-                'overall' => $performer->getAverageRatingByContext('overall'),
+                'performance' => (float) ($performer->getAverageRatingByContext('performance') ?? 0),
+                'professionalism' => (float) ($performer->getAverageRatingByContext('professionalism') ?? 0),
+                'value' => (float) ($performer->getAverageRatingByContext('value') ?? 0),
+                'overall' => (float) ($performer->getAverageRatingByContext('overall') ?? 0),
             ],
         ];
 
-        return Inertia::render('Performers/Show', [
-            'performer' => $performer,
+        // Format upcoming shows for frontend
+        $upcomingShows = $performer->upcomingShows->map(fn ($show) => [
+            'id' => $show->id,
+            'date' => $show->date->toISOString(),
+            'venue' => $show->venue,
+            'location' => $show->location ?? '',
+            'ticketsAvailable' => $show->tickets_available,
+            'ticketUrl' => $show->ticket_url,
+        ])->toArray();
+
+        // Format reviews for frontend
+        $reviews = $performer->approvedReviews->map(fn ($review) => [
+            'id' => $review->id,
+            'content' => $review->content,
+            'rating' => $review->rating,
+            'user' => [
+                'name' => $review->user->name,
+                'avatar' => $review->user->avatar_url ?? null,
+            ],
+            'created_at' => $review->created_at->toISOString(),
+        ])->toArray();
+
+        // Format events for frontend
+        $events = $performer->events->map(fn ($event) => [
+            'id' => $event->id,
+            'title' => $event->title,
+            'description' => $event->description,
+            'event_date' => $event->event_date,
+            'time' => $event->time,
+            'image' => $event->image,
+            'venue' => [
+                'id' => $event->venue->id ?? null,
+                'name' => $event->venue->name ?? '',
+                'address' => $event->venue->address ?? '',
+            ],
+        ])->toArray();
+
+        // Prepare performer data for frontend
+        $performerData = [
+            'id' => $performer->id,
+            'name' => $performer->name,
+            'profileImage' => $performer->profile_image,
+            'genres' => $performer->genres,
+            'rating' => (float) $performer->average_rating,
+            'reviewCount' => $performer->total_reviews,
+            'followerCount' => $performer->follower_count,
+            'bio' => $performer->bio,
+            'yearsActive' => $performer->years_active,
+            'showsPlayed' => $performer->shows_played,
+            'homeCity' => $performer->home_city,
+            'isVerified' => $performer->is_verified,
+            'isTouringNow' => $performer->is_touring_now,
+            'availableForBooking' => $performer->available_for_booking,
+            'hasMerchandise' => $performer->has_merchandise,
+            'hasOriginalMusic' => $performer->has_original_music,
+            'offersMeetAndGreet' => $performer->offers_meet_and_greet,
+            'takesRequests' => $performer->takes_requests,
+            'availableForPrivateEvents' => $performer->available_for_private_events,
+            'isFamilyFriendly' => $performer->is_family_friendly,
+            'hasSamples' => $performer->has_samples,
+            'trendingScore' => $performer->trending_score,
+            'upcomingShows' => $upcomingShows,
+            'events' => $events,
+        ];
+
+        return Inertia::render('performers/show', [
+            'performer' => $performerData,
             'ratingStats' => $ratingStats,
+            'reviews' => $reviews,
         ]);
     }
 

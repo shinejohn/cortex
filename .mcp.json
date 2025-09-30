@@ -20,6 +20,10 @@
         "exa": {
             "command": "bunx",
             "args": ["-y", "mcp-remote", "https://mcp.exa.ai/mcp"]
+        },
+        "code-index": {
+            "command": "uvx",
+            "args": ["code-index-mcp"]
         }
     }
 }

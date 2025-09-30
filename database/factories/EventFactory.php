@@ -96,18 +96,32 @@ final class EventFactory extends Factory
         ];
     }
 
-    public function withVenue(): static
+    public function withVenue(mixed $venue = null): static
     {
-        return $this->state(fn (array $attributes) => [
-            'venue_id' => null, // Will be set in seeder
-        ]);
+        return $this->state(function (array $attributes) use ($venue) {
+            if ($venue === null) {
+                $venue = \App\Models\Venue::factory()->create();
+            } elseif (is_string($venue) || is_int($venue)) {
+                // If it's an ID, use it directly
+                return ['venue_id' => $venue];
+            }
+
+            return ['venue_id' => $venue->id];
+        });
     }
 
-    public function withPerformer(): static
+    public function withPerformer(mixed $performer = null): static
     {
-        return $this->state(fn (array $attributes) => [
-            'performer_id' => null, // Will be set in seeder
-        ]);
+        return $this->state(function (array $attributes) use ($performer) {
+            if ($performer === null) {
+                $performer = \App\Models\Performer::factory()->create();
+            } elseif (is_string($performer) || is_int($performer)) {
+                // If it's an ID, use it directly
+                return ['performer_id' => $performer];
+            }
+
+            return ['performer_id' => $performer->id];
+        });
     }
 
     public function published(): static
