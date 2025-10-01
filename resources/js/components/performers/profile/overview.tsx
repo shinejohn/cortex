@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { Link } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Star, Calendar, MapPin, ArrowRight } from 'lucide-react';
-import type { PerformerProfile, RatingStats, PerformerReview } from '@/types/performer-profile';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { PerformerProfile, PerformerReview, RatingStats } from "@/types/performer-profile";
+import { Link } from "@inertiajs/react";
+import { ArrowRight, Calendar, MapPin, Star } from "lucide-react";
+import { useState } from "react";
 
 interface PerformerOverviewProps {
     performer: PerformerProfile;
@@ -12,32 +12,22 @@ interface PerformerOverviewProps {
     recentReviews: PerformerReview[];
 }
 
-export function PerformerOverview({
-    performer,
-    ratingStats,
-    recentReviews,
-}: PerformerOverviewProps) {
+export function PerformerOverview({ performer, ratingStats, recentReviews }: PerformerOverviewProps) {
     const [isBioExpanded, setIsBioExpanded] = useState(false);
 
     const getExperienceLevel = () => {
-        if (performer.yearsActive < 3) return 'Emerging Artist';
-        if (performer.yearsActive < 7) return 'Established Act';
-        if (performer.yearsActive < 12) return 'Veteran Performer';
-        return 'Industry Legend';
+        if (performer.yearsActive < 3) return "Emerging Artist";
+        if (performer.yearsActive < 7) return "Established Act";
+        if (performer.yearsActive < 12) return "Veteran Performer";
+        return "Industry Legend";
     };
 
     const getFollowerGrowth = () => {
-        const growth =
-            performer.trendingScore > 80 ? 'fast' : performer.trendingScore > 70 ? 'steady' : 'slow';
+        const growth = performer.trendingScore > 80 ? "fast" : performer.trendingScore > 70 ? "steady" : "slow";
         return {
             growth,
-            percentage: growth === 'fast' ? '+12%' : growth === 'steady' ? '+5%' : '+2%',
-            class:
-                growth === 'fast'
-                    ? 'text-green-500'
-                    : growth === 'steady'
-                      ? 'text-blue-500'
-                      : 'text-gray-500',
+            percentage: growth === "fast" ? "+12%" : growth === "steady" ? "+5%" : "+2%",
+            class: growth === "fast" ? "text-green-500" : growth === "steady" ? "text-blue-500" : "text-gray-500",
         };
     };
 
@@ -51,12 +41,8 @@ export function PerformerOverview({
                         <div className="flex flex-col items-center justify-center p-2 border-r border-gray-100">
                             <div className="text-sm text-gray-500 mb-1">Followers</div>
                             <div className="flex items-center">
-                                <span className="text-xl font-bold">
-                                    {performer.followerCount.toLocaleString()}
-                                </span>
-                                <span className={`ml-1 text-xs ${followerGrowth.class}`}>
-                                    {followerGrowth.percentage}
-                                </span>
+                                <span className="text-xl font-bold">{performer.followerCount.toLocaleString()}</span>
+                                <span className={`ml-1 text-xs ${followerGrowth.class}`}>{followerGrowth.percentage}</span>
                             </div>
                         </div>
                         <div className="flex flex-col items-center justify-center p-2 border-r border-gray-100">
@@ -75,11 +61,8 @@ export function PerformerOverview({
                             <div className="text-sm text-gray-500 mb-1">Next Show</div>
                             <div className="text-lg font-bold">
                                 {performer.upcomingShows.length > 0
-                                    ? new Date(performer.upcomingShows[0].date).toLocaleDateString(
-                                          'en-US',
-                                          { month: 'short', day: 'numeric' }
-                                      )
-                                    : 'TBA'}
+                                    ? new Date(performer.upcomingShows[0].date).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+                                    : "TBA"}
                             </div>
                         </div>
                     </div>
@@ -91,25 +74,19 @@ export function PerformerOverview({
                     <CardTitle>About {performer.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className={isBioExpanded ? '' : 'line-clamp-3'}>
+                    <div className={isBioExpanded ? "" : "line-clamp-3"}>
                         <p className="text-gray-700">{performer.bio}</p>
                         {isBioExpanded && (
                             <div className="mt-4 space-y-4">
                                 <p className="text-gray-700">
-                                    With {performer.yearsActive} years of experience in the music
-                                    industry, {performer.name} has established a reputation for
-                                    delivering unforgettable performances that blend technical mastery
-                                    with emotional depth.
+                                    With {performer.yearsActive} years of experience in the music industry, {performer.name} has established a
+                                    reputation for delivering unforgettable performances that blend technical mastery with emotional depth.
                                 </p>
                             </div>
                         )}
                     </div>
-                    <Button
-                        variant="link"
-                        className="mt-2 p-0 h-auto"
-                        onClick={() => setIsBioExpanded(!isBioExpanded)}
-                    >
-                        {isBioExpanded ? 'Show Less' : 'Read More'}
+                    <Button variant="link" className="mt-2 p-0 h-auto" onClick={() => setIsBioExpanded(!isBioExpanded)}>
+                        {isBioExpanded ? "Show Less" : "Read More"}
                     </Button>
 
                     <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -119,22 +96,17 @@ export function PerformerOverview({
                                 <li className="flex items-start">
                                     <Star className="h-5 w-5 text-indigo-500 mr-2 flex-shrink-0" />
                                     <p className="text-sm text-gray-700">
-                                        {getExperienceLevel()} with {performer.yearsActive} years of
-                                        experience
+                                        {getExperienceLevel()} with {performer.yearsActive} years of experience
                                     </p>
                                 </li>
                                 <li className="flex items-start">
                                     <Star className="h-5 w-5 text-indigo-500 mr-2 flex-shrink-0" />
-                                    <p className="text-sm text-gray-700">
-                                        Performed at {Math.floor(performer.showsPlayed * 0.8)}+
-                                        venues
-                                    </p>
+                                    <p className="text-sm text-gray-700">Performed at {Math.floor(performer.showsPlayed * 0.8)}+ venues</p>
                                 </li>
                                 <li className="flex items-start">
                                     <Star className="h-5 w-5 text-indigo-500 mr-2 flex-shrink-0" />
                                     <p className="text-sm text-gray-700">
-                                        {performer.rating.toFixed(1)} star average from{' '}
-                                        {performer.reviewCount} reviews
+                                        {performer.rating.toFixed(1)} star average from {performer.reviewCount} reviews
                                     </p>
                                 </li>
                             </ul>
@@ -148,18 +120,10 @@ export function PerformerOverview({
                                         {genre}
                                     </Badge>
                                 ))}
-                                {performer.hasOriginalMusic && (
-                                    <Badge variant="default">Original Music</Badge>
-                                )}
-                                {performer.takesRequests && (
-                                    <Badge variant="default">Takes Requests</Badge>
-                                )}
-                                {performer.availableForPrivateEvents && (
-                                    <Badge variant="default">Private Events</Badge>
-                                )}
-                                {performer.offersMeetAndGreet && (
-                                    <Badge variant="default">Meet & Greet</Badge>
-                                )}
+                                {performer.hasOriginalMusic && <Badge variant="default">Original Music</Badge>}
+                                {performer.takesRequests && <Badge variant="default">Takes Requests</Badge>}
+                                {performer.availableForPrivateEvents && <Badge variant="default">Private Events</Badge>}
+                                {performer.offersMeetAndGreet && <Badge variant="default">Meet & Greet</Badge>}
                             </div>
                         </div>
                     </div>
@@ -183,21 +147,17 @@ export function PerformerOverview({
                                     className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:border-indigo-300 transition-colors block"
                                 >
                                     <div className="flex-1">
-                                        <div className="font-medium text-gray-900 mb-2">
-                                            {event.title}
-                                        </div>
+                                        <div className="font-medium text-gray-900 mb-2">{event.title}</div>
                                         <div className="flex items-center gap-2 mb-1 text-sm">
                                             <Calendar className="h-4 w-4 text-gray-500" />
                                             <span className="font-medium">
-                                                {new Date(event.event_date).toLocaleDateString('en-US', {
-                                                    weekday: 'short',
-                                                    month: 'short',
-                                                    day: 'numeric',
+                                                {new Date(event.event_date).toLocaleDateString("en-US", {
+                                                    weekday: "short",
+                                                    month: "short",
+                                                    day: "numeric",
                                                 })}
                                             </span>
-                                            <span className="text-gray-500">
-                                                at {event.time}
-                                            </span>
+                                            <span className="text-gray-500">at {event.time}</span>
                                         </div>
                                         <div className="flex items-center gap-2 text-sm text-gray-600">
                                             <MapPin className="h-4 w-4" />
@@ -233,11 +193,7 @@ export function PerformerOverview({
                                     <div className="flex items-start gap-3">
                                         <div className="h-10 w-10 rounded-full overflow-hidden bg-gray-200">
                                             {review.user.avatar ? (
-                                                <img
-                                                    src={review.user.avatar}
-                                                    alt={review.user.name}
-                                                    className="h-full w-full object-cover"
-                                                />
+                                                <img src={review.user.avatar} alt={review.user.name} className="h-full w-full object-cover" />
                                             ) : (
                                                 <div className="h-full w-full flex items-center justify-center text-gray-500 font-medium">
                                                     {review.user.name.charAt(0)}
@@ -252,18 +208,14 @@ export function PerformerOverview({
                                                         <Star
                                                             key={i}
                                                             className={`h-4 w-4 ${
-                                                                i < review.rating
-                                                                    ? 'text-yellow-400 fill-current'
-                                                                    : 'text-gray-300'
+                                                                i < review.rating ? "text-yellow-400 fill-current" : "text-gray-300"
                                                             }`}
                                                         />
                                                     ))}
                                                 </div>
                                             </div>
                                             <p className="text-sm text-gray-700">{review.content}</p>
-                                            <span className="text-xs text-gray-500 mt-1">
-                                                {new Date(review.created_at).toLocaleDateString()}
-                                            </span>
+                                            <span className="text-xs text-gray-500 mt-1">{new Date(review.created_at).toLocaleDateString()}</span>
                                         </div>
                                     </div>
                                 </div>

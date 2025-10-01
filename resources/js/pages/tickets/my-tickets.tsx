@@ -45,36 +45,30 @@ interface MyTicketsPageProps {
 export default function MyTickets() {
     const { auth, orders = [] } = usePage<MyTicketsPageProps>().props;
 
-    const completedOrders = orders.filter(order => order.status === 'completed');
-    const pendingOrders = orders.filter(order => order.status === 'pending');
+    const completedOrders = orders.filter((order) => order.status === "completed");
+    const pendingOrders = orders.filter((order) => order.status === "pending");
 
     const handleDownloadTicket = (orderId: string) => {
         // This would generate a PDF or send to an email
-        console.log('Download ticket for order:', orderId);
+        console.log("Download ticket for order:", orderId);
     };
 
     const renderOrderCard = (order: TicketOrder) => (
         <div key={order.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             <div className="flex">
                 <div className="w-24 h-24 flex-shrink-0">
-                    <img
-                        src={order.event.image}
-                        alt={order.event.title}
-                        className="w-full h-full object-cover"
-                    />
+                    <img src={order.event.image} alt={order.event.title} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-1 p-4">
                     <div className="flex justify-between items-start">
                         <div className="flex-1">
-                            <h3 className="font-bold text-lg text-gray-900 mb-1">
-                                {order.event.title}
-                            </h3>
+                            <h3 className="font-bold text-lg text-gray-900 mb-1">{order.event.title}</h3>
                             <div className="flex items-center text-sm text-gray-600 mb-1">
                                 <CalendarIcon className="h-4 w-4 mr-1" />
-                                {new Date(order.event.event_date).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
+                                {new Date(order.event.event_date).toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
                                 })}
                             </div>
                             <div className="flex items-center text-sm text-gray-600 mb-1">
@@ -89,42 +83,28 @@ export default function MyTickets() {
                                 {order.items.map((item, index) => (
                                     <div key={item.id}>
                                         {item.quantity}x {item.ticket_plan.name}
-                                        {index < order.items.length - 1 && ', '}
+                                        {index < order.items.length - 1 && ", "}
                                     </div>
                                 ))}
                             </div>
                         </div>
                         <div className="text-right">
-                            <div className="text-lg font-bold text-gray-900 mb-2">
-                                ${Number(order.total).toFixed(2)}
-                            </div>
+                            <div className="text-lg font-bold text-gray-900 mb-2">${Number(order.total).toFixed(2)}</div>
                             <div className="space-y-2">
-                                {order.status === 'completed' && (
+                                {order.status === "completed" && (
                                     <>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => handleDownloadTicket(order.id)}
-                                            className="w-full"
-                                        >
+                                        <Button variant="outline" size="sm" onClick={() => handleDownloadTicket(order.id)} className="w-full">
                                             <DownloadIcon className="h-4 w-4 mr-1" />
                                             Download
                                         </Button>
-                                        <Link
-                                            href={`/events/${order.event.id}`}
-                                            className="block"
-                                        >
+                                        <Link href={`/events/${order.event.id}`} className="block">
                                             <Button variant="ghost" size="sm" className="w-full">
                                                 View Event
                                             </Button>
                                         </Link>
                                     </>
                                 )}
-                                {order.status === 'pending' && (
-                                    <div className="text-sm text-yellow-600 font-medium">
-                                        Payment Pending
-                                    </div>
-                                )}
+                                {order.status === "pending" && <div className="text-sm text-yellow-600 font-medium">Payment Pending</div>}
                             </div>
                         </div>
                     </div>
@@ -144,9 +124,13 @@ export default function MyTickets() {
                     {/* Breadcrumb */}
                     <nav className="mb-8">
                         <div className="flex items-center space-x-2 text-sm text-gray-500">
-                            <Link href="/" className="hover:text-gray-700">Home</Link>
+                            <Link href="/" className="hover:text-gray-700">
+                                Home
+                            </Link>
                             <span>/</span>
-                            <Link href="/tickets" className="hover:text-gray-700">Tickets</Link>
+                            <Link href="/tickets" className="hover:text-gray-700">
+                                Tickets
+                            </Link>
                             <span>/</span>
                             <span className="text-gray-900">My Tickets</span>
                         </div>
@@ -154,24 +138,16 @@ export default function MyTickets() {
 
                     <div className="mb-8">
                         <h1 className="text-3xl font-bold text-gray-900">My Tickets</h1>
-                        <p className="text-gray-600 mt-2">
-                            View and manage all your ticket purchases
-                        </p>
+                        <p className="text-gray-600 mt-2">View and manage all your ticket purchases</p>
                     </div>
 
                     {orders.length === 0 ? (
                         <div className="text-center py-12">
                             <TicketIcon className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                            <h2 className="text-xl font-medium text-gray-900 mb-2">
-                                No tickets yet
-                            </h2>
-                            <p className="text-gray-600 mb-6">
-                                Browse events and purchase tickets to see them here.
-                            </p>
+                            <h2 className="text-xl font-medium text-gray-900 mb-2">No tickets yet</h2>
+                            <p className="text-gray-600 mb-6">Browse events and purchase tickets to see them here.</p>
                             <Link href="/events">
-                                <Button>
-                                    Browse Events
-                                </Button>
+                                <Button>Browse Events</Button>
                             </Link>
                         </div>
                     ) : (
@@ -179,39 +155,25 @@ export default function MyTickets() {
                             {/* Completed Orders */}
                             {completedOrders.length > 0 && (
                                 <div className="mb-8">
-                                    <h2 className="text-xl font-bold text-gray-900 mb-4">
-                                        Your Tickets ({completedOrders.length})
-                                    </h2>
-                                    <div className="space-y-4">
-                                        {completedOrders.map(renderOrderCard)}
-                                    </div>
+                                    <h2 className="text-xl font-bold text-gray-900 mb-4">Your Tickets ({completedOrders.length})</h2>
+                                    <div className="space-y-4">{completedOrders.map(renderOrderCard)}</div>
                                 </div>
                             )}
 
                             {/* Pending Orders */}
                             {pendingOrders.length > 0 && (
                                 <div className="mb-8">
-                                    <h2 className="text-xl font-bold text-gray-900 mb-4">
-                                        Pending Orders ({pendingOrders.length})
-                                    </h2>
-                                    <div className="space-y-4">
-                                        {pendingOrders.map(renderOrderCard)}
-                                    </div>
+                                    <h2 className="text-xl font-bold text-gray-900 mb-4">Pending Orders ({pendingOrders.length})</h2>
+                                    <div className="space-y-4">{pendingOrders.map(renderOrderCard)}</div>
                                 </div>
                             )}
 
                             {/* Browse More Events */}
                             <div className="bg-white rounded-lg shadow-sm p-6 text-center">
-                                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                                    Looking for more events?
-                                </h3>
-                                <p className="text-gray-600 mb-4">
-                                    Discover new events happening in your area.
-                                </p>
+                                <h3 className="text-lg font-medium text-gray-900 mb-2">Looking for more events?</h3>
+                                <p className="text-gray-600 mb-4">Discover new events happening in your area.</p>
                                 <Link href="/events">
-                                    <Button>
-                                        Browse Events
-                                    </Button>
+                                    <Button>Browse Events</Button>
                                 </Link>
                             </div>
                         </>

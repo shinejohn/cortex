@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreEventRequest;
 use App\Models\Event;
 use App\Models\Follow;
 use App\Models\Performer;
@@ -277,24 +278,30 @@ final class EventController extends Controller
 
     public function create(): Response
     {
+        $currentWorkspace = auth()->user()->currentWorkspace;
+
+        if (! $currentWorkspace) {
+            abort(403, 'Please select a workspace first.');
+        }
+
         $this->authorize('create', Event::class);
 
-        $venues = Venue::where('workspace_id', auth()->user()->currentWorkspace->id)
+        $venues = Venue::where('workspace_id', $currentWorkspace->id)
             ->where('status', 'active')
             ->get(['id', 'name', 'address']);
 
-        $performers = Performer::where('workspace_id', auth()->user()->currentWorkspace->id)
+        $performers = Performer::where('workspace_id', $currentWorkspace->id)
             ->where('status', 'active')
             ->where('available_for_booking', true)
             ->get(['id', 'name', 'genres']);
 
-        return Inertia::render('Events/Create', [
+        return Inertia::render('events/create', [
             'venues' => $venues,
             'performers' => $performers,
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreEventRequest $request)
     {
         $this->authorize('create', Event::class);
 
@@ -304,26 +311,51 @@ final class EventController extends Controller
             abort(403, 'No workspace selected');
         }
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'event_date' => 'required|date|after:now',
-            'time' => 'required|string',
-            'venue_id' => 'nullable|exists:venues,id',
-            'performer_id' => 'nullable|exists:performers,id',
-            'category' => 'required|string',
-            'subcategories' => 'array',
-            'badges' => 'array',
-            'is_free' => 'boolean',
-            'price_min' => 'required_unless:is_free,true|numeric|min:0',
-            'price_max' => 'required_unless:is_free,true|numeric|min:0',
-            'image' => 'nullable|url',
-            'curator_notes' => 'nullable|string',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-        ]);
+        $validated = $request->validated();
 
-        if ($validated['is_free']) {
+        // Handle image uploads
+        $imagePaths = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $index => $image) {
+                $path = $image->store('events', 'public');
+                $imagePaths[] = $path;
+
+                // Set first image as main event image
+                if ($index === 0 && ! isset($validated['image'])) {
+                    $validated['image'] = $path;
+                }
+            }
+        }
+
+        // Handle new venue creation if provided
+        if (! empty($validated['new_venue'])) {
+            $venue = Venue::create([
+                ...$validated['new_venue'],
+                'workspace_id' => $currentWorkspace->id,
+                'created_by' => $request->user()->id,
+                'status' => 'active',
+                'listed_date' => now(),
+            ]);
+            $validated['venue_id'] = $venue->id;
+            unset($validated['new_venue']);
+        }
+
+        // Handle new performer creation if provided
+        if (! empty($validated['new_performer'])) {
+            $performer = Performer::create([
+                ...$validated['new_performer'],
+                'workspace_id' => $currentWorkspace->id,
+                'created_by' => $request->user()->id,
+                'status' => 'active',
+                'follower_count' => 0,
+                'trending_score' => 0,
+                'added_date' => now(),
+            ]);
+            $validated['performer_id'] = $performer->id;
+            unset($validated['new_performer']);
+        }
+
+        if ($validated['is_free'] ?? false) {
             $validated['price_min'] = 0;
             $validated['price_max'] = 0;
         }

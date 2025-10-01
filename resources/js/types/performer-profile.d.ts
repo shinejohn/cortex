@@ -1,4 +1,4 @@
-import type { SharedData } from './index';
+import type { SharedData } from "./index";
 
 export interface PerformerUpcomingShow {
     id: string;
@@ -80,10 +80,4 @@ export interface PerformerShowPageProps extends SharedData {
     isFollowing: boolean;
 }
 
-export type ProfileTab =
-    | 'overview'
-    | 'upcoming-shows'
-    | 'past-shows'
-    | 'media'
-    | 'reviews'
-    | 'about';
+export type ProfileTab = "overview" | "upcoming-shows" | "past-shows" | "media" | "reviews" | "about";

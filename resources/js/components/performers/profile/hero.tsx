@@ -1,8 +1,8 @@
-import { Share2, CheckCircle, Plus, MapPin, Clock, Star, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { FollowButton } from '@/components/common/follow-button';
-import type { PerformerProfile } from '@/types/performer-profile';
-import { usePage } from '@inertiajs/react';
+import { FollowButton } from "@/components/common/follow-button";
+import { Button } from "@/components/ui/button";
+import type { PerformerProfile } from "@/types/performer-profile";
+import { usePage } from "@inertiajs/react";
+import { CheckCircle, Clock, MapPin, Plus, Share2, Star, Users } from "lucide-react";
 
 interface PerformerHeroProps {
     performer: PerformerProfile;
@@ -43,19 +43,13 @@ export function PerformerHero({ performer, isFollowing }: PerformerHeroProps) {
                 <div className="flex flex-col md:flex-row items-start md:items-end gap-4 md:gap-6">
                     <div className="relative -mt-16 md:-mt-20 lg:-mt-24 z-10">
                         <div className="h-24 w-24 md:h-32 md:w-32 lg:h-40 lg:w-40 rounded-full border-4 border-white overflow-hidden bg-white">
-                            <img
-                                src={performer.profileImage}
-                                alt={performer.name}
-                                className="w-full h-full object-cover"
-                            />
+                            <img src={performer.profileImage} alt={performer.name} className="w-full h-full object-cover" />
                         </div>
                     </div>
 
                     <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">
-                                {performer.name}
-                            </h1>
+                            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">{performer.name}</h1>
                             {performer.isVerified && (
                                 <div title="Verified Performer">
                                     <CheckCircle className="h-5 w-5 md:h-6 md:w-6 text-blue-400" />
@@ -90,9 +84,7 @@ export function PerformerHero({ performer, isFollowing }: PerformerHeroProps) {
                             <div className="flex items-center">
                                 <Star className="h-5 w-5 text-yellow-400 fill-current" />
                                 <span className="ml-1">{performer.rating.toFixed(1)}</span>
-                                <span className="ml-1 text-gray-300">
-                                    ({performer.reviewCount})
-                                </span>
+                                <span className="ml-1 text-gray-300">({performer.reviewCount})</span>
                             </div>
                             <span className="text-gray-300">•</span>
                             <div className="flex items-center">
@@ -110,11 +102,7 @@ export function PerformerHero({ performer, isFollowing }: PerformerHeroProps) {
                             className="bg-indigo-600 text-white hover:bg-indigo-700"
                             initialFollowing={isFollowing}
                         />
-                        <Button
-                            onClick={handleShare}
-                            variant="outline"
-                            className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                        >
+                        <Button onClick={handleShare} variant="outline" className="bg-white/20 hover:bg-white/30 text-white border-white/30">
                             <Share2 className="h-5 w-5" />
                         </Button>
                     </div>

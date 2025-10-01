@@ -105,10 +105,14 @@ export default function Tickets() {
     const clearAllFilters = () => {
         setCurrentFilters({});
         setSearchQuery("");
-        router.get("/tickets", {}, {
-            preserveState: true,
-            preserveScroll: false,
-        });
+        router.get(
+            "/tickets",
+            {},
+            {
+                preserveState: true,
+                preserveScroll: false,
+            },
+        );
     };
 
     const renderEventContent = (event: Event) => (

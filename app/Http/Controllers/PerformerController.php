@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePerformerRequest;
 use App\Models\Follow;
 use App\Models\Performer;
 use Illuminate\Http\Request;
@@ -333,12 +334,18 @@ final class PerformerController extends Controller
 
     public function create(): Response
     {
+        $currentWorkspace = auth()->user()->currentWorkspace;
+
+        if (! $currentWorkspace) {
+            abort(403, 'Please select a workspace first.');
+        }
+
         $this->authorize('create', Performer::class);
 
-        return Inertia::render('Performers/Create');
+        return Inertia::render('performers/create');
     }
 
-    public function store(Request $request)
+    public function store(StorePerformerRequest $request)
     {
         $this->authorize('create', Performer::class);
 
@@ -348,28 +355,21 @@ final class PerformerController extends Controller
             abort(403, 'No workspace selected');
         }
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'bio' => 'required|string',
-            'genres' => 'required|array|min:1',
-            'home_city' => 'required|string',
-            'years_active' => 'required|integer|min:0',
-            'shows_played' => 'required|integer|min:0',
-            'profile_image' => 'nullable|url',
-            'base_price' => 'nullable|numeric|min:0',
-            'minimum_booking_hours' => 'required|integer|min:1',
-            'travel_fee_per_mile' => 'nullable|numeric|min:0',
-            'setup_fee' => 'nullable|numeric|min:0',
-            'cancellation_policy' => 'nullable|string',
-            'available_for_booking' => 'boolean',
-            'is_family_friendly' => 'boolean',
-            'has_merchandise' => 'boolean',
-            'has_original_music' => 'boolean',
-            'offers_meet_and_greet' => 'boolean',
-            'takes_requests' => 'boolean',
-            'available_for_private_events' => 'boolean',
-            'has_samples' => 'boolean',
-        ]);
+        $validated = $request->validated();
+
+        // Handle image uploads
+        $imagePaths = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $index => $image) {
+                $path = $image->store('performers', 'public');
+                $imagePaths[] = $path;
+
+                // Set first image as profile image
+                if ($index === 0 && ! isset($validated['profile_image'])) {
+                    $validated['profile_image'] = $path;
+                }
+            }
+        }
 
         $performer = Performer::create([
             ...$validated,

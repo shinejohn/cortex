@@ -1,6 +1,6 @@
-import { Users, Music, Star, MessageCircle, Bell, MoreHorizontal } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import type { PerformerProfile } from '@/types/performer-profile';
+import { Button } from "@/components/ui/button";
+import type { PerformerProfile } from "@/types/performer-profile";
+import { Bell, MessageCircle, MoreHorizontal, Music, Star, Users } from "lucide-react";
 
 interface PerformerQuickStatsProps {
     performer: PerformerProfile;
@@ -8,17 +8,11 @@ interface PerformerQuickStatsProps {
 
 export function PerformerQuickStats({ performer }: PerformerQuickStatsProps) {
     const getFollowerGrowth = () => {
-        const growth =
-            performer.trendingScore > 80 ? 'fast' : performer.trendingScore > 70 ? 'steady' : 'slow';
+        const growth = performer.trendingScore > 80 ? "fast" : performer.trendingScore > 70 ? "steady" : "slow";
         return {
             growth,
-            percentage: growth === 'fast' ? '+12%' : growth === 'steady' ? '+5%' : '+2%',
-            class:
-                growth === 'fast'
-                    ? 'text-green-500'
-                    : growth === 'steady'
-                      ? 'text-blue-500'
-                      : 'text-gray-500',
+            percentage: growth === "fast" ? "+12%" : growth === "steady" ? "+5%" : "+2%",
+            class: growth === "fast" ? "text-green-500" : growth === "steady" ? "text-blue-500" : "text-gray-500",
         };
     };
 
@@ -29,14 +23,14 @@ export function PerformerQuickStats({ performer }: PerformerQuickStatsProps) {
         tomorrow.setDate(tomorrow.getDate() + 1);
 
         if (date.toDateString() === today.toDateString()) {
-            return 'Today';
+            return "Today";
         } else if (date.toDateString() === tomorrow.toDateString()) {
-            return 'Tomorrow';
+            return "Tomorrow";
         } else {
-            return date.toLocaleDateString('en-US', {
-                weekday: 'short',
-                month: 'short',
-                day: 'numeric',
+            return date.toLocaleDateString("en-US", {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
             });
         }
     };
@@ -51,12 +45,8 @@ export function PerformerQuickStats({ performer }: PerformerQuickStatsProps) {
                         <div className="flex items-center space-x-4">
                             <div className="flex items-center">
                                 <Users className="h-4 w-4 text-gray-500 mr-1" />
-                                <span className="text-sm">
-                                    {performer.followerCount.toLocaleString()} followers
-                                </span>
-                                <span className={`ml-1 text-xs ${followerGrowth.class}`}>
-                                    {followerGrowth.percentage}
-                                </span>
+                                <span className="text-sm">{performer.followerCount.toLocaleString()} followers</span>
+                                <span className={`ml-1 text-xs ${followerGrowth.class}`}>{followerGrowth.percentage}</span>
                             </div>
                             <div className="flex items-center">
                                 <Music className="h-4 w-4 text-gray-500 mr-1" />

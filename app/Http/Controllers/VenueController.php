@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreVenueRequest;
 use App\Models\Follow;
 use App\Models\Venue;
 use Illuminate\Http\Request;
@@ -337,12 +338,18 @@ final class VenueController extends Controller
 
     public function create(): Response
     {
+        $currentWorkspace = auth()->user()->currentWorkspace;
+
+        if (! $currentWorkspace) {
+            abort(403, 'Please select a workspace first.');
+        }
+
         $this->authorize('create', Venue::class);
 
-        return Inertia::render('Venues/Create');
+        return Inertia::render('venues/create');
     }
 
-    public function store(Request $request)
+    public function store(StoreVenueRequest $request)
     {
         $this->authorize('create', Venue::class);
 
@@ -352,26 +359,20 @@ final class VenueController extends Controller
             abort(403, 'No workspace selected');
         }
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'venue_type' => 'required|string',
-            'capacity' => 'required|integer|min:1',
-            'price_per_hour' => 'required|numeric|min:0',
-            'price_per_event' => 'required|numeric|min:0',
-            'price_per_day' => 'required|numeric|min:0',
-            'address' => 'required|string',
-            'neighborhood' => 'nullable|string',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-            'amenities' => 'array',
-            'event_types' => 'array',
-            'images' => 'array',
-            'images.*' => 'url',
-        ]);
+        $validated = $request->validated();
+
+        // Handle image uploads
+        $imagePaths = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('venues', 'public');
+                $imagePaths[] = $path;
+            }
+        }
 
         $venue = Venue::create([
             ...$validated,
+            'images' => $imagePaths,
             'workspace_id' => $currentWorkspace->id,
             'created_by' => $request->user()->id,
             'status' => 'active',
@@ -386,7 +387,7 @@ final class VenueController extends Controller
     {
         $this->authorize('update', $venue);
 
-        return Inertia::render('Venues/Edit', [
+        return Inertia::render('venues/edit', [
             'venue' => $venue,
         ]);
     }

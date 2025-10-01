@@ -24,6 +24,14 @@ use Inertia\Inertia;
 
 // Public routes
 Route::get('/', [HomePageController::class, 'index'])->name('home');
+
+// Create routes must come before {id} routes to avoid conflicts
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
+    Route::get('/performers/create', [PerformerController::class, 'create'])->name('performers.create');
+    Route::get('/venues/create', [VenueController::class, 'create'])->name('venues.create');
+});
+
 Route::get('/events', [EventController::class, 'publicIndex'])->name('events');
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show')->can('view', 'event');
 Route::get('/performers', [PerformerController::class, 'publicIndex'])->name('performers');
@@ -72,10 +80,10 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Resource routes for CRUD operations (excluding index and show for events/performers/venues since they have public versions)
-    Route::resource('venues', VenueController::class)->except(['index', 'show']);
-    Route::resource('performers', PerformerController::class)->except(['index', 'show']);
-    Route::resource('events', EventController::class)->except(['index', 'show']);
+    // Resource routes for CRUD operations (excluding index, show, and create since they're defined elsewhere)
+    Route::resource('venues', VenueController::class)->except(['index', 'show', 'create']);
+    Route::resource('performers', PerformerController::class)->except(['index', 'show', 'create']);
+    Route::resource('events', EventController::class)->except(['index', 'show', 'create']);
     Route::resource('bookings', BookingController::class);
 
     // Ticket management routes

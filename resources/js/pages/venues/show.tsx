@@ -1,33 +1,33 @@
-import { useState } from 'react';
-import { Link, Head, usePage } from '@inertiajs/react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Header } from '@/components/common/header';
-import { Footer } from '@/components/common/footer';
-import { FollowButton } from '@/components/common/follow-button';
-import { SharedData } from '@/types';
+import { FollowButton } from "@/components/common/follow-button";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SharedData } from "@/types";
+import { Head, Link, usePage } from "@inertiajs/react";
 import {
-    Clock,
-    MapPin,
-    Users,
-    Heart,
-    Share2,
-    CheckCircle,
     ArrowLeft,
-    ExternalLink,
-    MessageCircle,
-    Check,
-    X,
-    Music,
-    DollarSign,
-    Ticket,
+    ArrowRight,
     CalendarDays,
+    Check,
+    CheckCircle,
+    Clock,
+    DollarSign,
+    ExternalLink,
+    Heart,
+    MapPin,
+    MessageCircle,
+    Music,
+    Share2,
     Star,
-    ArrowRight
-} from 'lucide-react';
+    Ticket,
+    Users,
+    X,
+} from "lucide-react";
+import { useState } from "react";
 
 interface VenueShowProps extends SharedData {
     venue: {
@@ -91,7 +91,7 @@ interface VenueShowProps extends SharedData {
 export default function VenueShow() {
     const { venue, ratingStats, auth, isFollowing } = usePage<VenueShowProps>().props;
 
-    const [activeTab, setActiveTab] = useState('overview');
+    const [activeTab, setActiveTab] = useState("overview");
     const [showContactForm, setShowContactForm] = useState(false);
 
     // Handle back navigation
@@ -109,7 +109,7 @@ export default function VenueShow() {
                     url: window.location.href,
                 });
             } catch (err) {
-                console.log('Error sharing:', err);
+                console.log("Error sharing:", err);
             }
         } else {
             navigator.clipboard.writeText(window.location.href);
@@ -123,10 +123,10 @@ export default function VenueShow() {
 
     const formatEventDate = (dateString: string) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            weekday: 'short',
-            month: 'short',
-            day: 'numeric'
+        return date.toLocaleDateString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
         });
     };
 
@@ -137,20 +137,12 @@ export default function VenueShow() {
 
             {/* Hero Section */}
             <div className="relative h-96 overflow-hidden">
-                <img
-                    src={venue.images[0] || '/images/venue-placeholder.jpg'}
-                    alt={venue.name}
-                    className="w-full h-full object-cover"
-                />
+                <img src={venue.images[0] || "/images/venue-placeholder.jpg"} alt={venue.name} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-40" />
                 <div className="absolute bottom-0 left-0 right-0 p-8">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-white">
-                            <Button
-                                variant="ghost"
-                                onClick={handleBack}
-                                className="mb-4 text-white hover:text-gray-200 hover:bg-white/10 p-2"
-                            >
+                            <Button variant="ghost" onClick={handleBack} className="mb-4 text-white hover:text-gray-200 hover:bg-white/10 p-2">
                                 <ArrowLeft className="h-4 w-4 mr-1" />
                                 Back to Venues
                             </Button>
@@ -174,7 +166,7 @@ export default function VenueShow() {
                                 </div>
                                 <div className="flex items-center">
                                     <Star className="h-5 w-5 mr-2 text-yellow-400" />
-                                    {venue.average_rating ? Number(venue.average_rating).toFixed(1) : '0.0'} ({venue.total_reviews || 0} reviews)
+                                    {venue.average_rating ? Number(venue.average_rating).toFixed(1) : "0.0"} ({venue.total_reviews || 0} reviews)
                                 </div>
                             </div>
                         </div>
@@ -188,9 +180,7 @@ export default function VenueShow() {
                     <div className="flex flex-wrap items-center justify-between gap-4">
                         <div className="flex items-center text-sm">
                             <Music className="h-4 w-4 text-indigo-500 mr-1" />
-                            <span className="font-medium text-gray-800">
-                                Popular {venue.venue_type}
-                            </span>
+                            <span className="font-medium text-gray-800">Popular {venue.venue_type}</span>
                         </div>
                         <div className="flex items-center text-sm text-gray-700">
                             <MapPin className="h-4 w-4 text-gray-500 mr-1" />
@@ -255,7 +245,9 @@ export default function VenueShow() {
                                         <h3 className="text-sm font-medium text-gray-500 mb-3">Perfect for</h3>
                                         <div className="flex flex-wrap gap-2">
                                             {venue.event_types.slice(0, 6).map((type, index) => (
-                                                <Badge key={index} variant="outline">{type}</Badge>
+                                                <Badge key={index} variant="outline">
+                                                    {type}
+                                                </Badge>
                                             ))}
                                         </div>
                                     </div>
@@ -297,7 +289,7 @@ export default function VenueShow() {
                                     </CardHeader>
                                     <CardContent>
                                         <p className="text-gray-700 leading-relaxed mb-6">
-                                            {venue.description || 'No description available for this venue.'}
+                                            {venue.description || "No description available for this venue."}
                                         </p>
 
                                         {venue.events && venue.events.length > 0 && (
@@ -317,22 +309,18 @@ export default function VenueShow() {
                                                         >
                                                             <div className="h-12 w-12 rounded-md overflow-hidden flex-shrink-0 bg-gray-200">
                                                                 <img
-                                                                    src={event.image || '/images/event-placeholder.jpg'}
+                                                                    src={event.image || "/images/event-placeholder.jpg"}
                                                                     alt={event.name}
                                                                     className="h-full w-full object-cover"
                                                                 />
                                                             </div>
                                                             <div className="ml-3 flex-1">
-                                                                <h5 className="text-sm font-medium text-gray-900 line-clamp-1">
-                                                                    {event.name}
-                                                                </h5>
+                                                                <h5 className="text-sm font-medium text-gray-900 line-clamp-1">{event.name}</h5>
                                                                 <p className="text-xs text-gray-500 mt-1">
                                                                     {formatEventDate(event.event_date)} • {event.start_time}
                                                                 </p>
                                                                 <div className="mt-1 flex items-center justify-between">
-                                                                    <span className="text-xs text-gray-600">
-                                                                        ${event.ticket_price}
-                                                                    </span>
+                                                                    <span className="text-xs text-gray-600">${event.ticket_price}</span>
                                                                     <Button size="sm" variant="ghost" className="h-6 px-2 text-xs">
                                                                         View Event
                                                                     </Button>
@@ -406,7 +394,7 @@ export default function VenueShow() {
                                         <div className="flex items-center mb-6">
                                             <div className="text-center mr-8">
                                                 <div className="text-3xl font-bold text-gray-900">
-                                                    {venue.average_rating ? Number(venue.average_rating).toFixed(1) : '0.0'}
+                                                    {venue.average_rating ? Number(venue.average_rating).toFixed(1) : "0.0"}
                                                 </div>
                                                 <div className="flex items-center justify-center mt-1">
                                                     {[...Array(5)].map((_, i) => (
@@ -414,24 +402,20 @@ export default function VenueShow() {
                                                             key={i}
                                                             className={`h-4 w-4 ${
                                                                 i < Math.floor(Number(venue.average_rating) || 0)
-                                                                    ? 'text-yellow-400 fill-current'
-                                                                    : 'text-gray-300'
+                                                                    ? "text-yellow-400 fill-current"
+                                                                    : "text-gray-300"
                                                             }`}
                                                         />
                                                     ))}
                                                 </div>
-                                                <div className="text-sm text-gray-500">
-                                                    {venue.total_reviews || 0} reviews
-                                                </div>
+                                                <div className="text-sm text-gray-500">{venue.total_reviews || 0} reviews</div>
                                             </div>
                                             {ratingStats?.by_context && (
                                                 <div className="flex-1">
                                                     <div className="space-y-2">
                                                         {Object.entries(ratingStats.by_context).map(([key, rating]) => (
                                                             <div key={key} className="flex items-center">
-                                                                <span className="w-16 text-xs text-gray-600 capitalize">
-                                                                    {key}
-                                                                </span>
+                                                                <span className="w-16 text-xs text-gray-600 capitalize">{key}</span>
                                                                 <div className="flex-1 h-2 bg-gray-200 rounded-full mx-2">
                                                                     <div
                                                                         className="h-2 bg-indigo-600 rounded-full"
@@ -439,7 +423,7 @@ export default function VenueShow() {
                                                                     ></div>
                                                                 </div>
                                                                 <span className="text-xs font-medium text-gray-900">
-                                                                    {rating ? Number(rating).toFixed(1) : '0.0'}
+                                                                    {rating ? Number(rating).toFixed(1) : "0.0"}
                                                                 </span>
                                                             </div>
                                                         ))}
@@ -455,7 +439,10 @@ export default function VenueShow() {
                                                         <div className="flex items-start">
                                                             <div className="h-8 w-8 rounded-full bg-gray-200 overflow-hidden mr-3">
                                                                 <img
-                                                                    src={review.user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(review.user.name)}`}
+                                                                    src={
+                                                                        review.user.avatar ||
+                                                                        `https://ui-avatars.com/api/?name=${encodeURIComponent(review.user.name)}`
+                                                                    }
                                                                     alt={review.user.name}
                                                                     className="h-full w-full object-cover"
                                                                 />
@@ -472,9 +459,7 @@ export default function VenueShow() {
                                                                         <Star
                                                                             key={i}
                                                                             className={`h-3 w-3 ${
-                                                                                i < review.rating
-                                                                                    ? 'text-yellow-400 fill-current'
-                                                                                    : 'text-gray-300'
+                                                                                i < review.rating ? "text-yellow-400 fill-current" : "text-gray-300"
                                                                             }`}
                                                                         />
                                                                     ))}
@@ -587,26 +572,20 @@ export default function VenueShow() {
                                             className="flex items-start hover:bg-gray-50 p-2 -mx-2 rounded-md"
                                         >
                                             <div className="flex-shrink-0 w-10 text-center">
-                                                <div className="text-sm font-bold text-gray-900">
-                                                    {new Date(event.event_date).getDate()}
-                                                </div>
+                                                <div className="text-sm font-bold text-gray-900">{new Date(event.event_date).getDate()}</div>
                                                 <div className="text-xs text-gray-500">
-                                                    {new Date(event.event_date).toLocaleDateString('en-US', {
-                                                        month: 'short'
+                                                    {new Date(event.event_date).toLocaleDateString("en-US", {
+                                                        month: "short",
                                                     })}
                                                 </div>
                                             </div>
                                             <div className="ml-3 flex-1">
-                                                <h5 className="text-sm font-medium text-gray-900 line-clamp-1">
-                                                    {event.name}
-                                                </h5>
+                                                <h5 className="text-sm font-medium text-gray-900 line-clamp-1">{event.name}</h5>
                                                 <div className="text-xs text-gray-500 flex items-center mt-1">
                                                     <Clock className="h-3 w-3 mr-1" />
                                                     {event.start_time}
                                                 </div>
-                                                <div className="text-xs text-gray-600 mt-1">
-                                                    ${event.ticket_price}
-                                                </div>
+                                                <div className="text-xs text-gray-600 mt-1">${event.ticket_price}</div>
                                             </div>
                                         </Link>
                                     ))}
@@ -628,20 +607,14 @@ export default function VenueShow() {
                     <Card className="max-w-lg w-full max-h-[90vh] overflow-y-auto">
                         <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle>Contact {venue.name}</CardTitle>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setShowContactForm(false)}
-                            >
+                            <Button variant="ghost" size="sm" onClick={() => setShowContactForm(false)}>
                                 <X className="h-4 w-4" />
                             </Button>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Your Name
-                                    </label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
                                     <input
                                         type="text"
                                         placeholder="Enter your name"
@@ -649,9 +622,7 @@ export default function VenueShow() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Email Address
-                                    </label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                                     <input
                                         type="email"
                                         placeholder="Enter your email"
@@ -659,9 +630,7 @@ export default function VenueShow() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Message
-                                    </label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
                                     <textarea
                                         rows={4}
                                         placeholder="What would you like to know about this venue?"
@@ -670,16 +639,13 @@ export default function VenueShow() {
                                 </div>
                             </div>
                             <div className="mt-6 flex justify-end space-x-3">
-                                <Button
-                                    variant="outline"
-                                    onClick={() => setShowContactForm(false)}
-                                >
+                                <Button variant="outline" onClick={() => setShowContactForm(false)}>
                                     Cancel
                                 </Button>
                                 <Button
                                     onClick={() => {
                                         setShowContactForm(false);
-                                        alert('Your message has been sent! The venue will respond shortly.');
+                                        alert("Your message has been sent! The venue will respond shortly.");
                                     }}
                                 >
                                     Send Message

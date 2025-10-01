@@ -1,19 +1,19 @@
-import { useState } from 'react';
-import { Head, Link, usePage } from '@inertiajs/react';
-import { Header } from '@/components/common/header';
-import { Footer } from '@/components/common/footer';
-import { PerformerHero } from '@/components/performers/profile/hero';
-import { PerformerQuickStats } from '@/components/performers/profile/quick-stats';
-import { PerformerTabs } from '@/components/performers/profile/tabs';
-import { PerformerOverview } from '@/components/performers/profile/overview';
-import { PerformerUpcomingShows } from '@/components/performers/profile/upcoming-shows';
-import { PerformerReviews } from '@/components/performers/profile/reviews';
-import { PerformerAbout } from '@/components/performers/profile/about';
-import type { PerformerShowPageProps, ProfileTab } from '@/types/performer-profile';
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { PerformerAbout } from "@/components/performers/profile/about";
+import { PerformerHero } from "@/components/performers/profile/hero";
+import { PerformerOverview } from "@/components/performers/profile/overview";
+import { PerformerQuickStats } from "@/components/performers/profile/quick-stats";
+import { PerformerReviews } from "@/components/performers/profile/reviews";
+import { PerformerTabs } from "@/components/performers/profile/tabs";
+import { PerformerUpcomingShows } from "@/components/performers/profile/upcoming-shows";
+import type { PerformerShowPageProps, ProfileTab } from "@/types/performer-profile";
+import { Head, Link, usePage } from "@inertiajs/react";
+import { useState } from "react";
 
 export default function PerformerShow() {
     const { performer, ratingStats, reviews, auth, isFollowing } = usePage<PerformerShowPageProps>().props;
-    const [activeTab, setActiveTab] = useState<ProfileTab>('overview');
+    const [activeTab, setActiveTab] = useState<ProfileTab>("overview");
 
     const handleTabChange = (tab: ProfileTab) => {
         setActiveTab(tab);
@@ -38,29 +38,15 @@ export default function PerformerShow() {
                 />
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    {activeTab === 'overview' && (
-                        <PerformerOverview
-                            performer={performer}
-                            ratingStats={ratingStats}
-                            recentReviews={reviews.slice(0, 3)}
-                        />
+                    {activeTab === "overview" && (
+                        <PerformerOverview performer={performer} ratingStats={ratingStats} recentReviews={reviews.slice(0, 3)} />
                     )}
 
-                    {activeTab === 'upcoming-shows' && (
-                        <PerformerUpcomingShows shows={performer.upcomingShows} />
-                    )}
+                    {activeTab === "upcoming-shows" && <PerformerUpcomingShows shows={performer.upcomingShows} />}
 
-                    {activeTab === 'reviews' && (
-                        <PerformerReviews
-                            reviews={reviews}
-                            ratingStats={ratingStats}
-                            performerId={performer.id}
-                        />
-                    )}
+                    {activeTab === "reviews" && <PerformerReviews reviews={reviews} ratingStats={ratingStats} performerId={performer.id} />}
 
-                    {activeTab === 'about' && (
-                        <PerformerAbout performer={performer} />
-                    )}
+                    {activeTab === "about" && <PerformerAbout performer={performer} />}
                 </div>
             </div>
 

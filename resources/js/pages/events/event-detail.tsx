@@ -1,31 +1,31 @@
-import { useState } from 'react';
-import { Link, router } from '@inertiajs/react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Header } from '@/components/common/header';
-import { Footer } from '@/components/common/footer';
-import { FollowButton } from '@/components/common/follow-button';
-import { Auth } from '@/types';
+import { FollowButton } from "@/components/common/follow-button";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Auth } from "@/types";
+import { Link, router } from "@inertiajs/react";
 import {
+    ArrowRight,
     Calendar,
-    Clock,
-    MapPin,
-    Users,
-    Heart,
-    Share2,
-    ChevronDown,
-    Ticket,
     CheckCircle,
-    Sun,
+    ChevronDown,
+    Clock,
     Cloud,
     CloudRain,
     Flame,
-    ArrowRight,
-    X
-} from 'lucide-react';
+    Heart,
+    MapPin,
+    Share2,
+    Sun,
+    Ticket,
+    Users,
+    X,
+} from "lucide-react";
+import { useState } from "react";
 
 interface Event {
     id: string;
@@ -84,25 +84,25 @@ interface Props {
 }
 
 export default function EventDetail({ auth, event, similarEvents, isFollowing }: Props) {
-    const [activeTab, setActiveTab] = useState('overview');
+    const [activeTab, setActiveTab] = useState("overview");
 
     const formatEventDate = (dateString: string) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            weekday: 'long',
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
+        return date.toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
         });
     };
 
     const formatEventTime = (timeString: string) => {
-        const [hours, minutes] = timeString.split(':');
+        const [hours, minutes] = timeString.split(":");
         const date = new Date();
         date.setHours(parseInt(hours), parseInt(minutes));
-        return date.toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit'
+        return date.toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "2-digit",
         });
     };
 
@@ -116,10 +116,10 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                 await navigator.share({
                     title: event.title,
                     text: `Check out ${event.title}`,
-                    url: window.location.href
+                    url: window.location.href,
                 });
             } catch (err) {
-                console.log('Error sharing:', err);
+                console.log("Error sharing:", err);
             }
         } else {
             navigator.clipboard.writeText(window.location.href);
@@ -131,17 +131,17 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
 
         if (!hasTickets && event.is_free) {
             return {
-                text: 'Free Entry',
-                bgColor: 'bg-green-100',
-                textColor: 'text-green-800'
+                text: "Free Entry",
+                bgColor: "bg-green-100",
+                textColor: "text-green-800",
             };
         }
 
         if (!hasTickets) {
             return {
-                text: 'No Tickets Required',
-                bgColor: 'bg-gray-100',
-                textColor: 'text-gray-800'
+                text: "No Tickets Required",
+                bgColor: "bg-gray-100",
+                textColor: "text-gray-800",
             };
         }
 
@@ -149,9 +149,9 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
 
         if (totalAvailable === 0) {
             return {
-                text: 'Sold Out',
-                bgColor: 'bg-red-100',
-                textColor: 'text-red-800'
+                text: "Sold Out",
+                bgColor: "bg-red-100",
+                textColor: "text-red-800",
             };
         }
 
@@ -160,24 +160,24 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
 
         if (percentSold > 90) {
             return {
-                text: 'Almost Sold Out',
-                bgColor: 'bg-red-100',
-                textColor: 'text-red-800'
+                text: "Almost Sold Out",
+                bgColor: "bg-red-100",
+                textColor: "text-red-800",
             };
         }
 
         if (percentSold > 70) {
             return {
-                text: 'Selling Fast',
-                bgColor: 'bg-orange-100',
-                textColor: 'text-orange-800'
+                text: "Selling Fast",
+                bgColor: "bg-orange-100",
+                textColor: "text-orange-800",
             };
         }
 
         return {
-            text: 'Tickets Available',
-            bgColor: 'bg-indigo-100',
-            textColor: 'text-indigo-800'
+            text: "Tickets Available",
+            bgColor: "bg-indigo-100",
+            textColor: "text-indigo-800",
         };
     };
 
@@ -189,7 +189,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
             {/* Hero Section */}
             <div className="relative h-96 overflow-hidden">
                 <img
-                    src={event.image || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=400&fit=crop'}
+                    src={event.image || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&h=400&fit=crop"}
                     alt={event.title}
                     className="w-full h-full object-cover"
                 />
@@ -209,7 +209,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                                 </div>
                                 <div className="flex items-center">
                                     <MapPin className="h-5 w-5 mr-2" />
-                                    {event.venue?.name || 'TBA'}
+                                    {event.venue?.name || "TBA"}
                                 </div>
                             </div>
                         </div>
@@ -223,9 +223,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                     <div className="flex flex-wrap items-center justify-between gap-4">
                         <div className="flex items-center text-sm">
                             <Flame className="h-4 w-4 text-orange-500 mr-1" />
-                            <span className="font-medium text-gray-800">
-                                Popular in {event.category}
-                            </span>
+                            <span className="font-medium text-gray-800">Popular in {event.category}</span>
                         </div>
                         {event.venue && (
                             <div className="flex items-center text-sm text-gray-700">
@@ -278,7 +276,9 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                                             <h3 className="text-sm font-medium text-gray-500 mb-1">Badges</h3>
                                             <div className="flex flex-wrap gap-2">
                                                 {event.badges.slice(0, 3).map((badge, index) => (
-                                                    <Badge key={index} variant="outline">{badge}</Badge>
+                                                    <Badge key={index} variant="outline">
+                                                        {badge}
+                                                    </Badge>
                                                 ))}
                                             </div>
                                         </div>
@@ -293,7 +293,10 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                                         <div className="flex items-center">
                                             <div className="h-10 w-10 rounded-full overflow-hidden mr-3">
                                                 <img
-                                                    src={event.performer.image || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face'}
+                                                    src={
+                                                        event.performer.image ||
+                                                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face"
+                                                    }
                                                     alt={event.performer.name}
                                                     className="h-full w-full object-cover"
                                                 />
@@ -301,12 +304,8 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                                             <div>
                                                 <p className="text-sm font-medium text-gray-900">Performer</p>
                                                 <div className="flex items-center">
-                                                    <span className="text-indigo-600 hover:text-indigo-800 font-medium">
-                                                        {event.performer.name}
-                                                    </span>
-                                                    {event.performer.verified && (
-                                                        <CheckCircle className="h-4 w-4 text-blue-500 ml-1" />
-                                                    )}
+                                                    <span className="text-indigo-600 hover:text-indigo-800 font-medium">{event.performer.name}</span>
+                                                    {event.performer.verified && <CheckCircle className="h-4 w-4 text-blue-500 ml-1" />}
                                                 </div>
                                             </div>
                                         </div>
@@ -324,21 +323,16 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                                         <div className="flex items-center">
                                             <Ticket className={`h-5 w-5 ${ticketStatus.textColor} mr-2`} />
                                             <div>
-                                                <h3 className={`font-medium ${ticketStatus.textColor}`}>
-                                                    {ticketStatus.text}
-                                                </h3>
+                                                <h3 className={`font-medium ${ticketStatus.textColor}`}>{ticketStatus.text}</h3>
                                                 <p className="text-sm text-gray-700 mt-1">
                                                     {event.is_free
-                                                        ? 'This is a free event, but registration is required.'
-                                                        : `Prices from $${Math.min(...event.ticket_plans.map(plan => plan.price))}`
-                                                    }
+                                                        ? "This is a free event, but registration is required."
+                                                        : `Prices from $${Math.min(...event.ticket_plans.map((plan) => plan.price))}`}
                                                 </p>
                                             </div>
                                         </div>
-                                        {ticketStatus.text !== 'Sold Out' && (
-                                            <Button onClick={handleGetTickets}>
-                                                {event.is_free ? 'Register' : 'Get Tickets'}
-                                            </Button>
+                                        {ticketStatus.text !== "Sold Out" && (
+                                            <Button onClick={handleGetTickets}>{event.is_free ? "Register" : "Get Tickets"}</Button>
                                         )}
                                     </div>
                                 </CardContent>
@@ -351,12 +345,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                                 <Ticket className="h-5 w-5 mr-2" />
                                 Get Tickets
                             </Button>
-                            <FollowButton
-                                followableType="event"
-                                followableId={event.id}
-                                variant="default"
-                                initialFollowing={isFollowing}
-                            />
+                            <FollowButton followableType="event" followableId={event.id} variant="default" initialFollowing={isFollowing} />
                             <Button variant="outline" onClick={handleShare}>
                                 <Share2 className="h-5 w-5 mr-2" />
                                 Share
@@ -378,7 +367,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                                     </CardHeader>
                                     <CardContent>
                                         <p className="text-gray-700 leading-relaxed">
-                                            {event.description || 'No description available for this event.'}
+                                            {event.description || "No description available for this event."}
                                         </p>
                                     </CardContent>
                                 </Card>
@@ -392,9 +381,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                                     <CardContent>
                                         {event.venue ? (
                                             <div>
-                                                <h4 className="font-medium text-gray-900 mb-2">
-                                                    {event.venue.name}
-                                                </h4>
+                                                <h4 className="font-medium text-gray-900 mb-2">{event.venue.name}</h4>
                                                 <p className="text-gray-600 mb-4">{event.venue.address}</p>
                                                 <div className="h-64 bg-gray-200 rounded-lg mb-4">
                                                     <div className="w-full h-full flex items-center justify-center text-gray-500">
@@ -429,7 +416,10 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                                                 <div className="flex items-center mb-4">
                                                     <div className="h-16 w-16 rounded-full overflow-hidden mr-4">
                                                         <img
-                                                            src={event.performer.image || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face'}
+                                                            src={
+                                                                event.performer.image ||
+                                                                "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face"
+                                                            }
                                                             alt={event.performer.name}
                                                             className="h-full w-full object-cover"
                                                         />
@@ -437,14 +427,12 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                                                     <div>
                                                         <h4 className="font-medium text-gray-900 flex items-center">
                                                             {event.performer.name}
-                                                            {event.performer.verified && (
-                                                                <CheckCircle className="h-5 w-5 text-blue-500 ml-2" />
-                                                            )}
+                                                            {event.performer.verified && <CheckCircle className="h-5 w-5 text-blue-500 ml-2" />}
                                                         </h4>
                                                     </div>
                                                 </div>
                                                 <p className="text-gray-700 leading-relaxed">
-                                                    {event.performer.bio || 'No performer information available.'}
+                                                    {event.performer.bio || "No performer information available."}
                                                 </p>
                                             </div>
                                         ) : (
@@ -477,14 +465,12 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                                                     {plan.available_quantity} of {plan.max_quantity} available
                                                 </p>
                                             </div>
-                                            <span className="font-bold text-gray-900">
-                                                {plan.price === 0 ? 'Free' : `$${plan.price}`}
-                                            </span>
+                                            <span className="font-bold text-gray-900">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
                                         </div>
                                     ))}
                                     <Separator />
                                     <Button onClick={handleGetTickets} className="w-full">
-                                        {event.is_free ? 'Register Now' : 'Get Tickets'}
+                                        {event.is_free ? "Register Now" : "Get Tickets"}
                                     </Button>
                                 </CardContent>
                             </Card>
@@ -501,9 +487,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                                 </CardHeader>
                                 <CardContent>
                                     <div className="h-48 bg-gray-200 rounded-lg mb-4">
-                                        <div className="w-full h-full flex items-center justify-center text-gray-500">
-                                            Map placeholder
-                                        </div>
+                                        <div className="w-full h-full flex items-center justify-center text-gray-500">Map placeholder</div>
                                     </div>
                                     <div className="flex items-start justify-between">
                                         <div>
@@ -548,15 +532,16 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                                         >
                                             <div className="h-14 w-14 rounded-md overflow-hidden flex-shrink-0 bg-gray-200">
                                                 <img
-                                                    src={similarEvent.image || 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6a3?w=56&h=56&fit=crop'}
+                                                    src={
+                                                        similarEvent.image ||
+                                                        "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6a3?w=56&h=56&fit=crop"
+                                                    }
                                                     alt={similarEvent.title}
                                                     className="h-full w-full object-cover"
                                                 />
                                             </div>
                                             <div className="ml-3">
-                                                <h4 className="text-sm font-medium text-gray-900 line-clamp-1">
-                                                    {similarEvent.title}
-                                                </h4>
+                                                <h4 className="text-sm font-medium text-gray-900 line-clamp-1">{similarEvent.title}</h4>
                                                 <p className="text-xs text-gray-500 line-clamp-1">
                                                     {formatEventDate(similarEvent.date)} • {similarEvent.venue}
                                                 </p>
@@ -564,9 +549,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
                                                     <Badge variant="outline" className="text-xs">
                                                         {similarEvent.category}
                                                     </Badge>
-                                                    <span className="ml-2 text-xs text-gray-500">
-                                                        {similarEvent.price}
-                                                    </span>
+                                                    <span className="ml-2 text-xs text-gray-500">{similarEvent.price}</span>
                                                 </div>
                                             </div>
                                         </Link>

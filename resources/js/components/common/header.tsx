@@ -263,10 +263,31 @@ function MobileNavigation({ auth, location }: MobileNavigationProps) {
                     {/* User Actions */}
                     {user && (
                         <div className="border-t pt-4 space-y-2">
-                            <Button variant="ghost" onClick={() => navigate("/events/create")} className="w-full justify-start gap-3">
-                                <Plus className="size-4" />
-                                Create Event
-                            </Button>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="w-full justify-start gap-3">
+                                        <Plus className="size-4" />
+                                        Create
+                                        <ChevronDown className="ml-auto size-4" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start" className="w-48">
+                                    <DropdownMenuLabel>Create New</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={() => navigate(route("events.create"))}>
+                                        <Calendar className="mr-2 size-4" />
+                                        Event
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => navigate(route("venues.create"))}>
+                                        <MapPin className="mr-2 size-4" />
+                                        Venue
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => navigate(route("performers.create"))}>
+                                        <Music className="mr-2 size-4" />
+                                        Performer
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                             <Button variant="ghost" onClick={() => navigate("/notifications")} className="w-full justify-start gap-3">
                                 <Bell className="size-4" />
                                 Notifications
@@ -356,10 +377,31 @@ export function Header({ auth, location = DEFAULT_LOCATION }: HeaderProps) {
 
                             {user ? (
                                 <>
-                                    <Button variant={"secondary"} onClick={() => navigate("/events/create")} className="flex items-center gap-2">
-                                        <Plus className="size-4" />
-                                        Create Event
-                                    </Button>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant={"secondary"} className="flex items-center gap-2">
+                                                <Plus className="size-4" />
+                                                Create
+                                                <ChevronDown className="size-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end" className="w-48">
+                                            <DropdownMenuLabel>Create New</DropdownMenuLabel>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem onClick={() => navigate(route("events.create"))}>
+                                                <Calendar className="mr-2 size-4" />
+                                                Event
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => navigate(route("venues.create"))}>
+                                                <MapPin className="mr-2 size-4" />
+                                                Venue
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => navigate(route("performers.create"))}>
+                                                <Music className="mr-2 size-4" />
+                                                Performer
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
                                     <NotificationDropdown
                                         initialNotifications={sharedNotifications?.notifications}
                                         initialUnreadCount={sharedNotifications?.unread_count}

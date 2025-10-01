@@ -1,5 +1,5 @@
-import { Badge } from '@/components/ui/badge';
-import type { ProfileTab } from '@/types/performer-profile';
+import { Badge } from "@/components/ui/badge";
+import type { ProfileTab } from "@/types/performer-profile";
 
 interface PerformerTabsProps {
     activeTab: ProfileTab;
@@ -9,29 +9,23 @@ interface PerformerTabsProps {
     averageRating: number;
 }
 
-export function PerformerTabs({
-    activeTab,
-    onTabChange,
-    upcomingShowsCount,
-    reviewsCount,
-    averageRating,
-}: PerformerTabsProps) {
+export function PerformerTabs({ activeTab, onTabChange, upcomingShowsCount, reviewsCount, averageRating }: PerformerTabsProps) {
     const tabs = [
-        { id: 'overview' as ProfileTab, label: 'Overview' },
+        { id: "overview" as ProfileTab, label: "Overview" },
         {
-            id: 'upcoming-shows' as ProfileTab,
-            label: 'Upcoming Shows',
+            id: "upcoming-shows" as ProfileTab,
+            label: "Upcoming Shows",
             badge: upcomingShowsCount > 0 ? upcomingShowsCount.toString() : null,
         },
-        { id: 'past-shows' as ProfileTab, label: 'Past Shows' },
-        { id: 'media' as ProfileTab, label: 'Media' },
+        { id: "past-shows" as ProfileTab, label: "Past Shows" },
+        { id: "media" as ProfileTab, label: "Media" },
         {
-            id: 'reviews' as ProfileTab,
-            label: 'Reviews',
+            id: "reviews" as ProfileTab,
+            label: "Reviews",
             badge: averageRating > 0 ? `${averageRating.toFixed(1)}★` : null,
-            badgeVariant: 'default' as const,
+            badgeVariant: "default" as const,
         },
-        { id: 'about' as ProfileTab, label: 'About' },
+        { id: "about" as ProfileTab, label: "About" },
     ];
 
     return (
@@ -44,16 +38,13 @@ export function PerformerTabs({
                             onClick={() => onTabChange(tab.id)}
                             className={`whitespace-nowrap px-4 py-4 text-sm font-medium border-b-2 ${
                                 activeTab === tab.id
-                                    ? 'border-indigo-500 text-indigo-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                    ? "border-indigo-500 text-indigo-600"
+                                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                             }`}
                         >
                             {tab.label}
                             {tab.badge && (
-                                <Badge
-                                    variant={tab.badgeVariant || 'secondary'}
-                                    className="ml-1"
-                                >
+                                <Badge variant={tab.badgeVariant || "secondary"} className="ml-1">
                                     {tab.badge}
                                 </Badge>
                             )}

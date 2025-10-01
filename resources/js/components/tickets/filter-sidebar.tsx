@@ -31,16 +31,7 @@ const PRICE_RANGES = [
     { label: "$200+", min: 200, max: 500 },
 ];
 
-const CATEGORIES = [
-    "Music",
-    "Food & Drink",
-    "Arts",
-    "Family",
-    "Nightlife",
-    "Outdoor",
-    "Sports",
-    "Comedy",
-];
+const CATEGORIES = ["Music", "Food & Drink", "Arts", "Family", "Nightlife", "Outdoor", "Sports", "Comedy"];
 
 export const FilterSidebar = ({ filters, onFilterChange, onClearFilters, className }: FilterSidebarProps) => {
     const priceRange = [filters.min_price || 0, filters.max_price || 500];

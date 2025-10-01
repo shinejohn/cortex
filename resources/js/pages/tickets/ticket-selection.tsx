@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { Head, Link, router, usePage } from "@inertiajs/react";
-import { Header } from "@/components/common/header";
 import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { Button } from "@/components/ui/button";
 import { Auth } from "@/types";
+import { Head, Link, router, usePage } from "@inertiajs/react";
 import { CalendarIcon, ClockIcon, InfoIcon, MapPinIcon, MinusIcon, PlusIcon, TagIcon, TicketIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -41,7 +41,7 @@ interface SelectedTicket extends TicketPlan {
 export default function TicketSelection() {
     const { auth, event, ticketPlans } = usePage<TicketSelectionPageProps>().props;
     const [selectedTickets, setSelectedTickets] = useState<SelectedTicket[]>([]);
-    const [promoCode, setPromoCode] = useState('');
+    const [promoCode, setPromoCode] = useState("");
     const [promoApplied, setPromoApplied] = useState(false);
     const [promoError, setPromoError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -50,28 +50,30 @@ export default function TicketSelection() {
     useEffect(() => {
         if (ticketPlans.length > 0 && selectedTickets.length === 0) {
             setSelectedTickets(
-                ticketPlans.map(plan => ({
+                ticketPlans.map((plan) => ({
                     ...plan,
-                    quantity: 0
-                }))
+                    quantity: 0,
+                })),
             );
         }
     }, [ticketPlans]);
 
     // Update ticket quantity
     const updateTicketQuantity = (id: string, change: number) => {
-        setSelectedTickets(prev => prev.map(ticket => {
-            if (ticket.id === id) {
-                const newQuantity = Math.max(0, Math.min(ticket.max_quantity, ticket.quantity + change));
-                return { ...ticket, quantity: newQuantity };
-            }
-            return ticket;
-        }));
+        setSelectedTickets((prev) =>
+            prev.map((ticket) => {
+                if (ticket.id === id) {
+                    const newQuantity = Math.max(0, Math.min(ticket.max_quantity, ticket.quantity + change));
+                    return { ...ticket, quantity: newQuantity };
+                }
+                return ticket;
+            }),
+        );
     };
 
     // Apply promo code
     const handleApplyPromoCode = () => {
-        if (promoCode.toLowerCase() === 'jazz10') {
+        if (promoCode.toLowerCase() === "jazz10") {
             setPromoApplied(true);
             setPromoError(false);
         } else {
@@ -82,7 +84,7 @@ export default function TicketSelection() {
 
     // Calculate subtotal
     const calculateSubtotal = () => {
-        return selectedTickets.reduce((sum, ticket) => sum + (Number(ticket.price) * ticket.quantity), 0);
+        return selectedTickets.reduce((sum, ticket) => sum + Number(ticket.price) * ticket.quantity, 0);
     };
 
     // Calculate marketplace fee (10%)
@@ -99,13 +101,11 @@ export default function TicketSelection() {
     };
 
     // Check if any tickets are selected
-    const hasSelectedTickets = selectedTickets.some(ticket => ticket.quantity > 0);
+    const hasSelectedTickets = selectedTickets.some((ticket) => ticket.quantity > 0);
 
     // Check if all selected tickets are free
-    const hasOnlyFreeTickets = hasSelectedTickets &&
-        selectedTickets.every(ticket =>
-            (ticket.quantity > 0 && Number(ticket.price) === 0) || ticket.quantity === 0
-        );
+    const hasOnlyFreeTickets =
+        hasSelectedTickets && selectedTickets.every((ticket) => (ticket.quantity > 0 && Number(ticket.price) === 0) || ticket.quantity === 0);
 
     // Proceed to checkout
     const handleProceedToCheckout = () => {
@@ -116,23 +116,23 @@ export default function TicketSelection() {
         const orderData = {
             event_id: event.id,
             items: selectedTickets
-                .filter(ticket => ticket.quantity > 0)
-                .map(ticket => ({
+                .filter((ticket) => ticket.quantity > 0)
+                .map((ticket) => ({
                     ticket_plan_id: ticket.id,
-                    quantity: ticket.quantity
+                    quantity: ticket.quantity,
                 })),
-            promo_code: promoApplied ? { code: promoCode, discount: 0.1 } : null
+            promo_code: promoApplied ? { code: promoCode, discount: 0.1 } : null,
         };
 
-        router.post('/api/ticket-orders', orderData, {
+        router.post("/api/ticket-orders", orderData, {
             onSuccess: (response) => {
                 // Redirect to confirmation page or my tickets
-                router.visit('/tickets/my-tickets');
+                router.visit("/tickets/my-tickets");
             },
             onError: (errors) => {
-                console.error('Order failed:', errors);
+                console.error("Order failed:", errors);
                 setIsLoading(false);
-            }
+            },
         });
     };
 
@@ -146,11 +146,17 @@ export default function TicketSelection() {
                     {/* Breadcrumb */}
                     <nav className="mb-8">
                         <div className="flex items-center space-x-2 text-sm text-gray-500">
-                            <Link href="/" className="hover:text-gray-700">Home</Link>
+                            <Link href="/" className="hover:text-gray-700">
+                                Home
+                            </Link>
                             <span>/</span>
-                            <Link href="/events" className="hover:text-gray-700">Events</Link>
+                            <Link href="/events" className="hover:text-gray-700">
+                                Events
+                            </Link>
                             <span>/</span>
-                            <Link href={`/events/${event.id}`} className="hover:text-gray-700">{event.title}</Link>
+                            <Link href={`/events/${event.id}`} className="hover:text-gray-700">
+                                {event.title}
+                            </Link>
                             <span>/</span>
                             <span className="text-gray-900">Tickets</span>
                         </div>
@@ -163,23 +169,19 @@ export default function TicketSelection() {
                             <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
                                 <div className="flex items-start">
                                     <div className="h-20 w-20 rounded-md overflow-hidden flex-shrink-0">
-                                        <img
-                                            src={event.image}
-                                            alt={event.title}
-                                            className="h-full w-full object-cover"
-                                        />
+                                        <img src={event.image} alt={event.title} className="h-full w-full object-cover" />
                                     </div>
                                     <div className="ml-4">
-                                        <h1 className="text-xl font-bold text-gray-900">
-                                            {event.title}
-                                        </h1>
+                                        <h1 className="text-xl font-bold text-gray-900">{event.title}</h1>
                                         <div className="mt-1 flex items-center text-sm text-gray-600">
                                             <CalendarIcon className="h-4 w-4 mr-1" />
-                                            <span>{new Date(event.event_date).toLocaleDateString('en-US', {
-                                                year: 'numeric',
-                                                month: 'long',
-                                                day: 'numeric'
-                                            })}</span>
+                                            <span>
+                                                {new Date(event.event_date).toLocaleDateString("en-US", {
+                                                    year: "numeric",
+                                                    month: "long",
+                                                    day: "numeric",
+                                                })}
+                                            </span>
                                         </div>
                                         <div className="mt-1 flex items-center text-sm text-gray-600">
                                             <ClockIcon className="h-4 w-4 mr-1" />
@@ -204,12 +206,8 @@ export default function TicketSelection() {
                                         <div key={ticket.id} className="border border-gray-200 rounded-lg p-4">
                                             <div className="flex justify-between">
                                                 <div>
-                                                    <h3 className="font-medium text-gray-900">
-                                                        {ticket.name}
-                                                    </h3>
-                                                    <p className="text-sm text-gray-600">
-                                                        {ticket.description}
-                                                    </p>
+                                                    <h3 className="font-medium text-gray-900">{ticket.name}</h3>
+                                                    <p className="text-sm text-gray-600">{ticket.description}</p>
                                                     <p className="mt-1 font-medium text-gray-900">
                                                         {Number(ticket.price) === 0 ? (
                                                             <span className="text-green-600">Free</span>
@@ -228,9 +226,7 @@ export default function TicketSelection() {
                                                     >
                                                         <MinusIcon className="h-4 w-4" />
                                                     </Button>
-                                                    <span className="w-6 text-center">
-                                                        {ticket.quantity}
-                                                    </span>
+                                                    <span className="w-6 text-center">{ticket.quantity}</span>
                                                     <Button
                                                         variant="outline"
                                                         size="icon"
@@ -243,15 +239,9 @@ export default function TicketSelection() {
                                                 </div>
                                             </div>
                                             {ticket.quantity >= ticket.max_quantity && (
-                                                <p className="mt-2 text-sm text-orange-600">
-                                                    Maximum {ticket.max_quantity} tickets per order
-                                                </p>
+                                                <p className="mt-2 text-sm text-orange-600">Maximum {ticket.max_quantity} tickets per order</p>
                                             )}
-                                            {ticket.available_quantity <= 0 && (
-                                                <p className="mt-2 text-sm text-red-600">
-                                                    Sold out
-                                                </p>
-                                            )}
+                                            {ticket.available_quantity <= 0 && <p className="mt-2 text-sm text-red-600">Sold out</p>}
                                         </div>
                                     ))}
                                 </div>
@@ -259,9 +249,7 @@ export default function TicketSelection() {
 
                             {/* Promo code */}
                             <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-                                <h2 className="text-lg font-bold text-gray-900 mb-4">
-                                    Promo Code
-                                </h2>
+                                <h2 className="text-lg font-bold text-gray-900 mb-4">Promo Code</h2>
                                 <div className="flex space-x-2">
                                     <input
                                         type="text"
@@ -270,34 +258,22 @@ export default function TicketSelection() {
                                         value={promoCode}
                                         onChange={(e) => setPromoCode(e.target.value)}
                                     />
-                                    <Button onClick={handleApplyPromoCode}>
-                                        Apply
-                                    </Button>
+                                    <Button onClick={handleApplyPromoCode}>Apply</Button>
                                 </div>
-                                {promoApplied && (
-                                    <p className="mt-2 text-sm text-green-600">
-                                        Promo code applied! 10% discount added.
-                                    </p>
-                                )}
-                                {promoError && (
-                                    <p className="mt-2 text-sm text-red-600">
-                                        Invalid promo code. Please try again.
-                                    </p>
-                                )}
+                                {promoApplied && <p className="mt-2 text-sm text-green-600">Promo code applied! 10% discount added.</p>}
+                                {promoError && <p className="mt-2 text-sm text-red-600">Invalid promo code. Please try again.</p>}
                             </div>
                         </div>
 
                         {/* Order summary column */}
                         <div>
                             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-6">
-                                <h2 className="text-lg font-bold text-gray-900 mb-4">
-                                    Order Summary
-                                </h2>
+                                <h2 className="text-lg font-bold text-gray-900 mb-4">Order Summary</h2>
                                 {hasSelectedTickets ? (
                                     <>
                                         <div className="space-y-4 mb-6">
                                             {selectedTickets
-                                                .filter(t => t.quantity > 0)
+                                                .filter((t) => t.quantity > 0)
                                                 .map((ticket) => (
                                                     <div key={ticket.id} className="flex justify-between">
                                                         <div>
@@ -306,9 +282,7 @@ export default function TicketSelection() {
                                                                 {ticket.quantity} x ${Number(ticket.price).toFixed(2)}
                                                             </p>
                                                         </div>
-                                                        <p className="font-medium">
-                                                            ${(ticket.quantity * Number(ticket.price)).toFixed(2)}
-                                                        </p>
+                                                        <p className="font-medium">${(ticket.quantity * Number(ticket.price)).toFixed(2)}</p>
                                                     </div>
                                                 ))}
                                         </div>
@@ -339,24 +313,16 @@ export default function TicketSelection() {
                                                 <p>${calculateTotal().toFixed(2)}</p>
                                             </div>
                                             {hasOnlyFreeTickets && (
-                                                <p className="text-sm text-green-600 mt-2">
-                                                    No payment required for free tickets
-                                                </p>
+                                                <p className="text-sm text-green-600 mt-2">No payment required for free tickets</p>
                                             )}
                                         </div>
                                         {auth.user ? (
-                                            <Button
-                                                onClick={handleProceedToCheckout}
-                                                className="w-full"
-                                                disabled={isLoading}
-                                            >
-                                                {isLoading ? 'Processing...' : (hasOnlyFreeTickets ? 'Register Now' : 'Proceed to Checkout')}
+                                            <Button onClick={handleProceedToCheckout} className="w-full" disabled={isLoading}>
+                                                {isLoading ? "Processing..." : hasOnlyFreeTickets ? "Register Now" : "Proceed to Checkout"}
                                             </Button>
                                         ) : (
                                             <div className="space-y-3">
-                                                <p className="text-sm text-gray-600 text-center">
-                                                    Please log in to purchase tickets
-                                                </p>
+                                                <p className="text-sm text-gray-600 text-center">Please log in to purchase tickets</p>
                                                 <Link
                                                     href="/login"
                                                     className="block w-full bg-indigo-600 text-white py-3 px-4 rounded-md font-medium hover:bg-indigo-700 text-center"
@@ -374,11 +340,10 @@ export default function TicketSelection() {
                                 )}
                                 <div className="mt-6 text-sm text-gray-600">
                                     <p className="mb-2">
-                                        <span className="font-medium">Ticket Policy:</span> All sales
-                                        are final. No refunds or exchanges.
+                                        <span className="font-medium">Ticket Policy:</span> All sales are final. No refunds or exchanges.
                                     </p>
                                     <p>
-                                        <span className="font-medium">Questions?</span>{' '}
+                                        <span className="font-medium">Questions?</span>{" "}
                                         <Link href="/help" className="text-indigo-600 hover:text-indigo-800">
                                             Contact support
                                         </Link>
