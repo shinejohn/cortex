@@ -2,11 +2,28 @@ import CTASection from "@/components/common/cta-section";
 import { Footer } from "@/components/common/footer";
 import { GridCard } from "@/components/common/grid-card";
 import Header from "@/components/common/header";
+import { FilterSidebar, TicketFilters } from "@/components/tickets/filter-sidebar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { type Event } from "@/types/events";
-import { Head, Link, usePage } from "@inertiajs/react";
-import { ArrowRightIcon, CalendarIcon, ClockIcon, MapPinIcon, TicketIcon } from "lucide-react";
+import { Head, Link, router, usePage } from "@inertiajs/react";
+import { CalendarIcon, ClockIcon, FilterIcon, GridIcon, ListIcon, MapPinIcon, SearchIcon, StarIcon, TicketIcon, XIcon } from "lucide-react";
 import { useState } from "react";
+
+type ViewMode = "grid" | "list";
+type SortOption = "date" | "price_low" | "price_high" | "popularity" | "recommended";
+
+interface PaginatedEvents {
+    data: Event[];
+    links: Array<{
+        url: string | null;
+        label: string;
+        active: boolean;
+    }>;
+}
 
 interface TicketsPageProps {
     auth: {
@@ -16,38 +33,120 @@ interface TicketsPageProps {
             email: string;
         };
     };
-    upcomingEvents: Event[];
+    events: PaginatedEvents;
+    featuredEvents: Event[];
+    filters: TicketFilters;
+    sort: SortOption;
 }
 
 export default function Tickets() {
-    const { auth, upcomingEvents = [] } = usePage<TicketsPageProps>().props;
+    const { auth, events, featuredEvents = [], filters, sort } = usePage().props as unknown as TicketsPageProps;
 
-    const ticketCategories = [
-        {
-            title: 'Buy Tickets',
-            description: 'Browse and purchase tickets for upcoming events',
-            path: '/tickets/buy',
-            icon: '🎟️'
-        },
-        {
-            title: 'My Tickets',
-            description: 'View and manage your ticket purchases',
-            path: '/tickets/my-tickets',
-            icon: '📱'
-        },
-        {
-            title: 'Gift Tickets',
-            description: 'Send event tickets as gifts to friends and family',
-            path: '/tickets/gift',
-            icon: '🎁'
-        },
-        {
-            title: 'Group Discounts',
-            description: 'Special rates for group ticket purchases',
-            path: '/tickets/groups',
-            icon: '👥'
-        },
-    ];
+    const [viewMode, setViewMode] = useState<ViewMode>("grid");
+    const [sortBy, setSortBy] = useState<SortOption>(sort || "date");
+    const [searchQuery, setSearchQuery] = useState(filters.search || "");
+    const [showFilters, setShowFilters] = useState(false);
+    const [currentFilters, setCurrentFilters] = useState(filters);
+
+    // Handle filter changes
+    const handleFilterChange = (newFilters: Partial<TicketFilters>) => {
+        const updatedFilters = { ...currentFilters, ...newFilters };
+        setCurrentFilters(updatedFilters);
+
+        // Build query parameters
+        const params: Record<string, string | string[]> = {};
+        Object.entries(updatedFilters).forEach(([key, value]) => {
+            if (value !== undefined && value !== null && value !== "") {
+                if (Array.isArray(value)) {
+                    params[key] = value;
+                } else {
+                    params[key] = value.toString();
+                }
+            }
+        });
+
+        // Use Inertia router for smooth navigation
+        router.get("/tickets", params, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    };
+
+    // Handle search
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        handleFilterChange({ search: searchQuery });
+    };
+
+    // Handle sort change
+    const handleSortChange = (newSort: SortOption) => {
+        setSortBy(newSort);
+
+        // Build query parameters
+        const params: Record<string, string | string[]> = { sort: newSort };
+        Object.entries(currentFilters).forEach(([key, value]) => {
+            if (value !== undefined && value !== null && value !== "") {
+                if (Array.isArray(value)) {
+                    params[key] = value;
+                } else {
+                    params[key] = value.toString();
+                }
+            }
+        });
+
+        // Use Inertia router for smooth navigation
+        router.get("/tickets", params, {
+            preserveState: true,
+            preserveScroll: true,
+        });
+    };
+
+    // Clear all filters
+    const clearAllFilters = () => {
+        setCurrentFilters({});
+        setSearchQuery("");
+        router.get("/tickets", {}, {
+            preserveState: true,
+            preserveScroll: false,
+        });
+    };
+
+    const renderEventContent = (event: Event) => (
+        <>
+            <div className="flex items-center text-sm text-muted-foreground mb-1">
+                <CalendarIcon className="h-4 w-4 mr-1" />
+                {new Date(event.date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                })}
+            </div>
+            <div className="flex items-center text-sm text-muted-foreground mb-1">
+                <ClockIcon className="h-4 w-4 mr-1" />
+                {new Date(event.date).toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                })}
+            </div>
+            <div className="flex items-center text-sm text-muted-foreground mb-3">
+                <MapPinIcon className="h-4 w-4 mr-1" />
+                {event.venue?.name || "TBD"}
+            </div>
+            {event.communityRating && (
+                <div className="flex items-center text-sm text-muted-foreground">
+                    <StarIcon className="h-4 w-4 mr-1 text-yellow-500" />
+                    {Number(event.communityRating).toFixed(1)}
+                </div>
+            )}
+        </>
+    );
+
+    const renderEventActions = (event: Event) => (
+        <>
+            <span className="text-sm font-semibold">{event.price?.isFree ? "Free" : `$${event.price?.min}`}</span>
+        </>
+    );
 
     return (
         <>
@@ -56,183 +155,278 @@ export default function Tickets() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-indigo-700 text-white py-12">
+            <div className="bg-primary text-primary-foreground py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
-                        <h1 className="text-4xl font-extrabold sm:text-5xl">
-                            Tickets & Passes
-                        </h1>
-                        <p className="mt-3 text-xl">
-                            Buy and manage tickets for local events
-                        </p>
-                        <div className="mt-8 flex justify-center gap-3">
-                            <Link
-                                href="/events"
-                                className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-white hover:bg-indigo-50"
-                            >
-                                <TicketIcon className="h-5 w-5 mr-2" />
-                                Browse Events
-                            </Link>
-                            {auth.user && (
-                                <Link
-                                    href="/tickets/my-tickets"
-                                    className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-                                >
-                                    My Tickets
-                                </Link>
-                            )}
+                        <h1 className="text-4xl font-extrabold sm:text-5xl">Tickets & Passes</h1>
+                        <p className="mt-3 text-xl">Buy and manage tickets for local events</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="max-w-7xl mx-auto px-3 sm:px-4 py-8">
+                <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+                    {/* Filters Section */}
+                    <aside className={cn("w-full lg:w-80 lg:flex-shrink-0 transition-all duration-200", showFilters ? "block" : "hidden lg:block")}>
+                        <div className="lg:sticky lg:top-4">
+                            <FilterSidebar filters={currentFilters} onFilterChange={handleFilterChange} onClearFilters={clearAllFilters} />
                         </div>
-                    </div>
-                </div>
-            </div>
+                    </aside>
 
-            {/* Ticket Options */}
-            {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                    Ticket Options
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {ticketCategories.map((category, index) => (
-                        <Link
-                            key={index}
-                            href={category.path}
-                            className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow text-center group"
-                        >
-                            <div className="text-3xl mb-3">{category.icon}</div>
-                            <h3 className="text-lg font-bold text-gray-900">
-                                {category.title}
-                            </h3>
-                            <p className="text-gray-600 mt-2 text-sm">
-                                {category.description}
-                            </p>
-                            <div className="mt-4 flex justify-center">
-                                <ArrowRightIcon className="h-5 w-5 text-indigo-600 group-hover:translate-x-1 transition-transform" />
-                            </div>
-                        </Link>
-                    ))}
-                </div>
-            </div> */}
-
-            {/* Featured Events with Tickets */}
-            <div className="bg-gray-50 py-12">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center mb-8">
-                        <h2 className="text-2xl font-bold text-gray-900">
-                            Upcoming Events
-                        </h2>
-                        <Link
-                            href="/events"
-                            className="text-indigo-600 hover:text-indigo-800 flex items-center font-medium"
-                        >
-                            View all events
-                            <ArrowRightIcon className="ml-1 h-4 w-4" />
-                        </Link>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {upcomingEvents.slice(0, 6).map((event) => (
-                            <div
-                                key={event.id}
-                                className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
-                            >
-                                <div className="h-48 overflow-hidden relative">
-                                    <img
-                                        src={event.image}
-                                        alt={event.title}
-                                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    {/* Main Content Area */}
+                    <div className="flex-1 space-y-6">
+                        {/* Search and Controls */}
+                        <div className="bg-card p-4 sm:p-6 rounded-lg shadow-sm space-y-4">
+                            {/* Search */}
+                            <div className="w-full">
+                                <form onSubmit={handleSearch} className="relative w-full">
+                                    <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        type="text"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        placeholder="Search for events..."
+                                        className="pl-10 rounded-lg"
                                     />
-                                    <div className="absolute top-0 right-0 m-2">
-                                        <span className="text-xs font-bold px-2 py-1 rounded-full bg-green-100 text-green-800">
-                                            On Sale
-                                        </span>
-                                    </div>
+                                </form>
+                            </div>
+
+                            {/* Controls */}
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                                    <Button variant="outline" onClick={() => setShowFilters(!showFilters)} className="lg:hidden">
+                                        <FilterIcon className="h-4 w-4 mr-2" />
+                                        {showFilters ? "Hide Filters" : "Show Filters"}
+                                    </Button>
+
+                                    <div className="text-sm text-muted-foreground">{events.data.length} events found</div>
                                 </div>
-                                <div className="p-4">
-                                    <h3 className="font-bold text-lg text-gray-900 mb-2">
-                                        {event.title}
-                                    </h3>
-                                    <div className="flex items-center text-sm text-gray-600 mb-1">
-                                        <CalendarIcon className="h-4 w-4 mr-1 flex-shrink-0" />
-                                        {new Date(event.date).toLocaleDateString('en-US', {
-                                            year: 'numeric',
-                                            month: 'short',
-                                            day: 'numeric'
-                                        })}
+
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                                    {/* View Mode Toggle */}
+                                    <div className="flex bg-muted rounded-lg p-1">
+                                        {(["grid", "list"] as const).map((mode) => (
+                                            <Button
+                                                key={mode}
+                                                variant={viewMode === mode ? "default" : "ghost"}
+                                                size="sm"
+                                                onClick={() => setViewMode(mode)}
+                                                className={cn("h-8 px-3 text-sm", viewMode === mode && "bg-background shadow-sm")}
+                                            >
+                                                {mode === "grid" && <GridIcon className="h-4 w-4" />}
+                                                {mode === "list" && <ListIcon className="h-4 w-4" />}
+                                            </Button>
+                                        ))}
                                     </div>
-                                    <div className="flex items-center text-sm text-gray-600 mb-1">
-                                        <ClockIcon className="h-4 w-4 mr-1 flex-shrink-0" />
-                                        {new Date(event.date).toLocaleTimeString('en-US', {
-                                            hour: 'numeric',
-                                            minute: '2-digit',
-                                            hour12: true
-                                        })}
-                                    </div>
-                                    <div className="flex items-center text-sm text-gray-600 mb-3">
-                                        <MapPinIcon className="h-4 w-4 mr-1 flex-shrink-0" />
-                                        {event.venue?.name || 'TBD'}
-                                    </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="font-medium text-gray-900">
-                                            {event.price?.isFree ? 'Free' : `$${event.price?.min}`}
-                                        </span>
-                                        <Link
-                                            href={`/events/${event.id}/tickets`}
-                                            className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-3 py-1 rounded"
-                                        >
-                                            Get Tickets
-                                        </Link>
-                                    </div>
+
+                                    {/* Sort Dropdown */}
+                                    <select
+                                        value={sortBy}
+                                        onChange={(e) => handleSortChange(e.target.value as SortOption)}
+                                        className="w-full sm:w-auto px-3 py-2 border border-input rounded-lg text-sm bg-background focus:ring-2 focus:ring-ring focus:border-ring"
+                                    >
+                                        <option value="date">Date: Soonest First</option>
+                                        <option value="recommended">Recommended</option>
+                                        <option value="price_low">Price: Low to High</option>
+                                        <option value="price_high">Price: High to Low</option>
+                                        <option value="popularity">Most Popular</option>
+                                    </select>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
+                        </div>
 
-            {/* FAQ Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-                    Frequently Asked Questions
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h3 className="font-bold text-gray-900 mb-2">
-                            How do I receive my tickets?
-                        </h3>
-                        <p className="text-gray-600">
-                            After purchase, tickets are delivered to your email and accessible
-                            in your account. You can print them or use the mobile version for
-                            entry.
-                        </p>
-                    </div>
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h3 className="font-bold text-gray-900 mb-2">
-                            Can I get a refund if I can't attend?
-                        </h3>
-                        <p className="text-gray-600">
-                            Refund policies vary by event. Check the event details page for
-                            specific refund terms. Many events allow you to resell your
-                            tickets through our platform.
-                        </p>
-                    </div>
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h3 className="font-bold text-gray-900 mb-2">
-                            Are there fees for buying tickets?
-                        </h3>
-                        <p className="text-gray-600">
-                            Service fees vary by event and are clearly displayed before
-                            checkout. Some events offer fee-free tickets during special
-                            promotions.
-                        </p>
-                    </div>
-                    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                        <h3 className="font-bold text-gray-900 mb-2">
-                            How do I access my tickets?
-                        </h3>
-                        <p className="text-gray-600">
-                            All your tickets are available in the "My Tickets" section of your
-                            account. You can view, download, or share them from there.
-                        </p>
+                        {/* Applied Filters */}
+                        {Object.keys(currentFilters).filter((key) => currentFilters[key as keyof typeof currentFilters]).length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                                {currentFilters.categories?.map((category) => (
+                                    <Badge key={category} variant="secondary" className="flex items-center gap-1">
+                                        {category}
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                                handleFilterChange({
+                                                    categories: currentFilters.categories?.filter((c) => c !== category),
+                                                })
+                                            }
+                                            className="h-4 w-4 p-0 ml-1"
+                                        >
+                                            <XIcon className="h-3 w-3" />
+                                        </Button>
+                                    </Badge>
+                                ))}
+                                {currentFilters.search && (
+                                    <Badge key="search" variant="secondary" className="flex items-center gap-1">
+                                        Search: "{currentFilters.search}"
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                                handleFilterChange({
+                                                    search: "",
+                                                })
+                                            }
+                                            className="h-4 w-4 p-0 ml-1"
+                                        >
+                                            <XIcon className="h-3 w-3" />
+                                        </Button>
+                                    </Badge>
+                                )}
+                                {currentFilters.date && (
+                                    <Badge key="date" variant="secondary" className="flex items-center gap-1">
+                                        Date: {new Date(currentFilters.date).toLocaleDateString()}
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                                handleFilterChange({
+                                                    date: undefined,
+                                                })
+                                            }
+                                            className="h-4 w-4 p-0 ml-1"
+                                        >
+                                            <XIcon className="h-3 w-3" />
+                                        </Button>
+                                    </Badge>
+                                )}
+                                {currentFilters.free_only && (
+                                    <Badge key="free" variant="secondary" className="flex items-center gap-1">
+                                        Free Events
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                                handleFilterChange({
+                                                    free_only: undefined,
+                                                })
+                                            }
+                                            className="h-4 w-4 p-0 ml-1"
+                                        >
+                                            <XIcon className="h-3 w-3" />
+                                        </Button>
+                                    </Badge>
+                                )}
+                                <Button variant="ghost" onClick={clearAllFilters} className="text-sm">
+                                    Clear all filters
+                                </Button>
+                            </div>
+                        )}
+
+                        {/* Events Grid */}
+                        {viewMode === "grid" && events.data.length > 0 && (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+                                {events.data.map((event) => (
+                                    <GridCard
+                                        key={event.id}
+                                        id={event.id}
+                                        href={`/events/${event.id}/tickets`}
+                                        image={event.image}
+                                        imageAlt={event.title}
+                                        badge={event.category}
+                                        title={event.title}
+                                        actions={renderEventActions(event)}
+                                    >
+                                        {renderEventContent(event)}
+                                    </GridCard>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Events List */}
+                        {viewMode === "list" && events.data.length > 0 && (
+                            <div className="space-y-4">
+                                {events.data.map((event) => (
+                                    <GridCard
+                                        key={event.id}
+                                        id={event.id}
+                                        href={`/events/${event.id}/tickets`}
+                                        image={event.image}
+                                        imageAlt={event.title}
+                                        badge={event.category}
+                                        title={event.title}
+                                        actions={renderEventActions(event)}
+                                        className="flex-row"
+                                    >
+                                        {renderEventContent(event)}
+                                    </GridCard>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Empty State */}
+                        {events.data.length === 0 && (
+                            <Card className="p-8 text-center">
+                                <div className="mx-auto h-24 w-24 text-muted-foreground">
+                                    <TicketIcon className="h-24 w-24" />
+                                </div>
+                                <h3 className="mt-4 text-lg font-medium">No events found</h3>
+                                <p className="mt-2 text-muted-foreground">Try adjusting your filters or search query to find more events.</p>
+                                <div className="mt-6">
+                                    <Button onClick={clearAllFilters}>Reset all filters</Button>
+                                </div>
+                            </Card>
+                        )}
+
+                        {/* Pagination */}
+                        {events.links && events.data.length > 0 && (
+                            <div className="flex justify-center">
+                                <div className="flex gap-2">
+                                    {events.links.map((link, index: number) => (
+                                        <Button
+                                            key={index}
+                                            variant={link.active ? "default" : "outline"}
+                                            size="sm"
+                                            onClick={() =>
+                                                link.url &&
+                                                router.get(
+                                                    link.url,
+                                                    {},
+                                                    {
+                                                        preserveState: true,
+                                                        preserveScroll: false,
+                                                    },
+                                                )
+                                            }
+                                            disabled={!link.url}
+                                            className={cn("px-3 py-2 text-sm", !link.url && "opacity-50 cursor-not-allowed")}
+                                            dangerouslySetInnerHTML={{
+                                                __html: link.label,
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Featured Events Section */}
+                        {!searchQuery && !currentFilters.categories?.length && featuredEvents.length > 0 && (
+                            <div className="mt-12">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h2 className="text-2xl font-bold">Featured Events</h2>
+                                    <Link href="/events" className="text-primary hover:text-primary/80 flex items-center font-medium text-sm">
+                                        View all events
+                                    </Link>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {featuredEvents.slice(0, 6).map((event) => (
+                                        <GridCard
+                                            key={event.id}
+                                            id={event.id}
+                                            href={`/events/${event.id}/tickets`}
+                                            image={event.image}
+                                            imageAlt={event.title}
+                                            badge={event.category}
+                                            title={event.title}
+                                            actions={renderEventActions(event)}
+                                        >
+                                            {renderEventContent(event)}
+                                        </GridCard>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

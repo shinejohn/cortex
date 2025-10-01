@@ -12,17 +12,90 @@ use Inertia\Response;
 
 final class TicketPageController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $upcomingEvents = Event::published()
+        $query = Event::published()
+            ->upcoming()
+            ->with(['venue', 'ticketPlans' => function ($query) {
+                $query->active()->available();
+            }]);
+
+        // Apply search filter
+        if ($request->filled('search')) {
+            $searchTerm = $request->input('search');
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('title', 'ILIKE', "%{$searchTerm}%")
+                    ->orWhere('description', 'ILIKE', "%{$searchTerm}%")
+                    ->orWhereHas('venue', function ($venueQuery) use ($searchTerm) {
+                        $venueQuery->where('name', 'ILIKE', "%{$searchTerm}%");
+                    });
+            });
+        }
+
+        // Apply price filter
+        if ($request->filled('min_price')) {
+            $query->where('price_min', '>=', $request->input('min_price'));
+        }
+        if ($request->filled('max_price')) {
+            $query->where('price_max', '<=', $request->input('max_price'));
+        }
+
+        // Apply category filter
+        if ($request->filled('categories')) {
+            $categories = $request->input('categories');
+            $query->whereIn('category', is_array($categories) ? $categories : [$categories]);
+        }
+
+        // Apply date filter
+        if ($request->filled('date')) {
+            $date = $request->input('date');
+            $query->whereDate('event_date', $date);
+        }
+
+        // Apply free events filter
+        if ($request->boolean('free_only')) {
+            $query->where('is_free', true);
+        }
+
+        // Apply sorting
+        $sortBy = $request->input('sort', 'date');
+        match ($sortBy) {
+            'price_low' => $query->orderBy('price_min', 'asc')->orderBy('event_date', 'asc'),
+            'price_high' => $query->orderBy('price_max', 'desc')->orderBy('event_date', 'asc'),
+            'popularity' => $query->orderBy('community_rating', 'desc')->orderBy('event_date', 'asc'),
+            'recommended' => $query->orderBy('community_rating', 'desc')
+                ->orderBy('member_recommendations', 'desc')
+                ->orderBy('event_date', 'asc'),
+            default => $query->orderBy('event_date', 'asc'),
+        };
+
+        $events = $query->paginate(12);
+
+        // Get featured events for empty state (with badges)
+        $featuredEvents = Event::published()
             ->upcoming()
             ->with(['venue'])
-            ->orderBy('event_date')
+            ->orderBy('community_rating', 'desc')
+            ->take(20)
+            ->get()
+            ->filter(function ($event) {
+                return ! empty($event->badges) && count($event->badges) > 0;
+            })
             ->take(6)
-            ->get();
+            ->values();
 
         return Inertia::render('tickets/index', [
-            'upcomingEvents' => $upcomingEvents,
+            'events' => $events,
+            'featuredEvents' => $featuredEvents,
+            'filters' => [
+                'search' => $request->input('search'),
+                'min_price' => $request->input('min_price'),
+                'max_price' => $request->input('max_price'),
+                'categories' => $request->input('categories'),
+                'date' => $request->input('date'),
+                'free_only' => $request->boolean('free_only'),
+            ],
+            'sort' => $sortBy,
         ]);
     }
 
