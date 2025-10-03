@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { type Auth, BreadcrumbItem, SharedData } from "@/types";
 import { usePage } from "@inertiajs/react";
 import { NotificationDropdown } from "../NotificationDropdown";
+import { CartDropdown } from "../CartDropdown";
 import AppLogo from "../app-logo";
 import AppLogoIcon from "../app-logo-icon";
 import { UserMenuContent } from "../user-menu-content";
@@ -88,8 +89,9 @@ const MOBILE_NAV_ITEMS: NavItem[] = [
     },
     {
         title: "Shop",
-        href: "/gear",
+        href: "/shop",
         icon: <ShoppingBag className="size-4" />,
+        badge: { text: "NEW", variant: "secondary" },
     },
     {
         title: "Advertise",
@@ -402,6 +404,7 @@ export function Header({ auth, location = DEFAULT_LOCATION }: HeaderProps) {
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>
+                                    <CartDropdown />
                                     <NotificationDropdown
                                         initialNotifications={sharedNotifications?.notifications}
                                         initialUnreadCount={sharedNotifications?.unread_count}
@@ -423,6 +426,7 @@ export function Header({ auth, location = DEFAULT_LOCATION }: HeaderProps) {
                                 </>
                             ) : (
                                 <div className="flex items-center gap-3">
+                                    <CartDropdown />
                                     <Link href={route("login")}>
                                         <Button variant="ghost">Log In</Button>
                                     </Link>

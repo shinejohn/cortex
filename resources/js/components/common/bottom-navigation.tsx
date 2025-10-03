@@ -73,8 +73,9 @@ const NAVIGATION_ITEMS: NavItem[] = [
     },
     {
         title: "Shop",
-        href: "/gear",
+        href: "/shop",
         icon: <ShoppingBag className="size-4" />,
+        badge: { text: "NEW", variant: "secondary" },
     },
     {
         title: "Advertise",

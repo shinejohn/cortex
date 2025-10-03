@@ -85,5 +85,10 @@ final class DatabaseSeeder extends Seeder
         $this->call([
             SocialSeeder::class,
         ]);
+
+        // Seed ecommerce data
+        $this->call([
+            EcommerceSeeder::class,
+        ]);
     }
 }

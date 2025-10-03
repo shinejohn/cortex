@@ -185,7 +185,77 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::patch('/{group}/posts/{post}/pin', [SocialGroupPostController::class, 'pin'])->name('posts.pin');
         });
     });
+
+    // Ecommerce routes
+    Route::get('/shop', [App\Http\Controllers\ProductController::class, 'discover'])->name('shop.discover')->withoutMiddleware(['auth', 'verified']);
+
+    Route::prefix('stores')->name('stores.')->group(function () {
+        // Public store list
+        Route::get('/', [App\Http\Controllers\StoreController::class, 'index'])->name('index')->withoutMiddleware(['auth', 'verified']);
+
+        // Authenticated store management (must come before /{slug} route)
+        Route::get('/my-stores', [App\Http\Controllers\StoreController::class, 'myStores'])->name('my-stores');
+        Route::get('/create', [App\Http\Controllers\StoreController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\StoreController::class, 'store'])->name('store');
+
+        // Public store show (must come after specific routes) - uses slug for SEO-friendly URLs
+        Route::get('/{slug}', [App\Http\Controllers\StoreController::class, 'show'])->name('show')->withoutMiddleware(['auth', 'verified']);
+
+        // Store management routes with store ID parameter
+        Route::get('/{store:id}/edit', [App\Http\Controllers\StoreController::class, 'edit'])->name('edit');
+        Route::patch('/{store:id}', [App\Http\Controllers\StoreController::class, 'update'])->name('update');
+
+        // Stripe Connect routes - use ID for authenticated operations
+        Route::match(['get', 'post'], '/{store:id}/connect-stripe', [App\Http\Controllers\StoreController::class, 'connectStripe'])->name('connect-stripe');
+        Route::get('/{store:id}/connect-return', [App\Http\Controllers\StoreController::class, 'connectReturn'])->name('connect-return')->withoutMiddleware(['auth', 'verified']);
+        Route::get('/{store:id}/connect-refresh', [App\Http\Controllers\StoreController::class, 'connectRefresh'])->name('connect-refresh')->withoutMiddleware(['auth', 'verified']);
+        Route::get('/{store:id}/stripe-dashboard', [App\Http\Controllers\StoreController::class, 'stripeDashboard'])->name('stripe-dashboard');
+    });
+
+    // Product routes - using store ID for authenticated routes
+    Route::prefix('stores/{store:id}')->name('products.')->group(function () {
+        Route::middleware(['auth', 'verified'])->group(function () {
+            Route::get('/products/create', [App\Http\Controllers\ProductController::class, 'create'])->name('create');
+            Route::post('/products', [App\Http\Controllers\ProductController::class, 'store'])->name('store');
+        });
+
+        Route::get('/products/{product:id}', [App\Http\Controllers\ProductController::class, 'show'])->name('show')->withoutMiddleware(['auth', 'verified']);
+
+        Route::middleware(['auth', 'verified'])->group(function () {
+            Route::get('/products/{product:id}/edit', [App\Http\Controllers\ProductController::class, 'edit'])->name('edit');
+            Route::patch('/products/{product:id}', [App\Http\Controllers\ProductController::class, 'update'])->name('update');
+            Route::delete('/products/{product:id}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('destroy');
+        });
+    });
+
+    // Order routes
+    Route::prefix('orders')->name('orders.')->middleware(['auth', 'verified'])->group(function () {
+        Route::get('/', [App\Http\Controllers\OrderController::class, 'index'])->name('index');
+        Route::get('/{order}', [App\Http\Controllers\OrderController::class, 'show'])->name('show');
+        Route::patch('/{order}/status', [App\Http\Controllers\OrderController::class, 'updateStatus'])->name('update-status');
+    });
+
+    // Checkout routes
+    Route::post('/checkout', [App\Http\Controllers\OrderController::class, 'checkout'])->name('checkout');
+    Route::get('/checkout/success/{order}', [App\Http\Controllers\OrderController::class, 'success'])->name('checkout.success');
+    Route::get('/checkout/cancel/{order}', [App\Http\Controllers\OrderController::class, 'cancel'])->name('checkout.cancel');
+
+    // Cart routes
+    Route::prefix('cart')->name('cart.')->group(function () {
+        Route::get('/', [App\Http\Controllers\CartController::class, 'index'])->name('index')->withoutMiddleware(['auth', 'verified']);
+        Route::post('/add', [App\Http\Controllers\CartController::class, 'add'])->name('add')->withoutMiddleware(['auth', 'verified']);
+        Route::patch('/{cartItem}', [App\Http\Controllers\CartController::class, 'update'])->name('update')->withoutMiddleware(['auth', 'verified']);
+        Route::delete('/{cartItem}', [App\Http\Controllers\CartController::class, 'remove'])->name('remove')->withoutMiddleware(['auth', 'verified']);
+        Route::delete('/', [App\Http\Controllers\CartController::class, 'clear'])->name('clear')->withoutMiddleware(['auth', 'verified']);
+        Route::get('/count', [App\Http\Controllers\CartController::class, 'count'])->name('count')->withoutMiddleware(['auth', 'verified']);
+    });
+
+    // Cart API routes
+    Route::get('/api/cart/items', [App\Http\Controllers\CartController::class, 'items'])->withoutMiddleware(['auth', 'verified']);
 });
+
+// Stripe webhook (public route, no auth/CSRF)
+Route::post('/stripe/webhook', App\Http\Controllers\StripeWebhookController::class)->name('stripe.webhook');
 
 require __DIR__.'/workspace.php';
 require __DIR__.'/settings.php';

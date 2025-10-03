@@ -43,4 +43,11 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', config('app.url').'/auth/google/callback'),
     ],
 
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+        'mock_connect' => env('STRIPE_MOCK_CONNECT', false),
+    ],
+
 ];
