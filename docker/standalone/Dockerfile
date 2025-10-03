@@ -33,7 +33,7 @@ USER www-data
 # =================================================================
 FROM oven/bun:alpine AS static-assets
 
-RUN apk add --no-cache python3 py3-pip
+RUN apk add --no-cache python3 py3-pip g++
 ENV PYTHON /usr/bin/python3
 
 WORKDIR /app
