@@ -80,7 +80,7 @@ RUN apk add --no-cache \
     python3 \
     py3-pip
 
-RUN ln -sf python3 /usr/bin/python
+ENV PYTHON /usr/bin/python3
 
 # Configure shell aliases
 RUN echo "alias ll='ls -al'" >> /etc/profile && \
