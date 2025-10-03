@@ -76,7 +76,9 @@ RUN apk add --no-cache \
     vim \
     curl \
     nodejs \
-    npm
+    npm \
+    python3 \
+    py3-pip
 
 # Configure shell aliases
 RUN echo "alias ll='ls -al'" >> /etc/profile && \
