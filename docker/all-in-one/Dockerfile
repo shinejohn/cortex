@@ -80,6 +80,8 @@ RUN apk add --no-cache \
     python3 \
     py3-pip
 
+RUN ln -sf python3 /usr/bin/python
+
 # Configure shell aliases
 RUN echo "alias ll='ls -al'" >> /etc/profile && \
     echo "alias a='php artisan'" >> /etc/profile && \
