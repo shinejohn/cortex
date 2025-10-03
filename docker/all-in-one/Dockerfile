@@ -33,6 +33,9 @@ USER www-data
 # =================================================================
 FROM oven/bun:latest AS static-assets
 
+RUN apk add --no-cache python3 py3-pip
+ENV PYTHON /usr/bin/python3
+
 WORKDIR /app
 COPY package*.json bun.lock vite.config.ts ./
 RUN bun i
