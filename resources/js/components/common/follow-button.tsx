@@ -2,11 +2,11 @@ import { Button } from "@/components/ui/button";
 import { router, usePage } from "@inertiajs/react";
 import axios from "axios";
 import { Heart } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { route } from "ziggy-js";
 
 interface FollowButtonProps {
-    followableType: "event" | "performer" | "venue";
+    followableType: "event" | "performer" | "venue" | "calendar";
     followableId: string;
     initialFollowing?: boolean;
     variant?: "default" | "icon" | "text";
@@ -25,6 +25,11 @@ export function FollowButton({
     const { auth } = usePage().props as { auth?: { user?: { id: string } } };
     const [isFollowing, setIsFollowing] = useState(initialFollowing);
     const [isLoading, setIsLoading] = useState(false);
+
+    // Update state when initialFollowing prop changes
+    useEffect(() => {
+        setIsFollowing(initialFollowing);
+    }, [initialFollowing]);
 
     const handleToggle = async () => {
         // Redirect to login if not authenticated

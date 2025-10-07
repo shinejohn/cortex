@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\Calendar;
 use App\Models\Event;
 use App\Models\Follow;
 use App\Models\Performer;
@@ -73,6 +74,27 @@ test('authenticated user can follow a venue', function () {
         'user_id' => $user->id,
         'followable_type' => Venue::class,
         'followable_id' => $venue->id,
+    ]);
+});
+
+test('authenticated user can follow a calendar', function () {
+    $user = User::factory()->create();
+    $calendar = Calendar::factory()->create(['user_id' => $user->id]);
+
+    $response = $this->actingAs($user)->postJson('/api/follow/toggle', [
+        'followable_type' => 'calendar',
+        'followable_id' => (string) $calendar->id,
+    ]);
+
+    $response->assertSuccessful()
+        ->assertJson([
+            'following' => true,
+        ]);
+
+    $this->assertDatabaseHas('follows', [
+        'user_id' => $user->id,
+        'followable_type' => Calendar::class,
+        'followable_id' => $calendar->id,
     ]);
 });
 

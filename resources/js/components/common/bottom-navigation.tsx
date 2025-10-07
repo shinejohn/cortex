@@ -51,7 +51,7 @@ const NAVIGATION_ITEMS: NavItem[] = [
     },
     {
         title: "Calendars",
-        href: "/calendars/marketplace",
+        href: "/calendars",
         icon: <Calendar className="size-4" />,
     },
     {

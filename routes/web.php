@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FollowController;
@@ -30,6 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
     Route::get('/performers/create', [PerformerController::class, 'create'])->name('performers.create');
     Route::get('/venues/create', [VenueController::class, 'create'])->name('venues.create');
+    Route::get('/calendars/create', [CalendarController::class, 'create'])->name('calendars.create');
 });
 
 Route::get('/events', [EventController::class, 'publicIndex'])->name('events');
@@ -38,6 +40,12 @@ Route::get('/performers', [PerformerController::class, 'publicIndex'])->name('pe
 Route::get('/performers/{performer}', [PerformerController::class, 'show'])->name('performers.show')->can('view', 'performer');
 Route::get('/venues', [VenueController::class, 'publicIndex'])->name('venues');
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show')->can('view', 'venue');
+
+// Calendar routes
+Route::get('/calendars', [CalendarController::class, 'index'])->name('calendars.index');
+// Add any non-numeric calendar routes here (e.g., /calendars/marketplace, /calendars/trending, etc.)
+// Route::get('/calendars/marketplace', [CalendarController::class, 'marketplace'])->name('calendars.marketplace');
+Route::get('/calendars/{calendar}', [CalendarController::class, 'show'])->name('calendars.show')->can('view', 'calendar');
 
 // Ticket routes
 Route::get('/tickets', [TicketPageController::class, 'index'])->name('tickets.index');
@@ -84,7 +92,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('venues', VenueController::class)->except(['index', 'show', 'create']);
     Route::resource('performers', PerformerController::class)->except(['index', 'show', 'create']);
     Route::resource('events', EventController::class)->except(['index', 'show', 'create']);
+    Route::resource('calendars', CalendarController::class)->except(['index', 'show', 'create']);
     Route::resource('bookings', BookingController::class);
+
+    // Calendar management routes
+    Route::post('/calendars/{calendar}/follow', [CalendarController::class, 'follow'])->name('calendars.follow');
+    Route::post('/calendars/{calendar}/events', [CalendarController::class, 'addEvent'])->name('calendars.events.add');
+    Route::delete('/calendars/{calendar}/events/{event}', [CalendarController::class, 'removeEvent'])->name('calendars.events.remove');
+    Route::post('/calendars/{calendar}/editors', [CalendarController::class, 'addEditor'])->name('calendars.editors.add');
+    Route::delete('/calendars/{calendar}/editors/{user}', [CalendarController::class, 'removeEditor'])->name('calendars.editors.remove');
 
     // Ticket management routes
     Route::resource('ticket-plans', TicketPlanController::class);

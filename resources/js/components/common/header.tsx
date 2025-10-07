@@ -2,7 +2,7 @@ import { Link } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import { route } from "ziggy-js";
 
-import { Bell, ChevronDown, LogOut, MapPin, Menu, MessageSquare, Plus, Search, Users } from "lucide-react";
+import { Bell, CalendarDays, ChevronDown, LogOut, MapPin, Menu, MessageSquare, Plus, Search, Users } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -20,8 +20,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { cn } from "@/lib/utils";
 import { type Auth, BreadcrumbItem, SharedData } from "@/types";
 import { usePage } from "@inertiajs/react";
-import { NotificationDropdown } from "../NotificationDropdown";
 import { CartDropdown } from "../CartDropdown";
+import { NotificationDropdown } from "../NotificationDropdown";
 import AppLogo from "../app-logo";
 import AppLogoIcon from "../app-logo-icon";
 import { UserMenuContent } from "../user-menu-content";
@@ -67,7 +67,7 @@ const MOBILE_NAV_ITEMS: NavItem[] = [
     },
     {
         title: "Calendars",
-        href: "/calendars/marketplace",
+        href: "/calendars",
         icon: <Calendar className="size-4" />,
     },
     {
@@ -288,6 +288,10 @@ function MobileNavigation({ auth, location }: MobileNavigationProps) {
                                         <Music className="mr-2 size-4" />
                                         Performer
                                     </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => navigate(route("calendars.create"))}>
+                                        <CalendarDays className="mr-2 size-4" />
+                                        Calendar
+                                    </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                             <Button variant="ghost" onClick={() => navigate("/notifications")} className="w-full justify-start gap-3">
@@ -401,6 +405,10 @@ export function Header({ auth, location = DEFAULT_LOCATION }: HeaderProps) {
                                             <DropdownMenuItem onClick={() => navigate(route("performers.create"))}>
                                                 <Music className="mr-2 size-4" />
                                                 Performer
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => navigate(route("calendars.create"))}>
+                                                <CalendarDays className="mr-2 size-4" />
+                                                Calendar
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>

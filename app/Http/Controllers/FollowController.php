@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Calendar;
 use App\Models\Event;
 use App\Models\Follow;
 use App\Models\Performer;
@@ -16,7 +17,7 @@ final class FollowController extends Controller
     public function toggle(Request $request): JsonResponse
     {
         $request->validate([
-            'followable_type' => 'required|string|in:event,performer,venue',
+            'followable_type' => 'required|string|in:event,performer,venue,calendar',
             'followable_id' => 'required|string',
         ]);
 
@@ -24,6 +25,7 @@ final class FollowController extends Controller
             'event' => Event::class,
             'performer' => Performer::class,
             'venue' => Venue::class,
+            'calendar' => Calendar::class,
         };
 
         $followable = $followableType::findOrFail($request->followable_id);
@@ -57,7 +59,7 @@ final class FollowController extends Controller
     public function checkStatus(Request $request): JsonResponse
     {
         $request->validate([
-            'followable_type' => 'required|string|in:event,performer,venue',
+            'followable_type' => 'required|string|in:event,performer,venue,calendar',
             'followable_id' => 'required|string',
         ]);
 
@@ -65,6 +67,7 @@ final class FollowController extends Controller
             'event' => Event::class,
             'performer' => Performer::class,
             'venue' => Venue::class,
+            'calendar' => Calendar::class,
         };
 
         $isFollowing = Follow::where('user_id', $request->user()->id)

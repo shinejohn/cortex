@@ -69,6 +69,7 @@ final class DatabaseSeeder extends Seeder
             BookingSeeder::class,
             TicketPlanSeeder::class,
             TicketOrderSeeder::class,
+            CalendarSeeder::class,
         ]);
 
         // Seed community data
