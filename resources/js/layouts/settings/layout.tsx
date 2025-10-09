@@ -27,6 +27,11 @@ export default function SettingsLayout({ children, auth }: PropsWithChildren<{ a
             href: "/settings/appearance",
             icon: null,
         },
+        {
+            title: "Billing & Payouts",
+            href: "/settings/workspace/billing",
+            icon: null,
+        },
     ];
 
     // When server-side rendering, we only render the layout on the client...

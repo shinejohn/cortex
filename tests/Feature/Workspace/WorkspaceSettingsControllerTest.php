@@ -11,6 +11,7 @@ uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
 
 describe('WorkspaceSettingsController', function () {
     beforeEach(function () {
+        Config::set('makerkit.workspaces.enabled', true);
         $this->user = User::factory()->create();
         $this->workspace = Workspace::factory()->create(['owner_id' => $this->user->id]);
         $this->membership = WorkspaceMembership::factory()->owner()->create([
@@ -27,7 +28,7 @@ describe('WorkspaceSettingsController', function () {
 
             $response->assertSuccessful()
                 ->assertInertia(
-                    fn($page) => $page
+                    fn ($page) => $page
                         ->component('settings/workspace/overview')
                         ->has('workspace')
                         ->where('workspace.id', $this->workspace->id)
@@ -112,7 +113,7 @@ describe('WorkspaceSettingsController', function () {
         });
 
         it('cancelInvitation returns 404', function () {
-            $invitation = \App\Models\WorkspaceInvitation::factory()->pending()->create([
+            $invitation = App\Models\WorkspaceInvitation::factory()->pending()->create([
                 'workspace_id' => $this->workspace->id,
                 'invited_by' => $this->user->id,
             ]);

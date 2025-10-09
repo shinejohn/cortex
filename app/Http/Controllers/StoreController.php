@@ -81,8 +81,6 @@ final class StoreController extends Controller
                 'description' => $store->description,
                 'logo' => $store->logo,
                 'status' => $store->status,
-                'stripe_charges_enabled' => $store->stripe_charges_enabled,
-                'stripe_payouts_enabled' => $store->stripe_payouts_enabled,
                 'can_accept_payments' => $store->canAcceptPayments(),
                 'products_count' => $store->products_count,
                 'orders_count' => $store->orders_count,
@@ -173,7 +171,7 @@ final class StoreController extends Controller
                 'logo' => $store->logo,
                 'banner' => $store->banner,
                 'is_owner' => $isOwner,
-                'stripe_connect_id' => $isOwner ? $store->stripe_connect_id : null,
+                'stripe_connect_id' => $isOwner ? $store->workspace->stripe_connect_id : null,
                 'can_accept_payments' => $isOwner ? $store->canAcceptPayments() : null,
             ],
             'products' => $products,
@@ -243,62 +241,64 @@ final class StoreController extends Controller
             abort(403, 'Unauthorized');
         }
 
+        $workspace = $store->workspace;
+
         Log::info('Stripe Connect: Starting onboarding', [
             'store_id' => $store->id,
-            'store_name' => $store->name,
-            'has_stripe_id' => ! empty($store->stripe_connect_id),
-            'stripe_id' => $store->stripe_connect_id,
+            'workspace_id' => $workspace->id,
+            'has_stripe_id' => ! empty($workspace->stripe_connect_id),
+            'stripe_id' => $workspace->stripe_connect_id,
         ]);
 
         try {
             // Create Stripe Connect account if it doesn't exist or verify existing account
-            if (! $store->stripe_connect_id) {
-                Log::info('Stripe Connect: Creating new account', ['store_id' => $store->id]);
-                $this->stripeService->createConnectAccount($store);
+            if (! $workspace->stripe_connect_id) {
+                Log::info('Stripe Connect: Creating new account', ['workspace_id' => $workspace->id]);
+                $this->stripeService->createConnectAccount($workspace);
                 Log::info('Stripe Connect: Account created', [
-                    'store_id' => $store->id,
-                    'stripe_id' => $store->stripe_connect_id,
+                    'workspace_id' => $workspace->id,
+                    'stripe_id' => $workspace->stripe_connect_id,
                 ]);
             } else {
                 // Verify the account still exists in Stripe
                 try {
                     Log::info('Stripe Connect: Verifying existing account', [
-                        'store_id' => $store->id,
-                        'stripe_id' => $store->stripe_connect_id,
+                        'workspace_id' => $workspace->id,
+                        'stripe_id' => $workspace->stripe_connect_id,
                     ]);
-                    $this->stripeService->getAccount($store->stripe_connect_id);
-                    Log::info('Stripe Connect: Account verified', ['stripe_id' => $store->stripe_connect_id]);
+                    $this->stripeService->getAccount($workspace->stripe_connect_id);
+                    Log::info('Stripe Connect: Account verified', ['stripe_id' => $workspace->stripe_connect_id]);
                 } catch (Exception $e) {
                     // Account doesn't exist, create a new one
                     Log::warning('Stripe Connect: Account verification failed, creating new account', [
-                        'store_id' => $store->id,
-                        'old_stripe_id' => $store->stripe_connect_id,
+                        'workspace_id' => $workspace->id,
+                        'old_stripe_id' => $workspace->stripe_connect_id,
                         'error' => $e->getMessage(),
                     ]);
-                    $this->stripeService->createConnectAccount($store);
+                    $this->stripeService->createConnectAccount($workspace);
                     Log::info('Stripe Connect: Account recreated', [
-                        'store_id' => $store->id,
-                        'new_stripe_id' => $store->stripe_connect_id,
+                        'workspace_id' => $workspace->id,
+                        'new_stripe_id' => $workspace->stripe_connect_id,
                     ]);
                 }
             }
 
             // Create account link for onboarding
             Log::info('Stripe Connect: Creating account link', [
-                'store_id' => $store->id,
-                'stripe_id' => $store->stripe_connect_id,
+                'workspace_id' => $workspace->id,
+                'stripe_id' => $workspace->stripe_connect_id,
                 'refresh_url' => route('stores.connect-refresh', $store),
                 'return_url' => route('stores.connect-return', $store),
             ]);
 
             $accountLink = $this->stripeService->createAccountLink(
-                $store,
+                $workspace,
                 route('stores.connect-refresh', $store),
                 route('stores.connect-return', $store)
             );
 
             Log::info('Stripe Connect: Account link created', [
-                'store_id' => $store->id,
+                'workspace_id' => $workspace->id,
                 'link_url' => $accountLink->url,
                 'expires_at' => $accountLink->expires_at,
             ]);
@@ -306,7 +306,7 @@ final class StoreController extends Controller
             return redirect($accountLink->url);
         } catch (Exception $e) {
             Log::error('Stripe Connect: Failed to start onboarding', [
-                'store_id' => $store->id,
+                'workspace_id' => $workspace->id,
                 'error' => $e->getMessage(),
                 'exception' => get_class($e),
                 'file' => $e->getFile(),
@@ -335,24 +335,27 @@ final class StoreController extends Controller
      */
     public function connectReturn(Request $request, Store $store): RedirectResponse
     {
+        $workspace = $store->workspace;
+
         Log::info('Stripe Connect: Return callback received', [
             'store_id' => $store->id,
+            'workspace_id' => $workspace->id,
             'user_id' => $request->user()?->id,
             'is_authenticated' => $request->user() !== null,
         ]);
 
-        // Update store capabilities
-        $this->stripeService->updateStoreCapabilities($store);
+        // Update workspace capabilities
+        $this->stripeService->updateWorkspaceCapabilities($workspace);
 
         Log::info('Stripe Connect: Capabilities updated', [
-            'store_id' => $store->id,
-            'can_accept_payments' => $store->canAcceptPayments(),
-            'charges_enabled' => $store->stripe_charges_enabled,
-            'payouts_enabled' => $store->stripe_payouts_enabled,
+            'workspace_id' => $workspace->id,
+            'can_accept_payments' => $workspace->canAcceptPayments(),
+            'charges_enabled' => $workspace->stripe_charges_enabled,
+            'payouts_enabled' => $workspace->stripe_payouts_enabled,
         ]);
 
         // Check if Stripe setup is complete
-        $stripeSetupComplete = $store->stripe_charges_enabled && $store->stripe_payouts_enabled;
+        $stripeSetupComplete = $workspace->stripe_charges_enabled && $workspace->stripe_payouts_enabled;
 
         if ($store->canAcceptPayments()) {
             return redirect()->route('stores.show', $store->slug)
@@ -376,7 +379,7 @@ final class StoreController extends Controller
     {
         try {
             $accountLink = $this->stripeService->createAccountLink(
-                $store,
+                $store->workspace,
                 route('stores.connect-refresh', $store),
                 route('stores.connect-return', $store)
             );
@@ -398,7 +401,7 @@ final class StoreController extends Controller
         }
 
         try {
-            $url = $this->stripeService->createDashboardLink($store);
+            $url = $this->stripeService->createDashboardLink($store->workspace);
 
             return redirect($url);
         } catch (Exception $e) {

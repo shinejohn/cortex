@@ -7,6 +7,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Concerns\HasUuid;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -15,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-final class User extends Authenticatable
+final class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, HasUuid, Notifiable;
@@ -238,6 +240,21 @@ final class User extends Authenticatable
         return $this->socialActivities()->unread()->count();
     }
 
+    /**
+     * Determine if the user can access the Filament admin panel
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Only check for admin panel
+        if ($panel->getId() !== 'admin') {
+            return true;
+        }
+
+        $adminEmails = $this->getAdminEmails();
+
+        return in_array($this->email, $adminEmails, true);
+    }
+
     public function acceptedFriends(): HasMany
     {
         return $this->hasMany(SocialFriendship::class)
@@ -289,5 +306,24 @@ final class User extends Authenticatable
             'allow_group_invites' => 'boolean',
             'last_active_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Get the list of admin emails from configuration
+     *
+     * @return array<int, string>
+     */
+    private function getAdminEmails(): array
+    {
+        $emails = config('app.admin_emails', '');
+
+        if (empty($emails)) {
+            return [];
+        }
+
+        return array_map(
+            fn (string $email) => mb_trim($email),
+            explode(',', $emails)
+        );
     }
 }

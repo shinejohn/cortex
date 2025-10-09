@@ -138,4 +138,17 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Emails
+    |--------------------------------------------------------------------------
+    |
+    | Comma-separated list of email addresses that are allowed to access
+    | the Filament admin panel. Users with these emails will have access
+    | to the admin panel.
+    |
+    */
+
+    'admin_emails' => env('ADMIN_EMAILS', ''),
+
 ];

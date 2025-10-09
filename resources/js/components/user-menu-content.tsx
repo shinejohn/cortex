@@ -7,6 +7,7 @@ import {
     Bell,
     Building,
     Calendar,
+    CreditCard,
     Heart,
     HelpCircle,
     LayoutDashboard,
@@ -99,6 +100,12 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                     <Link className="block w-full" href={route("profile.edit")} as="button" prefetch onClick={cleanup}>
                         <Settings className="mr-2 size-4" />
                         Account Settings
+                    </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Link className="block w-full" href={route("settings.workspace.billing")} as="button" prefetch onClick={cleanup}>
+                        <CreditCard className="mr-2 size-4" />
+                        Billing & Payouts
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>

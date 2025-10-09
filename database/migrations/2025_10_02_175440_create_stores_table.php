@@ -21,9 +21,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('logo')->nullable();
             $table->string('banner')->nullable();
-            $table->string('stripe_connect_id')->nullable()->unique();
-            $table->boolean('stripe_charges_enabled')->default(false);
-            $table->boolean('stripe_payouts_enabled')->default(false);
             $table->string('status')->default('pending'); // pending, approved, rejected, suspended
             $table->text('rejection_reason')->nullable();
             $table->timestamp('approved_at')->nullable();

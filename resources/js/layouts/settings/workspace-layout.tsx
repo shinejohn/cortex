@@ -7,14 +7,19 @@ import { Link } from "@inertiajs/react";
 import { type PropsWithChildren } from "react";
 
 const sidebarNavItems: NavItem[] = [
+    // {
+    //     title: "Overview",
+    //     href: "/settings/workspace",
+    //     icon: null,
+    // },
+    // {
+    //     title: "Members",
+    //     href: "/settings/workspace/members",
+    //     icon: null,
+    // },
     {
-        title: "Overview",
-        href: "/settings/workspace",
-        icon: null,
-    },
-    {
-        title: "Members",
-        href: "/settings/workspace/members",
+        title: "Billing & Payouts",
+        href: "/settings/workspace/billing",
         icon: null,
     },
 ];

@@ -20,6 +20,10 @@ final class Workspace extends Model
         'slug',
         'logo',
         'owner_id',
+        'stripe_connect_id',
+        'stripe_charges_enabled',
+        'stripe_payouts_enabled',
+        'stripe_admin_approved',
     ];
 
     public function getLogoAttribute($value)
@@ -45,5 +49,22 @@ final class Workspace extends Model
     public function stores(): HasMany
     {
         return $this->hasMany(Store::class);
+    }
+
+    public function canAcceptPayments(): bool
+    {
+        return $this->stripe_charges_enabled
+            && $this->stripe_payouts_enabled
+            && $this->stripe_connect_id
+            && $this->stripe_admin_approved;
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'stripe_charges_enabled' => 'boolean',
+            'stripe_payouts_enabled' => 'boolean',
+            'stripe_admin_approved' => 'boolean',
+        ];
     }
 }

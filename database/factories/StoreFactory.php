@@ -53,9 +53,6 @@ final class StoreFactory extends Factory
                 '1607082349566-187780aea5d4',
                 '1586880244386-8b3e34c7e4b',
             ]).'?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'),
-            'stripe_connect_id' => null,
-            'stripe_charges_enabled' => false,
-            'stripe_payouts_enabled' => false,
             'status' => fake()->randomElement(['pending', 'approved', 'approved', 'approved']), // 75% approved
             'rejection_reason' => null,
             'approved_at' => null,
@@ -87,18 +84,6 @@ final class StoreFactory extends Factory
                 'Unable to verify business registration.',
                 'Store category not supported at this time.',
             ]),
-        ]);
-    }
-
-    /**
-     * Indicate that the store has Stripe Connect enabled
-     */
-    public function withStripe(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'stripe_connect_id' => 'acct_'.fake()->bothify('??##??##??##??##'),
-            'stripe_charges_enabled' => true,
-            'stripe_payouts_enabled' => true,
         ]);
     }
 

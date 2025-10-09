@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Settings\BillingController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\WorkspaceSettingsController;
@@ -26,6 +27,13 @@ Route::middleware('auth')->group(function () use ($passwordEnabled) {
     Route::get('settings/appearance', function () {
         return Inertia::render('settings/appearance');
     })->name('appearance');
+
+    // Workspace billing settings routes
+    Route::get('settings/workspace/billing', [BillingController::class, 'show'])->name('settings.workspace.billing');
+    Route::post('settings/workspace/billing/connect-stripe', [BillingController::class, 'connectStripe'])->name('settings.workspace.billing.connect-stripe');
+    Route::get('settings/workspace/billing/stripe-return', [BillingController::class, 'stripeReturn'])->name('settings.workspace.billing.stripe-return');
+    Route::get('settings/workspace/billing/stripe-refresh', [BillingController::class, 'stripeRefresh'])->name('settings.workspace.billing.stripe-refresh');
+    Route::get('settings/workspace/billing/stripe-dashboard', [BillingController::class, 'stripeDashboard'])->name('settings.workspace.billing.stripe-dashboard');
 
     // Workspace settings routes
     Route::get('settings/workspace', [WorkspaceSettingsController::class, 'showOverview'])->name('settings.workspace');

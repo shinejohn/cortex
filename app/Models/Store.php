@@ -22,9 +22,6 @@ final class Store extends Model
         'description',
         'logo',
         'banner',
-        'stripe_connect_id',
-        'stripe_charges_enabled',
-        'stripe_payouts_enabled',
         'status',
         'rejection_reason',
         'approved_at',
@@ -75,17 +72,12 @@ final class Store extends Model
 
     public function canAcceptPayments(): bool
     {
-        return $this->isApproved()
-            && $this->stripe_charges_enabled
-            && $this->stripe_payouts_enabled
-            && $this->stripe_connect_id;
+        return $this->isApproved() && $this->workspace->canAcceptPayments();
     }
 
     protected function casts(): array
     {
         return [
-            'stripe_charges_enabled' => 'boolean',
-            'stripe_payouts_enabled' => 'boolean',
             'approved_at' => 'datetime',
         ];
     }

@@ -98,17 +98,17 @@ final class ProductController extends Controller
 
         $product = Product::create($data);
 
-        // Create product in Stripe if store has Stripe Connect
-        if ($store->stripe_connect_id) {
+        // Create product in Stripe if workspace has Stripe Connect
+        if ($store->workspace->stripe_connect_id) {
             try {
                 $stripeProduct = $this->stripeService->createProduct(
-                    $store,
+                    $store->workspace,
                     $product->name,
                     $product->description
                 );
 
                 $stripePrice = $this->stripeService->createPrice(
-                    $store,
+                    $store->workspace,
                     $stripeProduct->id,
                     (int) ($product->price * 100) // Convert to cents
                 );

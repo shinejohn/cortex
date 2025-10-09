@@ -20,6 +20,10 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->longText('logo')->nullable();
             $table->string('timezone')->default('UTC');
+            $table->string('stripe_connect_id')->nullable()->unique();
+            $table->boolean('stripe_charges_enabled')->default(false);
+            $table->boolean('stripe_payouts_enabled')->default(false);
+            $table->boolean('stripe_admin_approved')->default(false);
             $table->timestamps();
 
             $table->index(['owner_id']);

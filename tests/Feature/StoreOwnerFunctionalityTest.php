@@ -99,7 +99,7 @@ it('redirects to stripe connect onboarding when initiated', function () {
 })->skip('Requires Stripe API configuration');
 
 it('shows stripe dashboard link for stores with stripe connect', function () {
-    $this->store->update([
+    $this->workspace->update([
         'stripe_connect_id' => 'acct_test123',
         'stripe_charges_enabled' => true,
         'stripe_payouts_enabled' => true,
@@ -120,7 +120,7 @@ it('shows stripe dashboard link for stores with stripe connect', function () {
 });
 
 it('does not expose stripe info to non-owners', function () {
-    $this->store->update([
+    $this->workspace->update([
         'stripe_connect_id' => 'acct_test123',
         'stripe_charges_enabled' => true,
         'stripe_payouts_enabled' => true,

@@ -27,6 +27,23 @@ final class WorkspaceFactory extends Factory
             'slug' => Str::slug($name.'Workspace').Str::random(5),
             'owner_id' => User::factory(),
             'timezone' => fake()->timezone(),
+            'stripe_connect_id' => null,
+            'stripe_charges_enabled' => false,
+            'stripe_payouts_enabled' => false,
+            'stripe_admin_approved' => false,
         ];
+    }
+
+    /**
+     * Indicate that the workspace has Stripe Connect enabled
+     */
+    public function withStripe(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'stripe_connect_id' => 'acct_'.fake()->bothify('??##??##??##??##'),
+            'stripe_charges_enabled' => true,
+            'stripe_payouts_enabled' => true,
+            'stripe_admin_approved' => true,
+        ]);
     }
 }
