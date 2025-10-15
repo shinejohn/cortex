@@ -28,11 +28,10 @@ final class EcommerceSeeder extends Seeder
             throw new Exception('Demo workspace and users must be created first');
         }
 
-        // Create approved stores with Stripe Connect
+        // Create approved stores
         $approvedStores = Store::factory()
             ->count(8)
             ->approved()
-            ->withStripe()
             ->state([
                 'workspace_id' => $workspace->id,
             ])
@@ -159,7 +158,6 @@ final class EcommerceSeeder extends Seeder
         // Create a featured store with specific products
         $featuredStore = Store::factory()
             ->approved()
-            ->withStripe()
             ->state([
                 'workspace_id' => $workspace->id,
                 'name' => 'Tech Haven Premium',

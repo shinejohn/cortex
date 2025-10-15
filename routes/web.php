@@ -122,11 +122,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 
-    // Admin routes for events, performers, and venues management
-    Route::get('/admin/events', [EventController::class, 'index'])->name('admin.events.index');
-    Route::get('/admin/performers', [PerformerController::class, 'index'])->name('admin.performers.index');
-    Route::get('/admin/venues', [VenueController::class, 'index'])->name('admin.venues.index');
-
     // Additional booking actions
     Route::patch('/bookings/{booking}/confirm', [BookingController::class, 'confirm'])->name('bookings.confirm');
     Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
