@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Models\Store;
+use App\Rules\FreeIfWorkspaceNotApproved;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
@@ -16,7 +18,7 @@ final class StoreProductRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        $rules = [
             'store_id' => ['required', 'exists:stores,id'],
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255'],
@@ -31,6 +33,16 @@ final class StoreProductRequest extends FormRequest
             'is_active' => ['boolean'],
             'is_featured' => ['boolean'],
         ];
+
+        // Add workspace approval check for pricing
+        if ($this->store_id) {
+            $store = Store::with('workspace')->find($this->store_id);
+            if ($store && $store->workspace) {
+                $rules['price'][] = new FreeIfWorkspaceNotApproved($store->workspace);
+            }
+        }
+
+        return $rules;
     }
 
     public function messages(): array
@@ -52,5 +64,18 @@ final class StoreProductRequest extends FormRequest
         $this->merge([
             'slug' => Str::slug($this->name ?? ''),
         ]);
+
+        // Set default price to 0.00 if workspace cannot accept payments
+        if ($this->store_id) {
+            $store = Store::with('workspace')->find($this->store_id);
+            if ($store && $store->workspace) {
+                $canAcceptPayments = $store->workspace->canAcceptPayments();
+
+                if (! $canAcceptPayments) {
+                    // Force to 0.00 if workspace cannot accept payments
+                    $this->merge(['price' => '0.00']);
+                }
+            }
+        }
     }
 }

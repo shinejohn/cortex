@@ -32,7 +32,7 @@ final class WorkspaceController extends Controller
         $workspace = Workspace::create([
             'name' => $request->name,
             'owner_id' => $request->user()->id,
-            'slug' => Str::slug($request->name . 'Workspace') . Str::random(5),
+            'slug' => Str::slug($request->name.'Workspace').Str::random(5),
         ]);
 
         WorkspaceMembership::create([
@@ -90,7 +90,7 @@ final class WorkspaceController extends Controller
      */
     public function showInvitation(string $token): Response|RedirectResponse
     {
-        if (!config('makerkit.workspaces.enabled')) {
+        if (! config('makerkit.workspaces.enabled')) {
             abort(404, 'Workspaces are not enabled');
         }
 
@@ -134,7 +134,7 @@ final class WorkspaceController extends Controller
      */
     public function acceptInvitationForLoggedInUser(WorkspaceInvitation $invitation): RedirectResponse
     {
-        if (!config('makerkit.workspaces.enabled')) {
+        if (! config('makerkit.workspaces.enabled')) {
             abort(404, 'Workspaces are not enabled');
         }
 
@@ -160,7 +160,7 @@ final class WorkspaceController extends Controller
      */
     public function acceptInvitationByToken(string $token, User $user): InvitationAcceptanceResult
     {
-        if (!config('makerkit.workspaces.enabled')) {
+        if (! config('makerkit.workspaces.enabled')) {
             return new InvitationAcceptanceResult(
                 success: false,
                 message: 'Workspaces are not enabled',

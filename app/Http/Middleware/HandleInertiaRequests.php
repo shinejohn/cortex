@@ -56,8 +56,8 @@ final class HandleInertiaRequests extends Middleware
                 'magicLinkEnabled' => config('makerkit.auth.magiclink.enabled'),
             ],
             'workspaces' => $workspaces,
-            'notifications' => fn() => $this->getUserNotifications($user),
-            'ziggy' => fn(): array => [
+            'notifications' => fn () => $this->getUserNotifications($user),
+            'ziggy' => fn (): array => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
@@ -75,7 +75,7 @@ final class HandleInertiaRequests extends Middleware
             ->with('workspace')
             ->get();
 
-        $workspaces = $memberships->map(fn($membership) => [
+        $workspaces = $memberships->map(fn ($membership) => [
             'id' => $membership->workspace->id,
             'name' => $membership->workspace->name,
             'role' => $membership->role,

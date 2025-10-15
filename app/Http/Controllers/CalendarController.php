@@ -116,7 +116,17 @@ final class CalendarController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('calendars/create');
+        $currentWorkspace = auth()->user()->currentWorkspace;
+
+        if (! $currentWorkspace) {
+            abort(403, 'Please select a workspace first.');
+        }
+
+        return Inertia::render('calendars/create', [
+            'workspace' => [
+                'can_accept_payments' => $currentWorkspace->canAcceptPayments(),
+            ],
+        ]);
     }
 
     public function store(StoreCalendarRequest $request): RedirectResponse
@@ -176,8 +186,13 @@ final class CalendarController extends Controller
     {
         $this->authorize('update', $calendar);
 
+        $calendar->load('user.currentWorkspace');
+
         return Inertia::render('calendars/edit', [
             'calendar' => $calendar,
+            'workspace' => [
+                'can_accept_payments' => $calendar->user->currentWorkspace?->canAcceptPayments() ?? false,
+            ],
         ]);
     }
 

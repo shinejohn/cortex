@@ -11,7 +11,15 @@ import { ArrowLeftIcon } from "lucide-react";
 import { useState } from "react";
 import { route } from "ziggy-js";
 
-export default function CreateVenue() {
+interface Workspace {
+    can_accept_payments: boolean;
+}
+
+interface Props {
+    workspace: Workspace;
+}
+
+export default function CreateVenue({ workspace }: Props) {
     const [formData, setFormData] = useState({
         name: "",
         description: "",
@@ -212,6 +220,15 @@ export default function CreateVenue() {
                                 <CardTitle>Pricing</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
+                                {!workspace.can_accept_payments && (
+                                    <div className="rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-4">
+                                        <p className="text-sm text-amber-800 dark:text-amber-200">
+                                            <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect before
+                                            you can set paid pricing. Until then, all prices must be $0.00.
+                                        </p>
+                                    </div>
+                                )}
+
                                 <div className="grid grid-cols-3 gap-4">
                                     <div>
                                         <Label htmlFor="price_per_hour">Price Per Hour</Label>
@@ -223,6 +240,8 @@ export default function CreateVenue() {
                                             value={formData.price_per_hour}
                                             onChange={(e) => handleInputChange("price_per_hour", e.target.value)}
                                             min="0"
+                                            max={!workspace.can_accept_payments ? "0" : undefined}
+                                            disabled={!workspace.can_accept_payments}
                                             className="mt-1"
                                         />
                                     </div>
@@ -237,6 +256,8 @@ export default function CreateVenue() {
                                             value={formData.price_per_event}
                                             onChange={(e) => handleInputChange("price_per_event", e.target.value)}
                                             min="0"
+                                            max={!workspace.can_accept_payments ? "0" : undefined}
+                                            disabled={!workspace.can_accept_payments}
                                             className="mt-1"
                                         />
                                     </div>
@@ -251,10 +272,15 @@ export default function CreateVenue() {
                                             value={formData.price_per_day}
                                             onChange={(e) => handleInputChange("price_per_day", e.target.value)}
                                             min="0"
+                                            max={!workspace.can_accept_payments ? "0" : undefined}
+                                            disabled={!workspace.can_accept_payments}
                                             className="mt-1"
                                         />
                                     </div>
                                 </div>
+                                {!workspace.can_accept_payments && (
+                                    <p className="text-xs text-muted-foreground">All prices must be $0.00 until workspace is approved for payments</p>
+                                )}
                             </CardContent>
                         </Card>
 

@@ -342,7 +342,11 @@ final class PerformerController extends Controller
 
         $this->authorize('create', Performer::class);
 
-        return Inertia::render('performers/create');
+        return Inertia::render('performers/create', [
+            'workspace' => [
+                'can_accept_payments' => $currentWorkspace->canAcceptPayments(),
+            ],
+        ]);
     }
 
     public function store(StorePerformerRequest $request)

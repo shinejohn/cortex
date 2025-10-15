@@ -20,7 +20,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia; // Added missing import for User model
 use Inertia\Response;
 
- // Added missing import for Carbon
+// Added missing import for Carbon
 
 final class CommunityController extends Controller
 {

@@ -12,7 +12,15 @@ import { ArrowLeftIcon } from "lucide-react";
 import { useState } from "react";
 import { route } from "ziggy-js";
 
-export default function CreatePerformer() {
+interface Workspace {
+    can_accept_payments: boolean;
+}
+
+interface Props {
+    workspace: Workspace;
+}
+
+export default function CreatePerformer({ workspace }: Props) {
     const [formData, setFormData] = useState({
         name: "",
         genres: [] as string[],
@@ -260,6 +268,15 @@ export default function CreatePerformer() {
                                 <CardTitle>Pricing & Booking</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
+                                {!workspace.can_accept_payments && (
+                                    <div className="rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-4">
+                                        <p className="text-sm text-amber-800 dark:text-amber-200">
+                                            <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect before
+                                            you can set paid pricing. Until then, all prices must be $0.00.
+                                        </p>
+                                    </div>
+                                )}
+
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <Label htmlFor="base_price">Base Price</Label>
@@ -271,6 +288,8 @@ export default function CreatePerformer() {
                                             value={formData.base_price}
                                             onChange={(e) => handleInputChange("base_price", e.target.value)}
                                             min="0"
+                                            max={!workspace.can_accept_payments ? "0" : undefined}
+                                            disabled={!workspace.can_accept_payments}
                                             className="mt-1"
                                         />
                                     </div>
@@ -313,6 +332,8 @@ export default function CreatePerformer() {
                                             value={formData.travel_fee_per_mile}
                                             onChange={(e) => handleInputChange("travel_fee_per_mile", e.target.value)}
                                             min="0"
+                                            max={!workspace.can_accept_payments ? "0" : undefined}
+                                            disabled={!workspace.can_accept_payments}
                                             className="mt-1"
                                         />
                                     </div>
@@ -327,10 +348,16 @@ export default function CreatePerformer() {
                                             value={formData.setup_fee}
                                             onChange={(e) => handleInputChange("setup_fee", e.target.value)}
                                             min="0"
+                                            max={!workspace.can_accept_payments ? "0" : undefined}
+                                            disabled={!workspace.can_accept_payments}
                                             className="mt-1"
                                         />
                                     </div>
                                 </div>
+
+                                {!workspace.can_accept_payments && (
+                                    <p className="text-xs text-muted-foreground">All prices must be $0.00 until workspace is approved for payments</p>
+                                )}
 
                                 <div>
                                     <Label htmlFor="cancellation_policy">Cancellation Policy</Label>

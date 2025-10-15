@@ -346,7 +346,11 @@ final class VenueController extends Controller
 
         $this->authorize('create', Venue::class);
 
-        return Inertia::render('venues/create');
+        return Inertia::render('venues/create', [
+            'workspace' => [
+                'can_accept_payments' => $currentWorkspace->canAcceptPayments(),
+            ],
+        ]);
     }
 
     public function store(StoreVenueRequest $request)

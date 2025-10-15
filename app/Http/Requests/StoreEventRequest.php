@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Rules\FreeIfWorkspaceNotApproved;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class StoreEventRequest extends FormRequest
@@ -15,7 +16,9 @@ final class StoreEventRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        $workspace = $this->user()?->currentWorkspace;
+
+        $rules = [
             'title' => ['required', 'string', 'max:255'],
             'images' => ['sometimes', 'array', 'max:5'],
             'images.*' => ['file', 'image', 'max:5120', 'mimes:jpeg,jpg,png,gif,webp'],
@@ -46,6 +49,14 @@ final class StoreEventRequest extends FormRequest
             'new_performer.genres' => ['required_with:new_performer', 'array', 'min:1'],
             'curator_notes' => ['nullable', 'string', 'max:1000'],
         ];
+
+        // Add workspace approval check for pricing
+        if ($workspace) {
+            $rules['price_min'][] = new FreeIfWorkspaceNotApproved($workspace);
+            $rules['price_max'][] = new FreeIfWorkspaceNotApproved($workspace);
+        }
+
+        return $rules;
     }
 
     public function messages(): array

@@ -182,7 +182,7 @@ describe('WorkspaceController', function () {
 
             $response->assertSuccessful()
                 ->assertInertia(
-                    fn($page) => $page
+                    fn ($page) => $page
                         ->component('auth/workspace-invitation')
                         ->has('invitation')
                         ->where('invitation.token', $invitation->token)
@@ -272,7 +272,7 @@ describe('WorkspaceController', function () {
 
             $response->assertSuccessful()
                 ->assertInertia(
-                    fn($page) => $page
+                    fn ($page) => $page
                         ->component('auth/workspace-invitation')
                         ->where('userExists', true)
                 );
@@ -311,9 +311,9 @@ describe('WorkspaceController', function () {
         it('returns 404 when workspaces are disabled', function () {
             Config::set('makerkit.workspaces.enabled', false);
 
-            $controller = new \App\Http\Controllers\WorkspaceController();
+            $controller = new App\Http\Controllers\WorkspaceController();
 
-            $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+            $this->expectException(Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
             $this->expectExceptionMessage('Workspaces are not enabled');
 
             $controller->acceptInvitationForLoggedInUser($this->invitation);
@@ -335,7 +335,7 @@ describe('WorkspaceController', function () {
         it('returns error result when workspaces are disabled', function () {
             Config::set('makerkit.workspaces.enabled', false);
 
-            $controller = new \App\Http\Controllers\WorkspaceController();
+            $controller = new App\Http\Controllers\WorkspaceController();
 
             $result = $controller->acceptInvitationByToken($this->invitation->token, $this->user);
 

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Notification extends Model
+final class Notification extends Model
 {
     /** @use HasFactory<\Database\Factories\NotificationFactory> */
     use HasFactory;
@@ -20,14 +22,6 @@ class Notification extends Model
         'message',
         'action_url',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'data' => 'array',
-            'read' => 'boolean',
-        ];
-    }
 
     public function user(): BelongsTo
     {
@@ -47,5 +41,13 @@ class Notification extends Model
     public function scopeForUser($query, $userId)
     {
         return $query->where('user_id', $userId);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'data' => 'array',
+            'read' => 'boolean',
+        ];
     }
 }

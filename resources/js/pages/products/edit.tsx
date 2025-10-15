@@ -31,6 +31,9 @@ interface Store {
     id: string;
     name: string;
     slug: string;
+    workspace: {
+        can_accept_payments: boolean;
+    };
 }
 
 interface EditProductProps {
@@ -177,6 +180,13 @@ export default function EditProduct({ auth, product, store }: EditProductProps) 
                                 <CardDescription>Update product pricing</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
+                                {!store.workspace.can_accept_payments && (
+                                    <div className="rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-4">
+                                        <p className="text-sm text-amber-800 dark:text-amber-200">
+                                            <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect to set paid pricing. Only free products (price = $0.00) are allowed until approval. Contact support for approval.
+                                        </p>
+                                    </div>
+                                )}
                                 <div className="grid grid-cols-2 gap-4">
                                     {/* Price */}
                                     <div className="space-y-2">
@@ -188,12 +198,16 @@ export default function EditProduct({ auth, product, store }: EditProductProps) 
                                             type="number"
                                             step="0.01"
                                             min="0"
+                                            max={!store.workspace.can_accept_payments ? "0" : undefined}
                                             value={data.price}
                                             onChange={(e) => setData("price", e.target.value)}
-                                            placeholder="29.99"
+                                            placeholder={!store.workspace.can_accept_payments ? "0.00" : "29.99"}
                                             disabled={processing}
                                             className={errors.price ? "border-destructive" : ""}
                                         />
+                                        {!store.workspace.can_accept_payments && (
+                                            <p className="text-xs text-muted-foreground">Must be $0.00 (free) until workspace is approved</p>
+                                        )}
                                         {errors.price && <p className="text-sm text-destructive">{errors.price}</p>}
                                     </div>
 
@@ -208,7 +222,7 @@ export default function EditProduct({ auth, product, store }: EditProductProps) 
                                             value={data.compare_at_price}
                                             onChange={(e) => setData("compare_at_price", e.target.value)}
                                             placeholder="39.99"
-                                            disabled={processing}
+                                            disabled={processing || !store.workspace.can_accept_payments}
                                             className={errors.compare_at_price ? "border-destructive" : ""}
                                         />
                                         {errors.compare_at_price && <p className="text-sm text-destructive">{errors.compare_at_price}</p>}

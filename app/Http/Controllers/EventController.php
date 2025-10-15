@@ -183,17 +183,22 @@ final class EventController extends Controller
             });
 
         $isFollowing = false;
+        $canEdit = false;
+
         if ($request->user()) {
             $isFollowing = Follow::where('user_id', $request->user()->id)
                 ->where('followable_type', Event::class)
                 ->where('followable_id', $event->id)
                 ->exists();
+
+            $canEdit = $request->user()->can('update', $event);
         }
 
         return Inertia::render('events/event-detail', [
             'event' => $event,
             'similarEvents' => $similarEvents,
             'isFollowing' => $isFollowing,
+            'canEdit' => $canEdit,
         ]);
     }
 
@@ -298,6 +303,9 @@ final class EventController extends Controller
         return Inertia::render('events/create', [
             'venues' => $venues,
             'performers' => $performers,
+            'workspace' => [
+                'can_accept_payments' => $currentWorkspace->canAcceptPayments(),
+            ],
         ]);
     }
 
@@ -331,6 +339,9 @@ final class EventController extends Controller
         if (! empty($validated['new_venue'])) {
             $venue = Venue::create([
                 ...$validated['new_venue'],
+                'price_per_hour' => '0.00',
+                'price_per_event' => '0.00',
+                'price_per_day' => '0.00',
                 'workspace_id' => $currentWorkspace->id,
                 'created_by' => $request->user()->id,
                 'status' => 'active',
@@ -344,6 +355,12 @@ final class EventController extends Controller
         if (! empty($validated['new_performer'])) {
             $performer = Performer::create([
                 ...$validated['new_performer'],
+                'home_city' => $validated['new_performer']['home_city'] ?? 'Unknown',
+                'base_price' => '0.00',
+                'travel_fee_per_mile' => '0.00',
+                'setup_fee' => '0.00',
+                'currency' => 'USD',
+                'minimum_booking_hours' => 2,
                 'workspace_id' => $currentWorkspace->id,
                 'created_by' => $request->user()->id,
                 'status' => 'active',
@@ -371,13 +388,17 @@ final class EventController extends Controller
             'discussion_thread_id' => 'thread-'.fake()->randomNumber(6),
         ]);
 
-        return redirect()->route('events.show', $event)
-            ->with('success', 'Event created successfully!');
+        return response()->json([
+            'id' => $event->id,
+            'message' => 'Event created successfully!',
+        ], 201);
     }
 
     public function edit(Event $event): Response
     {
         $this->authorize('update', $event);
+
+        $event->load('workspace');
 
         $venues = Venue::where('workspace_id', $event->workspace_id)
             ->where('status', 'active')
@@ -388,10 +409,13 @@ final class EventController extends Controller
             ->where('available_for_booking', true)
             ->get(['id', 'name', 'genres']);
 
-        return Inertia::render('Events/Edit', [
+        return Inertia::render('events/edit', [
             'event' => $event,
             'venues' => $venues,
             'performers' => $performers,
+            'workspace' => [
+                'can_accept_payments' => $event->workspace->canAcceptPayments(),
+            ],
         ]);
     }
 

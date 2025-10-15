@@ -70,6 +70,9 @@ final class ProductController extends Controller
                 'id' => $store->id,
                 'name' => $store->name,
                 'slug' => $store->slug,
+                'workspace' => [
+                    'can_accept_payments' => $store->workspace->canAcceptPayments(),
+                ],
             ],
         ]);
     }
@@ -197,6 +200,9 @@ final class ProductController extends Controller
                 'id' => $store->id,
                 'name' => $store->name,
                 'slug' => $store->slug,
+                'workspace' => [
+                    'can_accept_payments' => $store->workspace->canAcceptPayments(),
+                ],
             ],
         ]);
     }

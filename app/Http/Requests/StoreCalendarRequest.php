@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Rules\FreeIfWorkspaceNotApproved;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class StoreCalendarRequest extends FormRequest
@@ -15,7 +16,9 @@ final class StoreCalendarRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        $workspace = $this->user()?->currentWorkspace;
+
+        $rules = [
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:1000'],
             'category' => ['required', 'string', 'in:jazz,kids,fitness,seniors,schools,sports,arts,food,professional'],
@@ -26,6 +29,13 @@ final class StoreCalendarRequest extends FormRequest
             'subscription_price' => ['required', 'numeric', 'min:0', 'max:999.99'],
             'is_private' => ['boolean'],
         ];
+
+        // Add workspace approval check for pricing
+        if ($workspace) {
+            $rules['subscription_price'][] = new FreeIfWorkspaceNotApproved($workspace);
+        }
+
+        return $rules;
     }
 
     public function messages(): array
@@ -41,5 +51,20 @@ final class StoreCalendarRequest extends FormRequest
             'subscription_price.min' => 'Subscription price cannot be negative.',
             'subscription_price.max' => 'Subscription price cannot exceed $999.99.',
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        // Set default subscription price to 0.00 if not provided or workspace cannot accept payments
+        $workspace = $this->user()?->currentWorkspace;
+        $canAcceptPayments = $workspace && $workspace->canAcceptPayments();
+
+        if (! $canAcceptPayments) {
+            // Force to 0.00 if workspace cannot accept payments
+            $this->merge(['subscription_price' => '0.00']);
+        } elseif (! $this->filled('subscription_price')) {
+            // Default to 0.00 if not provided
+            $this->merge(['subscription_price' => '0.00']);
+        }
     }
 }

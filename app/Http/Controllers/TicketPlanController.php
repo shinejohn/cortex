@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\TicketPlan;
+use App\Rules\FreeIfWorkspaceNotApproved;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -29,7 +30,9 @@ final class TicketPlanController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $validated = $request->validate([
+        $event = Event::with('workspace')->find($request->event_id);
+
+        $rules = [
             'event_id' => 'required|uuid|exists:events,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -39,7 +42,14 @@ final class TicketPlanController extends Controller
             'is_active' => 'boolean',
             'metadata' => 'nullable|array',
             'sort_order' => 'integer|min:0',
-        ]);
+        ];
+
+        // Add workspace approval check for pricing
+        if ($event && $event->workspace) {
+            $rules['price'] = ['required', 'numeric', 'min:0', new FreeIfWorkspaceNotApproved($event->workspace)];
+        }
+
+        $validated = $request->validate($rules);
 
         $ticketPlan = TicketPlan::create($validated);
 
@@ -53,7 +63,7 @@ final class TicketPlanController extends Controller
 
     public function update(Request $request, TicketPlan $ticketPlan): JsonResponse
     {
-        $validated = $request->validate([
+        $rules = [
             'name' => 'string|max:255',
             'description' => 'nullable|string',
             'price' => 'numeric|min:0',
@@ -62,7 +72,14 @@ final class TicketPlanController extends Controller
             'is_active' => 'boolean',
             'metadata' => 'nullable|array',
             'sort_order' => 'integer|min:0',
-        ]);
+        ];
+
+        // Add workspace approval check for pricing if price is being updated
+        if ($request->has('price') && $ticketPlan->event && $ticketPlan->event->workspace) {
+            $rules['price'] = ['numeric', 'min:0', new FreeIfWorkspaceNotApproved($ticketPlan->event->workspace)];
+        }
+
+        $validated = $request->validate($rules);
 
         $ticketPlan->update($validated);
 

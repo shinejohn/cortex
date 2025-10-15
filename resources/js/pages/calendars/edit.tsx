@@ -33,12 +33,17 @@ const UPDATE_FREQUENCIES = [
     { value: "monthly", label: "Monthly" },
 ];
 
+interface Workspace {
+    can_accept_payments: boolean;
+}
+
 interface Props {
     calendar: Calendar;
+    workspace: Workspace;
 }
 
 export default function EditCalendar() {
-    const { calendar } = usePage<Props>().props;
+    const { calendar, workspace } = usePage<Props>().props;
 
     const [formData, setFormData] = useState({
         title: calendar.title,
@@ -271,6 +276,15 @@ export default function EditCalendar() {
                                 <CardTitle>Pricing & Privacy</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
+                                {!workspace.can_accept_payments && (
+                                    <div className="rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-4">
+                                        <p className="text-sm text-amber-800 dark:text-amber-200">
+                                            <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect before
+                                            you can set paid pricing. Until then, all calendars must be free ($0.00).
+                                        </p>
+                                    </div>
+                                )}
+
                                 <div>
                                     <Label htmlFor="subscription_price">Subscription Price (monthly) *</Label>
                                     <div className="relative mt-1">
@@ -283,11 +297,16 @@ export default function EditCalendar() {
                                             value={formData.subscription_price}
                                             onChange={(e) => handleInputChange("subscription_price", e.target.value)}
                                             min="0"
-                                            max="999.99"
+                                            max={!workspace.can_accept_payments ? "0" : "999.99"}
                                             className="pl-8"
+                                            disabled={!workspace.can_accept_payments}
                                         />
                                     </div>
-                                    <p className="text-xs text-muted-foreground mt-1">Set to $0.00 for a free calendar</p>
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                        {!workspace.can_accept_payments
+                                            ? "Must be free ($0.00) until workspace is approved for payments"
+                                            : "Set to $0.00 for a free calendar"}
+                                    </p>
                                     {errors.subscription_price && (
                                         <p className="text-sm text-red-500 mt-1">{errors.subscription_price}</p>
                                     )}

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Rules\FreeIfWorkspaceNotApproved;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class UpdateProductRequest extends FormRequest
@@ -15,7 +16,7 @@ final class UpdateProductRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => ['sometimes', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:5000'],
             'images' => ['nullable', 'array', 'max:5'],
@@ -28,6 +29,16 @@ final class UpdateProductRequest extends FormRequest
             'is_active' => ['boolean'],
             'is_featured' => ['boolean'],
         ];
+
+        // Add workspace approval check for pricing if price is being updated
+        if ($this->has('price')) {
+            $product = $this->route('product');
+            if ($product && $product->store && $product->store->workspace) {
+                $rules['price'][] = new FreeIfWorkspaceNotApproved($product->store->workspace);
+            }
+        }
+
+        return $rules;
     }
 
     public function messages(): array
@@ -38,5 +49,21 @@ final class UpdateProductRequest extends FormRequest
             'compare_at_price.gt' => 'Compare at price must be greater than the regular price.',
             'images.max' => 'Maximum 5 images allowed.',
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        // Set default price to 0.00 if workspace cannot accept payments
+        if ($this->has('price')) {
+            $product = $this->route('product');
+            if ($product && $product->store && $product->store->workspace) {
+                $canAcceptPayments = $product->store->workspace->canAcceptPayments();
+
+                if (! $canAcceptPayments) {
+                    // Force to 0.00 if workspace cannot accept payments
+                    $this->merge(['price' => '0.00']);
+                }
+            }
+        }
     }
 }

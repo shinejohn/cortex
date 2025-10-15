@@ -16,6 +16,7 @@ import {
     Clock,
     Cloud,
     CloudRain,
+    Edit,
     Flame,
     Heart,
     MapPin,
@@ -81,9 +82,10 @@ interface Props {
     event: Event;
     similarEvents: SimilarEvent[];
     isFollowing: boolean;
+    canEdit: boolean;
 }
 
-export default function EventDetail({ auth, event, similarEvents, isFollowing }: Props) {
+export default function EventDetail({ auth, event, similarEvents, isFollowing, canEdit }: Props) {
     const [activeTab, setActiveTab] = useState("overview");
 
     const formatEventDate = (dateString: string) => {
@@ -341,7 +343,15 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing }:
 
                         {/* Action Buttons */}
                         <div className="flex flex-wrap gap-3 mb-8">
-                            <Button onClick={handleGetTickets} className="flex-1">
+                            {canEdit && (
+                                <Button variant="default" asChild className="flex-1">
+                                    <Link href={`/events/${event.id}/edit`}>
+                                        <Edit className="h-5 w-5 mr-2" />
+                                        Edit Event
+                                    </Link>
+                                </Button>
+                            )}
+                            <Button onClick={handleGetTickets} className={canEdit ? "" : "flex-1"}>
                                 <Ticket className="h-5 w-5 mr-2" />
                                 Get Tickets
                             </Button>

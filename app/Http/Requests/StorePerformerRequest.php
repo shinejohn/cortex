@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Rules\FreeIfWorkspaceNotApproved;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class StorePerformerRequest extends FormRequest
@@ -15,7 +16,9 @@ final class StorePerformerRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        $workspace = $this->user()?->currentWorkspace;
+
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'images' => ['sometimes', 'array', 'max:10'],
             'images.*' => ['file', 'image', 'max:5120', 'mimes:jpeg,jpg,png,gif,webp'],
@@ -40,6 +43,15 @@ final class StorePerformerRequest extends FormRequest
             'setup_fee' => ['nullable', 'numeric', 'min:0'],
             'cancellation_policy' => ['nullable', 'string', 'max:1000'],
         ];
+
+        // Add workspace approval check for pricing
+        if ($workspace) {
+            $rules['base_price'][] = new FreeIfWorkspaceNotApproved($workspace);
+            $rules['travel_fee_per_mile'][] = new FreeIfWorkspaceNotApproved($workspace);
+            $rules['setup_fee'][] = new FreeIfWorkspaceNotApproved($workspace);
+        }
+
+        return $rules;
     }
 
     public function messages(): array
@@ -60,6 +72,27 @@ final class StorePerformerRequest extends FormRequest
             $this->merge([
                 'genres' => json_decode($this->genres, true) ?? [],
             ]);
+        }
+
+        // Set default price values to 0.00 if not provided or empty
+        $workspace = $this->user()?->currentWorkspace;
+        $canAcceptPayments = $workspace && $workspace->canAcceptPayments();
+
+        $priceFields = ['base_price', 'travel_fee_per_mile', 'setup_fee'];
+        $priceMerge = [];
+
+        foreach ($priceFields as $field) {
+            if (! $canAcceptPayments) {
+                // Force to 0.00 if workspace cannot accept payments
+                $priceMerge[$field] = '0.00';
+            } elseif (! $this->filled($field)) {
+                // Default to 0.00 if not provided
+                $priceMerge[$field] = '0.00';
+            }
+        }
+
+        if (! empty($priceMerge)) {
+            $this->merge($priceMerge);
         }
     }
 }

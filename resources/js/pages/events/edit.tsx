@@ -26,33 +26,54 @@ interface Performer {
     genres: string[];
 }
 
+interface Event {
+    id: string;
+    title: string;
+    description: string;
+    event_date: string;
+    time: string;
+    category: string;
+    subcategories: string[];
+    badges: string[];
+    is_free: boolean;
+    price_min: number;
+    price_max: number;
+    latitude: number;
+    longitude: number;
+    venue_id: string | null;
+    performer_id: string | null;
+    curator_notes: string | null;
+    image: string | null;
+}
+
 interface Workspace {
     can_accept_payments: boolean;
 }
 
 interface Props {
+    event: Event;
     venues: Venue[];
     performers: Performer[];
     workspace: Workspace;
 }
 
-export default function CreateEvent({ venues, performers, workspace = { can_accept_payments: true } }: Props) {
+export default function EditEvent({ event, venues, performers, workspace = { can_accept_payments: true } }: Props) {
     const [formData, setFormData] = useState({
-        title: "",
-        event_date: "",
-        time: "",
-        description: "",
-        category: "",
-        subcategories: [] as string[],
-        badges: [] as string[],
-        is_free: false,
-        price_min: "",
-        price_max: "",
-        latitude: "",
-        longitude: "",
-        venue_id: "",
-        performer_id: "",
-        curator_notes: "",
+        title: event.title,
+        event_date: event.event_date.split('T')[0], // Convert datetime to date
+        time: event.time,
+        description: event.description,
+        category: event.category,
+        subcategories: event.subcategories || [],
+        badges: event.badges || [],
+        is_free: event.is_free,
+        price_min: event.price_min?.toString() || "",
+        price_max: event.price_max?.toString() || "",
+        latitude: event.latitude?.toString() || "",
+        longitude: event.longitude?.toString() || "",
+        venue_id: event.venue_id || "",
+        performer_id: event.performer_id || "",
+        curator_notes: event.curator_notes || "",
     });
 
     const [venueMode, setVenueMode] = useState<"select" | "create">("select");
@@ -132,20 +153,23 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                 formDataToSend.append(`images[${index}]`, file);
             });
 
-            const response = await axios.post(route("events.store"), formDataToSend, {
+            // Add _method for Laravel to treat this as PUT request
+            formDataToSend.append("_method", "PUT");
+
+            const response = await axios.post(route("events.update", event.id), formDataToSend, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
 
-            if (response.status === 200 || response.status === 201) {
-                window.location.href = route("events.show", response.data.id || response.data.event?.id);
+            if (response.status === 200 || response.status === 302) {
+                window.location.href = route("events.show", event.id);
             }
         } catch (error: any) {
             if (error.response?.data?.errors) {
                 setErrors(error.response.data.errors);
             }
-            console.error("Error creating event:", error);
+            console.error("Error updating event:", error);
         } finally {
             setIsSubmitting(false);
         }
@@ -225,18 +249,18 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
 
     return (
         <AppLayout>
-            <Head title="Create Event" />
+            <Head title={`Edit ${event.title}`} />
             <div className="min-h-screen bg-background">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="mb-6">
-                        <Link href={route("events")}>
+                        <Link href={route("events.show", event.id)}>
                             <Button variant="ghost" size="sm" className="mb-4">
                                 <ArrowLeftIcon className="h-4 w-4 mr-2" />
-                                Back to Events
+                                Back to Event
                             </Button>
                         </Link>
-                        <h1 className="text-3xl font-bold text-foreground">Create New Event</h1>
-                        <p className="text-muted-foreground mt-1">Add a new event to your workspace</p>
+                        <h1 className="text-3xl font-bold text-foreground">Edit Event</h1>
+                        <p className="text-muted-foreground mt-1">Update your event details</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -696,13 +720,13 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                         </Card>
 
                         <div className="flex justify-end gap-4">
-                            <Link href={route("events")}>
+                            <Link href={route("events.show", event.id)}>
                                 <Button type="button" variant="outline">
                                     Cancel
                                 </Button>
                             </Link>
                             <Button type="submit" disabled={isSubmitting}>
-                                {isSubmitting ? "Creating..." : "Create Event"}
+                                {isSubmitting ? "Saving..." : "Save Changes"}
                             </Button>
                         </div>
                     </form>
