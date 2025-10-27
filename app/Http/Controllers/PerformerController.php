@@ -75,7 +75,7 @@ final class PerformerController extends Controller
             ],
         ];
 
-        return Inertia::render('performers', [
+        return Inertia::render('event-city/performers', [
             'featuredPerformers' => $featuredPerformers,
             'performerCategories' => $performerCategories,
         ]);
@@ -145,7 +145,7 @@ final class PerformerController extends Controller
 
         $performers = $query->paginate(12)->withQueryString();
 
-        return Inertia::render('Performers/Index', [
+        return Inertia::render('event-city/performers/Index', [
             'performers' => $performers,
             'filters' => $request->only(['status', 'verified', 'available', 'genres', 'search', 'rating_min', 'family_friendly']),
             'sort' => ['sort' => $sortBy, 'direction' => $sortDirection],
@@ -249,7 +249,7 @@ final class PerformerController extends Controller
                 ->exists();
         }
 
-        return Inertia::render('performers/show', [
+        return Inertia::render('event-city/performers/show', [
             'performer' => $performerData,
             'ratingStats' => $ratingStats,
             'reviews' => $reviews,
@@ -342,7 +342,7 @@ final class PerformerController extends Controller
 
         $this->authorize('create', Performer::class);
 
-        return Inertia::render('performers/create', [
+        return Inertia::render('event-city/performers/create', [
             'workspace' => [
                 'can_accept_payments' => $currentWorkspace->canAcceptPayments(),
             ],
@@ -394,7 +394,7 @@ final class PerformerController extends Controller
     {
         $this->authorize('update', $performer);
 
-        return Inertia::render('Performers/Edit', [
+        return Inertia::render('event-city/performers/Edit', [
             'performer' => $performer,
         ]);
     }

@@ -114,7 +114,7 @@ final class WorkspaceController extends Controller
         // Check if user exists but is not logged in
         $existingUser = User::where('email', $invitation->email)->first();
 
-        return Inertia::render('auth/workspace-invitation', [
+        return Inertia::render('event-city/auth/workspace-invitation', [
             'invitation' => [
                 'token' => $invitation->token,
                 'email' => $invitation->email,

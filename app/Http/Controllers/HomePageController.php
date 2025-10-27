@@ -107,7 +107,7 @@ final class HomePageController extends Controller
             })
             ->toArray();
 
-        return Inertia::render('welcome', [
+        return Inertia::render('event-city/welcome', [
             'featuredEvents' => $featuredEvents,
             'featuredVenues' => $featuredVenues,
             'featuredPerformers' => $featuredPerformers,

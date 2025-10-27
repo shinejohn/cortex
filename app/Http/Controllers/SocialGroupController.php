@@ -53,7 +53,7 @@ final class SocialGroupController extends Controller
                 ];
             });
 
-        return Inertia::render('social/groups-index', [
+        return Inertia::render('event-city/social/groups-index', [
             'my_groups' => $myGroups,
             'suggested_groups' => $suggestedGroups,
         ]);
@@ -61,7 +61,7 @@ final class SocialGroupController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('social/groups/create');
+        return Inertia::render('event-city/social/groups/create');
     }
 
     public function store(CreateGroupRequest $request): JsonResponse
@@ -101,7 +101,7 @@ final class SocialGroupController extends Controller
 
         $group->load(['creator', 'members.user']);
 
-        return Inertia::render('social/groups/show', [
+        return Inertia::render('event-city/social/groups/show', [
             'group' => [
                 ...$group->toArray(),
                 'members_count' => $group->membersCount(),

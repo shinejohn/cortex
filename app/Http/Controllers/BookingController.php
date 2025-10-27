@@ -61,7 +61,7 @@ final class BookingController extends Controller
 
         $bookings = $query->paginate(15)->withQueryString();
 
-        return Inertia::render('Bookings/Index', [
+        return Inertia::render('event-city/bookings/Index', [
             'bookings' => $bookings,
             'filters' => $request->only(['status', 'booking_type', 'search', 'date_from', 'date_to']),
             'sort' => ['sort' => $sortBy, 'direction' => $sortDirection],
@@ -79,7 +79,7 @@ final class BookingController extends Controller
             'createdBy',
         ]);
 
-        return Inertia::render('Bookings/Show', [
+        return Inertia::render('event-city/bookings/Show', [
             'booking' => $booking,
         ]);
     }
@@ -107,7 +107,7 @@ final class BookingController extends Controller
             ->where('available_for_booking', true)
             ->get(['id', 'name', 'genres', 'base_price', 'minimum_booking_hours']);
 
-        return Inertia::render('Bookings/Create', [
+        return Inertia::render('event-city/bookings/Create', [
             'events' => $events,
             'venues' => $venues,
             'performers' => $performers,
@@ -191,7 +191,7 @@ final class BookingController extends Controller
             ->where('available_for_booking', true)
             ->get(['id', 'name', 'genres', 'base_price', 'minimum_booking_hours']);
 
-        return Inertia::render('Bookings/Edit', [
+        return Inertia::render('event-city/bookings/Edit', [
             'booking' => $booking,
             'events' => $events,
             'venues' => $venues,

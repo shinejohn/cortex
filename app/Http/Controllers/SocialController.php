@@ -74,7 +74,7 @@ final class SocialController extends Controller
             ->limit(5)
             ->get();
 
-        return Inertia::render('social/index', [
+        return Inertia::render('event-city/social/index', [
             'posts' => $posts,
             'user_profile' => $userProfile,
             'suggested_friends' => $suggestedFriends,
@@ -264,7 +264,7 @@ final class SocialController extends Controller
             $currentUser->isFriendsWith($user);
 
         if (! $canViewProfile) {
-            return Inertia::render('social/profile-private', [
+            return Inertia::render('event-city/social/profile-private', [
                 'profile_user' => $user,
             ]);
         }
@@ -302,7 +302,7 @@ final class SocialController extends Controller
             $query->where('user_id', $user->id)->orWhere('friend_id', $user->id);
         })->where('status', 'accepted')->count();
 
-        return Inertia::render('social/profile', [
+        return Inertia::render('event-city/social/profile', [
             'profile_user' => [
                 ...$user->toArray(),
                 'social_profile' => $profile,
@@ -408,7 +408,7 @@ final class SocialController extends Controller
                 ];
             });
 
-        return Inertia::render('social/friends-index', [
+        return Inertia::render('event-city/social/friends-index', [
             'friends' => $friends,
             'sentRequests' => $sentRequests,
         ]);

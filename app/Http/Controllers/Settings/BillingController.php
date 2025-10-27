@@ -27,7 +27,7 @@ final class BillingController extends Controller
     {
         $workspace = $request->user()->currentWorkspace;
 
-        return Inertia::render('settings/workspace/billing', [
+        return Inertia::render('event-city/settings/workspace/billing', [
             'workspace' => [
                 'id' => $workspace->id,
                 'name' => $workspace->name,

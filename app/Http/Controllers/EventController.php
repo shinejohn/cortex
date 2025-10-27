@@ -73,7 +73,7 @@ final class EventController extends Controller
             })
             ->toArray();
 
-        return Inertia::render('events/index', [
+        return Inertia::render('event-city/events/index', [
             'featuredEvents' => $featuredEvents,
             'upcomingEvents' => $upcomingEvents,
         ]);
@@ -142,7 +142,7 @@ final class EventController extends Controller
 
         $events = $query->paginate(12)->withQueryString();
 
-        return Inertia::render('events/index', [
+        return Inertia::render('event-city/events/index', [
             'events' => $events,
             'filters' => $request->only(['status', 'category', 'is_free', 'venue_id', 'performer_id', 'search', 'date_from', 'date_to']),
             'sort' => ['sort' => $sortBy, 'direction' => $sortDirection],
@@ -194,7 +194,7 @@ final class EventController extends Controller
             $canEdit = $request->user()->can('update', $event);
         }
 
-        return Inertia::render('events/event-detail', [
+        return Inertia::render('event-city/events/event-detail', [
             'event' => $event,
             'similarEvents' => $similarEvents,
             'isFollowing' => $isFollowing,
@@ -300,7 +300,7 @@ final class EventController extends Controller
             ->where('available_for_booking', true)
             ->get(['id', 'name', 'genres']);
 
-        return Inertia::render('events/create', [
+        return Inertia::render('event-city/events/create', [
             'venues' => $venues,
             'performers' => $performers,
             'workspace' => [
@@ -409,7 +409,7 @@ final class EventController extends Controller
             ->where('available_for_booking', true)
             ->get(['id', 'name', 'genres']);
 
-        return Inertia::render('events/edit', [
+        return Inertia::render('event-city/events/edit', [
             'event' => $event,
             'venues' => $venues,
             'performers' => $performers,

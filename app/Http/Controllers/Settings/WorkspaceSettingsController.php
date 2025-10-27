@@ -41,7 +41,7 @@ final class WorkspaceSettingsController extends Controller
         // Check if user can manage workspace
         $canManage = $user->hasAllPermissions(['workspace.settings.manage'], $workspace->id);
 
-        return Inertia::render('settings/workspace/overview', [
+        return Inertia::render('event-city/settings/workspace/overview', [
             'workspace' => [
                 'id' => $workspace->id,
                 'name' => $workspace->name,
@@ -105,7 +105,7 @@ final class WorkspaceSettingsController extends Controller
                 ];
             });
 
-        return Inertia::render('settings/workspace/members', [
+        return Inertia::render('event-city/settings/workspace/members', [
             'members' => $members,
             'pendingInvitations' => $pendingInvitations,
             'canManage' => $canManage,

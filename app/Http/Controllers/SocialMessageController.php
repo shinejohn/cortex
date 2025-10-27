@@ -93,7 +93,7 @@ final class SocialMessageController extends Controller
             }
         }
 
-        return Inertia::render('social/messages-index', [
+        return Inertia::render('event-city/social/messages-index', [
             'conversations' => $conversations,
             'selected_conversation' => $selectedConversationId,
             'messages' => $messages,
@@ -188,7 +188,7 @@ final class SocialMessageController extends Controller
                 ];
             });
 
-        return Inertia::render('social/messages-new', [
+        return Inertia::render('event-city/social/messages-new', [
             'friends' => $friends,
         ]);
     }

@@ -24,7 +24,7 @@ final class CartController extends Controller
         $cart = $this->getOrCreateCart($request);
         $cart->load(['items.product.store', 'items.store']);
 
-        return Inertia::render('cart/index', [
+        return Inertia::render('event-city/cart/index', [
             'cart' => [
                 'id' => $cart->id,
                 'items' => $cart->items->map(fn ($item) => [
@@ -162,7 +162,7 @@ final class CartController extends Controller
 
         $cart->load(['items.product.store', 'items.store']);
 
-        return Inertia::render('cart/index', [
+        return Inertia::render('event-city/cart/index', [
             'cart' => [
                 'id' => $cart->id,
                 'items' => $cart->items->map(fn ($item) => [
@@ -205,7 +205,7 @@ final class CartController extends Controller
 
         $cart->load(['items.product.store', 'items.store']);
 
-        return Inertia::render('cart/index', [
+        return Inertia::render('event-city/cart/index', [
             'cart' => [
                 'id' => $cart->id,
                 'items' => $cart->items->map(fn ($item) => [

@@ -27,7 +27,7 @@ final class AuthenticatedSessionController extends Controller
      */
     public function create(Request $request): Response
     {
-        return Inertia::render('auth/login', [
+        return Inertia::render('event-city/auth/login', [
             'providers' => config('makerkit.auth.socialite.providers'),
             'canResetPassword' => Route::has('password.request'),
             'status' => $request->session()->get('status'),
@@ -37,7 +37,7 @@ final class AuthenticatedSessionController extends Controller
 
     public function createMagicLink(Request $request): Response
     {
-        return Inertia::render('auth/magic-link', [
+        return Inertia::render('event-city/auth/magic-link', [
             'status' => $request->session()->get('status'),
             'error' => $request->session()->get('error'),
             'invitation' => $request->query('invitation'),

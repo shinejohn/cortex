@@ -18,7 +18,7 @@ final class NotificationController extends Controller
             ->latest()
             ->paginate(20);
 
-        return Inertia::render('notifications/index', [
+        return Inertia::render('event-city/notifications/index', [
             'notifications' => $notifications,
         ]);
     }

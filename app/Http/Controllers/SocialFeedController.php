@@ -25,7 +25,7 @@ final class SocialFeedController extends Controller
         $forYouFeed = $this->feedService->getForYouFeed($user, $page);
         $followedFeed = $this->feedService->getFollowedFeed($user, $page);
 
-        return Inertia::render('Social/Feed', [
+        return Inertia::render('event-city/social/Feed', [
             'forYouFeed' => $forYouFeed,
             'followedFeed' => $followedFeed,
             'currentFeed' => $feedType,

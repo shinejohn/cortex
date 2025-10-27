@@ -50,7 +50,7 @@ final class ProductController extends Controller
             ->with(['store'])
             ->get();
 
-        return Inertia::render('ecommerce/discover', [
+        return Inertia::render('event-city/ecommerce/discover', [
             'featuredProducts' => $featuredProducts,
             'recommendedProducts' => $recommendedProducts,
         ]);
@@ -65,7 +65,7 @@ final class ProductController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        return Inertia::render('products/create', [
+        return Inertia::render('event-city/products/create', [
             'store' => [
                 'id' => $store->id,
                 'name' => $store->name,
@@ -144,7 +144,7 @@ final class ProductController extends Controller
             abort(403, 'Product is not available');
         }
 
-        return Inertia::render('products/show', [
+        return Inertia::render('event-city/products/show', [
             'product' => [
                 'id' => $product->id,
                 'name' => $product->name,
@@ -181,7 +181,7 @@ final class ProductController extends Controller
             abort(404);
         }
 
-        return Inertia::render('products/edit', [
+        return Inertia::render('event-city/products/edit', [
             'product' => [
                 'id' => $product->id,
                 'name' => $product->name,

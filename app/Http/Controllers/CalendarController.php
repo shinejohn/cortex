@@ -104,7 +104,7 @@ final class CalendarController extends Controller
             'active_curators' => Calendar::public()->distinct('user_id')->count('user_id'),
         ];
 
-        return Inertia::render('calendars', [
+        return Inertia::render('event-city/calendars', [
             'calendars' => $calendars,
             'trendingCalendars' => $trendingCalendars,
             'newCalendars' => $newCalendars,
@@ -122,7 +122,7 @@ final class CalendarController extends Controller
             abort(403, 'Please select a workspace first.');
         }
 
-        return Inertia::render('calendars/create', [
+        return Inertia::render('event-city/calendars/create', [
             'workspace' => [
                 'can_accept_payments' => $currentWorkspace->canAcceptPayments(),
             ],
@@ -174,7 +174,7 @@ final class CalendarController extends Controller
             $canEdit = $isOwner || $isEditor;
         }
 
-        return Inertia::render('calendars/show', [
+        return Inertia::render('event-city/calendars/show', [
             'calendar' => $calendar,
             'followers' => $followers,
             'isFollowing' => $isFollowing,
@@ -188,7 +188,7 @@ final class CalendarController extends Controller
 
         $calendar->load('user.currentWorkspace');
 
-        return Inertia::render('calendars/edit', [
+        return Inertia::render('event-city/calendars/edit', [
             'calendar' => $calendar,
             'workspace' => [
                 'can_accept_payments' => $calendar->user->currentWorkspace?->canAcceptPayments() ?? false,

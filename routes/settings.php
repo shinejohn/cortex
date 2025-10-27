@@ -25,7 +25,7 @@ Route::middleware('auth')->group(function () use ($passwordEnabled) {
     }
 
     Route::get('settings/appearance', function () {
-        return Inertia::render('settings/appearance');
+        return Inertia::render('event-city/settings/appearance');
     })->name('appearance');
 
     // Workspace billing settings routes

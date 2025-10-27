@@ -184,7 +184,7 @@ final class VenueController extends Controller
         // Get upcoming events at venues (mock data for now)
         $upcomingEvents = [];
 
-        return Inertia::render('venues', [
+        return Inertia::render('event-city/venues', [
             'venues' => $venues,
             'trendingVenues' => $trendingVenues,
             'newVenues' => $newVenues,
@@ -259,7 +259,7 @@ final class VenueController extends Controller
 
         $venues = $query->paginate(12)->withQueryString();
 
-        return Inertia::render('Venues/Index', [
+        return Inertia::render('event-city/venues/Index', [
             'venues' => $venues,
             'filters' => $request->only(['status', 'venue_type', 'verified', 'search', 'capacity_min', 'capacity_max', 'rating_min']),
             'sort' => ['sort' => $sortBy, 'direction' => $sortDirection],
@@ -297,7 +297,7 @@ final class VenueController extends Controller
                 ->exists();
         }
 
-        return Inertia::render('venues/show', [
+        return Inertia::render('event-city/venues/show', [
             'venue' => $venue,
             'ratingStats' => $ratingStats,
             'isFollowing' => $isFollowing,
@@ -346,7 +346,7 @@ final class VenueController extends Controller
 
         $this->authorize('create', Venue::class);
 
-        return Inertia::render('venues/create', [
+        return Inertia::render('event-city/venues/create', [
             'workspace' => [
                 'can_accept_payments' => $currentWorkspace->canAcceptPayments(),
             ],
@@ -391,7 +391,7 @@ final class VenueController extends Controller
     {
         $this->authorize('update', $venue);
 
-        return Inertia::render('venues/edit', [
+        return Inertia::render('event-city/venues/edit', [
             'venue' => $venue,
         ]);
     }

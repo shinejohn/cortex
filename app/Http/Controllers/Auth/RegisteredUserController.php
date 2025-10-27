@@ -23,7 +23,7 @@ final class RegisteredUserController extends Controller
      */
     public function create(Request $request): Response
     {
-        return Inertia::render('auth/register', [
+        return Inertia::render('event-city/auth/register', [
             'providers' => config('makerkit.auth.socialite.providers'),
             'magicLinkEnabled' => config('makerkit.auth.magiclink.enabled'),
             'invitation' => $request->query('invitation'),

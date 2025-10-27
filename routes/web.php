@@ -54,7 +54,7 @@ Route::get('/events/{event}/tickets', [TicketPageController::class, 'selection']
 // Community routes (publicly accessible)
 Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
 Route::get('/community/impact', function () {
-    return Inertia::render('Community/Impact');
+    return Inertia::render('event-city/community/impact');
 })->name('community.impact');
 Route::get('/community/{id}', [CommunityController::class, 'show'])->name('community.show');
 Route::get('/community/{id}/thread/{threadId}', [CommunityController::class, 'showThread'])->name('community.thread.show');

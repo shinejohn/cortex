@@ -84,7 +84,7 @@ final class TicketPageController extends Controller
             ->take(6)
             ->values();
 
-        return Inertia::render('tickets/index', [
+        return Inertia::render('event-city/tickets/index', [
             'events' => $events,
             'featuredEvents' => $featuredEvents,
             'filters' => [
@@ -113,7 +113,7 @@ final class TicketPageController extends Controller
             }]);
         }
 
-        return Inertia::render('tickets/ticket-selection', [
+        return Inertia::render('event-city/tickets/ticket-selection', [
             'event' => $event,
             'ticketPlans' => $event->ticketPlans,
         ]);
@@ -126,7 +126,7 @@ final class TicketPageController extends Controller
             ->latest()
             ->get();
 
-        return Inertia::render('tickets/my-tickets', [
+        return Inertia::render('event-city/tickets/my-tickets', [
             'orders' => $orders,
         ]);
     }

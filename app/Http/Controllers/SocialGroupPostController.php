@@ -29,7 +29,7 @@ final class SocialGroupPostController extends Controller
             ->orderByDesc('created_at')
             ->paginate(20);
 
-        return Inertia::render('social/groups/posts', [
+        return Inertia::render('event-city/social/groups/posts', [
             'group' => [
                 ...$group->toArray(),
                 'user_membership' => $group->members()->where('user_id', $user->id)->first(),
@@ -82,7 +82,7 @@ final class SocialGroupPostController extends Controller
 
         $post->load(['user', 'group']);
 
-        return Inertia::render('social/groups/post-show', [
+        return Inertia::render('event-city/social/groups/post-show', [
             'group' => [
                 ...$group->toArray(),
                 'user_membership' => $group->members()->where('user_id', $user->id)->first(),

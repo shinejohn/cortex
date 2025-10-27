@@ -55,7 +55,7 @@ final class CommunityController extends Controller
         // Get showcase data from featured communities or recent events
         $showcaseData = $this->getShowcaseData();
 
-        return Inertia::render('community/index', [
+        return Inertia::render('event-city/community/index', [
             'communities' => $communities,
             'showcaseData' => $showcaseData,
         ]);
@@ -149,7 +149,7 @@ final class CommunityController extends Controller
             ];
         });
 
-        return Inertia::render('community/show', [
+        return Inertia::render('event-city/community/show', [
             'community' => [
                 'id' => $community->id,
                 'name' => $community->name,
@@ -181,7 +181,7 @@ final class CommunityController extends Controller
 
         $community = Community::where('id', $id)->active()->firstOrFail();
 
-        return Inertia::render('community/create-thread', [
+        return Inertia::render('event-city/community/create-thread', [
             'community' => [
                 'id' => $community->id,
                 'name' => $community->name,
@@ -253,7 +253,7 @@ final class CommunityController extends Controller
             return $this->transformReplyToFrontend($reply, $request->user());
         });
 
-        return Inertia::render('community/thread', [
+        return Inertia::render('event-city/community/thread', [
             'community' => [
                 'id' => $community->id,
                 'name' => $community->name,

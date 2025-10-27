@@ -54,7 +54,7 @@ final class OrderController extends Controller
                 'items_count' => $order->items->count(),
             ]);
 
-        return Inertia::render('orders/index', [
+        return Inertia::render('event-city/orders/index', [
             'orders' => $orders,
             'filters' => $request->only('status', 'payment_status'),
         ]);
@@ -73,7 +73,7 @@ final class OrderController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        return Inertia::render('orders/show', [
+        return Inertia::render('event-city/orders/show', [
             'order' => [
                 'id' => $order->id,
                 'order_number' => $order->order_number,
@@ -249,7 +249,7 @@ final class OrderController extends Controller
      */
     public function success(Request $request, Order $order): Response
     {
-        return Inertia::render('checkout/success', [
+        return Inertia::render('event-city/checkout/success', [
             'order' => [
                 'id' => $order->id,
                 'order_number' => $order->order_number,
@@ -263,7 +263,7 @@ final class OrderController extends Controller
      */
     public function cancel(Request $request, Order $order): Response
     {
-        return Inertia::render('checkout/cancel', [
+        return Inertia::render('event-city/checkout/cancel', [
             'order' => [
                 'id' => $order->id,
                 'order_number' => $order->order_number,

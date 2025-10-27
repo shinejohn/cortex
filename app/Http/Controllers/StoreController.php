@@ -53,7 +53,7 @@ final class StoreController extends Controller
                 ]),
             ]);
 
-        return Inertia::render('stores/index', [
+        return Inertia::render('event-city/stores/index', [
             'stores' => $stores,
             'filters' => $request->only('search'),
         ]);
@@ -87,7 +87,7 @@ final class StoreController extends Controller
                 'created_at' => $store->created_at,
             ]);
 
-        return Inertia::render('stores/my-stores', [
+        return Inertia::render('event-city/stores/my-stores', [
             'stores' => $stores,
         ]);
     }
@@ -97,7 +97,7 @@ final class StoreController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('stores/create');
+        return Inertia::render('event-city/stores/create');
     }
 
     /**
@@ -162,7 +162,7 @@ final class StoreController extends Controller
 
         $isOwner = $request->user()?->isMemberOfWorkspace($store->workspace_id) ?? false;
 
-        return Inertia::render('stores/show', [
+        return Inertia::render('event-city/stores/show', [
             'store' => [
                 'id' => $store->id,
                 'name' => $store->name,
@@ -188,7 +188,7 @@ final class StoreController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        return Inertia::render('stores/edit', [
+        return Inertia::render('event-city/stores/edit', [
             'store' => [
                 'id' => $store->id,
                 'name' => $store->name,
