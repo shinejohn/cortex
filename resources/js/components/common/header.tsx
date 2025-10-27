@@ -43,7 +43,7 @@ interface NavItem {
     readonly highlight?: boolean;
 }
 
-const MOBILE_NAV_ITEMS: NavItem[] = [
+const getMobileNavItems = (): NavItem[] => [
     {
         title: "Events",
         href: route("events"),
@@ -222,6 +222,7 @@ function MobileNavigation({ auth, location }: MobileNavigationProps) {
     const user = auth.user;
     const { props } = usePage<SharedData>();
     const sharedNotifications = props.notifications;
+    const mobileNavItems = getMobileNavItems();
 
     return (
         <Sheet>
@@ -249,7 +250,7 @@ function MobileNavigation({ auth, location }: MobileNavigationProps) {
 
                     {/* Navigation Items */}
                     <nav className="space-y-2">
-                        {MOBILE_NAV_ITEMS.map((item) => (
+                        {mobileNavItems.map((item) => (
                             <Button key={item.href} variant="ghost" onClick={() => navigate(item.href)} className="w-full justify-start gap-3">
                                 {item.icon}
                                 <span>{item.title}</span>
