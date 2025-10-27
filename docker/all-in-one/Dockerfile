@@ -66,6 +66,9 @@ USER root
 RUN docker-php-serversideup-set-id www-data $USER_ID:$GROUP_ID && \
     docker-php-serversideup-set-file-permissions --owner $USER_ID:$GROUP_ID --service nginx
 
+# Install the intl extension with root permissions
+RUN install-php-extensions intl
+
 # Install PostgreSQL repository and keys
 RUN apk add --no-cache gnupg && \
     mkdir -p /usr/share/keyrings && \
