@@ -22,6 +22,9 @@ ARG GROUP_ID
 RUN docker-php-serversideup-set-id www-data $USER_ID:$GROUP_ID && \
     docker-php-serversideup-set-file-permissions --owner $USER_ID:$GROUP_ID --service nginx
 
+# Install the intl extension with root permissions
+RUN install-php-extensions intl
+
 WORKDIR /var/www/html
 COPY --chown=www-data:www-data composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --no-plugins --no-scripts --prefer-dist
