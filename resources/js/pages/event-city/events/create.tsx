@@ -1,6 +1,8 @@
+import { GoogleMapsProvider } from "@/components/providers/google-maps-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { GooglePlacesAutocomplete, type PlaceResult } from "@/components/ui/google-places-autocomplete";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,6 +52,8 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
         price_max: "",
         latitude: "",
         longitude: "",
+        google_place_id: "",
+        postal_code: "",
         venue_id: "",
         performer_id: "",
         curator_notes: "",
@@ -97,10 +101,12 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
             formDataToSend.append("description", formData.description);
             formDataToSend.append("category", formData.category);
             formDataToSend.append("is_free", isFree ? "1" : "0");
-            formDataToSend.append("price_min", isFree ? "0" : (formData.price_min || ""));
-            formDataToSend.append("price_max", isFree ? "0" : (formData.price_max || ""));
+            formDataToSend.append("price_min", isFree ? "0" : formData.price_min || "");
+            formDataToSend.append("price_max", isFree ? "0" : formData.price_max || "");
             formDataToSend.append("latitude", formData.latitude || "");
             formDataToSend.append("longitude", formData.longitude || "");
+            formDataToSend.append("google_place_id", formData.google_place_id || "");
+            formDataToSend.append("postal_code", formData.postal_code || "");
             formDataToSend.append("curator_notes", formData.curator_notes);
 
             // Append arrays as JSON
@@ -220,6 +226,23 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
         setNewPerformer((prev) => ({
             ...prev,
             genres: prev.genres.filter((g) => g !== genre),
+        }));
+    };
+
+    const handleEventPlaceSelected = (place: PlaceResult) => {
+        setFormData((prev) => ({
+            ...prev,
+            latitude: place.latitude.toString(),
+            longitude: place.longitude.toString(),
+            google_place_id: place.placeId,
+            postal_code: place.postalCode || "",
+        }));
+    };
+
+    const handleNewVenuePlaceSelected = (place: PlaceResult) => {
+        setNewVenue((prev) => ({
+            ...prev,
+            address: place.formattedAddress,
         }));
     };
 
@@ -397,7 +420,8 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                                 {!workspace.can_accept_payments && (
                                     <div className="rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-4">
                                         <p className="text-sm text-amber-800 dark:text-amber-200">
-                                            <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect to set paid pricing. Only free events (price = $0.00) are allowed until approval. Contact support for approval.
+                                            <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect to set paid
+                                            pricing. Only free events (price = $0.00) are allowed until approval. Contact support for approval.
                                         </p>
                                     </div>
                                 )}
@@ -530,17 +554,14 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                                             </div>
                                         </div>
 
-                                        <div>
-                                            <Label htmlFor="new_venue_address">Address *</Label>
-                                            <Input
-                                                id="new_venue_address"
-                                                type="text"
-                                                placeholder="Enter full address"
-                                                value={newVenue.address}
-                                                onChange={(e) => handleNewVenueChange("address", e.target.value)}
-                                                className="mt-1"
+                                        <GoogleMapsProvider>
+                                            <GooglePlacesAutocomplete
+                                                onPlaceSelected={handleNewVenuePlaceSelected}
+                                                defaultValue={newVenue.address}
+                                                label="Venue Address"
+                                                placeholder="Search for venue address..."
                                             />
-                                        </div>
+                                        </GoogleMapsProvider>
                                     </TabsContent>
                                 </Tabs>
                             </CardContent>
@@ -642,33 +663,38 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                                 <CardTitle>Location</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
+                                <GoogleMapsProvider>
+                                    <GooglePlacesAutocomplete
+                                        onPlaceSelected={handleEventPlaceSelected}
+                                        label="Event Location"
+                                        placeholder="Search for event location..."
+                                        required
+                                    />
+                                </GoogleMapsProvider>
+
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <Label htmlFor="latitude">Latitude *</Label>
+                                        <Label htmlFor="latitude">Latitude</Label>
                                         <Input
                                             id="latitude"
-                                            type="number"
-                                            step="any"
-                                            placeholder="e.g., 40.7128"
+                                            type="text"
+                                            placeholder="Auto-filled from location"
                                             value={formData.latitude}
-                                            onChange={(e) => handleInputChange("latitude", e.target.value)}
-                                            required
-                                            className="mt-1"
+                                            readOnly
+                                            className="mt-1 bg-muted"
                                         />
                                         {errors.latitude && <p className="text-sm text-red-500 mt-1">{errors.latitude}</p>}
                                     </div>
 
                                     <div>
-                                        <Label htmlFor="longitude">Longitude *</Label>
+                                        <Label htmlFor="longitude">Longitude</Label>
                                         <Input
                                             id="longitude"
-                                            type="number"
-                                            step="any"
-                                            placeholder="e.g., -74.0060"
+                                            type="text"
+                                            placeholder="Auto-filled from location"
                                             value={formData.longitude}
-                                            onChange={(e) => handleInputChange("longitude", e.target.value)}
-                                            required
-                                            className="mt-1"
+                                            readOnly
+                                            className="mt-1 bg-muted"
                                         />
                                         {errors.longitude && <p className="text-sm text-red-500 mt-1">{errors.longitude}</p>}
                                     </div>

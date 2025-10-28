@@ -57,7 +57,7 @@ export default function StoresIndex({ auth, stores, filters }: StoresIndexProps)
             {
                 preserveState: true,
                 replace: true,
-            }
+            },
         );
     };
 
@@ -136,11 +136,7 @@ export default function StoresIndex({ auth, stores, filters }: StoresIndexProps)
                                             {/* Store Banner/Logo */}
                                             <div className="relative h-48 bg-muted">
                                                 {store.banner ? (
-                                                    <img
-                                                        src={`/storage/${store.banner}`}
-                                                        alt={store.name}
-                                                        className="w-full h-full object-cover"
-                                                    />
+                                                    <img src={`/storage/${store.banner}`} alt={store.name} className="w-full h-full object-cover" />
                                                 ) : (
                                                     <div className="flex items-center justify-center h-full">
                                                         <StoreIcon className="h-16 w-16 text-muted-foreground" />
@@ -148,18 +144,16 @@ export default function StoresIndex({ auth, stores, filters }: StoresIndexProps)
                                                 )}
                                                 {store.logo && (
                                                     <div className="absolute -bottom-8 left-4 w-16 h-16 rounded-full bg-background border-4 border-background overflow-hidden">
-                                                        <img
-                                                            src={`/storage/${store.logo}`}
-                                                            alt={store.name}
-                                                            className="w-full h-full object-cover"
-                                                        />
+                                                        <img src={`/storage/${store.logo}`} alt={store.name} className="w-full h-full object-cover" />
                                                     </div>
                                                 )}
                                             </div>
 
                                             <CardHeader className={cn("space-y-2", store.logo && "pt-10")}>
                                                 <CardTitle className="line-clamp-1">{store.name}</CardTitle>
-                                                <CardDescription className="line-clamp-2">{store.description || "No description available"}</CardDescription>
+                                                <CardDescription className="line-clamp-2">
+                                                    {store.description || "No description available"}
+                                                </CardDescription>
                                             </CardHeader>
 
                                             <CardContent className="space-y-4">
@@ -174,10 +168,7 @@ export default function StoresIndex({ auth, stores, filters }: StoresIndexProps)
                                                 {store.products.length > 0 && (
                                                     <div className="grid grid-cols-4 gap-2">
                                                         {store.products.slice(0, 4).map((product) => (
-                                                            <div
-                                                                key={product.id}
-                                                                className="aspect-square rounded-md bg-muted overflow-hidden"
-                                                            >
+                                                            <div key={product.id} className="aspect-square rounded-md bg-muted overflow-hidden">
                                                                 {product.images?.[0] ? (
                                                                     <img
                                                                         src={`/storage/${product.images[0]}`}
@@ -228,13 +219,9 @@ export default function StoresIndex({ auth, stores, filters }: StoresIndexProps)
                     ) : (
                         <div className="text-center py-16">
                             <StoreIcon className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                            <h3 className="text-xl font-semibold mb-2">
-                                {filters.search ? "No stores found" : "No stores available yet"}
-                            </h3>
+                            <h3 className="text-xl font-semibold mb-2">{filters.search ? "No stores found" : "No stores available yet"}</h3>
                             <p className="text-muted-foreground mb-6">
-                                {filters.search
-                                    ? "Try adjusting your search criteria"
-                                    : "Check back soon for amazing stores from our sellers!"}
+                                {filters.search ? "Try adjusting your search criteria" : "Check back soon for amazing stores from our sellers!"}
                             </p>
                             {auth.user && !filters.search && (
                                 <Link href={route("stores.create")}>

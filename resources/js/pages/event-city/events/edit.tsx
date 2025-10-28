@@ -60,7 +60,7 @@ interface Props {
 export default function EditEvent({ event, venues, performers, workspace = { can_accept_payments: true } }: Props) {
     const [formData, setFormData] = useState({
         title: event.title,
-        event_date: event.event_date.split('T')[0], // Convert datetime to date
+        event_date: event.event_date.split("T")[0], // Convert datetime to date
         time: event.time,
         description: event.description,
         category: event.category,
@@ -118,8 +118,8 @@ export default function EditEvent({ event, venues, performers, workspace = { can
             formDataToSend.append("description", formData.description);
             formDataToSend.append("category", formData.category);
             formDataToSend.append("is_free", isFree ? "1" : "0");
-            formDataToSend.append("price_min", isFree ? "0" : (formData.price_min || ""));
-            formDataToSend.append("price_max", isFree ? "0" : (formData.price_max || ""));
+            formDataToSend.append("price_min", isFree ? "0" : formData.price_min || "");
+            formDataToSend.append("price_max", isFree ? "0" : formData.price_max || "");
             formDataToSend.append("latitude", formData.latitude || "");
             formDataToSend.append("longitude", formData.longitude || "");
             formDataToSend.append("curator_notes", formData.curator_notes);
@@ -421,7 +421,8 @@ export default function EditEvent({ event, venues, performers, workspace = { can
                                 {!workspace.can_accept_payments && (
                                     <div className="rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-4">
                                         <p className="text-sm text-amber-800 dark:text-amber-200">
-                                            <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect to set paid pricing. Only free events (price = $0.00) are allowed until approval. Contact support for approval.
+                                            <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect to set paid
+                                            pricing. Only free events (price = $0.00) are allowed until approval. Contact support for approval.
                                         </p>
                                     </div>
                                 )}

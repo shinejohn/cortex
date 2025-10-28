@@ -33,6 +33,8 @@ final class Venue extends Model
         'neighborhood',
         'latitude',
         'longitude',
+        'google_place_id',
+        'postal_code',
         'amenities',
         'event_types',
         'unavailable_dates',

@@ -1,13 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -100,9 +93,7 @@ export function RoleManagement({ calendarId, editors, ownerId }: RoleManagementP
                         <DialogContent>
                             <DialogHeader>
                                 <DialogTitle>Add Editor</DialogTitle>
-                                <DialogDescription>
-                                    Add a new editor or admin to help manage this calendar
-                                </DialogDescription>
+                                <DialogDescription>Add a new editor or admin to help manage this calendar</DialogDescription>
                             </DialogHeader>
                             <form onSubmit={handleAddEditor} className="space-y-4">
                                 <div>
@@ -116,9 +107,7 @@ export function RoleManagement({ calendarId, editors, ownerId }: RoleManagementP
                                         required
                                         className="mt-1"
                                     />
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                        Enter the numeric user ID of the person you want to add
-                                    </p>
+                                    <p className="text-xs text-muted-foreground mt-1">Enter the numeric user ID of the person you want to add</p>
                                 </div>
 
                                 <div>

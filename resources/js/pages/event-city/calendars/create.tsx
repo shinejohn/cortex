@@ -191,9 +191,7 @@ export default function CreateCalendar({ workspace }: Props) {
                                                 ))}
                                             </SelectContent>
                                         </Select>
-                                        {errors.update_frequency && (
-                                            <p className="text-sm text-red-500 mt-1">{errors.update_frequency}</p>
-                                        )}
+                                        {errors.update_frequency && <p className="text-sm text-red-500 mt-1">{errors.update_frequency}</p>}
                                     </div>
                                 </div>
 
@@ -246,8 +244,8 @@ export default function CreateCalendar({ workspace }: Props) {
                                 {!workspace.can_accept_payments && (
                                     <div className="rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-4">
                                         <p className="text-sm text-amber-800 dark:text-amber-200">
-                                            <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect before
-                                            you can set paid pricing. Until then, all calendars must be free ($0.00).
+                                            <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect before you can
+                                            set paid pricing. Until then, all calendars must be free ($0.00).
                                         </p>
                                     </div>
                                 )}
@@ -274,9 +272,7 @@ export default function CreateCalendar({ workspace }: Props) {
                                             ? "Must be free ($0.00) until workspace is approved for payments"
                                             : "Set to $0.00 for a free calendar"}
                                     </p>
-                                    {errors.subscription_price && (
-                                        <p className="text-sm text-red-500 mt-1">{errors.subscription_price}</p>
-                                    )}
+                                    {errors.subscription_price && <p className="text-sm text-red-500 mt-1">{errors.subscription_price}</p>}
                                 </div>
 
                                 <div className="flex items-center space-x-2">
@@ -289,9 +285,7 @@ export default function CreateCalendar({ workspace }: Props) {
                                         Make this calendar private
                                     </Label>
                                 </div>
-                                <p className="text-xs text-muted-foreground">
-                                    Private calendars are only visible to you and people you invite
-                                </p>
+                                <p className="text-xs text-muted-foreground">Private calendars are only visible to you and people you invite</p>
                             </CardContent>
                         </Card>
 

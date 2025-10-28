@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Events\Schemas;
 
+use App\Filament\Forms\Components\GooglePlacesAutocomplete;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
@@ -62,16 +63,32 @@ final class EventForm
                             ->preload()
                             ->createOptionForm([
                                 TextInput::make('name')->required(),
-                                TextInput::make('address')->required(),
+                                GooglePlacesAutocomplete::make('address')
+                                    ->required()
+                                    ->placeholder('Start typing an address...')
+                                    ->latitudeField('latitude')
+                                    ->longitudeField('longitude'),
+                                TextInput::make('latitude')
+                                    ->numeric()
+                                    ->disabled()
+                                    ->dehydrated(),
+                                TextInput::make('longitude')
+                                    ->numeric()
+                                    ->disabled()
+                                    ->dehydrated(),
                             ]),
 
                         TextInput::make('latitude')
+                            ->label('Event Latitude')
                             ->numeric()
-                            ->step(0.00000001),
+                            ->step(0.00000001)
+                            ->helperText('Optional: Override venue coordinates for this event'),
 
                         TextInput::make('longitude')
+                            ->label('Event Longitude')
                             ->numeric()
-                            ->step(0.00000001),
+                            ->step(0.00000001)
+                            ->helperText('Optional: Override venue coordinates for this event'),
                     ])
                     ->columns(3),
 

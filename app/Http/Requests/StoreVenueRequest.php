@@ -32,6 +32,8 @@ final class StoreVenueRequest extends FormRequest
             'neighborhood' => ['nullable', 'string', 'max:100'],
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
+            'google_place_id' => ['nullable', 'string', 'max:255'],
+            'postal_code' => ['nullable', 'string', 'max:20'],
             'amenities' => ['nullable', 'array'],
             'amenities.*' => ['string', 'max:100'],
             'event_types' => ['nullable', 'array'],

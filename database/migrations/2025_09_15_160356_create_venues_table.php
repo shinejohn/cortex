@@ -36,6 +36,8 @@ return new class extends Migration
             $table->string('neighborhood')->nullable();
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
+            $table->string('google_place_id')->nullable()->index();
+            $table->string('postal_code')->nullable();
 
             // Additional venue information
             $table->json('amenities')->nullable(); // Array of amenities

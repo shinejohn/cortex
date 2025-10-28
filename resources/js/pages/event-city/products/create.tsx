@@ -158,7 +158,8 @@ export default function CreateProduct({ auth, store }: CreateProductProps) {
                                 {!store.workspace.can_accept_payments && (
                                     <div className="rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-4">
                                         <p className="text-sm text-amber-800 dark:text-amber-200">
-                                            <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect to set paid pricing. Only free products (price = $0.00) are allowed until approval. Contact support for approval.
+                                            <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect to set paid
+                                            pricing. Only free products (price = $0.00) are allowed until approval. Contact support for approval.
                                         </p>
                                     </div>
                                 )}

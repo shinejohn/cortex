@@ -92,19 +92,13 @@ export function CalendarFilters({ filters, onFilterChange, onClose }: CalendarFi
 
             {/* Category Filter */}
             <div className="border-b border-border pb-4 mb-4">
-                <button
-                    className="flex items-center justify-between w-full text-left"
-                    onClick={() => toggleSection("category")}
-                >
+                <button className="flex items-center justify-between w-full text-left" onClick={() => toggleSection("category")}>
                     <div className="flex items-center">
                         <TagIcon className="h-5 w-5 text-muted-foreground mr-2" />
                         <h3 className="text-base font-medium">Category</h3>
                     </div>
                     <ChevronDownIcon
-                        className={cn(
-                            "h-5 w-5 text-muted-foreground transition-transform",
-                            expandedSections.category && "transform rotate-180"
-                        )}
+                        className={cn("h-5 w-5 text-muted-foreground transition-transform", expandedSections.category && "transform rotate-180")}
                     />
                 </button>
                 {expandedSections.category && (
@@ -130,19 +124,13 @@ export function CalendarFilters({ filters, onFilterChange, onClose }: CalendarFi
 
             {/* Followers Filter */}
             <div className="border-b border-border pb-4 mb-4">
-                <button
-                    className="flex items-center justify-between w-full text-left"
-                    onClick={() => toggleSection("followers")}
-                >
+                <button className="flex items-center justify-between w-full text-left" onClick={() => toggleSection("followers")}>
                     <div className="flex items-center">
                         <UsersIcon className="h-5 w-5 text-muted-foreground mr-2" />
                         <h3 className="text-base font-medium">Followers</h3>
                     </div>
                     <ChevronDownIcon
-                        className={cn(
-                            "h-5 w-5 text-muted-foreground transition-transform",
-                            expandedSections.followers && "transform rotate-180"
-                        )}
+                        className={cn("h-5 w-5 text-muted-foreground transition-transform", expandedSections.followers && "transform rotate-180")}
                     />
                 </button>
                 {expandedSections.followers && (
@@ -181,19 +169,13 @@ export function CalendarFilters({ filters, onFilterChange, onClose }: CalendarFi
 
             {/* Update Frequency Filter */}
             <div className="border-b border-border pb-4 mb-4">
-                <button
-                    className="flex items-center justify-between w-full text-left"
-                    onClick={() => toggleSection("updates")}
-                >
+                <button className="flex items-center justify-between w-full text-left" onClick={() => toggleSection("updates")}>
                     <div className="flex items-center">
                         <ClockIcon className="h-5 w-5 text-muted-foreground mr-2" />
                         <h3 className="text-base font-medium">Update Frequency</h3>
                     </div>
                     <ChevronDownIcon
-                        className={cn(
-                            "h-5 w-5 text-muted-foreground transition-transform",
-                            expandedSections.updates && "transform rotate-180"
-                        )}
+                        className={cn("h-5 w-5 text-muted-foreground transition-transform", expandedSections.updates && "transform rotate-180")}
                     />
                 </button>
                 {expandedSections.updates && (
@@ -225,10 +207,7 @@ export function CalendarFilters({ filters, onFilterChange, onClose }: CalendarFi
                         <h3 className="text-base font-medium">Price</h3>
                     </div>
                     <ChevronDownIcon
-                        className={cn(
-                            "h-5 w-5 text-muted-foreground transition-transform",
-                            expandedSections.price && "transform rotate-180"
-                        )}
+                        className={cn("h-5 w-5 text-muted-foreground transition-transform", expandedSections.price && "transform rotate-180")}
                     />
                 </button>
                 {expandedSections.price && (

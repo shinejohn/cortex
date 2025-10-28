@@ -100,7 +100,7 @@ export default function OrdersIndex({ auth, orders, filters }: OrdersIndexProps)
             {
                 preserveState: true,
                 replace: true,
-            }
+            },
         );
     };
 
@@ -213,10 +213,7 @@ export default function OrdersIndex({ auth, orders, filters }: OrdersIndexProps)
                                                         </div>
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Link
-                                                            href={route("stores.show", order.store.slug)}
-                                                            className="hover:underline text-primary"
-                                                        >
+                                                        <Link href={route("stores.show", order.store.slug)} className="hover:underline text-primary">
                                                             {order.store.name}
                                                         </Link>
                                                     </TableCell>

@@ -35,6 +35,8 @@ final class StoreEventRequest extends FormRequest
             'price_max' => ['required_if:is_free,false', 'nullable', 'numeric', 'min:0', 'gte:price_min'],
             'latitude' => ['required', 'numeric', 'between:-90,90'],
             'longitude' => ['required', 'numeric', 'between:-180,180'],
+            'google_place_id' => ['nullable', 'string', 'max:255'],
+            'postal_code' => ['nullable', 'string', 'max:20'],
             'venue_id' => ['nullable', 'exists:venues,id'],
             'performer_id' => ['nullable', 'exists:performers,id'],
             'new_venue' => ['nullable', 'array'],

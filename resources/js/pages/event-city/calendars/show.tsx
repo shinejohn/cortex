@@ -1,7 +1,7 @@
+import { RoleManagement } from "@/components/calendars/role-management";
 import { FollowButton } from "@/components/common/follow-button";
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
-import { RoleManagement } from "@/components/calendars/role-management";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -131,20 +131,12 @@ export default function CalendarShow() {
 
             {/* Hero Section */}
             <div className="relative h-96 overflow-hidden">
-                <img
-                    src={calendar.image || "/images/calendar-placeholder.jpg"}
-                    alt={calendar.title}
-                    className="w-full h-full object-cover"
-                />
+                <img src={calendar.image || "/images/calendar-placeholder.jpg"} alt={calendar.title} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-40" />
                 <div className="absolute bottom-0 left-0 right-0 p-8">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-white">
-                            <Button
-                                variant="ghost"
-                                onClick={handleBack}
-                                className="mb-4 text-white hover:text-gray-200 hover:bg-white/10 p-2"
-                            >
+                            <Button variant="ghost" onClick={handleBack} className="mb-4 text-white hover:text-gray-200 hover:bg-white/10 p-2">
                                 <ArrowLeft className="h-4 w-4 mr-1" />
                                 Back to Calendars
                             </Button>
@@ -202,9 +194,7 @@ export default function CalendarShow() {
                         </div>
                         <div className="flex items-center text-sm text-gray-700">
                             <DollarSign className="h-4 w-4 text-green-500 mr-1" />
-                            {Number(calendar.subscription_price) > 0
-                                ? `$${Number(calendar.subscription_price).toFixed(2)}/month`
-                                : "Free"}
+                            {Number(calendar.subscription_price) > 0 ? `$${Number(calendar.subscription_price).toFixed(2)}/month` : "Free"}
                         </div>
                     </div>
                 </div>
@@ -303,9 +293,7 @@ export default function CalendarShow() {
                                                             />
                                                         </div>
                                                         <div className="ml-4 flex-1">
-                                                            <h5 className="text-base font-medium text-gray-900 line-clamp-1">
-                                                                {event.title}
-                                                            </h5>
+                                                            <h5 className="text-base font-medium text-gray-900 line-clamp-1">{event.title}</h5>
                                                             <p className="text-sm text-gray-500 mt-1">
                                                                 {formatEventDate(event.event_date)} • {event.time}
                                                             </p>
@@ -347,17 +335,13 @@ export default function CalendarShow() {
                                         <div className="space-y-4">
                                             <div>
                                                 <h4 className="text-sm font-medium text-gray-900 mb-2">Description</h4>
-                                                <p className="text-gray-700 leading-relaxed">
-                                                    {calendar.description || "No description available."}
-                                                </p>
+                                                <p className="text-gray-700 leading-relaxed">{calendar.description || "No description available."}</p>
                                             </div>
 
                                             {calendar.about && (
                                                 <div className="border-t border-gray-200 pt-4">
                                                     <h4 className="text-sm font-medium text-gray-900 mb-2">More Details</h4>
-                                                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                                                        {calendar.about}
-                                                    </p>
+                                                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{calendar.about}</p>
                                                 </div>
                                             )}
 
@@ -366,15 +350,11 @@ export default function CalendarShow() {
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div>
                                                         <p className="text-xs text-gray-500">Total Events</p>
-                                                        <p className="text-lg font-semibold text-gray-900">
-                                                            {calendar.events_count}
-                                                        </p>
+                                                        <p className="text-lg font-semibold text-gray-900">{calendar.events_count}</p>
                                                     </div>
                                                     <div>
                                                         <p className="text-xs text-gray-500">Followers</p>
-                                                        <p className="text-lg font-semibold text-gray-900">
-                                                            {calendar.followers_count}
-                                                        </p>
+                                                        <p className="text-lg font-semibold text-gray-900">{calendar.followers_count}</p>
                                                     </div>
                                                     <div>
                                                         <p className="text-xs text-gray-500">Category</p>
@@ -421,9 +401,7 @@ export default function CalendarShow() {
                                                                 </div>
                                                                 <div>
                                                                     <p className="font-medium text-gray-900">{editor.name}</p>
-                                                                    <p className="text-xs text-gray-500 capitalize">
-                                                                        {editor.pivot.role}
-                                                                    </p>
+                                                                    <p className="text-xs text-gray-500 capitalize">{editor.pivot.role}</p>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -447,10 +425,8 @@ export default function CalendarShow() {
                                                                     className="h-full w-full object-cover"
                                                                 />
                                                             </div>
-                                            <div>
-                                                                <p className="text-sm font-medium text-gray-900">
-                                                                    {follower.name}
-                                                                </p>
+                                                            <div>
+                                                                <p className="text-sm font-medium text-gray-900">{follower.name}</p>
                                                             </div>
                                                         </div>
                                                     ))}
@@ -465,11 +441,7 @@ export default function CalendarShow() {
 
                             {canEdit && (
                                 <TabsContent value="roles" className="mt-6">
-                                    <RoleManagement
-                                        calendarId={calendar.id}
-                                        editors={calendar.editors || []}
-                                        ownerId={parseInt(calendar.user.id)}
-                                    />
+                                    <RoleManagement calendarId={calendar.id} editors={calendar.editors || []} ownerId={parseInt(calendar.user.id)} />
                                 </TabsContent>
                             )}
                         </Tabs>
@@ -539,10 +511,7 @@ export default function CalendarShow() {
                                 <div className="flex items-center">
                                     <div className="h-12 w-12 rounded-full bg-gray-200 overflow-hidden mr-3">
                                         <img
-                                            src={
-                                                calendar.user.avatar ||
-                                                `https://ui-avatars.com/api/?name=${encodeURIComponent(calendar.user.name)}`
-                                            }
+                                            src={calendar.user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(calendar.user.name)}`}
                                             alt={calendar.user.name}
                                             className="h-full w-full object-cover"
                                         />
@@ -572,9 +541,7 @@ export default function CalendarShow() {
                                             className="flex items-start hover:bg-gray-50 p-2 -mx-2 rounded-md"
                                         >
                                             <div className="flex-shrink-0 w-10 text-center">
-                                                <div className="text-sm font-bold text-gray-900">
-                                                    {new Date(event.event_date).getDate()}
-                                                </div>
+                                                <div className="text-sm font-bold text-gray-900">{new Date(event.event_date).getDate()}</div>
                                                 <div className="text-xs text-gray-500">
                                                     {new Date(event.event_date).toLocaleDateString("en-US", {
                                                         month: "short",
@@ -582,9 +549,7 @@ export default function CalendarShow() {
                                                 </div>
                                             </div>
                                             <div className="ml-3 flex-1">
-                                                <h5 className="text-sm font-medium text-gray-900 line-clamp-1">
-                                                    {event.title}
-                                                </h5>
+                                                <h5 className="text-sm font-medium text-gray-900 line-clamp-1">{event.title}</h5>
                                                 <div className="text-xs text-gray-500 flex items-center mt-1">
                                                     <Clock className="h-3 w-3 mr-1" />
                                                     {event.time}
@@ -600,12 +565,7 @@ export default function CalendarShow() {
                                         </Link>
                                     ))}
                                     <Separator />
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="w-full text-indigo-600"
-                                        onClick={() => setActiveTab("events")}
-                                    >
+                                    <Button variant="ghost" size="sm" className="w-full text-indigo-600" onClick={() => setActiveTab("events")}>
                                         View all events
                                         <ArrowRight className="h-4 w-4 ml-1" />
                                     </Button>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Venues\Schemas;
 
+use App\Filament\Forms\Components\GooglePlacesAutocomplete;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -97,24 +98,38 @@ final class VenueForm
 
                 Section::make('Location')
                     ->schema([
-                        TextInput::make('address')
-                            ->maxLength(500)
+                        GooglePlacesAutocomplete::make('address')
+                            ->label('Address')
+                            ->placeholder('Start typing an address...')
+                            ->latitudeField('latitude')
+                            ->longitudeField('longitude')
+                            ->neighborhoodField('neighborhood')
                             ->columnSpanFull(),
 
                         TextInput::make('neighborhood')
-                            ->maxLength(255),
+                            ->label('Neighborhood')
+                            ->maxLength(255)
+                            ->helperText('Auto-filled from address or enter manually'),
 
                         TextInput::make('latitude')
+                            ->label('Latitude')
                             ->numeric()
                             ->step(0.00000001)
                             ->minValue(-90)
-                            ->maxValue(90),
+                            ->maxValue(90)
+                            ->disabled()
+                            ->dehydrated()
+                            ->helperText('Auto-filled from address'),
 
                         TextInput::make('longitude')
+                            ->label('Longitude')
                             ->numeric()
                             ->step(0.00000001)
                             ->minValue(-180)
-                            ->maxValue(180),
+                            ->maxValue(180)
+                            ->disabled()
+                            ->dehydrated()
+                            ->helperText('Auto-filled from address'),
                     ])
                     ->columns(3),
 

@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Auth } from "@/types";
 import { Head, Link, router } from "@inertiajs/react";
-import { Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
+import axios from "axios";
+import { ArrowLeft, ShoppingBag, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { route } from "ziggy-js";
-import axios from "axios";
 
 interface CartItem {
     id: string;
@@ -60,7 +60,7 @@ export default function CartIndex({ auth, cart }: Props) {
                         return next;
                     });
                 },
-            }
+            },
         );
     };
 
@@ -96,9 +96,7 @@ export default function CartIndex({ auth, cart }: Props) {
                             <ShoppingBag className="h-12 w-12 text-muted-foreground" />
                         </div>
                         <h2 className="text-2xl font-semibold mb-3">Your cart is empty</h2>
-                        <p className="text-muted-foreground mb-8">
-                            Looks like you haven't added anything to your cart yet
-                        </p>
+                        <p className="text-muted-foreground mb-8">Looks like you haven't added anything to your cart yet</p>
                         <Link href={route("shop.discover")}>
                             <Button size="lg">Start Shopping</Button>
                         </Link>
@@ -133,9 +131,7 @@ export default function CartIndex({ auth, cart }: Props) {
                         <div className="lg:col-span-7">
                             <div className="space-y-6">
                                 {cart.items.map((item) => {
-                                    const imageUrl = item.product.images?.[0]
-                                        ? `/storage/${item.product.images[0]}`
-                                        : "/placeholder-product.jpg";
+                                    const imageUrl = item.product.images?.[0] ? `/storage/${item.product.images[0]}` : "/placeholder-product.jpg";
                                     const isUpdating = updatingItems.has(item.id);
 
                                     return (
@@ -150,11 +146,7 @@ export default function CartIndex({ auth, cart }: Props) {
                                                     className="flex-shrink-0"
                                                 >
                                                     <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden bg-muted border">
-                                                        <img
-                                                            src={imageUrl}
-                                                            alt={item.product.name}
-                                                            className="w-full h-full object-cover"
-                                                        />
+                                                        <img src={imageUrl} alt={item.product.name} className="w-full h-full object-cover" />
                                                     </div>
                                                 </Link>
 
@@ -179,21 +171,15 @@ export default function CartIndex({ auth, cart }: Props) {
                                                             </Link>
 
                                                             {!item.product.is_in_stock && (
-                                                                <p className="text-sm text-destructive mt-2">
-                                                                    Out of stock
-                                                                </p>
+                                                                <p className="text-sm text-destructive mt-2">Out of stock</p>
                                                             )}
                                                         </div>
 
                                                         {/* Price - Desktop */}
                                                         <div className="hidden sm:block text-right">
-                                                            <p className="font-semibold">
-                                                                ${item.total.toFixed(2)}
-                                                            </p>
+                                                            <p className="font-semibold">${item.total.toFixed(2)}</p>
                                                             {item.quantity > 1 && (
-                                                                <p className="text-sm text-muted-foreground">
-                                                                    ${item.price.toFixed(2)} each
-                                                                </p>
+                                                                <p className="text-sm text-muted-foreground">${item.price.toFixed(2)} each</p>
                                                             )}
                                                         </div>
                                                     </div>
@@ -203,9 +189,7 @@ export default function CartIndex({ auth, cart }: Props) {
                                                         {/* Quantity Selector */}
                                                         <div className="flex items-center border rounded-lg">
                                                             <button
-                                                                onClick={() =>
-                                                                    updateQuantity(item.id, item.quantity - 1)
-                                                                }
+                                                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                                                 disabled={isUpdating || item.quantity <= 1}
                                                                 className="px-3 py-2 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                                             >
@@ -215,9 +199,7 @@ export default function CartIndex({ auth, cart }: Props) {
                                                                 {item.quantity}
                                                             </span>
                                                             <button
-                                                                onClick={() =>
-                                                                    updateQuantity(item.id, item.quantity + 1)
-                                                                }
+                                                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
                                                                 disabled={isUpdating}
                                                                 className="px-3 py-2 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                                             >
@@ -239,9 +221,7 @@ export default function CartIndex({ auth, cart }: Props) {
                                                     <div className="sm:hidden mt-3">
                                                         <p className="font-semibold">${item.total.toFixed(2)}</p>
                                                         {item.quantity > 1 && (
-                                                            <p className="text-sm text-muted-foreground">
-                                                                ${item.price.toFixed(2)} each
-                                                            </p>
+                                                            <p className="text-sm text-muted-foreground">${item.price.toFixed(2)} each</p>
                                                         )}
                                                     </div>
                                                 </div>
@@ -277,9 +257,7 @@ export default function CartIndex({ auth, cart }: Props) {
 
                                     <div className="flex justify-between">
                                         <span className="font-semibold">Total</span>
-                                        <span className="font-semibold text-lg">
-                                            ${cart.total.toFixed(2)}
-                                        </span>
+                                        <span className="font-semibold text-lg">${cart.total.toFixed(2)}</span>
                                     </div>
                                 </div>
 
@@ -293,15 +271,11 @@ export default function CartIndex({ auth, cart }: Props) {
                                 </Button>
 
                                 {cart.items.some((item) => !item.product.is_in_stock) && (
-                                    <p className="text-sm text-destructive mt-4 text-center">
-                                        Remove out of stock items to continue
-                                    </p>
+                                    <p className="text-sm text-destructive mt-4 text-center">Remove out of stock items to continue</p>
                                 )}
 
                                 <div className="mt-6 pt-6 border-t">
-                                    <p className="text-xs text-muted-foreground text-center">
-                                        Secure checkout powered by Stripe
-                                    </p>
+                                    <p className="text-xs text-muted-foreground text-center">Secure checkout powered by Stripe</p>
                                 </div>
                             </div>
                         </div>

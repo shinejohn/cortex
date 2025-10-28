@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Auth } from "@/types";
 import { Head, Link, router } from "@inertiajs/react";
-import { ArrowLeft, Check, Edit, ShoppingCart, Store as StoreIcon, Lock, Truck, Shield } from "lucide-react";
-import { useState } from "react";
-import { route } from "ziggy-js";
 import axios from "axios";
+import { ArrowLeft, Check, Edit, Lock, Shield, ShoppingCart, Store as StoreIcon, Truck } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
+import { route } from "ziggy-js";
 
 interface Product {
     id: string;
@@ -133,11 +133,7 @@ export default function ProductShow({ auth, product, store, is_owner }: ProductS
                         <div className="space-y-4 lg:sticky lg:top-4">
                             {/* Main Image */}
                             <div className="aspect-square rounded-xl overflow-hidden bg-muted border">
-                                <img
-                                    src={images[selectedImage]}
-                                    alt={product.name}
-                                    className="w-full h-full object-cover"
-                                />
+                                <img src={images[selectedImage]} alt={product.name} className="w-full h-full object-cover" />
                             </div>
 
                             {/* Thumbnail Gallery */}
@@ -153,11 +149,7 @@ export default function ProductShow({ auth, product, store, is_owner }: ProductS
                                                     : "border-border hover:border-primary/50"
                                             }`}
                                         >
-                                            <img
-                                                src={image}
-                                                alt={`${product.name} ${index + 1}`}
-                                                className="w-full h-full object-cover"
-                                            />
+                                            <img src={image} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover" />
                                         </button>
                                     ))}
                                 </div>
@@ -172,11 +164,7 @@ export default function ProductShow({ auth, product, store, is_owner }: ProductS
                                 className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
                             >
                                 {store.logo ? (
-                                    <img
-                                        src={store.logo}
-                                        alt={store.name}
-                                        className="w-6 h-6 rounded-full object-cover"
-                                    />
+                                    <img src={store.logo} alt={store.name} className="w-6 h-6 rounded-full object-cover" />
                                 ) : (
                                     <StoreIcon className="h-4 w-4" />
                                 )}
@@ -186,9 +174,7 @@ export default function ProductShow({ auth, product, store, is_owner }: ProductS
                             {/* Product Name */}
                             <h1 className="text-3xl lg:text-4xl font-bold mb-4">{product.name}</h1>
 
-                            {product.sku && (
-                                <p className="text-sm text-muted-foreground mb-4">SKU: {product.sku}</p>
-                            )}
+                            {product.sku && <p className="text-sm text-muted-foreground mb-4">SKU: {product.sku}</p>}
 
                             {/* Price */}
                             <div className="mb-6">
@@ -199,11 +185,7 @@ export default function ProductShow({ auth, product, store, is_owner }: ProductS
                                             <span className="text-xl text-muted-foreground line-through">
                                                 {formatPrice(product.compare_at_price)}
                                             </span>
-                                            {product.discount_percentage && (
-                                                <Badge variant="destructive">
-                                                    {product.discount_percentage}% off
-                                                </Badge>
-                                            )}
+                                            {product.discount_percentage && <Badge variant="destructive">{product.discount_percentage}% off</Badge>}
                                         </>
                                     )}
                                 </div>
@@ -218,9 +200,7 @@ export default function ProductShow({ auth, product, store, is_owner }: ProductS
                                         <Check className="h-5 w-5" />
                                         <span className="font-medium">In stock</span>
                                         {product.quantity !== null && product.quantity <= 10 && (
-                                            <span className="text-sm text-muted-foreground">
-                                                ({product.quantity} available)
-                                            </span>
+                                            <span className="text-sm text-muted-foreground">({product.quantity} available)</span>
                                         )}
                                     </div>
                                 ) : (
@@ -232,10 +212,7 @@ export default function ProductShow({ auth, product, store, is_owner }: ProductS
 
                             {is_owner ? (
                                 <div className="space-y-3">
-                                    <Link
-                                        href={route("products.edit", { store: store.id, product: product.id })}
-                                        className="block"
-                                    >
+                                    <Link href={route("products.edit", { store: store.id, product: product.id })} className="block">
                                         <Button className="w-full" size="lg">
                                             <Edit className="h-5 w-5 mr-2" />
                                             Edit Product
@@ -260,15 +237,10 @@ export default function ProductShow({ auth, product, store, is_owner }: ProductS
                                             >
                                                 −
                                             </button>
-                                            <span className="px-6 py-3 text-sm font-medium min-w-[4rem] text-center border-x">
-                                                {quantity}
-                                            </span>
+                                            <span className="px-6 py-3 text-sm font-medium min-w-[4rem] text-center border-x">{quantity}</span>
                                             <button
                                                 onClick={increaseQuantity}
-                                                disabled={
-                                                    !product.is_in_stock ||
-                                                    (product.quantity !== null && quantity >= product.quantity)
-                                                }
+                                                disabled={!product.is_in_stock || (product.quantity !== null && quantity >= product.quantity)}
                                                 className="px-4 py-3 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                             >
                                                 +
@@ -278,28 +250,13 @@ export default function ProductShow({ auth, product, store, is_owner }: ProductS
 
                                     {/* Action Buttons */}
                                     <div className="space-y-3 mb-8">
-                                        <Button
-                                            className="w-full"
-                                            size="lg"
-                                            disabled={!product.is_in_stock || isAddingToCart}
-                                            onClick={addToCart}
-                                        >
+                                        <Button className="w-full" size="lg" disabled={!product.is_in_stock || isAddingToCart} onClick={addToCart}>
                                             <ShoppingCart className="h-5 w-5 mr-2" />
-                                            {isAddingToCart
-                                                ? "Adding..."
-                                                : product.is_in_stock
-                                                ? "Add to cart"
-                                                : "Out of stock"}
+                                            {isAddingToCart ? "Adding..." : product.is_in_stock ? "Add to cart" : "Out of stock"}
                                         </Button>
 
                                         {product.is_in_stock && (
-                                            <Button
-                                                variant="outline"
-                                                className="w-full"
-                                                size="lg"
-                                                disabled={isAddingToCart}
-                                                onClick={buyNow}
-                                            >
+                                            <Button variant="outline" className="w-full" size="lg" disabled={isAddingToCart} onClick={buyNow}>
                                                 Buy it now
                                             </Button>
                                         )}
@@ -338,9 +295,7 @@ export default function ProductShow({ auth, product, store, is_owner }: ProductS
                                     <Separator className="my-6" />
                                     <div>
                                         <h2 className="text-lg font-semibold mb-3">Description</h2>
-                                        <p className="text-muted-foreground whitespace-pre-line leading-relaxed">
-                                            {product.description}
-                                        </p>
+                                        <p className="text-muted-foreground whitespace-pre-line leading-relaxed">{product.description}</p>
                                     </div>
                                 </>
                             )}

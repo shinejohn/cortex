@@ -122,9 +122,7 @@ export function CartDropdown({ initialItemCount = 0 }: CartDropdownProps) {
                     <>
                         <ScrollArea className="max-h-[300px]">
                             {cartItems.slice(0, 5).map((item) => {
-                                const imageUrl = item.product.images?.[0]
-                                    ? `/storage/${item.product.images[0]}`
-                                    : "/placeholder-product.jpg";
+                                const imageUrl = item.product.images?.[0] ? `/storage/${item.product.images[0]}` : "/placeholder-product.jpg";
 
                                 return (
                                     <DropdownMenuItem key={item.id} asChild className="cursor-pointer">
@@ -135,11 +133,7 @@ export function CartDropdown({ initialItemCount = 0 }: CartDropdownProps) {
                                             })}
                                             className="flex items-start gap-3 p-3"
                                         >
-                                            <img
-                                                src={imageUrl}
-                                                alt={item.product.name}
-                                                className="size-12 rounded-md object-cover flex-shrink-0"
-                                            />
+                                            <img src={imageUrl} alt={item.product.name} className="size-12 rounded-md object-cover flex-shrink-0" />
                                             <div className="flex-1 min-w-0">
                                                 <p className="text-sm font-medium truncate">{item.product.name}</p>
                                                 <p className="text-xs text-muted-foreground">

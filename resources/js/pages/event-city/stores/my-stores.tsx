@@ -6,18 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { cn } from "@/lib/utils";
 import { Auth } from "@/types";
 import { Head, Link, router } from "@inertiajs/react";
-import {
-    AlertCircle,
-    CheckCircle,
-    Clock,
-    CreditCard,
-    Edit,
-    Package,
-    Plus,
-    ShoppingCart,
-    Store as StoreIcon,
-    XCircle,
-} from "lucide-react";
+import { AlertCircle, CheckCircle, Clock, CreditCard, Edit, Package, Plus, ShoppingCart, Store as StoreIcon, XCircle } from "lucide-react";
 import { route } from "ziggy-js";
 
 interface Store {
@@ -42,25 +31,24 @@ interface MyStoresProps {
 
 export default function MyStores({ auth, stores }: MyStoresProps) {
     const getStatusBadge = (status: Store["status"]) => {
-        const variants: Record<Store["status"], { variant: "default" | "secondary" | "destructive" | "outline"; icon: React.ReactNode }> =
-            {
-                pending: {
-                    variant: "secondary",
-                    icon: <Clock className="h-3 w-3 mr-1" />,
-                },
-                approved: {
-                    variant: "default",
-                    icon: <CheckCircle className="h-3 w-3 mr-1" />,
-                },
-                rejected: {
-                    variant: "destructive",
-                    icon: <XCircle className="h-3 w-3 mr-1" />,
-                },
-                suspended: {
-                    variant: "outline",
-                    icon: <AlertCircle className="h-3 w-3 mr-1" />,
-                },
-            };
+        const variants: Record<Store["status"], { variant: "default" | "secondary" | "destructive" | "outline"; icon: React.ReactNode }> = {
+            pending: {
+                variant: "secondary",
+                icon: <Clock className="h-3 w-3 mr-1" />,
+            },
+            approved: {
+                variant: "default",
+                icon: <CheckCircle className="h-3 w-3 mr-1" />,
+            },
+            rejected: {
+                variant: "destructive",
+                icon: <XCircle className="h-3 w-3 mr-1" />,
+            },
+            suspended: {
+                variant: "outline",
+                icon: <AlertCircle className="h-3 w-3 mr-1" />,
+            },
+        };
 
         const config = variants[status];
         return (
@@ -128,11 +116,7 @@ export default function MyStores({ auth, stores }: MyStoresProps) {
                                             <div className="flex items-center gap-3">
                                                 {store.logo ? (
                                                     <div className="w-12 h-12 rounded-full overflow-hidden bg-muted">
-                                                        <img
-                                                            src={`/storage/${store.logo}`}
-                                                            alt={store.name}
-                                                            className="w-full h-full object-cover"
-                                                        />
+                                                        <img src={`/storage/${store.logo}`} alt={store.name} className="w-full h-full object-cover" />
                                                     </div>
                                                 ) : (
                                                     <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
@@ -189,12 +173,7 @@ export default function MyStores({ auth, stores }: MyStoresProps) {
                                                 </Link>
                                             )}
                                             {!store.can_accept_payments && store.status === "approved" && (
-                                                <Button
-                                                    asChild
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="w-full flex-1"
-                                                >
+                                                <Button asChild variant="outline" size="sm" className="w-full flex-1">
                                                     <a href={route("stores.connect-stripe", store.id)} target="_blank" rel="noopener noreferrer">
                                                         <CreditCard className="h-4 w-4 mr-1" />
                                                         Setup Stripe

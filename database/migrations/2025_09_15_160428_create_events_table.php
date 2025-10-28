@@ -41,6 +41,8 @@ return new class extends Migration
             // Location
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
+            $table->string('google_place_id')->nullable()->index();
+            $table->string('postal_code')->nullable();
 
             // Relationships - workspace-centric
             $table->foreignUuid('venue_id')->nullable()->constrained('venues')->onDelete('set null');

@@ -43,9 +43,7 @@ interface EditProductProps {
 }
 
 export default function EditProduct({ auth, product, store }: EditProductProps) {
-    const [imagePreviews, setImagePreviews] = useState<string[]>(
-        product.images?.map((img) => `/storage/${img}`) || []
-    );
+    const [imagePreviews, setImagePreviews] = useState<string[]>(product.images?.map((img) => `/storage/${img}`) || []);
     const [removedImages, setRemovedImages] = useState<string[]>([]);
 
     const { data, setData, post, processing, errors } = useForm({
@@ -183,7 +181,8 @@ export default function EditProduct({ auth, product, store }: EditProductProps) 
                                 {!store.workspace.can_accept_payments && (
                                     <div className="rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-4">
                                         <p className="text-sm text-amber-800 dark:text-amber-200">
-                                            <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect to set paid pricing. Only free products (price = $0.00) are allowed until approval. Contact support for approval.
+                                            <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect to set paid
+                                            pricing. Only free products (price = $0.00) are allowed until approval. Contact support for approval.
                                         </p>
                                     </div>
                                 )}
@@ -285,19 +284,14 @@ export default function EditProduct({ auth, product, store }: EditProductProps) 
                                             const imagePath = isExisting ? product.images![index] : "";
 
                                             return (
-                                                <div
-                                                    key={index}
-                                                    className="relative aspect-square rounded-lg overflow-hidden border-2 border-border"
-                                                >
+                                                <div key={index} className="relative aspect-square rounded-lg overflow-hidden border-2 border-border">
                                                     <img src={preview} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" />
                                                     <Button
                                                         type="button"
                                                         variant="destructive"
                                                         size="icon"
                                                         className="absolute top-1 right-1 h-6 w-6"
-                                                        onClick={() =>
-                                                            isExisting ? removeExistingImage(index, imagePath) : removeNewImage(index)
-                                                        }
+                                                        onClick={() => (isExisting ? removeExistingImage(index, imagePath) : removeNewImage(index))}
                                                     >
                                                         <X className="h-4 w-4" />
                                                     </Button>

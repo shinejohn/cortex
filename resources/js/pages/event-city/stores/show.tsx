@@ -74,7 +74,7 @@ export default function StoreShow({ auth, store, products, filters }: StoreShowP
             {
                 preserveState: true,
                 replace: true,
-            }
+            },
         );
     };
 
@@ -85,7 +85,7 @@ export default function StoreShow({ auth, store, products, filters }: StoreShowP
             {
                 preserveState: true,
                 replace: true,
-            }
+            },
         );
     };
 
@@ -157,11 +157,7 @@ export default function StoreShow({ auth, store, products, filters }: StoreShowP
                             <AlertTitle className="text-amber-900 dark:text-amber-100">Complete Stripe Connect Setup</AlertTitle>
                             <AlertDescription className="text-amber-800 dark:text-amber-200">
                                 <p className="mb-3">You need to complete your Stripe Connect onboarding to start accepting payments.</p>
-                                <Button
-                                    asChild
-                                    size="sm"
-                                    className="bg-amber-600 hover:bg-amber-700 text-white"
-                                >
+                                <Button asChild size="sm" className="bg-amber-600 hover:bg-amber-700 text-white">
                                     <a href={route("stores.connect-stripe", store.id)} target="_blank" rel="noopener noreferrer">
                                         {store.stripe_connect_id ? "Continue Setup" : "Start Stripe Setup"}
                                     </a>
@@ -318,9 +314,7 @@ export default function StoreShow({ auth, store, products, filters }: StoreShowP
                     ) : (
                         <div className="text-center py-16">
                             <Package className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                            <h3 className="text-xl font-semibold mb-2">
-                                {filters.search ? "No products found" : "No products yet"}
-                            </h3>
+                            <h3 className="text-xl font-semibold mb-2">{filters.search ? "No products found" : "No products yet"}</h3>
                             <p className="text-muted-foreground mb-6">
                                 {filters.search
                                     ? "Try adjusting your search criteria"

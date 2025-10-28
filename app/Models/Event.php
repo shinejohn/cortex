@@ -43,6 +43,8 @@ final class Event extends Model
         'curator_notes',
         'latitude',
         'longitude',
+        'google_place_id',
+        'postal_code',
         'venue_id',
         'performer_id',
         'workspace_id',
