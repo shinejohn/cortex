@@ -412,7 +412,9 @@ We're using Laravel routing to serve all three parts on seperate domains.
 
 Each corresponding UI folder exists in the following manner:
 
-- GoEventCity: resources/js/pages/event-city
-- DayNews: resources/js/pages/day-news
-- DowntownGuide: resources/js/pages/downtown-guide
+- GoEventCity: resources/js/pages/event-city, resources/js/components/event-city
+- DayNews: resources/js/pages/day-news, resources/js/components/day-news
+- DowntownGuide: resources/js/pages/downtown-guide, resources/js/components/downtown-guide
+
+When creating new pages or components, ensure they are placed in the correct folder based on which part of the project they belong to.
 </project-location-guidelines>

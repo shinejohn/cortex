@@ -23,7 +23,7 @@ final class ReviewResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedStar;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Reviews & Ratings';
+    protected static string|UnitEnum|null $navigationGroup = 'Go Event City';
 
     protected static ?int $navigationSort = 1;
 

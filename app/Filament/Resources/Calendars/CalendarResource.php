@@ -23,7 +23,7 @@ final class CalendarResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Calendars';
+    protected static string|UnitEnum|null $navigationGroup = 'Go Event City';
 
     protected static ?int $navigationSort = 1;
 

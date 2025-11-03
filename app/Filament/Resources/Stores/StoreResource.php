@@ -25,7 +25,7 @@ final class StoreResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShoppingBag;
 
-    protected static string|UnitEnum|null $navigationGroup = 'E-Commerce';
+    protected static string|UnitEnum|null $navigationGroup = 'Go Event City';
 
     protected static ?int $navigationSort = 1;
 

@@ -23,7 +23,7 @@ final class TicketOrderResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTicket;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Tickets';
+    protected static string|UnitEnum|null $navigationGroup = 'Go Event City';
 
     protected static ?int $navigationSort = 1;
 

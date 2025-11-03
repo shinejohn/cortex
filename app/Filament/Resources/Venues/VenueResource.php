@@ -23,7 +23,7 @@ final class VenueResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Events & Venues';
+    protected static string|UnitEnum|null $navigationGroup = 'Go Event City';
 
     protected static ?int $navigationSort = 2;
 

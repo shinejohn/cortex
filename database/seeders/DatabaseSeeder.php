@@ -91,5 +91,11 @@ final class DatabaseSeeder extends Seeder
         $this->call([
             EcommerceSeeder::class,
         ]);
+
+        // Seed region and news data
+        $this->call([
+            RegionSeeder::class,
+            NewsSeeder::class,
+        ]);
     }
 }
