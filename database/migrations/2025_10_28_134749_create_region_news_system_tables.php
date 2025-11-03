@@ -24,12 +24,15 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->integer('display_order')->default(0);
             $table->json('metadata')->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
             $table->timestamps();
 
             $table->index('slug');
             $table->index('type');
             $table->index('parent_id');
             $table->index('is_active');
+            $table->index(['latitude', 'longitude']);
         });
 
         // Add self-referencing foreign key after table creation

@@ -400,3 +400,19 @@ export default function Edit() {
 - Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
 - Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test` with a specific filename or filter.
 </laravel-boost-guidelines>
+
+<project-location-guidelines>
+This project is divided into three parts:
+
+- Go Event City
+- Day News
+- Downtown Guide
+
+We're using Laravel routing to serve all three parts on seperate domains.
+
+Each corresponding UI folder exists in the following manner:
+
+- GoEventCity: resources/js/pages/event-city
+- DayNews: resources/js/pages/day-news
+- DowntownGuide: resources/js/pages/downtown-guide
+</project-location-guidelines>

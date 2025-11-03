@@ -25,6 +25,8 @@ final class Region extends Model
         'is_active',
         'display_order',
         'metadata',
+        'latitude',
+        'longitude',
     ];
 
     public function parent(): BelongsTo
@@ -129,6 +131,8 @@ final class Region extends Model
         return [
             'is_active' => 'boolean',
             'metadata' => 'array',
+            'latitude' => 'decimal:7',
+            'longitude' => 'decimal:7',
         ];
     }
 }

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Middleware\DetectAppDomain;
+use App\Http\Middleware\DetectUserLocation;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\WorkspaceMiddleware;
@@ -51,6 +52,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             DetectAppDomain::class,
+            DetectUserLocation::class,
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,

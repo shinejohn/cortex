@@ -30,6 +30,8 @@ final class RegionFactory extends Factory
             'is_active' => fake()->boolean(90),
             'display_order' => fake()->numberBetween(0, 100),
             'metadata' => null,
+            'latitude' => fake()->latitude(),
+            'longitude' => fake()->longitude(),
         ];
     }
 

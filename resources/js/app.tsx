@@ -5,10 +5,8 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { hydrateRoot } from "react-dom/client";
 import { initializeTheme } from "./hooks/use-appearance";
 
-const appName = import.meta.env.VITE_APP_NAME || "GoEventCity";
-
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => `${title}`,
     resolve: (name) => resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob("./pages/**/*.tsx")),
     setup({ el, App, props }) {
         const root = hydrateRoot(el, <App {...props} />);

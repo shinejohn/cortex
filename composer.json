@@ -16,6 +16,7 @@
         "laravel/tinker": "^2.10.1",
         "nunomaduro/essentials": "^0.1",
         "sentry/sentry-laravel": "^4.15",
+        "stevebauman/location": "^7.6",
         "stripe/stripe-php": "^18.0",
         "tightenco/ziggy": "^2.4"
     },

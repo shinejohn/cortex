@@ -1,0 +1,172 @@
+import { Link } from "@inertiajs/react";
+import { Bell, Menu, User } from "lucide-react";
+import { useState } from "react";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+import type { Auth } from "@/types";
+import LocationSelector from "./location-selector";
+
+interface DayNewsHeaderProps {
+    auth?: Auth;
+}
+
+const navigationTabs = [
+    { title: "News", href: "/news" },
+    { title: "Announcements", href: "/announcements" },
+    { title: "Events", href: "/events" },
+    { title: "Legal Notices", href: "/legal-notices" },
+    { title: "Business", href: "/business" },
+    { title: "Classifieds", href: "/classifieds" },
+    { title: "Coupons", href: "/coupons" },
+    { title: "Photos", href: "/photos" },
+];
+
+const actionButtons = [
+    { title: "Write", href: "/write" },
+    { title: "Post Ad", href: "/post-ad" },
+    { title: "Announce", href: "/announce" },
+    { title: "Notice", href: "/notice" },
+    { title: "Schedule", href: "/schedule" },
+];
+
+export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    return (
+        <header className="border-b bg-background sticky top-0 z-50">
+            {/* Top Bar */}
+            <div className="border-b">
+                <div className="container mx-auto px-4">
+                    <div className="flex h-16 items-center justify-between">
+                        {/* Left: Logo */}
+                        <Link href="/" className="flex items-center gap-2">
+                            <span className="text-2xl font-bold">Day News</span>
+                        </Link>
+
+                        {/* Right: Location Search, Notifications, User */}
+                        <div className="flex items-center gap-3">
+                            {/* Location Search - Hidden on mobile */}
+                            <div className="hidden md:block w-64">
+                                <LocationSelector />
+                            </div>
+
+                            {/* Notification Bell */}
+                            <Button variant="ghost" size="icon" className="relative">
+                                <Bell className="size-5" />
+                                <span className="sr-only">Notifications</span>
+                            </Button>
+
+                            {/* User Button */}
+                            {auth?.user ? (
+                                <Button variant="ghost" size="icon">
+                                    <Avatar className="size-8">
+                                        <AvatarImage src={auth.user.avatar_url} alt={auth.user.name} />
+                                        <AvatarFallback>
+                                            {auth.user.name
+                                                .split(" ")
+                                                .map((n) => n[0])
+                                                .join("")
+                                                .toUpperCase()}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <span className="sr-only">User menu</span>
+                                </Button>
+                            ) : (
+                                <Button variant="ghost" size="icon">
+                                    <User className="size-5" />
+                                    <span className="sr-only">Sign in</span>
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Navigation Bar */}
+            <div className="border-b">
+                <div className="container mx-auto px-4">
+                    <div className="flex h-12 items-center justify-between">
+                        {/* Mobile Menu Toggle */}
+                        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                            <SheetTrigger asChild>
+                                <Button variant="ghost" size="icon" className="md:hidden">
+                                    <Menu className="size-5" />
+                                    <span className="sr-only">Toggle menu</span>
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="left" className="w-80">
+                                <SheetHeader>
+                                    <SheetTitle>Menu</SheetTitle>
+                                </SheetHeader>
+                                <div className="mt-6 flex flex-col gap-4">
+                                    <div className="flex flex-col gap-2">
+                                        <h3 className="text-sm font-semibold text-muted-foreground">Navigation</h3>
+                                        {navigationTabs.map((tab) => (
+                                            <Link
+                                                key={tab.href}
+                                                href={tab.href}
+                                                className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+                                                onClick={() => setMobileMenuOpen(false)}
+                                            >
+                                                {tab.title}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <h3 className="text-sm font-semibold text-muted-foreground">Actions</h3>
+                                        {actionButtons.map((action) => (
+                                            <Link
+                                                key={action.href}
+                                                href={action.href}
+                                                className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+                                                onClick={() => setMobileMenuOpen(false)}
+                                            >
+                                                {action.title}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                    <div className="md:hidden">
+                                        <h3 className="mb-2 text-sm font-semibold text-muted-foreground">Location</h3>
+                                        <LocationSelector />
+                                    </div>
+                                </div>
+                            </SheetContent>
+                        </Sheet>
+
+                        {/* Desktop Navigation Tabs - Left */}
+                        <NavigationMenu className="hidden md:flex">
+                            <NavigationMenuList>
+                                {navigationTabs.map((tab) => (
+                                    <NavigationMenuItem key={tab.href}>
+                                        <Link
+                                            href={tab.href}
+                                            className={cn(
+                                                navigationMenuTriggerStyle(),
+                                                "h-12 rounded-none border-b-2 border-transparent hover:border-primary hover:bg-transparent data-[active=true]:border-primary data-[active=true]:bg-transparent",
+                                            )}
+                                        >
+                                            {tab.title}
+                                        </Link>
+                                    </NavigationMenuItem>
+                                ))}
+                            </NavigationMenuList>
+                        </NavigationMenu>
+
+                        {/* Desktop Action Buttons - Right */}
+                        <div className="hidden items-center gap-2 md:flex">
+                            {actionButtons.map((action) => (
+                                <Button key={action.href} variant="ghost" size="sm" asChild>
+                                    <Link href={action.href}>{action.title}</Link>
+                                </Button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+    );
+}

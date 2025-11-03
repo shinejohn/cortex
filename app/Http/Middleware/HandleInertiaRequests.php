@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Models\Notification;
+use App\Models\Region;
 use App\Models\User;
+use App\Services\LocationService;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -21,6 +23,10 @@ final class HandleInertiaRequests extends Middleware
      * @var string
      */
     protected $rootView = 'app';
+
+    public function __construct(
+        private readonly LocationService $locationService
+    ) {}
 
     /**
      * Determines the current asset version.
@@ -63,6 +69,7 @@ final class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'appDomain' => config('app.current_domain', 'event-city'),
+            'location' => $this->getLocationData($request),
         ];
     }
 
@@ -121,6 +128,28 @@ final class HandleInertiaRequests extends Middleware
         return [
             'notifications' => $notifications->toArray(),
             'unread_count' => $unreadCount,
+        ];
+    }
+
+    private function getLocationData(Request $request): array
+    {
+        $region = $request->attributes->get('detected_region');
+        $confirmed = $this->locationService->hasUserConfirmedLocation();
+
+        return [
+            'current_region' => $region ? $this->formatRegion($region) : null,
+            'confirmed' => $confirmed,
+        ];
+    }
+
+    private function formatRegion(Region $region): array
+    {
+        return [
+            'id' => $region->id,
+            'name' => $region->name,
+            'slug' => $region->slug,
+            'type' => $region->type,
+            'full_name' => $region->full_name,
         ];
     }
 }
