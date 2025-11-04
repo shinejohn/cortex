@@ -1,13 +1,23 @@
 import { Link } from "@inertiajs/react";
 import { Bell, Menu, User } from "lucide-react";
 import { useState } from "react";
+import { route } from "ziggy-js";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import type { Auth } from "@/types";
+import { DayNewsUserMenuContent } from "./day-news-user-menu-content";
 import LocationSelector from "./location-selector";
 
 interface DayNewsHeaderProps {
@@ -62,24 +72,49 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
 
                             {/* User Button */}
                             {auth?.user ? (
-                                <Button variant="ghost" size="icon">
-                                    <Avatar className="size-8">
-                                        <AvatarImage src={auth.user.avatar_url} alt={auth.user.name} />
-                                        <AvatarFallback>
-                                            {auth.user.name
-                                                .split(" ")
-                                                .map((n) => n[0])
-                                                .join("")
-                                                .toUpperCase()}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <span className="sr-only">User menu</span>
-                                </Button>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" size="icon">
+                                            <Avatar className="size-8">
+                                                <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
+                                                <AvatarFallback>
+                                                    {auth.user.name
+                                                        .split(" ")
+                                                        .map((n) => n[0])
+                                                        .join("")
+                                                        .toUpperCase()}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <span className="sr-only">User menu</span>
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-56">
+                                        <DayNewsUserMenuContent user={auth.user} />
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             ) : (
-                                <Button variant="ghost" size="icon">
-                                    <User className="size-5" />
-                                    <span className="sr-only">Sign in</span>
-                                </Button>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" size="icon">
+                                            <User className="size-5" />
+                                            <span className="sr-only">Sign in</span>
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-56">
+                                        <DropdownMenuLabel>Welcome to Day News</DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem asChild>
+                                            <Link href={route("login")} className="w-full">
+                                                Log In
+                                            </Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem asChild>
+                                            <Link href={route("register")} className="w-full">
+                                                Sign Up
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             )}
                         </div>
                     </div>

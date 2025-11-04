@@ -40,6 +40,7 @@ export interface SharedData {
     auth: Auth;
     ziggy: Config & { location: string };
     sidebarOpen: boolean;
+    appDomain: "event-city" | "day-news" | "downtown-guide";
     workspaces: {
         enabled: boolean;
         all: Workspace[];
