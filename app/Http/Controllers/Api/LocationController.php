@@ -54,6 +54,8 @@ final class LocationController extends Controller
                 'slug' => $region->slug,
                 'type' => $region->type,
                 'full_name' => $region->full_name,
+                'latitude' => $region->latitude,
+                'longitude' => $region->longitude,
             ],
         ]);
     }
@@ -95,6 +97,8 @@ final class LocationController extends Controller
                 'slug' => $region->slug,
                 'type' => $region->type,
                 'full_name' => $region->full_name,
+                'latitude' => $region->latitude,
+                'longitude' => $region->longitude,
             ],
         ]);
     }
@@ -129,6 +133,8 @@ final class LocationController extends Controller
                 'slug' => $region->slug,
                 'type' => $region->type,
                 'full_name' => $region->full_name,
+                'latitude' => $region->latitude,
+                'longitude' => $region->longitude,
             ]),
         ]);
     }

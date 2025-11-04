@@ -150,6 +150,8 @@ final class HandleInertiaRequests extends Middleware
             'slug' => $region->slug,
             'type' => $region->type,
             'full_name' => $region->full_name,
+            'latitude' => $region->latitude,
+            'longitude' => $region->longitude,
         ];
     }
 }

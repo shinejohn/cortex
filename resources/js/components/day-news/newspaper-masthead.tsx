@@ -1,4 +1,6 @@
 import { Badge } from "@/components/ui/badge";
+import { useWeather } from "@/hooks/day-news/use-weather";
+import { getWeatherIcon } from "@/lib/day-news/weather-icons";
 import { MapPin } from "lucide-react";
 import React from "react";
 
@@ -7,6 +9,8 @@ interface Region {
     name: string;
     type: string;
     full_name?: string;
+    latitude?: string;
+    longitude?: string;
 }
 
 interface NewspaperMastheadProps {
@@ -22,12 +26,27 @@ export default function NewspaperMasthead({ region }: NewspaperMastheadProps) {
         day: "numeric",
     });
 
+    const { weather } = useWeather(
+        region?.latitude ? Number.parseFloat(region.latitude) : null,
+        region?.longitude ? Number.parseFloat(region.longitude) : null,
+    );
+
+    const WeatherIcon = weather ? getWeatherIcon(weather.weatherCode, weather.isDay) : null;
+
     return (
         <div className="bg-background py-6">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 {/* Date and location */}
                 <div className="mb-4 flex items-center justify-between text-sm text-muted-foreground">
-                    <time dateTime={today.toISOString()}>{formattedDate}</time>
+                    <div className="flex items-center gap-3">
+                        <time dateTime={today.toISOString()}>{formattedDate}</time>
+                        {weather && WeatherIcon && (
+                            <div className="flex items-center gap-1.5">
+                                <WeatherIcon className="size-4" />
+                                <span className="font-medium">{weather.temperature}°F</span>
+                            </div>
+                        )}
+                    </div>
                     {region && (
                         <Badge variant="outline">
                             <MapPin />
