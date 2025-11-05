@@ -51,6 +51,11 @@ final class Workspace extends Model
         return $this->hasMany(Store::class);
     }
 
+    public function dayNewsPosts(): HasMany
+    {
+        return $this->hasMany(DayNewsPost::class);
+    }
+
     public function canAcceptPayments(): bool
     {
         return $this->stripe_charges_enabled

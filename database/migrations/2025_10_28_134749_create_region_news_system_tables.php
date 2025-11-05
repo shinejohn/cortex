@@ -54,37 +54,6 @@ return new class extends Migration
             $table->unique(['region_id', 'zipcode']);
             $table->index('zipcode');
         });
-
-        // News table - news articles
-        Schema::create('news', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('title');
-            $table->string('slug')->unique();
-            $table->text('content');
-            $table->text('excerpt')->nullable();
-            $table->string('featured_image')->nullable();
-            $table->foreignUuid('author_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->timestamp('published_at')->nullable();
-            $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
-            $table->integer('view_count')->default(0);
-            $table->json('metadata')->nullable();
-            $table->timestamps();
-
-            $table->index('slug');
-            $table->index('published_at');
-            $table->index('status');
-            $table->index('author_id');
-        });
-
-        // News region pivot table - many-to-many relationship
-        Schema::create('news_region', function (Blueprint $table) {
-            $table->foreignUuid('news_id')->constrained('news')->onDelete('cascade');
-            $table->foreignUuid('region_id')->constrained('regions')->onDelete('cascade');
-            $table->timestamps();
-
-            $table->primary(['news_id', 'region_id']);
-            $table->index('region_id');
-        });
     }
 
     /**
@@ -92,8 +61,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('news_region');
-        Schema::dropIfExists('news');
         Schema::dropIfExists('region_zipcodes');
         Schema::dropIfExists('regions');
     }

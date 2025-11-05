@@ -36,11 +36,11 @@ const navigationTabs = [
 ];
 
 const actionButtons = [
-    { title: "Write", href: "/write" },
-    { title: "Post Ad", href: "/post-ad" },
-    { title: "Announce", href: "/announce" },
-    { title: "Notice", href: "/notice" },
-    { title: "Schedule", href: "/schedule" },
+    { title: "Write", type: "article" },
+    { title: "Post Ad", type: "ad" },
+    { title: "Announce", type: "announcement" },
+    { title: "Notice", type: "notice" },
+    { title: "Schedule", type: "schedule" },
 ];
 
 export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
@@ -155,8 +155,8 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                                         <h3 className="text-sm font-semibold text-muted-foreground">Actions</h3>
                                         {actionButtons.map((action) => (
                                             <Link
-                                                key={action.href}
-                                                href={action.href}
+                                                key={action.type}
+                                                href={route("day-news.posts.create", { type: action.type })}
                                                 className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
                                                 onClick={() => setMobileMenuOpen(false)}
                                             >
@@ -194,8 +194,8 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                         {/* Desktop Action Buttons - Right */}
                         <div className="hidden items-center gap-2 md:flex">
                             {actionButtons.map((action) => (
-                                <Button key={action.href} variant="ghost" size="sm" asChild>
-                                    <Link href={action.href}>{action.title}</Link>
+                                <Button key={action.type} variant="ghost" size="sm" asChild>
+                                    <Link href={route("day-news.posts.create", { type: action.type })}>{action.title}</Link>
                                 </Button>
                             ))}
                         </div>

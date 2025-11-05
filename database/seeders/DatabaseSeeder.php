@@ -96,6 +96,8 @@ final class DatabaseSeeder extends Seeder
         $this->call([
             RegionSeeder::class,
             NewsSeeder::class,
+            DayNewsPostSeeder::class,
+            AdvertisementSeeder::class,
         ]);
     }
 }

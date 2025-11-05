@@ -51,4 +51,10 @@ return [
         'mock_connect' => env('STRIPE_MOCK_CONNECT', false),
     ],
 
+    'day_news' => [
+        'post_price' => env('DAY_NEWS_POST_PRICE', 1000), // $10 in cents
+        'ad_price_per_day' => env('DAY_NEWS_AD_PRICE_PER_DAY', 500), // $5 in cents
+        'free_categories' => ['demise', 'missing_person', 'emergency'],
+    ],
+
 ];

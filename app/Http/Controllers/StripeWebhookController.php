@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\DayNewsPostPayment;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Store;
+use App\Services\DayNewsPostService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -85,6 +87,14 @@ final class StripeWebhookController extends Controller
      */
     private function handleCheckoutSessionCompleted(object $session): void
     {
+        // Check if this is a Day News post payment
+        if (isset($session->metadata->payment_id)) {
+            $this->handleDayNewsPayment($session);
+
+            return;
+        }
+
+        // Otherwise, handle as ecommerce order
         $order = Order::where('stripe_payment_intent_id', $session->payment_intent)->first();
 
         if (! $order) {
@@ -191,5 +201,45 @@ final class StripeWebhookController extends Controller
 
             Log::info('Order refunded', ['order_id' => $order->id]);
         }
+    }
+
+    /**
+     * Handle Day News post payment
+     */
+    private function handleDayNewsPayment(object $session): void
+    {
+        $paymentId = $session->metadata->payment_id ?? null;
+
+        if (! $paymentId) {
+            Log::warning('Day News payment ID not found in session metadata', [
+                'session_id' => $session->id,
+            ]);
+
+            return;
+        }
+
+        $payment = DayNewsPostPayment::find($paymentId);
+
+        if (! $payment) {
+            Log::warning('Day News payment not found', [
+                'payment_id' => $paymentId,
+            ]);
+
+            return;
+        }
+
+        // Mark payment as paid
+        $payment->stripe_session_id = $session->id;
+        $payment->stripe_payment_intent_id = $session->payment_intent;
+        $payment->markAsPaid();
+
+        // Publish the post
+        $postService = app(DayNewsPostService::class);
+        $postService->publishPost($payment->post);
+
+        Log::info('Day News post payment completed', [
+            'payment_id' => $payment->id,
+            'post_id' => $payment->post_id,
+        ]);
     }
 }

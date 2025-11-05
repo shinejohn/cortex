@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\News;
+use App\Models\DayNewsPost;
 use App\Models\Region;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -13,6 +13,7 @@ final class NewsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     * Creates admin-created articles (workspace_id = null)
      */
     public function run(): void
     {
@@ -105,29 +106,32 @@ final class NewsSeeder extends Seeder
         // Combine all news
         $allNews = array_merge($chicagoNews, $napervilleNews, $auroraNews, $regionalNews);
 
-        // Create news articles
+        // Create admin news articles (workspace_id = null indicates admin-created content)
         foreach ($allNews as $index => $newsData) {
             // Generate unique seed for consistent images
             $imageSeed = rand(1, 1000);
 
-            $news = News::create([
+            $post = DayNewsPost::create([
+                'workspace_id' => null, // null = admin-created content
+                'author_id' => $author?->id,
+                'type' => 'article',
+                'category' => null,
                 'title' => $newsData['title'],
                 'slug' => \Illuminate\Support\Str::slug($newsData['title']),
                 'content' => $newsData['content'],
                 'excerpt' => $newsData['excerpt'],
                 'featured_image' => "https://picsum.photos/seed/{$imageSeed}/1200/630",
-                'author_id' => $author?->id,
                 'published_at' => now()->subDays(rand(1, 30)),
                 'status' => 'published',
                 'view_count' => rand(50, 500),
             ]);
 
             // Attach regions
-            $news->regions()->attach($newsData['regions']);
+            $post->regions()->attach($newsData['regions']);
         }
 
-        $this->command->info('News articles seeded successfully!');
-        $this->command->info('Total news articles: '.News::count());
+        $this->command->info('Admin news articles seeded successfully!');
+        $this->command->info('Total admin articles: '.DayNewsPost::whereNull('workspace_id')->count());
     }
 
     /**
