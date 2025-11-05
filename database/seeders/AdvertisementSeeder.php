@@ -6,7 +6,6 @@ namespace Database\Seeders;
 
 use App\Models\Advertisement;
 use App\Models\DayNewsPost;
-use App\Models\News;
 use App\Models\Region;
 use Illuminate\Database\Seeder;
 
@@ -28,11 +27,13 @@ final class AdvertisementSeeder extends Seeder
             return;
         }
 
-        // Get some published news and posts to advertise
-        $newsArticles = News::published()->take(3)->get();
-        $dayNewsPosts = DayNewsPost::published()->byType('ad')->take(3)->get();
+        // Get some published content to advertise
+        // Admin articles (workspace_id = null)
+        $adminArticles = DayNewsPost::whereNull('workspace_id')->published()->take(3)->get();
+        // User posts (type = 'ad')
+        $userAdPosts = DayNewsPost::published()->byType('ad')->take(3)->get();
 
-        if ($newsArticles->isEmpty() && $dayNewsPosts->isEmpty()) {
+        if ($adminArticles->isEmpty() && $userAdPosts->isEmpty()) {
             $this->command->warn('No published content found. Run NewsSeeder and DayNewsPostSeeder first.');
 
             return;
@@ -40,12 +41,12 @@ final class AdvertisementSeeder extends Seeder
 
         // Create banner ads (1 per region)
         foreach ([$chicago, $naperville, $aurora] as $region) {
-            if ($newsArticles->isNotEmpty()) {
-                $article = $newsArticles->random();
+            if ($adminArticles->isNotEmpty()) {
+                $article = $adminArticles->random();
 
                 Advertisement::create([
                     'platform' => 'day_news',
-                    'advertable_type' => News::class,
+                    'advertable_type' => DayNewsPost::class,
                     'advertable_id' => $article->id,
                     'placement' => 'banner',
                     'regions' => [$region->id],
@@ -62,8 +63,8 @@ final class AdvertisementSeeder extends Seeder
         foreach ([$chicago, $naperville, $aurora] as $region) {
             $count = rand(1, 2);
             for ($i = 0; $i < $count; $i++) {
-                if ($dayNewsPosts->isNotEmpty()) {
-                    $post = $dayNewsPosts->random();
+                if ($userAdPosts->isNotEmpty()) {
+                    $post = $userAdPosts->random();
 
                     Advertisement::create([
                         'platform' => 'day_news',
@@ -85,9 +86,9 @@ final class AdvertisementSeeder extends Seeder
         foreach ([$chicago, $naperville, $aurora] as $region) {
             $count = rand(2, 3);
             for ($i = 0; $i < $count; $i++) {
-                $advertable = rand(0, 1) === 0 && $newsArticles->isNotEmpty()
-                    ? $newsArticles->random()
-                    : ($dayNewsPosts->isNotEmpty() ? $dayNewsPosts->random() : null);
+                $advertable = rand(0, 1) === 0 && $adminArticles->isNotEmpty()
+                    ? $adminArticles->random()
+                    : ($userAdPosts->isNotEmpty() ? $userAdPosts->random() : null);
 
                 if ($advertable) {
                     Advertisement::create([
@@ -110,9 +111,9 @@ final class AdvertisementSeeder extends Seeder
         foreach ([$chicago, $naperville, $aurora] as $region) {
             $count = rand(3, 4);
             for ($i = 0; $i < $count; $i++) {
-                $advertable = rand(0, 1) === 0 && $newsArticles->isNotEmpty()
-                    ? $newsArticles->random()
-                    : ($dayNewsPosts->isNotEmpty() ? $dayNewsPosts->random() : null);
+                $advertable = rand(0, 1) === 0 && $adminArticles->isNotEmpty()
+                    ? $adminArticles->random()
+                    : ($userAdPosts->isNotEmpty() ? $userAdPosts->random() : null);
 
                 if ($advertable) {
                     Advertisement::create([
