@@ -19,7 +19,24 @@ return new class extends Migration
             $table->foreignUuid('workspace_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignUuid('author_id')->nullable()->constrained('users')->nullOnDelete();
             $table->enum('type', ['article', 'announcement', 'notice', 'ad', 'schedule']);
-            $table->enum('category', ['demise', 'missing_person', 'emergency'])->nullable();
+            $table->enum('category', [
+                'local_news',
+                'business',
+                'sports',
+                'entertainment',
+                'community',
+                'education',
+                'health',
+                'politics',
+                'crime',
+                'weather',
+                'events',
+                'obituary',
+                'missing_person',
+                'emergency',
+                'public_notice',
+                'other',
+            ])->nullable();
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('content');

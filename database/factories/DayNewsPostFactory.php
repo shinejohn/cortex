@@ -25,7 +25,24 @@ final class DayNewsPostFactory extends Factory
             'workspace_id' => \App\Models\Workspace::factory(),
             'author_id' => \App\Models\User::factory(),
             'type' => $type,
-            'category' => $this->faker->optional(0.2)->randomElement(['demise', 'missing_person', 'emergency']),
+            'category' => $this->faker->optional(0.8)->randomElement([
+                'local_news',
+                'business',
+                'sports',
+                'entertainment',
+                'community',
+                'education',
+                'health',
+                'politics',
+                'crime',
+                'weather',
+                'events',
+                'obituary',
+                'missing_person',
+                'emergency',
+                'public_notice',
+                'other',
+            ]),
             'title' => $title,
             'slug' => str($title)->slug()->toString(),
             'content' => $this->faker->paragraphs(5, true),
@@ -72,7 +89,7 @@ final class DayNewsPostFactory extends Factory
     public function freeCategory(): static
     {
         return $this->state(fn (array $attributes) => [
-            'category' => $this->faker->randomElement(['demise', 'missing_person', 'emergency']),
+            'category' => $this->faker->randomElement(['obituary', 'missing_person', 'emergency', 'public_notice']),
         ]);
     }
 }

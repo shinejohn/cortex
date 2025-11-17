@@ -57,4 +57,8 @@ return [
         'free_categories' => ['demise', 'missing_person', 'emergency'],
     ],
 
+    'n8n' => [
+        'api_key' => env('N8N_API_KEY'),
+    ],
+
 ];

@@ -20,6 +20,9 @@ final class DayNewsPost extends Model
     protected $fillable = [
         'workspace_id',
         'author_id',
+        'rss_feed_id',
+        'rss_feed_item_id',
+        'source_type',
         'type',
         'category',
         'title',
@@ -58,6 +61,16 @@ final class DayNewsPost extends Model
     public function advertisements(): MorphMany
     {
         return $this->morphMany(Advertisement::class, 'advertable');
+    }
+
+    public function rssFeed(): BelongsTo
+    {
+        return $this->belongsTo(RssFeed::class);
+    }
+
+    public function rssFeedItem(): BelongsTo
+    {
+        return $this->belongsTo(RssFeedItem::class);
     }
 
     public function scopePublished($query)

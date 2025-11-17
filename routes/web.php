@@ -87,6 +87,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/follow/status', [FollowController::class, 'checkStatus'])->name('api.follow.status');
 });
 
+// N8N Integration API routes (protected with API key authentication)
+Route::prefix('api/n8n')->name('api.n8n.')->middleware('n8n.api')->group(function () {
+    Route::get('/regions', [App\Http\Controllers\Api\N8nIntegrationController::class, 'getRegions'])->name('regions');
+    Route::post('/businesses', [App\Http\Controllers\Api\N8nIntegrationController::class, 'upsertBusiness'])->name('businesses.upsert');
+    Route::get('/businesses/{business}/feeds', [App\Http\Controllers\Api\N8nIntegrationController::class, 'getBusinessFeeds'])->name('businesses.feeds');
+    Route::post('/feeds', [App\Http\Controllers\Api\N8nIntegrationController::class, 'upsertFeed'])->name('feeds.upsert');
+    Route::get('/feeds', [App\Http\Controllers\Api\N8nIntegrationController::class, 'getAllFeeds'])->name('feeds.all');
+    Route::patch('/feeds/{feed}/health', [App\Http\Controllers\Api\N8nIntegrationController::class, 'updateFeedHealth'])->name('feeds.health');
+    Route::post('/articles', [App\Http\Controllers\Api\N8nIntegrationController::class, 'publishArticle'])->name('articles.publish');
+    Route::patch('/articles/{article}/status', [App\Http\Controllers\Api\N8nIntegrationController::class, 'updateArticleStatus'])->name('articles.status');
+});
+
 Route::middleware(['auth', 'verified'])->group(function () {
     // Resource routes for CRUD operations (excluding index, show, and create since they're defined elsewhere)
     Route::resource('venues', VenueController::class)->except(['index', 'show', 'create']);

@@ -6,6 +6,7 @@ use App\Http\Middleware\DetectAppDomain;
 use App\Http\Middleware\DetectUserLocation;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\VerifyN8nApiKey;
 use App\Http\Middleware\WorkspaceMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -48,6 +49,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->validateCsrfTokens(except: [
             'stripe/webhook',
+            'api/n8n/*',
         ]);
 
         $middleware->web(append: [
@@ -57,6 +59,10 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
             WorkspaceMiddleware::class,
+        ]);
+
+        $middleware->alias([
+            'n8n.api' => VerifyN8nApiKey::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
