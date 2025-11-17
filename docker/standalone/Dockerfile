@@ -145,6 +145,9 @@ COPY --chown=www-data:www-data artisan artisan
 
 RUN composer dump-autoload
 
+# Update the location database
+RUN php artisan location:update
+
 # Configure Nginx
 COPY docker/standalone/etc/nginx/conf.d/custom.conf /etc/nginx/conf.d/custom.conf
 COPY docker/standalone/etc/nginx/site-opts.d/http.conf /etc/nginx/site-opts.d/http.conf
