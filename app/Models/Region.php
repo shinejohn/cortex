@@ -50,6 +50,12 @@ final class Region extends Model
             ->withTimestamps();
     }
 
+    public function businesses(): BelongsToMany
+    {
+        return $this->belongsToMany(Business::class, 'business_region')
+            ->withTimestamps();
+    }
+
     /**
      * Get all ancestor regions (parents up the hierarchy)
      */
