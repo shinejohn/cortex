@@ -8,12 +8,19 @@ use App\Models\NewsFactCheck;
 use App\Models\Region;
 use App\Services\News\ArticleGenerationService;
 use App\Services\News\PrismAiService;
+use App\Services\News\UnsplashService;
 use Illuminate\Support\Facades\Config;
-use Mockery;
 
 beforeEach(function () {
-    $this->prismAiMock = Mockery::mock(PrismAiService::class);
-    $this->service = new ArticleGenerationService($this->prismAiMock);
+    // Create anonymous classes that extend the final classes for testing
+    $this->prismAiMock = Mockery::mock(PrismAiService::class)->makePartial();
+    $this->unsplashMock = Mockery::mock(UnsplashService::class)->makePartial();
+
+    // Make Unsplash return null by default (no image)
+    $this->unsplashMock->shouldReceive('searchImage')->andReturn(null)->byDefault();
+    $this->unsplashMock->shouldReceive('getRandomImage')->andReturn(null)->byDefault();
+
+    $this->service = new ArticleGenerationService($this->prismAiMock, $this->unsplashMock);
 });
 
 it('generates articles for drafts ready for generation', function () {
@@ -34,7 +41,6 @@ it('generates articles for drafts ready for generation', function () {
     $this->prismAiMock
         ->shouldReceive('generateFinalArticle')
         ->once()
-        ->with(Mockery::type('array'), Mockery::type('array'))
         ->andReturn([
             'title' => 'Generated Article Title',
             'content' => '<p>Full article content with HTML formatting.</p>',
@@ -120,12 +126,11 @@ it('includes verified fact checks in article generation', function () {
     $this->prismAiMock
         ->shouldReceive('generateFinalArticle')
         ->once()
-        ->with(
-            Mockery::type('array'),
-            Mockery::on(function ($factChecks) {
-                return count($factChecks) === 1 && $factChecks[0]['claim'] === 'Business opened in 2024';
-            })
-        )
+        ->withArgs(function ($draftData, $factChecks) {
+            return is_array($draftData) &&
+                   count($factChecks) === 1 &&
+                   $factChecks[0]['claim'] === 'Business opened in 2024';
+        })
         ->andReturn([
             'title' => 'Article Title',
             'content' => '<p>Content</p>',
@@ -185,7 +190,7 @@ it('processes multiple drafts in one region', function () {
     expect(NewsArticleDraft::where('status', 'ready_for_publishing')->count())->toBe(3);
 });
 
-it('only processes drafts in ready_for_generation status', function () {
+it('only processes drafts in selected_for_generation status', function () {
     $region = Region::factory()->create();
     $article = NewsArticle::factory()->create(['region_id' => $region->id]);
 
@@ -199,13 +204,11 @@ it('only processes drafts in ready_for_generation status', function () {
     NewsArticleDraft::factory()->readyForGeneration()->create([
         'news_article_id' => $article->id,
         'region_id' => $region->id,
-        'status' => 'ready_for_generation',
     ]);
 
     NewsArticleDraft::factory()->readyForPublishing()->create([
         'news_article_id' => $article->id,
         'region_id' => $region->id,
-        'status' => 'ready_for_publishing',
     ]);
 
     $this->prismAiMock

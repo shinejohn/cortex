@@ -41,10 +41,18 @@ final class NewsArticleDraftFactory extends Factory
     public function readyForGeneration(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'ready_for_generation',
+            'status' => 'selected_for_generation',
             'outline' => '# Test Outline\n\n## Introduction\n## Main Content\n## Conclusion',
             'fact_check_confidence' => fake()->randomFloat(2, 70, 95),
         ]);
+    }
+
+    /**
+     * Alias for readyForGeneration using old status name.
+     */
+    public function selectedForGeneration(): static
+    {
+        return $this->readyForGeneration();
     }
 
     public function readyForPublishing(): static

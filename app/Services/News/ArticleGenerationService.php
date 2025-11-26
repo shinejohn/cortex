@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Log;
 final class ArticleGenerationService
 {
     public function __construct(
-        private readonly PrismAiService $prismAi
+        private readonly PrismAiService $prismAi,
+        private readonly UnsplashService $unsplash
     ) {}
 
     /**
@@ -120,13 +121,66 @@ final class ArticleGenerationService
         $seoMetadata = $this->generateSeoMetadata($result['title'], $result['content'], $draft->topic_tags);
         $seoMetadata['keywords'] = array_merge($seoMetadata['keywords'], $result['seo_keywords'] ?? []);
 
+        // Fetch a relevant image from Unsplash
+        $imageData = $this->fetchArticleImage($result['title'], $draft->topic_tags ?? []);
+
+        // Store image attribution in SEO metadata if available
+        if ($imageData) {
+            $seoMetadata['image_attribution'] = $imageData['attribution'] ?? null;
+            $seoMetadata['image_photographer'] = $imageData['photographer_name'] ?? null;
+            $seoMetadata['image_alt'] = $imageData['alt_description'] ?? $result['title'];
+        }
+
         return [
             'title' => $result['title'],
             'content' => $result['content'],
             'excerpt' => $result['excerpt'],
             'seo_metadata' => $seoMetadata,
-            'featured_image_url' => null, // Could be added later if image generation is implemented
+            'featured_image_url' => $imageData['url'] ?? null,
         ];
+    }
+
+    /**
+     * Fetch a relevant image for the article from Unsplash.
+     */
+    private function fetchArticleImage(string $title, array $topicTags): ?array
+    {
+        if (! config('news-workflow.unsplash.enabled', true)) {
+            return null;
+        }
+
+        // Build keywords from title and topic tags
+        $titleKeywords = $this->extractKeywords($title);
+        $keywords = array_merge($topicTags, $titleKeywords);
+
+        $orientation = config('news-workflow.unsplash.orientation', 'landscape');
+
+        $imageData = $this->unsplash->searchImage($keywords, $orientation);
+
+        if ($imageData) {
+            Log::debug('Fetched Unsplash image for article', [
+                'title' => $title,
+                'photo_id' => $imageData['photo_id'] ?? 'unknown',
+            ]);
+
+            return $imageData;
+        }
+
+        // Try with just topic tags if title keywords didn't work
+        if (! empty($topicTags)) {
+            $imageData = $this->unsplash->searchImage($topicTags, $orientation);
+
+            if ($imageData) {
+                return $imageData;
+            }
+        }
+
+        // Fallback to a generic news/city image
+        if (config('news-workflow.unsplash.fallback_enabled', true)) {
+            return $this->unsplash->getRandomImage('local news city', $orientation);
+        }
+
+        return null;
     }
 
     /**

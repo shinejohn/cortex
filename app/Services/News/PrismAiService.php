@@ -9,7 +9,7 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 use Prism\Prism\Schema\RawSchema;
 
-final class PrismAiService
+class PrismAiService
 {
     private const CLIENT_TIMEOUT = 120; // 2 minutes
 

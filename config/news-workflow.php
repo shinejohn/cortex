@@ -79,6 +79,14 @@ return [
         'scrapingbee_key' => env('SCRAPINGBEE_API_KEY'),
     ],
 
+    // Unsplash API for article images
+    'unsplash' => [
+        'enabled' => env('UNSPLASH_ENABLED', true),
+        'access_key' => env('UNSPLASH_ACCESS_KEY', ''),
+        'orientation' => 'landscape', // landscape, portrait, squarish
+        'fallback_enabled' => true, // Use fallback images if API fails
+    ],
+
     // Error Handling
     'error_handling' => [
         'retry_attempts' => 3,
