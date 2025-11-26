@@ -147,8 +147,8 @@ COPY --chown=www-data:www-data artisan artisan
 
 RUN composer dump-autoload
 
-# Update the location database (MAXMIND_LICENSE_KEY must be passed as build-arg)
-RUN MAXMIND_LICENSE_KEY=${MAXMIND_LICENSE_KEY} php artisan location:update
+# Update the location database - handled by scheduled command instead
+# RUN php artisan location:update
 
 # Configure Nginx
 COPY docker/standalone/etc/nginx/conf.d/custom.conf /etc/nginx/conf.d/custom.conf

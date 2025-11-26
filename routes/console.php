@@ -55,3 +55,6 @@ Schedule::call(function () {
         'count' => $regions->count(),
     ]);
 })->monthlyOn(1, '03:00')->name('news-business-discovery');
+
+// Update MaxMind GeoIP database weekly
+Schedule::command('location:update')->weekly()->name('location-update');
