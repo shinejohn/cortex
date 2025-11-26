@@ -12,9 +12,11 @@
         "filament/filament": "^4.0",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
+        "laravel/horizon": "^5.40",
         "laravel/socialite": "^5.20",
         "laravel/tinker": "^2.10.1",
         "nunomaduro/essentials": "^0.1",
+        "predis/predis": "^3.3",
         "prism-php/prism": "^0.98.5",
         "sentry/sentry-laravel": "^4.15",
         "stevebauman/location": "^7.6",
@@ -59,12 +61,12 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve --host=127.0.0.1\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"bun run dev\" --names=server,queue,logs,vite"
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve --host=127.0.0.1\" \"php artisan horizon\" \"php artisan pail --timeout=0\" \"bun run dev\" --names=server,horizon,logs,vite"
         ],
         "dev:ssr": [
             "bun --bun run build:ssr",
             "Composer\\Config::disableProcessTimeout",
-            "bunx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74,#f97316\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"php artisan inertia:start-ssr\" --names=server,queue,logs,ssr"
+            "bunx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74,#f97316\" \"php artisan serve\" \"php artisan horizon\" \"php artisan pail --timeout=0\" \"php artisan inertia:start-ssr\" --names=server,horizon,logs,ssr"
         ],
         "lint": ["./vendor/bin/pint --parallel --dirty"],
         "test": ["@php artisan config:clear --ansi", "./vendor/bin/pest"]
