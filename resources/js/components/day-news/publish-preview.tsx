@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useForm } from "@inertiajs/react";
+import DOMPurify from "dompurify";
 import { AlertCircle, CheckCircle2, DollarSign, MapPin } from "lucide-react";
-import React from "react";
+import React, { useMemo } from "react";
 
 interface Region {
     id: number;
@@ -40,6 +41,16 @@ interface PublishPreviewProps {
 
 export default function PublishPreview({ post, pricing }: PublishPreviewProps) {
     const { post: submitForm, processing } = useForm();
+
+    // Sanitize HTML content for safe rendering (removes h1 since title is shown separately)
+    const sanitizedContent = useMemo(() => {
+        const sanitized = DOMPurify.sanitize(post.content, {
+            ALLOWED_TAGS: ["p", "h2", "h3", "h4", "h5", "h6", "strong", "em", "a", "ul", "ol", "li", "blockquote", "br", "span"],
+            ALLOWED_ATTR: ["href", "target", "rel", "class"],
+        });
+        // Remove the first h1 tag if present (title is already displayed separately)
+        return sanitized.replace(/^\s*<h1[^>]*>.*?<\/h1>\s*/i, "");
+    }, [post.content]);
 
     const handlePublish = () => {
         submitForm(`/posts/${post.id}/publish`, {
@@ -92,9 +103,10 @@ export default function PublishPreview({ post, pricing }: PublishPreviewProps) {
 
                     <Separator />
 
-                    <div className="prose prose-sm max-w-none dark:prose-invert">
-                        <p className="whitespace-pre-wrap">{post.content}</p>
-                    </div>
+                    <div
+                        className="prose prose-sm max-w-none dark:prose-invert"
+                        dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+                    />
 
                     <Separator />
 

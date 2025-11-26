@@ -300,27 +300,14 @@ class PrismAiService
      */
     private function buildRelevanceScoringPrompt(array $article, Region $region): string
     {
-        return <<<PROMPT
-You are an experienced local news editor evaluating articles for {$region->name} ({$region->type}).
+        $prompt = config('news-workflow.prompts.relevance_scoring');
 
-Article Details:
-Title: {$article['title']}
-Source: {$article['source_publisher']}
-Content: {$article['content_snippet']}
-
-Task: Evaluate this article's relevance for local news in {$region->name}.
-
-Scoring Criteria:
-- Local Impact (40%): Direct relevance to the local community
-- Timeliness (20%): How recent and timely the news is
-- Community Interest (20%): Likely interest from local residents
-- Informativeness (20%): Value and depth of information
-
-Provide:
-1. A relevance score from 0-100
-2. Topic tags for categorization (e.g., business, community, events, government)
-3. Brief rationale for your score
-PROMPT;
+        return strtr($prompt, [
+            '{region_name}' => $region->name,
+            '{region_type}' => $region->type,
+            '{title}' => $article['title'],
+            '{content_snippet}' => $article['content_snippet'],
+        ]);
     }
 
     /**
@@ -328,23 +315,12 @@ PROMPT;
      */
     private function buildOutlinePrompt(array $article): string
     {
-        return <<<PROMPT
-You are a professional journalist creating an article outline based on this news source:
+        $prompt = config('news-workflow.prompts.outline');
 
-Title: {$article['title']}
-Source: {$article['source_publisher']}
-Content: {$article['content_snippet']}
-
-Task: Create a structured outline for a well-organized local news article.
-
-Requirements:
-- Suggest an engaging, informative title
-- Create 3-5 logical section headings
-- Identify 5-8 key points to cover
-- Ensure the outline flows naturally from introduction to conclusion
-
-Focus on local news style: clear, factual, and community-focused.
-PROMPT;
+        return strtr($prompt, [
+            '{title}' => $article['title'],
+            '{content_snippet}' => $article['content_snippet'],
+        ]);
     }
 
     /**
@@ -352,38 +328,14 @@ PROMPT;
      */
     private function buildFactCheckPrompt(string $claim, array $articleContext): string
     {
-        $title = $articleContext['title'] ?? 'Unknown';
-        $content = $articleContext['content'] ?? 'No content available';
-        $source = $articleContext['source'] ?? 'Unknown source';
-        $date = $articleContext['published_at'] ?? 'Unknown date';
+        $prompt = config('news-workflow.prompts.fact_check');
 
-        return <<<PROMPT
-You are a fact-checker evaluating a specific claim from a news article.
-
-Article Context:
-Title: {$title}
-Source: {$source}
-Published: {$date}
-Content: {$content}
-
-Claim to Verify:
-"{$claim}"
-
-Task: Evaluate this claim based on the article context and general knowledge.
-
-Provide:
-1. Result: Choose one of:
-   - "verified": Claim is directly supported by the article and appears factually accurate
-   - "plausible": Claim seems reasonable based on context but lacks definitive proof
-   - "unverified": Insufficient information to verify the claim
-   - "disputed": Claim contradicts known facts or the article context
-
-2. Confidence Score (0-100): How confident are you in this assessment?
-
-3. Rationale: Brief explanation (1-2 sentences) of your verification decision
-
-Be objective and base your assessment primarily on the article content provided.
-PROMPT;
+        return strtr($prompt, [
+            '{title}' => $articleContext['title'] ?? 'Unknown',
+            '{content}' => $articleContext['content'] ?? 'No content available',
+            '{date}' => $articleContext['published_at'] ?? 'Unknown date',
+            '{claim}' => $claim,
+        ]);
     }
 
     /**
@@ -391,25 +343,11 @@ PROMPT;
      */
     private function buildClaimExtractionPrompt(string $outline): string
     {
-        return <<<PROMPT
-You are a fact-checker reviewing this article outline:
+        $prompt = config('news-workflow.prompts.claim_extraction');
 
-{$outline}
-
-Task: Extract specific factual claims that should be verified before publication.
-
-Focus on:
-- Statistics, numbers, and data points
-- Statements about events, dates, or timelines
-- Claims about people, organizations, or policies
-- Any statements that could be objectively verified
-
-For each claim:
-- Importance: high (critical facts), medium (supporting facts), low (minor details)
-- Sources needed: Number of independent sources required (1-3)
-
-Only extract claims that are verifiable through external sources.
-PROMPT;
+        return strtr($prompt, [
+            '{outline}' => $outline,
+        ]);
     }
 
     /**
@@ -417,31 +355,12 @@ PROMPT;
      */
     private function buildQualityEvaluationPrompt(array $draft): string
     {
-        $outline = $draft['outline'] ?? 'No outline available';
-        $factCheckCount = count($draft['fact_checks'] ?? []);
+        $prompt = config('news-workflow.prompts.quality_evaluation');
 
-        return <<<PROMPT
-You are a senior editor evaluating this article draft for publication quality:
-
-Outline:
-{$outline}
-
-Fact-Check Summary: {$factCheckCount} claims verified
-
-Task: Provide a comprehensive quality assessment.
-
-Evaluation Criteria:
-- Content Quality (30%): Writing quality, clarity, completeness
-- Factual Accuracy (30%): Based on fact-check results
-- Local Relevance (20%): Community value and impact
-- Professionalism (20%): Tone, structure, readability
-
-Provide:
-1. Overall quality score (0-100)
-2. Fact-check confidence estimate based on verification results
-3. Key strengths (3-5 points)
-4. Areas for improvement (if any)
-PROMPT;
+        return strtr($prompt, [
+            '{outline}' => $draft['outline'] ?? 'No outline available',
+            '{fact_check_count}' => (string) count($draft['fact_checks'] ?? []),
+        ]);
     }
 
     /**
@@ -449,34 +368,15 @@ PROMPT;
      */
     private function buildArticleGenerationPrompt(array $draft, array $factChecks): string
     {
-        $outline = $draft['outline'] ?? '';
-        $title = $draft['generated_title'] ?? '';
-        $factCheckSummary = $this->summarizeFactChecks($factChecks);
+        $prompt = config('news-workflow.prompts.article_generation');
 
-        return <<<PROMPT
-You are a professional journalist writing a local news article.
-
-Title: {$title}
-
-Outline:
-{$outline}
-
-Verified Facts:
-{$factCheckSummary}
-
-Task: Write a complete, publication-ready article.
-
-Requirements:
-- Write in clear, professional journalism style
-- Use HTML formatting (<p>, <h2>, <strong>, <em>, etc.)
-- Incorporate all verified facts accurately
-- Maintain objective, balanced tone
-- Write 400-600 words
-- Include proper paragraph breaks
-- Create an engaging 150-200 character excerpt
-
-Focus on local news standards: factual, informative, and community-focused.
-PROMPT;
+        return strtr($prompt, [
+            '{today_date}' => now()->format('F j, Y'),
+            '{region_name}' => $draft['region_name'] ?? 'Local Area',
+            '{title}' => $draft['generated_title'] ?? '',
+            '{outline}' => $draft['outline'] ?? '',
+            '{fact_check_summary}' => $this->summarizeFactChecks($factChecks),
+        ]);
     }
 
     /**

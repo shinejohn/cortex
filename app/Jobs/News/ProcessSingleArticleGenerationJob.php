@@ -105,6 +105,7 @@ final class ProcessSingleArticleGenerationJob implements ShouldQueue
             'source_content' => $sourceArticle->content_snippet,
             'source_publisher' => $sourceArticle->source_publisher,
             'published_at' => $sourceArticle->published_at?->toIso8601String(),
+            'region_name' => $this->region->name,
         ];
 
         $factChecks = $this->draft->factChecks()

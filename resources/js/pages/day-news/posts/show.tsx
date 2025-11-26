@@ -6,8 +6,9 @@ import { Separator } from "@/components/ui/separator";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
 import { Head } from "@inertiajs/react";
+import DOMPurify from "dompurify";
 import { Calendar, Eye, MapPin, User } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 interface Region {
     id: number;
@@ -74,10 +75,61 @@ interface ShowPostProps {
     relatedPosts: RelatedPost[];
 }
 
+/**
+ * Sanitizes HTML content and removes the first h1 tag (since title is shown separately).
+ * Returns sanitized HTML string.
+ */
+function sanitizeContent(html: string): string {
+    // Sanitize the HTML first
+    const sanitized = DOMPurify.sanitize(html, {
+        ALLOWED_TAGS: ["p", "h2", "h3", "h4", "h5", "h6", "strong", "em", "a", "ul", "ol", "li", "blockquote", "br", "span"],
+        ALLOWED_ATTR: ["href", "target", "rel", "class"],
+    });
+
+    // Remove the first h1 tag if present (title is already displayed separately)
+    return sanitized.replace(/^\s*<h1[^>]*>.*?<\/h1>\s*/i, "");
+}
+
+/**
+ * Splits HTML content at a paragraph boundary near the middle.
+ * Returns [firstHalf, secondHalf] of sanitized HTML.
+ */
+function splitHtmlContent(html: string): [string, string] {
+    const sanitized = sanitizeContent(html);
+
+    // Find all paragraph-like break points (closing tags that indicate a good split point)
+    const breakPoints = [...sanitized.matchAll(/<\/(p|h[2-6]|li|blockquote)>/gi)];
+
+    if (breakPoints.length < 2) {
+        // Not enough break points, return all content in first half
+        return [sanitized, ""];
+    }
+
+    // Find the break point closest to the middle
+    const midPoint = sanitized.length / 2;
+    let bestBreak = breakPoints[0];
+    let bestDistance = Math.abs((bestBreak.index ?? 0) + bestBreak[0].length - midPoint);
+
+    for (const bp of breakPoints) {
+        const breakPosition = (bp.index ?? 0) + bp[0].length;
+        const distance = Math.abs(breakPosition - midPoint);
+        if (distance < bestDistance) {
+            bestDistance = distance;
+            bestBreak = bp;
+        }
+    }
+
+    const splitIndex = (bestBreak.index ?? 0) + bestBreak[0].length;
+    return [sanitized.slice(0, splitIndex), sanitized.slice(splitIndex)];
+}
+
 export default function ShowPost({ auth, post, relatedPosts }: ShowPostProps) {
     const [sidebarAds, setSidebarAds] = useState<Ad[]>([]);
     const [bannerAds, setBannerAds] = useState<Ad[]>([]);
     const [inlineAds, setInlineAds] = useState<Ad[]>([]);
+
+    // Split content for inline ad insertion
+    const [firstHalfContent, secondHalfContent] = useMemo(() => splitHtmlContent(post.content), [post.content]);
 
     useEffect(() => {
         const regionId = post.regions[0]?.id;
@@ -193,12 +245,13 @@ export default function ShowPost({ auth, post, relatedPosts }: ShowPostProps) {
                             )}
 
                             {/* Content with inline ad */}
-                            <div className="prose prose-lg max-w-none dark:prose-invert">
-                                <p className="whitespace-pre-wrap">{post.content.slice(0, Math.floor(post.content.length / 2))}</p>
-                            </div>
+                            <div
+                                className="prose prose-lg max-w-none dark:prose-invert"
+                                dangerouslySetInnerHTML={{ __html: firstHalfContent }}
+                            />
 
                             {/* Inline Ad in the middle of content */}
-                            {inlineAds.length > 0 && (
+                            {inlineAds.length > 0 && secondHalfContent && (
                                 <div className="my-8">
                                     {inlineAds.slice(0, 1).map((ad) => (
                                         <Advertisement key={ad.id} ad={ad} onImpression={handleAdImpression} onClick={handleAdClick} />
@@ -206,9 +259,12 @@ export default function ShowPost({ auth, post, relatedPosts }: ShowPostProps) {
                                 </div>
                             )}
 
-                            <div className="prose prose-lg max-w-none dark:prose-invert">
-                                <p className="whitespace-pre-wrap">{post.content.slice(Math.floor(post.content.length / 2))}</p>
-                            </div>
+                            {secondHalfContent && (
+                                <div
+                                    className="prose prose-lg max-w-none dark:prose-invert"
+                                    dangerouslySetInnerHTML={{ __html: secondHalfContent }}
+                                />
+                            )}
                         </article>
 
                         {/* Sidebar */}

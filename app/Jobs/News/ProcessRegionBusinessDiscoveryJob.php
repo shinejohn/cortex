@@ -19,7 +19,7 @@ final class ProcessRegionBusinessDiscoveryJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $timeout = 300; // 5 minutes per region
+    public $timeout = 600; // 10 minutes per region
 
     public $tries = 1;
 
