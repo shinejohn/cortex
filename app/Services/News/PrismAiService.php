@@ -399,4 +399,147 @@ class PrismAiService
 
         return implode("\n", $summary);
     }
+
+    /**
+     * Detect if article contains event information
+     *
+     * @return array{contains_event: bool, confidence_score: int, event_date_mentioned: bool, rationale: string}
+     */
+    public function detectEventInArticle(array $article, Region $region): array
+    {
+        try {
+            $model = config('news-workflow.ai_models.event_detection');
+            $response = prism()
+                ->structured()
+                ->using(...$model)
+                ->withClientOptions(['timeout' => self::CLIENT_TIMEOUT])
+                ->withPrompt($this->buildEventDetectionPrompt($article, $region))
+                ->withSchema(new RawSchema('event_detection', [
+                    'type' => 'object',
+                    'properties' => [
+                        'contains_event' => [
+                            'type' => 'boolean',
+                            'description' => 'Whether the article contains event information',
+                        ],
+                        'confidence_score' => [
+                            'type' => 'number',
+                            'description' => 'Confidence score from 0-100',
+                            'minimum' => 0,
+                            'maximum' => 100,
+                        ],
+                        'event_date_mentioned' => [
+                            'type' => 'boolean',
+                            'description' => 'Whether a specific date is mentioned',
+                        ],
+                        'rationale' => [
+                            'type' => 'string',
+                            'description' => 'Brief explanation',
+                        ],
+                    ],
+                    'required' => ['contains_event', 'confidence_score', 'rationale'],
+                ]))
+                ->generate();
+
+            return $response->structured;
+        } catch (Exception $e) {
+            Log::error('Prism AI event detection failed', [
+                'article_title' => $article['title'] ?? 'Unknown',
+                'region' => $region->name,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Extract detailed event information from article
+     *
+     * @return array{title: string, event_date: string, time: string, venue_name: string, venue_address: ?string, description: string, category: string, subcategories: array, is_free: bool, price_min: float, price_max: float, performer_name: ?string, badges: array, extraction_confidence: int}
+     */
+    public function extractEventDetails(array $article, Region $region): array
+    {
+        try {
+            $model = config('news-workflow.ai_models.event_extraction');
+            $response = prism()
+                ->structured()
+                ->using(...$model)
+                ->withClientOptions(['timeout' => self::CLIENT_TIMEOUT])
+                ->withPrompt($this->buildEventExtractionPrompt($article, $region))
+                ->withSchema(new RawSchema('event_extraction', [
+                    'type' => 'object',
+                    'properties' => [
+                        'title' => ['type' => 'string', 'description' => 'Event title'],
+                        'event_date' => ['type' => 'string', 'description' => 'Event date in ISO 8601 format'],
+                        'time' => ['type' => 'string', 'description' => 'Display time'],
+                        'venue_name' => ['type' => 'string', 'description' => 'Venue name'],
+                        'venue_address' => ['type' => 'string', 'description' => 'Venue address'],
+                        'description' => ['type' => 'string', 'description' => 'Event description'],
+                        'category' => ['type' => 'string', 'description' => 'Event category'],
+                        'subcategories' => [
+                            'type' => 'array',
+                            'items' => ['type' => 'string'],
+                            'description' => 'Event subcategories/tags',
+                        ],
+                        'is_free' => ['type' => 'boolean', 'description' => 'Whether event is free'],
+                        'price_min' => ['type' => 'number', 'description' => 'Minimum price'],
+                        'price_max' => ['type' => 'number', 'description' => 'Maximum price'],
+                        'performer_name' => ['type' => 'string', 'description' => 'Performer name if applicable'],
+                        'badges' => [
+                            'type' => 'array',
+                            'items' => ['type' => 'string'],
+                            'description' => 'Event badges',
+                        ],
+                        'extraction_confidence' => [
+                            'type' => 'number',
+                            'description' => 'Confidence in extraction accuracy (0-100)',
+                            'minimum' => 0,
+                            'maximum' => 100,
+                        ],
+                    ],
+                    'required' => ['title', 'event_date', 'venue_name', 'description', 'category', 'is_free'],
+                ]))
+                ->generate();
+
+            return $response->structured;
+        } catch (Exception $e) {
+            Log::error('Prism AI event extraction failed', [
+                'article_title' => $article['title'] ?? 'Unknown',
+                'region' => $region->name,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Build event detection prompt
+     */
+    private function buildEventDetectionPrompt(array $article, Region $region): string
+    {
+        $prompt = config('news-workflow.prompts.event_detection');
+
+        return strtr($prompt, [
+            '{title}' => $article['title'] ?? '',
+            '{content_snippet}' => $article['content_snippet'] ?? '',
+            '{published_at}' => $article['published_at'] ?? '',
+            '{region_name}' => $region->name,
+        ]);
+    }
+
+    /**
+     * Build event extraction prompt
+     */
+    private function buildEventExtractionPrompt(array $article, Region $region): string
+    {
+        $prompt = config('news-workflow.prompts.event_extraction');
+
+        return strtr($prompt, [
+            '{title}' => $article['title'] ?? '',
+            '{content_snippet}' => $article['content_snippet'] ?? '',
+            '{published_at}' => $article['published_at'] ?? '',
+            '{region_name}' => $region->name,
+        ]);
+    }
 }

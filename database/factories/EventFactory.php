@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\Workspace;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -91,7 +92,7 @@ final class EventFactory extends Factory
             'latitude' => fake()->latitude(25.0, 45.0),
             'longitude' => fake()->longitude(-125.0, -70.0),
             'status' => fake()->randomElement(['published', 'published', 'published', 'draft']), // 75% published
-            'workspace_id' => null, // Will be set in seeder
+            'workspace_id' => Workspace::factory(),
             'created_by' => null, // Will be set in seeder
         ];
     }

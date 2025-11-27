@@ -7,12 +7,41 @@ return [
     'business_discovery' => [
         'enabled' => env('NEWS_WORKFLOW_BUSINESS_DISCOVERY_ENABLED', true),
         'categories' => [
-            'restaurant',
-            'cafe',
-            'retail',
-            'entertainment',
-            'healthcare',
-            'professional_services',
+            'night_club',           // Live music, DJ events, club nights
+            'bar',                  // Special events, live music, trivia nights
+            'performing_arts_theater', // Plays, concerts, performances
+            'art_gallery',          // Exhibition openings, artist talks
+            'museum',               // New exhibits, special events
+            'movie_theater',        // Film premieres, special screenings
+            'concert_hall',         // Concerts, recitals, performances
+            'stadium',              // Sports events, concerts
+            'casino',               // Shows, tournaments, special events
+            'amusement_park',       // Seasonal events, new attractions
+            'zoo',                  // Special exhibits, events
+            'aquarium',             // New exhibits, feeding times, events
+            'bowling_alley',        // Tournaments, league nights
+            'spa',                  // Wellness events, workshops
+            'gym',                  // Fitness classes, challenges, events
+            'restaurant',           // Special dinners, chef events, tastings
+            'cafe',                 // Open mics, art shows, music nights
+            'brewery',              // Tap takeovers, live music, food trucks
+            'winery',               // Tastings, tours, harvest events
+            'shopping_mall',        // Seasonal events, pop-ups, shows
+            'convention_center',    // Conventions, expos, trade shows
+            'library',              // Author talks, workshops, readings
+            'bookstore',            // Book signings, readings, launches
+            'park',                 // Festivals, concerts, outdoor events
+            'campground',           // Seasonal events, activities
+            'tourist_attraction',   // Special tours, seasonal offerings
+            'university',           // Lectures, sporting events, performances, open houses
+            'school',               // School plays, sporting events, fundraisers, exhibitions
+            'city_hall',            // Town halls, public meetings, community forums
+            'courthouse',           // Public hearings, community events
+            'local_government_office', // Public meetings, community outreach
+            'police',               // Community safety events, open houses, youth programs
+            'fire_station',         // Safety demonstrations, open houses, training events
+            'community_center',     // Classes, workshops, public events, meetings
+            'town_hall',            // Council meetings, public forums, community events
         ],
         'radius_km' => env('NEWS_WORKFLOW_BUSINESS_RADIUS', 25),
     ],
@@ -63,6 +92,46 @@ return [
         'type' => 'article',
     ],
 
+    // Event Extraction Pipeline (parallel to news workflow, runs after Phase 2)
+    'event_extraction' => [
+        'enabled' => env('NEWS_WORKFLOW_EVENT_EXTRACTION_ENABLED', true),
+
+        // Detection threshold - articles below this won't proceed to extraction
+        'min_detection_confidence' => env('NEWS_WORKFLOW_EVENT_MIN_DETECTION', 60),
+
+        // Extraction quality threshold
+        'min_extraction_confidence' => env('NEWS_WORKFLOW_EVENT_MIN_EXTRACTION', 70),
+
+        // Auto-publish threshold - events above this are published, below are drafts
+        'auto_publish_threshold' => env('NEWS_WORKFLOW_EVENT_AUTO_PUBLISH_THRESHOLD', 85),
+
+        // Venue/Performer matching thresholds (0-1 similarity score)
+        'venue_match_threshold' => env('NEWS_WORKFLOW_VENUE_MATCH_THRESHOLD', 0.85),
+        'performer_match_threshold' => env('NEWS_WORKFLOW_PERFORMER_MATCH_THRESHOLD', 0.85),
+
+        // System workspace for AI-extracted events (will be claimable later)
+        'system_workspace_id' => env('NEWS_WORKFLOW_SYSTEM_WORKSPACE_ID'),
+        'system_workspace_name' => env('NEWS_WORKFLOW_SYSTEM_WORKSPACE_NAME', 'AI Event Extraction'),
+
+        // Max events to extract per region per run
+        'max_events_per_region' => env('NEWS_WORKFLOW_MAX_EVENTS_PER_REGION', 20),
+
+        // Category mapping from extracted categories to Event model categories
+        'category_mapping' => [
+            'music' => 'music',
+            'festival' => 'festival',
+            'sports' => 'sports',
+            'arts' => 'arts',
+            'business' => 'business',
+            'community' => 'community',
+            'food-drink' => 'food-drink',
+            'charity' => 'charity',
+            'family' => 'family',
+            'nightlife' => 'nightlife',
+            'other' => 'other',
+        ],
+    ],
+
     // AI Models Per Phase (configurable for cost/quality balance)
     // Using OpenRouter - set OPENROUTER_API_KEY in .env
     // Browse models at: https://openrouter.ai/models
@@ -71,6 +140,8 @@ return [
         'scoring' => ['openrouter', env('NEWS_WORKFLOW_AI_MODEL_SCORING', env('PRISM_MODEL', 'meta-llama/llama-3.1-8b-instruct'))], // Phase 3 & 5
         'outline' => ['openrouter', env('NEWS_WORKFLOW_AI_MODEL_OUTLINE', env('PRISM_MODEL', 'meta-llama/llama-3.1-8b-instruct'))], // Phase 4
         'generation' => ['openrouter', env('NEWS_WORKFLOW_AI_MODEL_GENERATION', env('PRISM_MODEL', 'meta-llama/llama-3.1-8b-instruct'))], // Phase 6
+        'event_detection' => ['openrouter', env('NEWS_WORKFLOW_AI_MODEL_EVENT_DETECTION', env('PRISM_MODEL', 'meta-llama/llama-3.1-8b-instruct'))], // Event Detection
+        'event_extraction' => ['openrouter', env('NEWS_WORKFLOW_AI_MODEL_EVENT_EXTRACTION', env('PRISM_MODEL', 'meta-llama/llama-3.1-8b-instruct'))], // Event Extraction
     ],
 
     // External APIs
@@ -241,6 +312,71 @@ Requirements:
 
 Focus on local news standards: factual, informative, and community-focused.
 All content should appear as our own original journalism.
+PROMPT,
+
+        'event_detection' => <<<'PROMPT'
+You are an expert at identifying events mentioned in news articles.
+
+Article Details:
+Title: {title}
+Content: {content_snippet}
+Published: {published_at}
+Region: {region_name}
+
+Task: Determine if this article contains information about an UPCOMING event.
+
+An event is:
+- A scheduled gathering, performance, show, festival, or activity
+- Has a specific date/time (or can be reasonably inferred)
+- Takes place at a specific location
+- Is open to public attendance (free or ticketed)
+
+NOT events (reject these):
+- Past events (already happened)
+- General news stories without event information
+- Business announcements without public gatherings
+- Regular business hours/operations
+- Recurring weekly events without a specific upcoming date
+
+Provide your assessment:
+1. contains_event: true/false
+2. confidence_score: 0-100 (how confident you are)
+3. event_date_mentioned: true/false (is a specific date mentioned)
+4. rationale: Brief explanation (1-2 sentences)
+PROMPT,
+
+        'event_extraction' => <<<'PROMPT'
+You are an expert at extracting structured event information from news articles.
+
+Article Details:
+Title: {title}
+Content: {content_snippet}
+Published: {published_at}
+Region: {region_name}
+
+Task: Extract complete event details from this article.
+
+Extract:
+1. title: An engaging event title (create one if not explicitly stated)
+2. event_date: Date and time in ISO 8601 format (YYYY-MM-DDTHH:MM:SS)
+   - If time not specified, default to 19:00
+   - If date range, use start date
+3. time: Display time (e.g., "7:00 PM - 10:00 PM")
+4. venue_name: The venue/location name (be specific, not just "local venue")
+5. venue_address: Full address if available
+6. description: 2-3 sentence summary of the event
+7. category: One of (music, festival, sports, arts, business, community, food-drink, charity, family, nightlife, other)
+8. subcategories: Up to 3 relevant tags as array
+9. is_free: true/false
+10. price_min: Minimum ticket price (0 if free)
+11. price_max: Maximum ticket price (0 if free or single price)
+12. performer_name: Artist/performer name if applicable (null if none)
+13. badges: Array of applicable badges (featured, family-friendly, outdoor, 21+, food-included)
+
+Important:
+- Do NOT include external links or URLs
+- If information is unclear, make reasonable assumptions and note low confidence
+- Dates must be in the future relative to the published date
 PROMPT,
     ],
 ];

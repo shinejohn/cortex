@@ -8,6 +8,7 @@ use App\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
@@ -49,6 +50,8 @@ final class Event extends Model
         'performer_id',
         'workspace_id',
         'created_by',
+        'source_news_article_id',
+        'source_type',
         'status',
     ];
 
@@ -70,6 +73,17 @@ final class Event extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function sourceNewsArticle(): BelongsTo
+    {
+        return $this->belongsTo(NewsArticle::class, 'source_news_article_id');
+    }
+
+    public function regions(): BelongsToMany
+    {
+        return $this->belongsToMany(Region::class, 'event_region')
+            ->withTimestamps();
     }
 
     public function bookings(): HasMany
@@ -159,6 +173,16 @@ final class Event extends Model
     public function scopeFree($query)
     {
         return $query->where('is_free', true);
+    }
+
+    public function scopeAiExtracted($query)
+    {
+        return $query->where('source_type', 'ai_extracted');
+    }
+
+    public function scopeManual($query)
+    {
+        return $query->where('source_type', 'manual');
     }
 
     public function scopeWithinPriceRange($query, float $min, float $max)

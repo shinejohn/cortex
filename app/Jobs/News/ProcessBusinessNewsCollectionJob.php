@@ -105,6 +105,15 @@ final class ProcessBusinessNewsCollectionJob implements ShouldQueue
             Log::info('Dispatched Phase 3 (shortlisting) job', [
                 'region_id' => $regionId,
             ]);
+
+            // Also dispatch Event Extraction (parallel pipeline)
+            if (config('news-workflow.event_extraction.enabled', true)) {
+                ProcessEventExtractionJob::dispatch($this->region);
+
+                Log::info('Dispatched Event Extraction job (parallel pipeline)', [
+                    'region_id' => $regionId,
+                ]);
+            }
         }
     }
 }

@@ -56,6 +56,12 @@ final class Region extends Model
             ->withTimestamps();
     }
 
+    public function events(): BelongsToMany
+    {
+        return $this->belongsToMany(Event::class, 'event_region')
+            ->withTimestamps();
+    }
+
     /**
      * Get all ancestor regions (parents up the hierarchy)
      */

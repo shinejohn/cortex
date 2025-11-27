@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\Workspace;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -83,7 +84,7 @@ final class VenueFactory extends Factory
             'price_per_day' => $pricePerHour * fake()->numberBetween(8, 16),
             'average_rating' => fake()->randomFloat(1, 3.5, 5.0),
             'total_reviews' => fake()->numberBetween(5, 200),
-            'workspace_id' => null, // Will be set in seeder
+            'workspace_id' => Workspace::factory(),
             'created_by' => null, // Will be set in seeder
             'address' => fake()->streetAddress().', '.fake()->city().', '.fake()->stateAbbr().' '.fake()->postcode(),
             'neighborhood' => fake()->randomElement(['Downtown', 'Midtown', 'Historic District', 'Arts Quarter', 'Uptown', 'Waterfront']),

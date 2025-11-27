@@ -45,6 +45,11 @@ final class NewsArticle extends Model
         return $this->hasMany(NewsArticleDraft::class);
     }
 
+    public function eventExtractionDrafts(): HasMany
+    {
+        return $this->hasMany(EventExtractionDraft::class);
+    }
+
     public function scopeUnprocessed($query)
     {
         return $query->where('processed', false);
