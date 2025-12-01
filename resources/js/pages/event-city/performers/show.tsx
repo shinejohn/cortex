@@ -1,5 +1,6 @@
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
+import { SEO } from "@/components/common/seo";
 import { PerformerAbout } from "@/components/performers/profile/about";
 import { PerformerHero } from "@/components/performers/profile/hero";
 import { PerformerOverview } from "@/components/performers/profile/overview";
@@ -8,7 +9,7 @@ import { PerformerReviews } from "@/components/performers/profile/reviews";
 import { PerformerTabs } from "@/components/performers/profile/tabs";
 import { PerformerUpcomingShows } from "@/components/performers/profile/upcoming-shows";
 import type { PerformerShowPageProps, ProfileTab } from "@/types/performer-profile";
-import { Head, Link, usePage } from "@inertiajs/react";
+import { usePage } from "@inertiajs/react";
 import { useState } from "react";
 
 export default function PerformerShow() {
@@ -21,7 +22,20 @@ export default function PerformerShow() {
 
     return (
         <>
-            <Head title={`${performer.name} - Performer Profile`} />
+            <SEO
+                type="performer"
+                site="event-city"
+                data={{
+                    title: `${performer.name} - Performer Profile`,
+                    name: performer.name,
+                    description: performer.bio,
+                    image: performer.profileImage,
+                    url: `/performers/${performer.id}`,
+                    genres: performer.genres,
+                    homeCity: performer.homeCity,
+                    isVerified: performer.isVerified,
+                }}
+            />
             <Header auth={auth} />
 
             <div className="min-h-screen bg-gray-50">

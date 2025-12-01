@@ -1,13 +1,14 @@
 import { FollowButton } from "@/components/common/follow-button";
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
+import { SEO } from "@/components/common/seo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SharedData } from "@/types";
-import { Head, Link, usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import {
     ArrowLeft,
     ArrowRight,
@@ -132,7 +133,25 @@ export default function VenueShow() {
 
     return (
         <div className="min-h-screen bg-white">
-            <Head title={venue.name} />
+            <SEO
+                type="venue"
+                site="event-city"
+                data={{
+                    title: venue.name,
+                    name: venue.name,
+                    description: venue.description,
+                    image: venue.images?.[0] || null,
+                    url: `/venues/${venue.id}`,
+                    address: venue.address,
+                    neighborhood: venue.neighborhood,
+                    latitude: venue.latitude,
+                    longitude: venue.longitude,
+                    capacity: venue.capacity,
+                    venueType: venue.venue_type,
+                    rating: venue.average_rating,
+                    reviewCount: venue.total_reviews,
+                }}
+            />
             <Header auth={auth} />
 
             {/* Hero Section */}

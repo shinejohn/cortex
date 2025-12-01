@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Performer;
 use App\Models\Venue;
+use App\Services\SeoService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -107,7 +108,17 @@ final class HomePageController extends Controller
             })
             ->toArray();
 
+        // Build SEO JSON-LD for homepage
+        $seoData = [
+            'title' => 'Home',
+            'description' => 'Discover local events, venues, and performers. Find concerts, shows, and entertainment near you.',
+            'url' => '/',
+        ];
+
         return Inertia::render('event-city/welcome', [
+            'seo' => [
+                'jsonLd' => SeoService::buildJsonLd('website', $seoData, 'event-city'),
+            ],
             'featuredEvents' => $featuredEvents,
             'featuredVenues' => $featuredVenues,
             'featuredPerformers' => $featuredPerformers,

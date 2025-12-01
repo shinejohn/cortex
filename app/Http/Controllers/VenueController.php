@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreVenueRequest;
 use App\Models\Follow;
 use App\Models\Venue;
+use App\Services\SeoService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -297,7 +298,27 @@ final class VenueController extends Controller
                 ->exists();
         }
 
+        // Build SEO JSON-LD for venue
+        $seoData = [
+            'title' => $venue->name,
+            'name' => $venue->name,
+            'description' => $venue->description,
+            'image' => $venue->images[0] ?? null,
+            'url' => "/venues/{$venue->id}",
+            'address' => $venue->address,
+            'neighborhood' => $venue->neighborhood,
+            'latitude' => $venue->latitude,
+            'longitude' => $venue->longitude,
+            'capacity' => $venue->capacity,
+            'venueType' => $venue->venue_type,
+            'rating' => $venue->average_rating,
+            'reviewCount' => $venue->total_reviews,
+        ];
+
         return Inertia::render('event-city/venues/show', [
+            'seo' => [
+                'jsonLd' => SeoService::buildJsonLd('venue', $seoData, 'event-city'),
+            ],
             'venue' => $venue,
             'ratingStats' => $ratingStats,
             'isFollowing' => $isFollowing,

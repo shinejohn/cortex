@@ -1,3 +1,4 @@
+import { SEO } from "@/components/common/seo";
 import Advertisement from "@/components/day-news/advertisement";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import NewsArticleCard from "@/components/day-news/news-article-card";
@@ -5,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { Head } from "@inertiajs/react";
 import DOMPurify from "dompurify";
 import { Calendar, Eye, MapPin, User } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
@@ -173,10 +173,28 @@ export default function ShowPost({ auth, post, relatedPosts }: ShowPostProps) {
         });
     };
 
+    // Strip HTML tags for plain text content (for JSON-LD articleBody)
+    const plainTextContent = useMemo(() => {
+        return post.content.replace(/<[^>]*>/g, "").trim();
+    }, [post.content]);
+
     return (
         <LocationProvider>
             <div className="min-h-screen bg-background">
-                <Head title={`${post.title} - Day News`} />
+                <SEO
+                    type="article"
+                    site="day-news"
+                    data={{
+                        title: post.title,
+                        description: post.excerpt || undefined,
+                        image: post.featured_image,
+                        url: `/posts/${post.slug}`,
+                        publishedAt: post.published_at,
+                        author: post.author?.name,
+                        section: post.category,
+                        articleBody: plainTextContent,
+                    }}
+                />
                 <DayNewsHeader auth={auth} />
 
                 {/* Banner Ad */}

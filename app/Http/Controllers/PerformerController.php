@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePerformerRequest;
 use App\Models\Follow;
 use App\Models\Performer;
+use App\Services\SeoService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -249,7 +250,22 @@ final class PerformerController extends Controller
                 ->exists();
         }
 
+        // Build SEO JSON-LD for performer
+        $seoData = [
+            'title' => "{$performer->name} - Performer Profile",
+            'name' => $performer->name,
+            'description' => $performer->bio,
+            'image' => $performer->profile_image,
+            'url' => "/performers/{$performer->id}",
+            'genres' => $performer->genres,
+            'homeCity' => $performer->home_city,
+            'isVerified' => $performer->is_verified,
+        ];
+
         return Inertia::render('event-city/performers/show', [
+            'seo' => [
+                'jsonLd' => SeoService::buildJsonLd('performer', $seoData, 'event-city'),
+            ],
             'performer' => $performerData,
             'ratingStats' => $ratingStats,
             'reviews' => $reviews,

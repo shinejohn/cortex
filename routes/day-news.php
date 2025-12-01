@@ -9,6 +9,7 @@ use App\Http\Controllers\DayNews\PostPaymentController;
 use App\Http\Controllers\DayNews\PostPublishController;
 use App\Http\Controllers\DayNews\PublicPostController;
 use App\Models\DayNewsPost;
+use App\Services\SeoService;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -48,7 +49,17 @@ Route::get('/', function () {
     $inlineAds = $adService->getActiveAds('day_news', $currentRegion, 'inline')->take(3);
     $sidebarAds = $adService->getActiveAds('day_news', $currentRegion, 'sidebar')->take(3);
 
+    // Build SEO JSON-LD for homepage
+    $seoData = [
+        'title' => 'Your Daily Source for Local Stories',
+        'description' => 'Stay informed with the latest local news, stories, and updates from your community. Day News brings you relevant, timely coverage.',
+        'url' => '/',
+    ];
+
     return Inertia::render('day-news/index', [
+        'seo' => [
+            'jsonLd' => SeoService::buildJsonLd('website', $seoData, 'day-news'),
+        ],
         'news' => $allArticles,
         'hasRegion' => $currentRegion !== null,
         'advertisements' => [

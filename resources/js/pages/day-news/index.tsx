@@ -1,3 +1,4 @@
+import { SEO } from "@/components/common/seo";
 import Advertisement from "@/components/day-news/advertisement";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import LocationPrompt from "@/components/day-news/location-prompt";
@@ -5,7 +6,6 @@ import NewsArticleCard from "@/components/day-news/news-article-card";
 import NewspaperMasthead from "@/components/day-news/newspaper-masthead";
 import { LocationProvider, useLocation } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { Head } from "@inertiajs/react";
 import { Newspaper } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
@@ -225,9 +225,16 @@ export default function DayNewsIndex({ auth, news, hasRegion, advertisements }: 
     return (
         <LocationProvider>
             <div className="min-h-screen bg-background">
-                <Head>
-                    <title>Day News - Your Daily Source for Local Stories</title>
-                </Head>
+                <SEO
+                    type="website"
+                    site="day-news"
+                    data={{
+                        title: "Your Daily Source for Local Stories",
+                        description:
+                            "Stay informed with the latest local news, stories, and updates from your community. Day News brings you relevant, timely coverage.",
+                        url: "/",
+                    }}
+                />
                 <DayNewsHeader auth={auth} />
                 <LocationPrompt />
                 <DayNewsContent news={news} hasRegion={hasRegion} advertisements={advertisements} />

@@ -1,6 +1,7 @@
 import { FollowButton } from "@/components/common/follow-button";
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
+import { SEO } from "@/components/common/seo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -185,8 +186,51 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
 
     const ticketStatus = getTicketStatus();
 
+    // Determine ticket availability for SEO
+    const getAvailability = () => {
+        if (!event.ticket_plans || event.ticket_plans.length === 0) {
+            return "InStock" as const;
+        }
+        const totalAvailable = event.ticket_plans.reduce((sum, plan) => sum + plan.available_quantity, 0);
+        if (totalAvailable === 0) {
+            return "SoldOut" as const;
+        }
+        const totalMax = event.ticket_plans.reduce((sum, plan) => sum + plan.max_quantity, 0);
+        const percentSold = ((totalMax - totalAvailable) / totalMax) * 100;
+        if (percentSold > 90) {
+            return "LimitedAvailability" as const;
+        }
+        return "InStock" as const;
+    };
+
     return (
         <div className="min-h-screen bg-white">
+            <SEO
+                type="event"
+                site="event-city"
+                data={{
+                    title: event.title,
+                    description: event.description,
+                    image: event.image,
+                    url: `/events/${event.id}`,
+                    startDate: event.event_date,
+                    time: event.time,
+                    location: event.venue
+                        ? {
+                              name: event.venue.name,
+                              address: event.venue.address,
+                              latitude: event.venue.latitude,
+                              longitude: event.venue.longitude,
+                          }
+                        : undefined,
+                    performer: event.performer?.name,
+                    isFree: event.is_free,
+                    price: event.is_free ? 0 : event.price_min,
+                    priceCurrency: "USD",
+                    availability: getAvailability(),
+                    category: event.category,
+                }}
+            />
             <Header auth={auth} />
             {/* Hero Section */}
             <div className="relative h-96 overflow-hidden">

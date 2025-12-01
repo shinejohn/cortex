@@ -6,6 +6,7 @@ namespace App\Http\Controllers\DayNews;
 
 use App\Http\Controllers\Controller;
 use App\Models\DayNewsPost;
+use App\Services\SeoService;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -32,7 +33,23 @@ final class PublicPostController extends Controller
             ->limit(5)
             ->get();
 
+        // Build SEO JSON-LD data
+        $plainTextContent = strip_tags($post->content);
+        $seoData = [
+            'title' => $post->title,
+            'description' => $post->excerpt,
+            'image' => $post->featured_image,
+            'url' => "/posts/{$post->slug}",
+            'publishedAt' => $post->published_at?->toISOString(),
+            'author' => $post->author?->name,
+            'section' => $post->category,
+            'articleBody' => $plainTextContent,
+        ];
+
         return Inertia::render('day-news/posts/show', [
+            'seo' => [
+                'jsonLd' => SeoService::buildJsonLd('article', $seoData, 'day-news'),
+            ],
             'post' => [
                 'id' => $post->id,
                 'type' => $post->type,
