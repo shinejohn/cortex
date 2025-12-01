@@ -28,6 +28,8 @@ final class NewsArticleDraft extends Model
         'generated_excerpt',
         'seo_metadata',
         'featured_image_url',
+        'featured_image_path',
+        'featured_image_disk',
         'ai_metadata',
         'published_post_id',
         'rejection_reason',
@@ -110,6 +112,16 @@ final class NewsArticleDraft extends Model
         $avg = $this->factChecks()->avg('confidence_score');
 
         $this->update(['fact_check_confidence' => $avg]);
+    }
+
+    public function getFeaturedImageUrlAttribute(): ?string
+    {
+        // Priority: local storage > original URL > null
+        if ($this->featured_image_path && $this->featured_image_disk) {
+            return \Illuminate\Support\Facades\Storage::disk($this->featured_image_disk)->url($this->featured_image_path);
+        }
+
+        return $this->attributes['featured_image_url'] ?? null;
     }
 
     protected function casts(): array

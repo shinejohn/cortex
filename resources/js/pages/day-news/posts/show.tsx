@@ -39,6 +39,12 @@ interface Post {
     author: Author | null;
     workspace: Workspace | null;
     regions: Region[];
+    metadata?: {
+        image_attribution?: string;
+        image_photographer?: string;
+        image_alt?: string;
+        [key: string]: unknown;
+    };
 }
 
 interface Ad {
@@ -239,8 +245,25 @@ export default function ShowPost({ auth, post, relatedPosts }: ShowPostProps) {
 
                             {/* Featured image */}
                             {post.featured_image && (
-                                <div className="mb-6 overflow-hidden rounded-lg">
-                                    <img src={post.featured_image} alt={post.title} className="w-full" />
+                                <div className="mb-6">
+                                    <div className="overflow-hidden rounded-lg">
+                                        <img
+                                            src={post.featured_image}
+                                            alt={post.metadata?.image_alt || post.title}
+                                            className="w-full"
+                                        />
+                                    </div>
+                                    {post.metadata?.image_attribution && (
+                                        <div
+                                            className="mt-2 text-xs text-muted-foreground"
+                                            dangerouslySetInnerHTML={{
+                                                __html: DOMPurify.sanitize(post.metadata.image_attribution, {
+                                                    ALLOWED_TAGS: ["a"],
+                                                    ALLOWED_ATTR: ["href", "target", "rel"],
+                                                }),
+                                            }}
+                                        />
+                                    )}
                                 </div>
                             )}
 

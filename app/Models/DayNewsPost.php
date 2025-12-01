@@ -30,6 +30,8 @@ final class DayNewsPost extends Model
         'content',
         'excerpt',
         'featured_image',
+        'featured_image_path',
+        'featured_image_disk',
         'metadata',
         'status',
         'published_at',
@@ -132,6 +134,16 @@ final class DayNewsPost extends Model
     public function isFreeCategory(): bool
     {
         return in_array($this->category, config('services.day_news.free_categories', []));
+    }
+
+    public function getFeaturedImageAttribute(): ?string
+    {
+        // Priority: local storage > original URL > null
+        if ($this->featured_image_path && $this->featured_image_disk) {
+            return \Illuminate\Support\Facades\Storage::disk($this->featured_image_disk)->url($this->featured_image_path);
+        }
+
+        return $this->attributes['featured_image'] ?? null;
     }
 
     protected static function booted(): void

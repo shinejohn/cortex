@@ -28,6 +28,10 @@ final class NewsArticle extends Model
         'metadata',
         'content_hash',
         'processed',
+        'relevance_score',
+        'relevance_topic_tags',
+        'relevance_rationale',
+        'scored_at',
     ];
 
     public function region(): BelongsTo
@@ -75,9 +79,24 @@ final class NewsArticle extends Model
         return $query->where('source_type', $sourceType);
     }
 
+    public function scopeScored($query)
+    {
+        return $query->whereNotNull('relevance_score');
+    }
+
+    public function scopeUnscored($query)
+    {
+        return $query->whereNull('relevance_score');
+    }
+
     public function markAsProcessed(): void
     {
         $this->update(['processed' => true]);
+    }
+
+    public function isScored(): bool
+    {
+        return $this->relevance_score !== null;
     }
 
     protected function casts(): array
@@ -86,6 +105,8 @@ final class NewsArticle extends Model
             'metadata' => 'array',
             'processed' => 'boolean',
             'published_at' => 'datetime',
+            'relevance_topic_tags' => 'array',
+            'scored_at' => 'datetime',
         ];
     }
 }

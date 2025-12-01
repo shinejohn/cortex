@@ -156,6 +156,14 @@ return [
         'access_key' => env('UNSPLASH_ACCESS_KEY', ''),
         'orientation' => 'landscape', // landscape, portrait, squarish
         'fallback_enabled' => true, // Use fallback images if API fails
+
+        // Local storage configuration
+        'storage' => [
+            'enabled' => env('UNSPLASH_STORAGE_ENABLED', true),
+            'disk' => env('UNSPLASH_STORAGE_DISK', 'public'), // 'public' or 's3'
+            'path' => 'unsplash', // Base path within disk
+            'size' => 'regular', // Which size to download (regular = ~1080px)
+        ],
     ],
 
     // Error Handling

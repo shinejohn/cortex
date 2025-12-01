@@ -142,6 +142,8 @@ final class ProcessSingleArticleGenerationJob implements ShouldQueue
             'generated_excerpt' => $result['excerpt'],
             'seo_metadata' => $seoMetadata,
             'featured_image_url' => $imageData['url'] ?? null,
+            'featured_image_path' => $imageData['storage_path'] ?? null,
+            'featured_image_disk' => $imageData['storage_disk'] ?? null,
             'status' => 'ready_for_publishing',
         ]);
     }

@@ -136,7 +136,53 @@ final class NewsCollectionService
     }
 
     /**
+     * Fetch news for a single category (called by job)
+     */
+    public function fetchSingleCategoryNews(Region $region, string $category): array
+    {
+        $maxCategoryArticles = config('news-workflow.news_collection.max_category_articles', 20);
+        $storedArticles = [];
+
+        Log::info('Fetching single category news', [
+            'region' => $region->name,
+            'category' => $category,
+        ]);
+
+        try {
+            $newsData = $this->serpApi->fetchCategoryNews($region, $category);
+
+            foreach ($newsData as $articleData) {
+                try {
+                    $article = $this->storeNewsArticle($articleData, $region);
+                    if ($article) {
+                        $storedArticles[] = $article;
+                    }
+
+                    // Stop if we've reached the max
+                    if (count($storedArticles) >= $maxCategoryArticles) {
+                        break;
+                    }
+                } catch (Exception $e) {
+                    Log::warning('Failed to store category news article', [
+                        'category' => $category,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+        } catch (Exception $e) {
+            Log::warning('Failed to fetch category news', [
+                'category' => $category,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return $storedArticles;
+    }
+
+    /**
      * Fetch general category news for the region
+     *
+     * @deprecated Use fetchSingleCategoryNews() with async jobs instead
      */
     public function fetchCategoryNews(Region $region): array
     {

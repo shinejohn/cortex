@@ -18,7 +18,88 @@ final class FactCheckingService
     ) {}
 
     /**
+     * Process a single draft for fact-checking (used by async jobs)
+     */
+    public function processSingleDraft(NewsArticleDraft $draft): void
+    {
+        $factCheckingEnabled = config('news-workflow.fact_checking.enabled', true);
+
+        Log::info('Processing single draft for fact-checking', [
+            'draft_id' => $draft->id,
+            'fact_checking_enabled' => $factCheckingEnabled,
+        ]);
+
+        // Step 1: Generate outline (always done)
+        $outline = $this->generateOutline($draft);
+        $draft->update([
+            'outline' => $outline,
+            'status' => 'outline_generated',
+        ]);
+
+        Log::info('Generated outline', [
+            'draft_id' => $draft->id,
+        ]);
+
+        if ($factCheckingEnabled) {
+            // Step 2: Extract claims
+            $claims = $this->extractClaims($draft, $outline);
+
+            Log::info('Extracted claims', [
+                'draft_id' => $draft->id,
+                'claim_count' => count($claims),
+            ]);
+
+            // Step 3: Verify each claim
+            foreach ($claims as $claimData) {
+                try {
+                    $this->verifyClaim($draft, $claimData['text'], $claimData);
+                } catch (Exception $e) {
+                    Log::warning('Failed to verify claim', [
+                        'draft_id' => $draft->id,
+                        'claim' => $claimData['text'] ?? $claimData,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+
+            // Step 4: Calculate average fact-check confidence
+            $draft->calculateAverageFactCheckConfidence();
+
+            // Step 5: Update status based on fact-check confidence
+            $minConfidence = config('news-workflow.fact_checking.min_confidence_score', 70);
+            if ($draft->fact_check_confidence >= $minConfidence) {
+                $draft->update(['status' => 'ready_for_generation']);
+
+                Log::info('Draft passed fact-checking', [
+                    'draft_id' => $draft->id,
+                    'confidence' => $draft->fact_check_confidence,
+                ]);
+            } else {
+                $draft->update([
+                    'status' => 'rejected',
+                    'rejection_reason' => "Fact-check confidence ({$draft->fact_check_confidence}) below minimum ({$minConfidence})",
+                ]);
+
+                Log::warning('Draft failed fact-checking', [
+                    'draft_id' => $draft->id,
+                    'confidence' => $draft->fact_check_confidence,
+                    'required' => $minConfidence,
+                ]);
+            }
+        } else {
+            // Skip fact-checking, directly mark as ready for generation
+            $draft->update(['status' => 'ready_for_generation']);
+
+            Log::info('Skipped fact-checking (disabled), marked ready for generation', [
+                'draft_id' => $draft->id,
+            ]);
+        }
+    }
+
+    /**
      * Generate outline and fact-check articles (Phase 4)
+     *
+     * @deprecated Use processSingleDraft() instead for async processing
      */
     public function processForRegion(Region $region): int
     {

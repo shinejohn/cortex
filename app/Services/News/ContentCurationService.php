@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services\News;
 
-use App\Models\NewsArticle;
 use App\Models\NewsArticleDraft;
 use App\Models\Region;
 use Exception;
@@ -15,139 +14,6 @@ final class ContentCurationService
     public function __construct(
         private readonly PrismAiService $prismAi
     ) {}
-
-    /**
-     * Shortlist articles for a region (Phase 3)
-     */
-    public function shortlistArticles(Region $region): int
-    {
-        if (! config('news-workflow.shortlisting.enabled', true)) {
-            Log::info('Article shortlisting is disabled', ['region' => $region->name]);
-
-            return 0;
-        }
-
-        $articlesPerRegion = config('news-workflow.shortlisting.articles_per_region', 10);
-        $minRelevanceScore = config('news-workflow.shortlisting.min_relevance_score', 60);
-        $shortlistedCount = 0;
-
-        Log::info('Starting article shortlisting', [
-            'region' => $region->name,
-            'target_count' => $articlesPerRegion,
-            'min_score' => $minRelevanceScore,
-        ]);
-
-        // Get unprocessed articles for this region
-        $articles = NewsArticle::where('region_id', $region->id)
-            ->where('processed', false)
-            ->get();
-
-        Log::info('Found unprocessed articles', [
-            'region' => $region->name,
-            'count' => $articles->count(),
-        ]);
-
-        $scoredArticles = [];
-
-        // Score each article
-        foreach ($articles as $article) {
-            try {
-                $articleData = [
-                    'title' => $article->title,
-                    'content_snippet' => $article->content_snippet,
-                    'source_publisher' => $article->source_publisher,
-                    'published_at' => $article->published_at?->toIso8601String(),
-                    'source_type' => $article->source_type,
-                ];
-
-                $scoringResult = $this->prismAi->scoreArticleRelevance($articleData, $region);
-
-                $scoredArticles[] = [
-                    'article' => $article,
-                    'score' => $scoringResult['relevance_score'],
-                    'topic_tags' => $scoringResult['topic_tags'],
-                    'rationale' => $scoringResult['rationale'],
-                ];
-
-                Log::debug('Scored article', [
-                    'article_id' => $article->id,
-                    'title' => $article->title,
-                    'score' => $scoringResult['relevance_score'],
-                ]);
-            } catch (Exception $e) {
-                Log::warning('Failed to score article', [
-                    'article_id' => $article->id,
-                    'error' => $e->getMessage(),
-                ]);
-            }
-        }
-
-        // Sort by score descending
-        usort($scoredArticles, fn ($a, $b) => $b['score'] <=> $a['score']);
-
-        // Select articles: prioritize relevance but ensure minimum count
-        $qualifiedArticles = array_filter(
-            $scoredArticles,
-            fn ($item) => $item['score'] >= $minRelevanceScore
-        );
-
-        // If we have enough qualified articles, use them
-        if (count($qualifiedArticles) >= $articlesPerRegion) {
-            $selectedArticles = array_slice($qualifiedArticles, 0, $articlesPerRegion);
-        } else {
-            // Otherwise, take all articles up to target count (regardless of score)
-            $selectedArticles = array_slice($scoredArticles, 0, $articlesPerRegion);
-
-            if (count($scoredArticles) < $articlesPerRegion) {
-                Log::warning('Not enough articles available to meet target count', [
-                    'region' => $region->name,
-                    'available' => count($scoredArticles),
-                    'qualified' => count($qualifiedArticles),
-                    'target' => $articlesPerRegion,
-                ]);
-            }
-        }
-
-        // Create drafts for selected articles
-        foreach ($selectedArticles as $item) {
-            try {
-                $draft = $this->createDraft(
-                    $item['article'],
-                    $region,
-                    $item['score'],
-                    $item['topic_tags']
-                );
-
-                $item['article']->markAsProcessed();
-                $shortlistedCount++;
-
-                Log::info('Article shortlisted', [
-                    'draft_id' => $draft->id,
-                    'article_id' => $item['article']->id,
-                    'score' => $item['score'],
-                ]);
-            } catch (Exception $e) {
-                Log::warning('Failed to create draft', [
-                    'article_id' => $item['article']->id,
-                    'error' => $e->getMessage(),
-                ]);
-            }
-        }
-
-        // Mark remaining unselected articles as processed
-        foreach ($articles as $article) {
-            if (! $article->processed) {
-                $article->markAsProcessed();
-            }
-        }
-
-        Log::info('Article shortlisting completed', [
-            'region' => $region->name,
-            'shortlisted' => $shortlistedCount,
-        ]);
-
-        return $shortlistedCount;
-    }
 
     /**
      * Perform final selection of articles (Phase 5)
@@ -274,23 +140,5 @@ final class ContentCurationService
         ]);
 
         return $selectedCount;
-    }
-
-    /**
-     * Create a draft from a shortlisted article
-     */
-    private function createDraft(
-        NewsArticle $article,
-        Region $region,
-        float $relevanceScore,
-        array $topicTags
-    ): NewsArticleDraft {
-        return NewsArticleDraft::create([
-            'news_article_id' => $article->id,
-            'region_id' => $region->id,
-            'status' => 'shortlisted',
-            'relevance_score' => $relevanceScore,
-            'topic_tags' => $topicTags,
-        ]);
     }
 }

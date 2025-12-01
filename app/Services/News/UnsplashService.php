@@ -9,13 +9,17 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class UnsplashService
+final class UnsplashService
 {
     private const API_BASE_URL = 'https://api.unsplash.com';
 
     private const PICSUM_BASE_URL = 'https://picsum.photos';
 
     private const CACHE_TTL_HOURS = 24;
+
+    public function __construct(
+        private readonly ImageStorageService $imageStorage
+    ) {}
 
     /**
      * Search for a relevant image based on keywords.
@@ -88,6 +92,9 @@ class UnsplashService
 
             $imageData = $this->formatImageData($photo);
 
+            // Download and store image locally
+            $imageData = $this->downloadAndStoreImage($imageData);
+
             // Cache the result
             Cache::put($cacheKey, $imageData, now()->addHours(self::CACHE_TTL_HOURS));
 
@@ -144,6 +151,9 @@ class UnsplashService
 
             $imageData = $this->formatImageData($photo);
 
+            // Download and store image locally
+            $imageData = $this->downloadAndStoreImage($imageData);
+
             $this->trackDownload($photo);
 
             return $imageData;
@@ -154,6 +164,35 @@ class UnsplashService
             ]);
 
             return $this->getPicsumImage($orientation);
+        }
+    }
+
+    /**
+     * Download and store an image locally.
+     *
+     * Returns the image data with storage path/disk added.
+     */
+    public function downloadAndStoreImage(array $imageData): array
+    {
+        if (! config('news-workflow.unsplash.storage.enabled', true)) {
+            return $imageData; // Storage disabled, return as-is
+        }
+
+        try {
+            $size = config('news-workflow.unsplash.storage.size', 'regular');
+            $url = $imageData["{$size}_url"] ?? $imageData['url'];
+            $photoId = $imageData['photo_id'] ?? 'unknown';
+
+            $storageData = $this->imageStorage->downloadAndStore($url, $photoId);
+
+            return array_merge($imageData, $storageData);
+        } catch (Exception $e) {
+            Log::warning('Image storage failed, falling back to URL', [
+                'photo_id' => $imageData['photo_id'] ?? 'unknown',
+                'error' => $e->getMessage(),
+            ]);
+
+            return $imageData; // Return without storage data
         }
     }
 
@@ -218,7 +257,7 @@ class UnsplashService
         $unsplashUrl = 'https://unsplash.com/?utm_source='.config('app.name').'&utm_medium=referral';
 
         return sprintf(
-            'Photo by <a href="%s">%s</a> on <a href="%s">Unsplash</a>',
+            'Photo by <a href="%s" target="_blank" rel="noopener noreferrer">%s</a> on <a href="%s" target="_blank" rel="noopener noreferrer">Unsplash</a>',
             $photographerUrl,
             htmlspecialchars($photographerName),
             $unsplashUrl
@@ -294,10 +333,11 @@ class UnsplashService
             'orientation' => $orientation,
         ]);
 
-        return [
+        $imageData = [
             'url' => $regularUrl,
             'thumb_url' => $thumbUrl,
             'small_url' => $smallUrl,
+            'regular_url' => $regularUrl,
             'photographer_name' => 'Picsum Photos',
             'photographer_username' => 'picsum',
             'photographer_url' => 'https://picsum.photos',
@@ -307,8 +347,13 @@ class UnsplashService
             'color' => '#888888',
             'width' => $width,
             'height' => $height,
-            'attribution' => 'Image from <a href="https://picsum.photos">Picsum Photos</a>',
+            'attribution' => 'Image from <a href="https://picsum.photos" target="_blank" rel="noopener noreferrer">Picsum Photos</a>',
             'is_fallback' => true,
         ];
+
+        // Download and store Picsum image locally
+        $imageData = $this->downloadAndStoreImage($imageData);
+
+        return $imageData;
     }
 }

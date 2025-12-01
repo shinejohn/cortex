@@ -56,6 +56,8 @@ final class ArticleGenerationService
                     'generated_excerpt' => $articleData['excerpt'],
                     'seo_metadata' => $articleData['seo_metadata'],
                     'featured_image_url' => $articleData['featured_image_url'] ?? null,
+                    'featured_image_path' => $articleData['featured_image_path'] ?? null,
+                    'featured_image_disk' => $articleData['featured_image_disk'] ?? null,
                     'status' => 'ready_for_publishing',
                 ]);
 
@@ -137,6 +139,8 @@ final class ArticleGenerationService
             'excerpt' => $result['excerpt'],
             'seo_metadata' => $seoMetadata,
             'featured_image_url' => $imageData['url'] ?? null,
+            'featured_image_path' => $imageData['storage_path'] ?? null,
+            'featured_image_disk' => $imageData['storage_disk'] ?? null,
         ];
     }
 

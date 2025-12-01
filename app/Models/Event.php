@@ -28,6 +28,8 @@ final class Event extends Model
     protected $fillable = [
         'title',
         'image',
+        'image_path',
+        'image_disk',
         'event_date',
         'time',
         'description',
@@ -147,6 +149,16 @@ final class Event extends Model
     public function getVenueModelAttribute(): ?Venue
     {
         return $this->venue;
+    }
+
+    public function getImageAttribute(): ?string
+    {
+        // Priority: local storage > original URL > null
+        if ($this->image_path && $this->image_disk) {
+            return \Illuminate\Support\Facades\Storage::disk($this->image_disk)->url($this->image_path);
+        }
+
+        return $this->attributes['image'] ?? null;
     }
 
     // Scopes

@@ -42,6 +42,7 @@ final class PublicPostController extends Controller
                 'content' => $post->content,
                 'excerpt' => $post->excerpt,
                 'featured_image' => $post->featured_image,
+                'metadata' => $post->metadata,
                 'view_count' => $post->view_count,
                 'published_at' => $post->published_at?->toISOString(),
                 'author' => $post->author ? [

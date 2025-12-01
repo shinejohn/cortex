@@ -121,6 +121,9 @@ final class PublishingService
                 'meta_keywords' => $draft->seo_metadata['keywords'] ?? [],
                 'og_title' => $draft->seo_metadata['og_title'] ?? $draft->generated_title,
                 'og_description' => $draft->seo_metadata['og_description'] ?? $draft->generated_excerpt,
+                'image_attribution' => $draft->seo_metadata['image_attribution'] ?? null,
+                'image_photographer' => $draft->seo_metadata['image_photographer'] ?? null,
+                'image_alt' => $draft->seo_metadata['image_alt'] ?? null,
                 'source_draft_id' => $draft->id,
             ];
 
@@ -137,6 +140,8 @@ final class PublishingService
                 'status' => $status,
                 'published_at' => $status === 'published' ? now() : null,
                 'featured_image' => $draft->featured_image_url,
+                'featured_image_path' => $draft->featured_image_path,
+                'featured_image_disk' => $draft->featured_image_disk,
                 'metadata' => $metadata,
                 'type' => 'article',
                 'category' => $this->mapTopicTagToCategory($draft->topic_tags[0] ?? null),

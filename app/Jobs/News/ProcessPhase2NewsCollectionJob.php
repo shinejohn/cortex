@@ -58,32 +58,46 @@ final class ProcessPhase2NewsCollectionJob implements ShouldQueue
                 return;
             }
 
-            // Fetch category news synchronously (smaller dataset, quick)
-            $categoryArticles = $newsCollection->fetchCategoryNews($this->region);
+            // Count jobs first - each category gets its own job
+            $categories = config('news-workflow.business_discovery.categories', []);
+            $categoryJobsCount = count($categories);
 
-            Log::info('Phase 2: Category news collected', [
-                'region_id' => $this->region->id,
-                'category_articles' => count($categoryArticles),
-            ]);
+            // Get businesses linked to this region
+            $businesses = $this->region->businesses()
+                ->limit(50)
+                ->get();
+            $businessJobsCount = $businesses->count();
 
-            // Dispatch business news collection jobs
-            $businessJobsCount = $this->dispatchBusinessNewsJobs($newsCollection);
+            $totalJobs = $categoryJobsCount + $businessJobsCount;
 
-            Log::info('Phase 2: Business news jobs dispatched', [
-                'region_id' => $this->region->id,
-                'business_jobs' => $businessJobsCount,
-            ]);
-
-            // If no business jobs were dispatched, immediately trigger Phase 3
-            if ($businessJobsCount === 0) {
-                Log::info('Phase 2: No businesses found, immediately triggering Phase 3', [
+            // If no jobs will be dispatched, immediately trigger Phase 3
+            if ($totalJobs === 0) {
+                Log::info('Phase 2: No news collection jobs to dispatch, immediately triggering Phase 3', [
                     'region_id' => $this->region->id,
                 ]);
 
                 ProcessPhase3ShortlistingJob::dispatch($this->region);
+
+                return;
             }
-            // Otherwise, ProcessBusinessNewsCollectionJob will trigger Phase 3
-            // when all business jobs complete
+
+            // Initialize counter before dispatching jobs
+            $this->initializeJobCounter($totalJobs);
+
+            // Dispatch category news collection job
+            ProcessCategoryNewsCollectionJob::dispatch($this->region);
+
+            // Dispatch business news collection jobs
+            foreach ($businesses as $business) {
+                ProcessBusinessNewsCollectionJob::dispatch($business, $this->region);
+            }
+
+            Log::info('Phase 2: News collection jobs dispatched', [
+                'region_id' => $this->region->id,
+                'category_jobs' => $categoryJobsCount,
+                'business_jobs' => $businessJobsCount,
+                'total_jobs' => $totalJobs,
+            ]);
 
         } catch (Exception $e) {
             Log::error('Phase 2: News collection failed', [
@@ -105,39 +119,16 @@ final class ProcessPhase2NewsCollectionJob implements ShouldQueue
     }
 
     /**
-     * Dispatch jobs to collect news for all businesses in the region.
-     *
-     * Returns the number of jobs dispatched.
+     * Initialize the cache counter for tracking all news collection jobs.
      */
-    private function dispatchBusinessNewsJobs(NewsCollectionService $newsCollection): int
+    private function initializeJobCounter(int $totalJobs): void
     {
-        // Get businesses linked to this region
-        $businesses = $this->region->businesses()
-            ->limit(50) // Limit to avoid overwhelming API
-            ->get();
-
-        $businessCount = $businesses->count();
-
-        if ($businessCount === 0) {
-            return 0;
-        }
-
-        // Initialize job counter in cache for automatic workflow triggering
         $cacheKey = "news_collection_jobs:{$this->region->id}";
-        Cache::put($cacheKey, $businessCount, now()->addHours(24));
+        Cache::put($cacheKey, $totalJobs, now()->addHours(24));
 
         Log::debug('Phase 2: Initialized job counter', [
             'cache_key' => $cacheKey,
-            'job_count' => $businessCount,
+            'job_count' => $totalJobs,
         ]);
-
-        $jobsDispatched = 0;
-
-        foreach ($businesses as $business) {
-            ProcessBusinessNewsCollectionJob::dispatch($business, $this->region);
-            $jobsDispatched++;
-        }
-
-        return $jobsDispatched;
     }
 }

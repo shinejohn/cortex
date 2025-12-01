@@ -226,3 +226,52 @@ it('uses transaction for publishing to ensure atomicity', function () {
     expect($draft->published_post_id)->toBe($post->id);
     expect($draft->status)->toBe('published');
 });
+
+it('publishes articles with locally stored images', function () {
+    $region = Region::factory()->create();
+    $article = NewsArticle::factory()->create(['region_id' => $region->id]);
+    $draft = NewsArticleDraft::factory()->readyForPublishing()->create([
+        'news_article_id' => $article->id,
+        'region_id' => $region->id,
+        'generated_title' => 'Article with Local Image',
+        'featured_image_url' => 'https://images.unsplash.com/photo-123',
+        'featured_image_path' => 'unsplash/2025/11/test-image.jpg',
+        'featured_image_disk' => 'public',
+        'quality_score' => 90,
+    ]);
+
+    $this->service->publishArticles($region);
+
+    $post = DayNewsPost::first();
+
+    // Verify local storage fields are copied
+    expect($post->featured_image_path)->toBe('unsplash/2025/11/test-image.jpg');
+    expect($post->featured_image_disk)->toBe('public');
+
+    // Verify accessor returns local storage URL (not remote URL)
+    expect($post->featured_image)->toContain('/storage/unsplash/2025/11/test-image.jpg');
+    expect($post->featured_image)->not->toContain('images.unsplash.com');
+});
+
+it('copies image attribution metadata from draft to published post', function () {
+    $region = Region::factory()->create();
+    $article = NewsArticle::factory()->create(['region_id' => $region->id]);
+    $draft = NewsArticleDraft::factory()->readyForPublishing()->create([
+        'news_article_id' => $article->id,
+        'region_id' => $region->id,
+        'generated_title' => 'Article with Attribution',
+        'seo_metadata' => [
+            'image_attribution' => 'Photo by <a href="https://unsplash.com/@test">Test User</a> on <a href="https://unsplash.com">Unsplash</a>',
+            'image_photographer' => 'Test User',
+            'image_alt' => 'Test image description',
+        ],
+        'quality_score' => 90,
+    ]);
+
+    $this->service->publishArticles($region);
+
+    $post = DayNewsPost::first();
+    expect($post->metadata['image_attribution'])->toBe('Photo by <a href="https://unsplash.com/@test">Test User</a> on <a href="https://unsplash.com">Unsplash</a>');
+    expect($post->metadata['image_photographer'])->toBe('Test User');
+    expect($post->metadata['image_alt'])->toBe('Test image description');
+});
