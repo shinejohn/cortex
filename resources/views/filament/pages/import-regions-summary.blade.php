@@ -52,40 +52,40 @@
         <ul class="space-y-3">
             <li class="flex items-center gap-2">
                 @if($options['enable_geocoding'] ?? false)
-                    <x-heroicon-s-check-circle class="h-5 w-5 flex-shrink-0 text-success-500" />
+                    <span class="flex-shrink-0 text-success-500 font-bold">[+]</span>
                     <span class="text-gray-700 dark:text-gray-300">Geocoding enabled - coordinates will be fetched in the background</span>
                 @else
-                    <x-heroicon-s-x-circle class="h-5 w-5 flex-shrink-0 text-gray-400" />
+                    <span class="flex-shrink-0 text-gray-400 font-bold">[-]</span>
                     <span class="text-gray-500 dark:text-gray-400">Geocoding disabled</span>
                 @endif
             </li>
 
             <li class="flex items-center gap-2">
                 @if($options['mark_active'] ?? false)
-                    <x-heroicon-s-check-circle class="h-5 w-5 flex-shrink-0 text-success-500" />
+                    <span class="flex-shrink-0 text-success-500 font-bold">[+]</span>
                     <span class="text-gray-700 dark:text-gray-300">Regions will be marked as active</span>
                 @else
-                    <x-heroicon-s-x-circle class="h-5 w-5 flex-shrink-0 text-gray-400" />
+                    <span class="flex-shrink-0 text-gray-400 font-bold">[-]</span>
                     <span class="text-gray-500 dark:text-gray-400">Regions will be inactive</span>
                 @endif
             </li>
 
             <li class="flex items-center gap-2">
                 @if($options['store_metadata'] ?? false)
-                    <x-heroicon-s-check-circle class="h-5 w-5 flex-shrink-0 text-success-500" />
+                    <span class="flex-shrink-0 text-success-500 font-bold">[+]</span>
                     <span class="text-gray-700 dark:text-gray-300">CSV metadata (Population, Est_SMBs, Type, Notes) will be stored</span>
                 @else
-                    <x-heroicon-s-x-circle class="h-5 w-5 flex-shrink-0 text-gray-400" />
+                    <span class="flex-shrink-0 text-gray-400 font-bold">[-]</span>
                     <span class="text-gray-500 dark:text-gray-400">CSV metadata will not be stored</span>
                 @endif
             </li>
 
             <li class="flex items-center gap-2">
                 @if($options['parent_region_id'] ?? null)
-                    <x-heroicon-s-check-circle class="h-5 w-5 flex-shrink-0 text-info-500" />
+                    <span class="flex-shrink-0 text-info-500 font-bold">[+]</span>
                     <span class="text-gray-700 dark:text-gray-300">Regions will be nested under a parent region</span>
                 @else
-                    <x-heroicon-s-information-circle class="h-5 w-5 flex-shrink-0 text-gray-400" />
+                    <span class="flex-shrink-0 text-gray-400 font-bold">[i]</span>
                     <span class="text-gray-500 dark:text-gray-400">States will be created as top-level regions</span>
                 @endif
             </li>
@@ -95,7 +95,7 @@
     {{-- Hierarchy Info --}}
     <div class="rounded-lg border border-info-200 bg-info-50 p-4 dark:border-info-800 dark:bg-info-900/20">
         <div class="flex items-start gap-3">
-            <x-heroicon-s-information-circle class="h-5 w-5 flex-shrink-0 text-info-500" />
+            <span class="flex-shrink-0 text-info-500 font-bold">[i]</span>
             <div class="text-sm text-info-700 dark:text-info-300">
                 <p class="font-medium">Hierarchy Structure</p>
                 <p class="mt-1">
@@ -112,7 +112,7 @@
     {{-- Warning --}}
     <div class="rounded-lg border border-warning-200 bg-warning-50 p-4 dark:border-warning-800 dark:bg-warning-900/20">
         <div class="flex items-start gap-3">
-            <x-heroicon-s-exclamation-triangle class="h-5 w-5 flex-shrink-0 text-warning-500" />
+            <span class="flex-shrink-0 text-warning-500 font-bold">[!]</span>
             <div class="text-sm text-warning-700 dark:text-warning-300">
                 <p class="font-medium">Ready to Import</p>
                 <p class="mt-1">
