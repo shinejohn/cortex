@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CommunityController;
+use App\Http\Controllers\EventCity\SitemapController as EventCitySitemapController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\HomePageController;
@@ -22,6 +23,19 @@ use App\Http\Controllers\TicketPlanController;
 use App\Http\Controllers\VenueController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+// Sitemap routes
+Route::get('/robots.txt', [EventCitySitemapController::class, 'robots'])->name('robots');
+Route::get('/sitemap.xml', [EventCitySitemapController::class, 'index'])->name('sitemap.index');
+Route::get('/sitemap-static.xml', [EventCitySitemapController::class, 'static'])->name('sitemap.static');
+Route::get('/sitemap-events.xml', [EventCitySitemapController::class, 'events'])->name('sitemap.events');
+Route::get('/sitemap-events-{page}.xml', [EventCitySitemapController::class, 'events'])->where('page', '[0-9]+')->name('sitemap.events.page');
+Route::get('/sitemap-venues.xml', [EventCitySitemapController::class, 'venues'])->name('sitemap.venues');
+Route::get('/sitemap-venues-{page}.xml', [EventCitySitemapController::class, 'venues'])->where('page', '[0-9]+')->name('sitemap.venues.page');
+Route::get('/sitemap-performers.xml', [EventCitySitemapController::class, 'performers'])->name('sitemap.performers');
+Route::get('/sitemap-performers-{page}.xml', [EventCitySitemapController::class, 'performers'])->where('page', '[0-9]+')->name('sitemap.performers.page');
+Route::get('/sitemap-calendars.xml', [EventCitySitemapController::class, 'calendars'])->name('sitemap.calendars');
+Route::get('/sitemap-community.xml', [EventCitySitemapController::class, 'community'])->name('sitemap.community');
 
 // Public routes
 Route::get('/', [HomePageController::class, 'index'])->name('home');

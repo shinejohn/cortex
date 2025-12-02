@@ -8,11 +8,19 @@ use App\Http\Controllers\DayNews\PostController;
 use App\Http\Controllers\DayNews\PostPaymentController;
 use App\Http\Controllers\DayNews\PostPublishController;
 use App\Http\Controllers\DayNews\PublicPostController;
+use App\Http\Controllers\DayNews\SitemapController;
 use App\Models\DayNewsPost;
 use App\Services\SeoService;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+// Sitemap routes
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('day-news.robots');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('day-news.sitemap.index');
+Route::get('/sitemap-static.xml', [SitemapController::class, 'static'])->name('day-news.sitemap.static');
+Route::get('/sitemap-posts.xml', [SitemapController::class, 'posts'])->name('day-news.sitemap.posts');
+Route::get('/sitemap-posts-{page}.xml', [SitemapController::class, 'posts'])->where('page', '[0-9]+')->name('day-news.sitemap.posts.page');
 
 // DayNews home page
 Route::get('/', function () {
