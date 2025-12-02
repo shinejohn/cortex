@@ -74,7 +74,7 @@ RUN apk add --no-cache gnupg && \
     mkdir -p /usr/share/keyrings && \
     curl -fSsL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor > /usr/share/keyrings/postgresql.gpg
 
-# Install system dependencies
+# Install system dependencies including Supervisor for Horizon
 RUN apk add --no-cache \
     postgresql${POSTGRES_VERSION}-client \
     openssh-client \
@@ -85,7 +85,8 @@ RUN apk add --no-cache \
     vim \
     curl \
     nodejs \
-    npm
+    npm \
+    supervisor
 
 ENV PYTHON /usr/bin/python3
 
