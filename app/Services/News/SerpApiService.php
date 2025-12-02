@@ -88,6 +88,28 @@ final class SerpApiService
     }
 
     /**
+     * Geocode a location string to get latitude and longitude
+     *
+     * @param  string  $query  Location string (e.g., "Gainesville, Alachua County, FL")
+     * @return array{latitude: float, longitude: float}|null
+     */
+    public function geocodeLocation(string $query): ?array
+    {
+        try {
+            return $this->retryWithBackoff(function () use ($query) {
+                return $this->searchGeocode($query);
+            });
+        } catch (Exception $e) {
+            Log::error('SERP API geocoding failed', [
+                'query' => $query,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+    }
+
+    /**
      * Parse business data from SERP API response
      */
     public function parseBusinessData(array $result): array
@@ -125,6 +147,63 @@ final class SerpApiService
             'source_name' => $business?->name ?? '',
             'metadata' => $result,
         ];
+    }
+
+    /**
+     * Search for geocoding data via Google Maps
+     *
+     * @return array{latitude: float, longitude: float}|null
+     */
+    private function searchGeocode(string $query): ?array
+    {
+        $response = Http::timeout(30)->get($this->baseUrl, [
+            'api_key' => $this->apiKey,
+            'engine' => 'google_maps',
+            'q' => $query,
+            'type' => 'search',
+            'hl' => 'en',
+        ]);
+
+        if (! $response->successful()) {
+            throw new Exception("SERP API geocode request failed: {$response->status()}");
+        }
+
+        $data = $response->json();
+
+        // Try to get coordinates from place_results first (single place match)
+        if (isset($data['place_results']['gps_coordinates'])) {
+            return [
+                'latitude' => (float) $data['place_results']['gps_coordinates']['latitude'],
+                'longitude' => (float) $data['place_results']['gps_coordinates']['longitude'],
+            ];
+        }
+
+        // Fall back to first local result
+        $localResults = $data['local_results'] ?? [];
+        if (! empty($localResults) && isset($localResults[0]['gps_coordinates'])) {
+            return [
+                'latitude' => (float) $localResults[0]['gps_coordinates']['latitude'],
+                'longitude' => (float) $localResults[0]['gps_coordinates']['longitude'],
+            ];
+        }
+
+        // Try search_metadata location if available
+        if (isset($data['search_metadata']['google_maps_url'])) {
+            // Parse coordinates from the URL if possible
+            if (preg_match('/@(-?\d+\.\d+),(-?\d+\.\d+)/', $data['search_metadata']['google_maps_url'], $matches)) {
+                return [
+                    'latitude' => (float) $matches[1],
+                    'longitude' => (float) $matches[2],
+                ];
+            }
+        }
+
+        Log::warning('SERP API geocoding returned no coordinates', [
+            'query' => $query,
+            'response_keys' => array_keys($data),
+        ]);
+
+        return null;
     }
 
     /**

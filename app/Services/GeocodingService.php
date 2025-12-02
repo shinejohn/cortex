@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Contracts\GeocodingServiceInterface;
+use App\Models\Region;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -136,5 +137,92 @@ final class GeocodingService implements GeocodingServiceInterface
         $cacheKey = 'geocode:'.md5($address);
 
         return Cache::forget($cacheKey);
+    }
+
+    /**
+     * Geocode a region and update its coordinates
+     */
+    public function geocodeRegion(Region $region): bool
+    {
+        $query = $this->buildQueryForRegion($region);
+
+        if (! $query) {
+            Log::warning('GeocodingService: Cannot build query for region', [
+                'region_id' => $region->id,
+                'region_name' => $region->name,
+                'region_type' => $region->type,
+            ]);
+
+            return false;
+        }
+
+        $result = $this->geocodeAddress($query);
+
+        if (! $result) {
+            Log::warning('GeocodingService: No coordinates for region', [
+                'region_id' => $region->id,
+                'region_name' => $region->name,
+                'query' => $query,
+            ]);
+
+            return false;
+        }
+
+        $region->update([
+            'latitude' => $result['latitude'],
+            'longitude' => $result['longitude'],
+        ]);
+
+        Log::info('GeocodingService: Region geocoded successfully', [
+            'region_id' => $region->id,
+            'region_name' => $region->name,
+            'latitude' => $result['latitude'],
+            'longitude' => $result['longitude'],
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Geocode a location by city, county, and state
+     *
+     * @return array{latitude: float, longitude: float, postal_code: ?string, google_place_id: ?string}|null
+     */
+    public function geocodeLocation(string $city, string $county, string $state): ?array
+    {
+        $query = "{$city}, {$county} County, {$state}, USA";
+
+        return $this->geocodeAddress($query);
+    }
+
+    /**
+     * Build a geocoding query string for a region
+     */
+    private function buildQueryForRegion(Region $region): ?string
+    {
+        // For state-level regions, just use the state name
+        if ($region->type === 'state') {
+            return "{$region->name}, USA";
+        }
+
+        // For county-level, include state
+        if ($region->type === 'county') {
+            $stateName = $region->parent?->name;
+
+            return $stateName
+                ? "{$region->name}, {$stateName}, USA"
+                : "{$region->name}, USA";
+        }
+
+        // For city/neighborhood, walk up the hierarchy
+        $parts = [$region->name];
+        $parent = $region->parent;
+
+        while ($parent) {
+            $parts[] = $parent->name;
+            $parent = $parent->parent;
+        }
+
+        return implode(', ', $parts).', USA';
     }
 }

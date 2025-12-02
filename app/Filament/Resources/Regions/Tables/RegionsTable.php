@@ -55,9 +55,9 @@ final class RegionsTable
                     ->badge()
                     ->color('info'),
 
-                TextColumn::make('news_count')
+                TextColumn::make('news_articles_count')
                     ->label('News Articles')
-                    ->counts('news')
+                    ->counts('newsArticles')
                     ->badge()
                     ->color('success'),
 

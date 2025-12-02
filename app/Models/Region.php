@@ -44,10 +44,9 @@ final class Region extends Model
         return $this->hasMany(RegionZipcode::class);
     }
 
-    public function news(): BelongsToMany
+    public function newsArticles(): HasMany
     {
-        return $this->belongsToMany(News::class, 'news_region')
-            ->withTimestamps();
+        return $this->hasMany(NewsArticle::class);
     }
 
     public function businesses(): BelongsToMany
