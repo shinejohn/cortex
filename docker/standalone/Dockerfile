@@ -155,8 +155,15 @@ RUN php artisan location:update
 COPY docker/standalone/etc/nginx/conf.d/custom.conf /etc/nginx/conf.d/custom.conf
 COPY docker/standalone/etc/nginx/site-opts.d/http.conf /etc/nginx/site-opts.d/http.conf
 
-# Create nginx directories and set permissions
-RUN mkdir -p /etc/nginx/conf.d /etc/nginx/site-opts.d && \
+# Configure Supervisor for Horizon
+COPY docker/standalone/etc/supervisor/supervisord.conf /etc/supervisord.conf
+COPY docker/standalone/etc/supervisor/conf.d/horizon.conf /etc/supervisor/conf.d/horizon.conf
+
+# Configure s6-overlay for Nightwatch Agent
+COPY --chmod=755 docker/standalone/etc/s6-overlay/ /etc/s6-overlay/
+
+# Create nginx and supervisor directories and set permissions
+RUN mkdir -p /etc/nginx/conf.d /etc/nginx/site-opts.d /etc/supervisor/conf.d /var/log && \
     chown -R www-data:www-data /etc/nginx && \
     chmod -R 755 /etc/nginx
 
