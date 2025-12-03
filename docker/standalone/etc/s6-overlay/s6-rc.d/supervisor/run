@@ -1,0 +1,8 @@
+#!/command/execlineb -P
+
+# Use with-contenv to ensure environment variables are available
+with-contenv
+
+foreground {
+    /usr/bin/supervisord -c /etc/supervisord.conf
+}
