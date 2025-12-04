@@ -41,5 +41,12 @@ final class AppServiceProvider extends ServiceProvider
         // Rate limiter for geocoding jobs - Google Maps API allows 50 requests/second
         // We limit to 10 per second to be safe and avoid hitting API limits
         RateLimiter::for('geocoding', fn () => Limit::perSecond(10));
+
+        // Rate limiter for location API - prevent abuse of search/detection endpoints
+        // 30 requests per minute per IP for search (allow for autocomplete typing)
+        RateLimiter::for('location-search', fn () => Limit::perMinute(30)->by(request()->ip()));
+
+        // 10 requests per minute per IP for set/detect/clear operations
+        RateLimiter::for('location-actions', fn () => Limit::perMinute(10)->by(request()->ip()));
     }
 }

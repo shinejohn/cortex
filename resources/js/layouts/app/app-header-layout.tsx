@@ -3,6 +3,8 @@ import { AppHeader } from "@/components/app-header";
 import { AppShell } from "@/components/app-shell";
 import Header from "@/components/common/header";
 import DayNewsHeader from "@/components/day-news/day-news-header";
+import DayNewsLocationPrompt from "@/components/day-news/location-prompt";
+import EventCityLocationPrompt from "@/components/event-city/location-prompt";
 import { Toaster } from "@/components/ui/sonner";
 import { LocationProvider } from "@/contexts/location-context";
 import { Auth, type BreadcrumbItem, SharedData } from "@/types";
@@ -16,17 +18,27 @@ export default function AppHeaderLayout({ children, breadcrumbs, auth }: PropsWi
     const renderHeader = () => {
         switch (appDomain) {
             case "day-news":
-                return <DayNewsHeader auth={auth} />;
+                return (
+                    <>
+                        <DayNewsHeader auth={auth} />
+                        <DayNewsLocationPrompt />
+                    </>
+                );
             case "downtown-guide":
                 // TODO: Create DowntownGuideHeader when needed
                 return <Header auth={auth} breadcrumbs={breadcrumbs} />;
             case "event-city":
             default:
-                return <Header auth={auth} breadcrumbs={breadcrumbs} />;
+                return (
+                    <>
+                        <Header auth={auth} breadcrumbs={breadcrumbs} />
+                        <EventCityLocationPrompt />
+                    </>
+                );
         }
     };
 
-    // Wrap Day News pages with LocationProvider
+    // Wrap content with LocationProvider where needed
     const content = (
         <AppShell>
             {renderHeader()}
@@ -35,8 +47,8 @@ export default function AppHeaderLayout({ children, breadcrumbs, auth }: PropsWi
         </AppShell>
     );
 
-    // Only wrap with LocationProvider for Day News domain
-    if (appDomain === "day-news") {
+    // Wrap with LocationProvider for Day News and Event City domains
+    if (appDomain === "day-news" || appDomain === "event-city") {
         return <LocationProvider>{content}</LocationProvider>;
     }
 

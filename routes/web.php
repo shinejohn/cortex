@@ -73,6 +73,21 @@ Route::get('/community/impact', function () {
 Route::get('/community/{id}', [CommunityController::class, 'show'])->name('community.show');
 Route::get('/community/{id}/thread/{threadId}', [CommunityController::class, 'showThread'])->name('community.thread.show');
 
+// Location API routes (public, rate-limited)
+Route::prefix('api/location')->name('api.location.')->group(function () {
+    // Search endpoint - higher limit for autocomplete
+    Route::get('/search', [App\Http\Controllers\Api\LocationController::class, 'search'])
+        ->middleware('throttle:location-search')
+        ->name('search');
+
+    // Action endpoints - lower limit to prevent abuse
+    Route::middleware('throttle:location-actions')->group(function () {
+        Route::post('/detect-browser', [App\Http\Controllers\Api\LocationController::class, 'detectFromBrowser'])->name('detect-browser');
+        Route::post('/set-region', [App\Http\Controllers\Api\LocationController::class, 'setRegion'])->name('set-region');
+        Route::post('/clear', [App\Http\Controllers\Api\LocationController::class, 'clear'])->name('clear');
+    });
+});
+
 // API routes for frontend data
 Route::middleware(['auth'])->group(function () {
     Route::get('/api/events/featured', [EventController::class, 'featured'])->name('api.events.featured');

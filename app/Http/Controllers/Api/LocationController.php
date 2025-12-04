@@ -109,8 +109,8 @@ final class LocationController extends Controller
     public function search(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'query' => ['required', 'string', 'min:1', 'max:255'],
-            'limit' => ['nullable', 'integer', 'min:1', 'max:50'],
+            'query' => ['required', 'string', 'min:2', 'max:100', 'regex:/^[\p{L}\p{N}\s\-\',\.]+$/u'],
+            'limit' => ['nullable', 'integer', 'min:1', 'max:20'],
         ]);
 
         if ($validator->fails()) {
@@ -120,8 +120,8 @@ final class LocationController extends Controller
             ], 422);
         }
 
-        $query = $request->input('query');
-        $limit = (int) $request->input('limit', 10);
+        $query = mb_trim($request->input('query'));
+        $limit = min((int) $request->input('limit', 10), 20);
 
         $regions = $this->locationService->searchRegions($query, $limit);
 

@@ -1,8 +1,10 @@
+import LocationPrompt from "@/components/event-city/location-prompt";
+import { LocationProvider, useLocation } from "@/contexts/location-context";
 import { Link } from "@inertiajs/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { route } from "ziggy-js";
 
-import { Bell, CalendarDays, ChevronDown, LogOut, MapPin, Menu, MessageSquare, Plus, Search, Users } from "lucide-react";
+import { Bell, CalendarDays, ChevronDown, Loader2, LogOut, MapPin, Menu, MessageSquare, Plus, Search, Users } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -100,22 +102,10 @@ const getMobileNavItems = (): NavItem[] => [
     },
 ];
 
-interface Location {
-    readonly name: string;
-    readonly eventCount: number;
-}
-
 interface HeaderProps {
     readonly auth: Auth;
     readonly breadcrumbs?: BreadcrumbItem[];
-    readonly location?: Location;
 }
-
-// Constants
-const DEFAULT_LOCATION: Location = {
-    name: "Clearwater, FL",
-    eventCount: 427,
-};
 
 // Utilities
 const navigate = (href: string): void => {
@@ -136,43 +126,155 @@ const getUserInitials = (name: string): string => {
         .slice(0, 2);
 };
 
-interface LocationSelectorProps {
-    readonly location: Location;
-}
-
 interface SearchBarProps {
     readonly className?: string;
 }
 
 interface MobileNavigationProps {
     readonly auth: Auth;
-    readonly location: Location;
 }
 
-function LocationSelector({ location }: LocationSelectorProps) {
+interface Region {
+    id: string;
+    name: string;
+    slug: string;
+    type: string;
+    full_name: string;
+}
+
+function LocationSelector() {
+    const { currentRegion, searchRegions, setRegion, detectFromBrowser, isLoading } = useLocation();
+    const [isOpen, setIsOpen] = useState(false);
+    const [query, setQuery] = useState("");
+    const [results, setResults] = useState<Region[]>([]);
+    const [isDetecting, setIsDetecting] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handler = (e: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+                setIsOpen(false);
+                setQuery("");
+                setResults([]);
+            }
+        };
+
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
+    }, []);
+
+    useEffect(() => {
+        if (query.length < 2) {
+            setResults([]);
+            return;
+        }
+
+        const timeoutId = setTimeout(async () => {
+            const regions = await searchRegions(query);
+            setResults(regions);
+        }, 300);
+
+        return () => clearTimeout(timeoutId);
+    }, [query, searchRegions]);
+
+    const handleSelect = async (region: Region) => {
+        await setRegion(region.id);
+        setQuery("");
+        setResults([]);
+        setIsOpen(false);
+    };
+
+    const handleUseMyLocation = async () => {
+        setIsDetecting(true);
+        try {
+            await detectFromBrowser();
+            setQuery("");
+            setResults([]);
+            setIsOpen(false);
+        } catch (error) {
+            console.error("Failed to detect location:", error);
+            alert("Unable to detect your location. Please try manually searching.");
+        } finally {
+            setIsDetecting(false);
+        }
+    };
+
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex w-full items-center justify-between gap-2 text-sm">
-                    <div className="flex items-center gap-2">
-                        <MapPin className="size-4" />
-                        <div className="text-left">
-                            <div className="font-medium">{location.name}</div>
-                            <div className="text-xs text-muted-foreground">{location.eventCount} events</div>
+        <div className="relative" ref={dropdownRef}>
+            <Button
+                variant="ghost"
+                className="flex w-full items-center justify-between gap-2 text-sm"
+                onClick={() => setIsOpen(!isOpen)}
+            >
+                <div className="flex items-center gap-2">
+                    <MapPin className="size-4" />
+                    <div className="text-left">
+                        <div className="font-medium">{currentRegion?.name || "Select Location"}</div>
+                        {currentRegion?.type && (
+                            <div className="text-xs capitalize text-muted-foreground">{currentRegion.type}</div>
+                        )}
+                    </div>
+                </div>
+                <ChevronDown className="size-4" />
+            </Button>
+
+            {isOpen && (
+                <div className="absolute left-0 top-full z-50 mt-2 w-72 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                    <div className="p-3">
+                        <div className="relative">
+                            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+                            <Input
+                                type="text"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                placeholder="Search by city or zip code..."
+                                className="w-full pl-9"
+                                autoFocus
+                            />
                         </div>
                     </div>
-                    <ChevronDown className="size-4" />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-64">
-                <DropdownMenuLabel>Change Location</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate("/location/change")}>
-                    <MapPin className="mr-2 size-4" />
-                    Change Location
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+
+                    <div className="border-t border-gray-200 dark:border-gray-700">
+                        <button
+                            type="button"
+                            onClick={handleUseMyLocation}
+                            disabled={isDetecting || isLoading}
+                            className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-700"
+                        >
+                            {isDetecting ? (
+                                <Loader2 className="size-4 animate-spin text-primary" />
+                            ) : (
+                                <MapPin className="size-4 text-primary" />
+                            )}
+                            <span className="font-medium">{isDetecting ? "Detecting..." : "Use my current location"}</span>
+                        </button>
+                    </div>
+
+                    {results.length > 0 && (
+                        <div className="max-h-60 overflow-y-auto border-t border-gray-200 dark:border-gray-700">
+                            {results.map((region) => (
+                                <button
+                                    key={region.id}
+                                    type="button"
+                                    onClick={() => handleSelect(region)}
+                                    disabled={isLoading}
+                                    className="flex w-full flex-col items-start px-4 py-3 text-left hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-700"
+                                >
+                                    <span className="font-medium text-gray-900 dark:text-white">{region.name}</span>
+                                    <span className="text-xs text-gray-500 dark:text-gray-400">{region.full_name}</span>
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
+                    {query.length >= 2 && results.length === 0 && (
+                        <div className="border-t border-gray-200 p-4 text-center text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400">
+                            No locations found for "{query}"
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
     );
 }
 
@@ -218,7 +320,7 @@ function MessagesButton({ notifications }: { notifications?: any }) {
     );
 }
 
-function MobileNavigation({ auth, location }: MobileNavigationProps) {
+function MobileNavigation({ auth }: MobileNavigationProps) {
     const user = auth.user;
     const { props } = usePage<SharedData>();
     const sharedNotifications = props.notifications;
@@ -244,7 +346,7 @@ function MobileNavigation({ auth, location }: MobileNavigationProps) {
                     {/* Location */}
                     <div className="border-b pb-4">
                         <div className="w-full">
-                            <LocationSelector location={location} />
+                            <LocationSelector />
                         </div>
                     </div>
 
@@ -342,8 +444,8 @@ function MobileNavigation({ auth, location }: MobileNavigationProps) {
     );
 }
 
-// Main Header Component
-export function Header({ auth, location = DEFAULT_LOCATION }: HeaderProps) {
+// Inner Header Component (requires LocationProvider)
+function HeaderContent({ auth }: HeaderProps) {
     const [isScrolled, setIsScrolled] = useState(false);
     const { user } = auth;
     const { props } = usePage<SharedData>();
@@ -375,7 +477,7 @@ export function Header({ auth, location = DEFAULT_LOCATION }: HeaderProps) {
                             <Link href={route("home")}>
                                 <AppLogo />
                             </Link>
-                            <LocationSelector location={location} />
+                            <LocationSelector />
                         </div>
 
                         {/* Right Section */}
@@ -457,7 +559,7 @@ export function Header({ auth, location = DEFAULT_LOCATION }: HeaderProps) {
                 <div className="container mx-auto px-4">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center gap-3">
-                            <MobileNavigation auth={auth} location={location} />
+                            <MobileNavigation auth={auth} />
                             <Link href={route("home")}>
                                 <AppLogoIcon className="text-lg" />
                             </Link>
@@ -495,6 +597,15 @@ export function Header({ auth, location = DEFAULT_LOCATION }: HeaderProps) {
                 </div>
             </div>
         </header>
+    );
+}
+
+// Main Header Component - wraps with LocationProvider
+export function Header({ auth }: HeaderProps) {
+    return (
+        <LocationProvider>
+            <HeaderContent auth={auth} />
+        </LocationProvider>
     );
 }
 
