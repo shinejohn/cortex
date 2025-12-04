@@ -139,6 +139,7 @@ return [
     'ai_models' => [
         'scoring' => ['openrouter', env('NEWS_WORKFLOW_AI_MODEL_SCORING', env('PRISM_MODEL', 'meta-llama/llama-3.1-8b-instruct'))], // Phase 3 & 5
         'outline' => ['openrouter', env('NEWS_WORKFLOW_AI_MODEL_OUTLINE', env('PRISM_MODEL', 'meta-llama/llama-3.1-8b-instruct'))], // Phase 4
+        'fact_checking' => ['openrouter', env('NEWS_WORKFLOW_AI_MODEL_FACT_CHECKING', env('PRISM_MODEL', 'meta-llama/llama-3.1-8b-instruct'))], // Phase 4
         'generation' => ['openrouter', env('NEWS_WORKFLOW_AI_MODEL_GENERATION', env('PRISM_MODEL', 'meta-llama/llama-3.1-8b-instruct'))], // Phase 6
         'event_detection' => ['openrouter', env('NEWS_WORKFLOW_AI_MODEL_EVENT_DETECTION', env('PRISM_MODEL', 'meta-llama/llama-3.1-8b-instruct'))], // Event Detection
         'event_extraction' => ['openrouter', env('NEWS_WORKFLOW_AI_MODEL_EVENT_EXTRACTION', env('PRISM_MODEL', 'meta-llama/llama-3.1-8b-instruct'))], // Event Extraction

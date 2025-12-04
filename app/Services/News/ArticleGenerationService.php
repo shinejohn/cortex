@@ -8,6 +8,7 @@ use App\Models\NewsArticleDraft;
 use App\Models\Region;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use RuntimeException;
 
 final class ArticleGenerationService
 {
@@ -118,6 +119,15 @@ final class ArticleGenerationService
             ->toArray();
 
         $result = $this->prismAi->generateFinalArticle($draftData, $factChecks);
+
+        // Validate AI response has required fields
+        if (! is_array($result) || ! isset($result['title'], $result['content'], $result['excerpt'])) {
+            $keys = is_array($result) ? array_keys($result) : ['not_an_array'];
+
+            throw new RuntimeException(
+                'AI response missing required fields (title, content, excerpt). Got keys: '.implode(', ', $keys)
+            );
+        }
 
         // Generate SEO metadata
         $seoMetadata = $this->generateSeoMetadata($result['title'], $result['content'], $draft->topic_tags);
