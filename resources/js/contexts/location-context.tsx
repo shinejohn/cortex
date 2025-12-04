@@ -1,7 +1,14 @@
 import { router, usePage } from "@inertiajs/react";
 import axios from "axios";
 import React, { createContext, useContext, useState, type ReactNode } from "react";
-import { route } from "ziggy-js";
+
+// Location API endpoints - using relative URLs to work across all domains
+const LOCATION_API = {
+    search: "/api/location/search",
+    setRegion: "/api/location/set-region",
+    detectBrowser: "/api/location/detect-browser",
+    clear: "/api/location/clear",
+} as const;
 
 interface Region {
     id: string;
@@ -41,7 +48,7 @@ export function LocationProvider({ children }: LocationProviderProps) {
     const setRegion = async (regionId: string) => {
         setIsLoading(true);
         try {
-            const response = await axios.post(route("api.location.set-region"), {
+            const response = await axios.post(LOCATION_API.setRegion, {
                 region_id: regionId,
             });
 
@@ -69,7 +76,7 @@ export function LocationProvider({ children }: LocationProviderProps) {
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
                     try {
-                        const response = await axios.post(route("api.location.detect-browser"), {
+                        const response = await axios.post(LOCATION_API.detectBrowser, {
                             latitude: position.coords.latitude,
                             longitude: position.coords.longitude,
                         });
@@ -100,7 +107,7 @@ export function LocationProvider({ children }: LocationProviderProps) {
 
     const searchRegions = async (query: string): Promise<Region[]> => {
         try {
-            const response = await axios.get(route("api.location.search"), {
+            const response = await axios.get(LOCATION_API.search, {
                 params: { query, limit: 10 },
             });
 
@@ -118,7 +125,7 @@ export function LocationProvider({ children }: LocationProviderProps) {
     const clearLocation = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.post(route("api.location.clear"));
+            const response = await axios.post(LOCATION_API.clear);
 
             if (response.data.success) {
                 setCurrentRegion(null);

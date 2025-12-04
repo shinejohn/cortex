@@ -157,10 +157,16 @@ Route::prefix('api/advertisements')->name('api.advertisements.')->group(function
     Route::post('/{ad}/click', [AdvertisementController::class, 'trackClick'])->name('click');
 });
 
-// Location API routes
-Route::prefix('api/location')->name('api.location.')->group(function () {
-    Route::post('/detect-browser', [LocationController::class, 'detectFromBrowser'])->name('detect-browser');
-    Route::post('/set-region', [LocationController::class, 'setRegion'])->name('set-region');
-    Route::get('/search', [LocationController::class, 'search'])->name('search');
-    Route::post('/clear', [LocationController::class, 'clear'])->name('clear');
+// Location API routes (public, rate-limited)
+Route::prefix('api/location')->group(function () {
+    // Search endpoint - higher limit for autocomplete
+    Route::get('/search', [LocationController::class, 'search'])
+        ->middleware('throttle:location-search');
+
+    // Action endpoints - lower limit to prevent abuse
+    Route::middleware('throttle:location-actions')->group(function () {
+        Route::post('/detect-browser', [LocationController::class, 'detectFromBrowser']);
+        Route::post('/set-region', [LocationController::class, 'setRegion']);
+        Route::post('/clear', [LocationController::class, 'clear']);
+    });
 });
