@@ -80,6 +80,7 @@ return [
         'enabled' => env('NEWS_WORKFLOW_ARTICLE_GENERATION_ENABLED', true),
         'ai_model' => env('NEWS_WORKFLOW_AI_MODEL_GENERATION', 'openai/gpt-4'),
         'max_tokens' => env('NEWS_WORKFLOW_MAX_TOKENS', 2000),
+        'temperature' => env('NEWS_WORKFLOW_GENERATION_TEMPERATURE', 0.3), // Lower = more deterministic, less creative
     ],
 
     // Phase 7: Publishing
@@ -191,6 +192,11 @@ Scoring Criteria:
 - Community Interest (20%): Likely interest from local residents
 - Informativeness (20%): Value and depth of information
 
+Content Completeness Check:
+- Does the article contain enough specific details (names, locations, dates, facts) to write a complete news story?
+- Articles that are too vague, lack key details, or would require extensive placeholder text should score LOWER
+- Prefer articles with concrete, verifiable information over those with missing critical details
+
 Provide:
 1. A relevance score from 0-100
 2. Topic tags for categorization (e.g., business, community, events, government)
@@ -212,6 +218,12 @@ Requirements:
 - Ensure the outline flows naturally from introduction to conclusion
 - Do NOT include any external links or URLs
 - Do NOT reference or attribute any external news sources, agencies, or publishers
+
+CRITICAL - No Placeholder Text:
+- Do NOT use bracketed placeholders like [Name], [Location], [Date], [Company] in the outline
+- Only include key points that can be written with the information available
+- If specific details are missing from the source, note them as "details pending official release" rather than using brackets
+- The outline should only contain points that can be fully articulated in the final article
 
 Focus on local news style: clear, factual, and community-focused.
 PROMPT,
@@ -279,11 +291,18 @@ Evaluation Criteria:
 - Local Relevance (20%): Community value and impact
 - Professionalism (20%): Tone, structure, readability
 
+CRITICAL - Check for Placeholder Text:
+- Scan for ANY bracketed placeholder text like [Name], [Location], [Address], [Time], [Company Name], etc.
+- Check for phrases like "[Apartment Complex Name, if known]", "[Victim's Name]", "[Street Name]", "[Spokesperson's Name]"
+- If ANY placeholder text is found, the article FAILS quality evaluation (score should be below 50)
+- Publication-ready content must have NO fill-in-the-blank elements
+
 Provide:
-1. Overall quality score (0-100)
+1. Overall quality score (0-100) - MUST be below 50 if placeholders are found
 2. Fact-check confidence estimate based on verification results
 3. Key strengths (3-5 points)
 4. Areas for improvement (if any)
+5. placeholder_detected: true/false - whether any bracketed placeholder text was found
 PROMPT,
 
         'article_generation' => <<<'PROMPT'
@@ -318,6 +337,16 @@ Requirements:
 - Do NOT mention or attribute any external news sources, agencies, wire services, or publishers
 - Present all information as original reporting from our publication
 - Do NOT use phrases like "according to [source]", "reported by [agency]", or similar attributions
+
+CRITICAL - PLACEHOLDER PROHIBITION:
+- NEVER use placeholder text in brackets like [Name], [Location], [Address], [Time], etc.
+- NEVER use phrases like "[Apartment Complex Name, if known]", "[Victim's Name]", "[Street Name]", "[Spokesperson's Name]", or ANY similar bracketed placeholders
+- If specific information is unknown, either:
+  1. Omit that detail entirely and write around it
+  2. Use general descriptive language (e.g., "a local apartment complex" instead of "[Apartment Complex Name]")
+  3. Use phrases like "authorities have not released the name" or "the location has not been disclosed"
+- The article MUST be ready for immediate publication with NO missing information indicators
+- Every sentence must be complete and self-contained without any fill-in-the-blank elements
 
 Focus on local news standards: factual, informative, and community-focused.
 All content should appear as our own original journalism.
@@ -372,7 +401,7 @@ Extract:
    - If date range, use start date
 3. time: Display time (e.g., "7:00 PM - 10:00 PM")
 4. venue_name: The venue/location name (be specific, not just "local venue")
-5. venue_address: Full address if available
+5. venue_address: Full address if available, or use city/region name if specific address unknown
 6. description: 2-3 sentence summary of the event
 7. category: One of (music, festival, sports, arts, business, community, food-drink, charity, family, nightlife, other)
 8. subcategories: Up to 3 relevant tags as array
@@ -382,9 +411,15 @@ Extract:
 12. performer_name: Artist/performer name if applicable (null if none)
 13. badges: Array of applicable badges (featured, family-friendly, outdoor, 21+, food-included)
 
+CRITICAL - No Placeholder Text:
+- NEVER use bracketed placeholders like [Venue Name], [Address], [Time], [Price] in any field
+- If venue name is unknown, use a descriptive phrase like "Downtown venue" or "Local community center"
+- If address is unknown, use the city/region name (e.g., "Melbourne, FL")
+- All fields must contain actual content, not placeholder indicators
+
 Important:
 - Do NOT include external links or URLs
-- If information is unclear, make reasonable assumptions and note low confidence
+- If information is unclear, use general descriptive language rather than placeholders
 - Dates must be in the future relative to the published date
 PROMPT,
     ],

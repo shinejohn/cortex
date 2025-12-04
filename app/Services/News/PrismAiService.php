@@ -211,7 +211,7 @@ class PrismAiService
                     'properties' => [
                         'quality_score' => [
                             'type' => 'number',
-                            'description' => 'Overall quality score from 0-100',
+                            'description' => 'Overall quality score from 0-100 - MUST be below 50 if placeholder text is detected',
                             'minimum' => 0,
                             'maximum' => 100,
                         ],
@@ -231,8 +231,12 @@ class PrismAiService
                             'description' => 'Areas needing improvement',
                             'items' => ['type' => 'string'],
                         ],
+                        'placeholder_detected' => [
+                            'type' => 'boolean',
+                            'description' => 'Whether any bracketed placeholder text like [Name], [Location], [Address] was found in the content',
+                        ],
                     ],
-                    'required' => ['quality_score', 'fact_check_confidence', 'strengths', 'weaknesses'],
+                    'required' => ['quality_score', 'fact_check_confidence', 'strengths', 'weaknesses', 'placeholder_detected'],
                 ]))
                 ->generate();
 
@@ -254,9 +258,12 @@ class PrismAiService
     {
         try {
             $model = config('news-workflow.ai_models.generation');
+            $temperature = config('news-workflow.article_generation.temperature', 0.3);
+
             $response = prism()
                 ->structured()
                 ->using(...$model)
+                ->usingTemperature($temperature)
                 ->withClientOptions(['timeout' => self::CLIENT_TIMEOUT])
                 ->withPrompt($this->buildArticleGenerationPrompt($draft, $factChecks))
                 ->withSchema(new RawSchema('article_generation', [
@@ -264,15 +271,15 @@ class PrismAiService
                     'properties' => [
                         'title' => [
                             'type' => 'string',
-                            'description' => 'Final article title',
+                            'description' => 'Final article title - must be complete with no placeholders',
                         ],
                         'content' => [
                             'type' => 'string',
-                            'description' => 'Full article content in HTML format',
+                            'description' => 'Full article content in HTML format - must be publication-ready with NO placeholder text in brackets like [Name] or [Location]',
                         ],
                         'excerpt' => [
                             'type' => 'string',
-                            'description' => 'Brief excerpt (150-200 characters)',
+                            'description' => 'Brief excerpt (150-200 characters) - must be complete with no placeholders',
                         ],
                         'seo_keywords' => [
                             'type' => 'array',
