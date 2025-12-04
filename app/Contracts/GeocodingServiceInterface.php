@@ -24,4 +24,9 @@ interface GeocodingServiceInterface
      * Clear cached geocoding results for an address
      */
     public function clearCache(string $address): bool;
+
+    /**
+     * Geocode a region and update its coordinates
+     */
+    public function geocodeRegion(\App\Models\Region $region): bool;
 }
