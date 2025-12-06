@@ -18,18 +18,23 @@ final class DayNewsPostService
     public function createPost(User $user, Workspace $workspace, array $data): DayNewsPost
     {
         return DB::transaction(function () use ($user, $workspace, $data) {
+            $type = $data['type'];
+            $category = $data['category'] ?? null;
+            $isFree = $this->isPostFree($workspace, $type, $category);
+
             $post = DayNewsPost::create([
                 'workspace_id' => $workspace->id,
                 'author_id' => $user->id,
-                'type' => $data['type'],
-                'category' => $data['category'] ?? null,
+                'type' => $type,
+                'category' => $category,
                 'title' => $data['title'],
                 'slug' => $data['slug'] ?? null,
                 'content' => $data['content'],
                 'excerpt' => $data['excerpt'] ?? null,
                 'featured_image' => $data['featured_image'] ?? null,
                 'metadata' => $data['metadata'] ?? null,
-                'status' => 'draft',
+                'status' => $isFree ? 'published' : 'draft',
+                'published_at' => $isFree ? now() : null,
             ]);
 
             if (! empty($data['region_ids'])) {

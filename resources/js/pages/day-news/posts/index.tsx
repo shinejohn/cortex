@@ -68,7 +68,7 @@ export default function PostsIndex({ auth, posts, filters }: PostsIndexProps) {
             "/posts",
             {
                 ...filters,
-                [key]: value || undefined,
+                [key]: value === "all" ? undefined : value,
             },
             {
                 preserveState: true,
@@ -101,12 +101,12 @@ export default function PostsIndex({ auth, posts, filters }: PostsIndexProps) {
 
                     <div className="mb-6 flex flex-wrap gap-4">
                         <div className="w-48">
-                            <Select value={filters.type || ""} onValueChange={(value) => handleFilterChange("type", value)}>
+                            <Select value={filters.type || "all"} onValueChange={(value) => handleFilterChange("type", value)}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="All types" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">All types</SelectItem>
+                                    <SelectItem value="all">All types</SelectItem>
                                     <SelectItem value="article">Article</SelectItem>
                                     <SelectItem value="announcement">Announcement</SelectItem>
                                     <SelectItem value="notice">Notice</SelectItem>
@@ -117,12 +117,12 @@ export default function PostsIndex({ auth, posts, filters }: PostsIndexProps) {
                         </div>
 
                         <div className="w-48">
-                            <Select value={filters.status || ""} onValueChange={(value) => handleFilterChange("status", value)}>
+                            <Select value={filters.status || "all"} onValueChange={(value) => handleFilterChange("status", value)}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="All statuses" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">All statuses</SelectItem>
+                                    <SelectItem value="all">All statuses</SelectItem>
                                     <SelectItem value="draft">Draft</SelectItem>
                                     <SelectItem value="published">Published</SelectItem>
                                     <SelectItem value="expired">Expired</SelectItem>

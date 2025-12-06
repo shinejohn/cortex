@@ -262,7 +262,8 @@ final class SerpApiService
      */
     private function searchBusinessNews(Business $business): array
     {
-        $query = "\"{$business->name}\" {$business->city}";
+        $state = $business->state ?? '';
+        $query = "\"{$business->name}\" \"{$business->city}, {$state}\" local news";
         $lookbackDays = config('news-workflow.news_collection.lookback_days', 7);
 
         $response = Http::timeout(30)->get($this->baseUrl, [
@@ -307,7 +308,8 @@ final class SerpApiService
      */
     private function searchCategoryNews(Region $region, string $category): array
     {
-        $query = "{$category} news {$region->name}";
+        $stateAbbr = $this->getStateFromRegion($region);
+        $query = "\"{$region->name}, {$stateAbbr}\" local {$category} news";
         $lookbackDays = config('news-workflow.news_collection.lookback_days', 7);
 
         $response = Http::timeout(30)->get($this->baseUrl, [
@@ -403,5 +405,53 @@ final class SerpApiService
         }
 
         throw new Exception('Retry failed');
+    }
+
+    /**
+     * Get state abbreviation from a region by traversing its hierarchy
+     */
+    private function getStateFromRegion(Region $region): string
+    {
+        $stateName = null;
+
+        // For state-type regions, use the name directly
+        if ($region->type === 'state') {
+            $stateName = $region->name;
+        } else {
+            // Traverse ancestors to find state
+            foreach ($region->ancestors() as $ancestor) {
+                if ($ancestor->type === 'state') {
+                    $stateName = $ancestor->name;
+                    break;
+                }
+            }
+        }
+
+        // Convert to abbreviation for better search results
+        return $stateName ? $this->getStateAbbreviation($stateName) : '';
+    }
+
+    /**
+     * Convert state name to abbreviation
+     */
+    private function getStateAbbreviation(string $stateName): string
+    {
+        $states = [
+            'Alabama' => 'AL', 'Alaska' => 'AK', 'Arizona' => 'AZ', 'Arkansas' => 'AR',
+            'California' => 'CA', 'Colorado' => 'CO', 'Connecticut' => 'CT', 'Delaware' => 'DE',
+            'Florida' => 'FL', 'Georgia' => 'GA', 'Hawaii' => 'HI', 'Idaho' => 'ID',
+            'Illinois' => 'IL', 'Indiana' => 'IN', 'Iowa' => 'IA', 'Kansas' => 'KS',
+            'Kentucky' => 'KY', 'Louisiana' => 'LA', 'Maine' => 'ME', 'Maryland' => 'MD',
+            'Massachusetts' => 'MA', 'Michigan' => 'MI', 'Minnesota' => 'MN', 'Mississippi' => 'MS',
+            'Missouri' => 'MO', 'Montana' => 'MT', 'Nebraska' => 'NE', 'Nevada' => 'NV',
+            'New Hampshire' => 'NH', 'New Jersey' => 'NJ', 'New Mexico' => 'NM', 'New York' => 'NY',
+            'North Carolina' => 'NC', 'North Dakota' => 'ND', 'Ohio' => 'OH', 'Oklahoma' => 'OK',
+            'Oregon' => 'OR', 'Pennsylvania' => 'PA', 'Rhode Island' => 'RI', 'South Carolina' => 'SC',
+            'South Dakota' => 'SD', 'Tennessee' => 'TN', 'Texas' => 'TX', 'Utah' => 'UT',
+            'Vermont' => 'VT', 'Virginia' => 'VA', 'Washington' => 'WA', 'West Virginia' => 'WV',
+            'Wisconsin' => 'WI', 'Wyoming' => 'WY', 'District of Columbia' => 'DC',
+        ];
+
+        return $states[$stateName] ?? $stateName;
     }
 }

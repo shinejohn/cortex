@@ -150,9 +150,23 @@ final class DayNewsPost extends Model
     {
         self::creating(function (DayNewsPost $post): void {
             if (empty($post->slug)) {
-                $post->slug = Str::slug($post->title);
+                $post->slug = static::generateUniqueSlug($post->title);
             }
         });
+    }
+
+    protected static function generateUniqueSlug(string $title): string
+    {
+        $slug = Str::slug($title);
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (self::where('slug', $slug)->exists()) {
+            $slug = $originalSlug.'-'.$count;
+            $count++;
+        }
+
+        return $slug;
     }
 
     protected function casts(): array

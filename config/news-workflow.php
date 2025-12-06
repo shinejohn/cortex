@@ -192,6 +192,12 @@ Scoring Criteria:
 - Community Interest (20%): Likely interest from local residents
 - Informativeness (20%): Value and depth of information
 
+Hyper-Local Priority:
+- Articles that directly name {region_name} should score HIGHER
+- Stories about local businesses, residents, schools, local government score HIGHER
+- National or state-level news that only tangentially mentions the area should score LOWER
+- Reject articles about other cities/regions with similar names (e.g., Melbourne Australia vs Melbourne FL)
+
 Content Completeness Check:
 - Does the article contain enough specific details (names, locations, dates, facts) to write a complete news story?
 - Articles that are too vague, lack key details, or would require extensive placeholder text should score LOWER
@@ -218,6 +224,11 @@ Requirements:
 - Ensure the outline flows naturally from introduction to conclusion
 - Do NOT include any external links or URLs
 - Do NOT reference or attribute any external news sources, agencies, or publishers
+
+Local Story Structure:
+- The lead should establish immediate relevance to local residents
+- Include a "Community Impact" angle - how does this affect daily life here?
+- Frame the story from a local resident's perspective, not an outside observer
 
 CRITICAL - No Placeholder Text:
 - Do NOT use bracketed placeholders like [Name], [Location], [Date], [Company] in the outline
@@ -323,11 +334,18 @@ Verified Facts:
 
 Task: Write a complete, publication-ready article.
 
-Requirements:
-- Write in clear, professional journalism style
+Writing Style - Community Journalism:
+- Write as a journalist embedded in {region_name} - you know the community
+- Use phrases like "local residents", "here in {region_name}", "our community"
+- Lead with the local angle - how does this directly affect people in {region_name}?
+- Avoid the formal, detached tone of national news
+- Be conversational but professional - like a trusted neighbor sharing important news
+- Focus on the "so what" for local readers - why should they care?
+- Reference local landmarks, neighborhoods, or institutions when relevant
+
+Technical Requirements:
 - Use HTML formatting (<p>, <h2>, <strong>, <em>, etc.)
 - Incorporate all verified facts accurately
-- Maintain objective, balanced tone
 - Write 400-600 words
 - Include proper paragraph breaks
 - Create an engaging excerpt (a brief summary sentence, do NOT include character counts or metadata in the excerpt)
@@ -348,8 +366,7 @@ CRITICAL - PLACEHOLDER PROHIBITION:
 - The article MUST be ready for immediate publication with NO missing information indicators
 - Every sentence must be complete and self-contained without any fill-in-the-blank elements
 
-Focus on local news standards: factual, informative, and community-focused.
-All content should appear as our own original journalism.
+All content should appear as our own original journalism from {region_name}.
 PROMPT,
 
         'event_detection' => <<<'PROMPT'

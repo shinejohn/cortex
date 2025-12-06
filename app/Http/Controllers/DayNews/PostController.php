@@ -35,8 +35,7 @@ final class PostController extends Controller
         }
 
         $query = DayNewsPost::where('workspace_id', $workspace->id)
-            ->with(['regions', 'payment', 'author'])
-            ->withCount('advertisements');
+            ->with(['regions', 'payment', 'author']);
 
         if ($request->filled('type')) {
             $query->byType($request->type);
@@ -111,9 +110,15 @@ final class PostController extends Controller
             data: $data
         );
 
+        if ($post->status === 'published') {
+            return redirect()
+                ->route('day-news.posts.index')
+                ->with('success', 'Post published successfully!');
+        }
+
         return redirect()
-            ->route('day-news.posts.edit', $post)
-            ->with('success', 'Draft created successfully. You can now review and publish it.');
+            ->route('day-news.posts.publish', $post)
+            ->with('info', 'Draft created. Please complete payment to publish.');
     }
 
     public function edit(DayNewsPost $post): Response

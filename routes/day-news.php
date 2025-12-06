@@ -32,19 +32,10 @@ Route::get('/', function () {
         ->orderBy('published_at', 'desc');
 
     if ($currentRegion) {
-        // Get posts for this region and its parent regions
-        $regionIds = [$currentRegion->id];
-        if ($currentRegion->parent_id) {
-            $regionIds[] = $currentRegion->parent_id;
-            // Get grandparent if exists
-            $parent = $currentRegion->parent;
-            if ($parent && $parent->parent_id) {
-                $regionIds[] = $parent->parent_id;
-            }
-        }
-
-        $postsQuery->whereHas('regions', function ($q) use ($regionIds) {
-            $q->whereIn('regions.id', $regionIds);
+        // Only show news for the user's specific region (not parent regions)
+        // If there are fewer articles, older ones from this region will fill the list
+        $postsQuery->whereHas('regions', function ($q) use ($currentRegion) {
+            $q->where('regions.id', $currentRegion->id);
         });
     }
 

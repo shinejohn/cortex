@@ -211,7 +211,7 @@ final class LocationService
         }
 
         if ($position !== null && $position->latitude !== null && $position->longitude !== null) {
-            $region = $this->findNearestRegion($position->latitude, $position->longitude, 'city');
+            $region = $this->findNearestRegion((float) $position->latitude, (float) $position->longitude, 'city');
             if ($region !== null) {
                 return $region;
             }
