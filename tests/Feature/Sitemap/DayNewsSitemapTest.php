@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\DayNewsPost;
+use App\Models\Region;
 use App\Models\Workspace;
 use Illuminate\Support\Facades\Cache;
 
@@ -36,6 +37,7 @@ describe('sitemap index', function () {
         $response->assertHeader('Content-Type', 'application/xml');
         $response->assertSee('<sitemapindex', false);
         $response->assertSee('sitemap-static.xml', false);
+        $response->assertSee('sitemap-regions.xml', false);
         $response->assertSee('sitemap-posts.xml', false);
     });
 });
@@ -117,5 +119,57 @@ describe('pagination', function () {
 
         $response->assertOk();
         $response->assertHeader('Content-Type', 'application/xml');
+    });
+});
+
+describe('regions sitemap', function () {
+    it('returns valid XML with region pages', function () {
+        $response = $this->get($this->baseUrl.'/sitemap-regions.xml');
+
+        $response->assertOk();
+        $response->assertHeader('Content-Type', 'application/xml');
+        $response->assertSee('<urlset', false);
+    });
+
+    it('includes only active regions', function () {
+        $activeRegion = Region::factory()->create([
+            'slug' => 'chicago',
+            'is_active' => true,
+        ]);
+        $inactiveRegion = Region::factory()->create([
+            'slug' => 'inactive-city',
+            'is_active' => false,
+        ]);
+
+        $response = $this->get($this->baseUrl.'/sitemap-regions.xml');
+
+        $response->assertOk();
+        $response->assertSee('/chicago', false);
+        $response->assertDontSee('/inactive-city', false);
+    });
+
+    it('uses correct URL format for regions', function () {
+        Region::factory()->create([
+            'slug' => 'new-york-city',
+            'is_active' => true,
+        ]);
+
+        $response = $this->get($this->baseUrl.'/sitemap-regions.xml');
+
+        $response->assertOk();
+        $response->assertSee('https://daynews.test/new-york-city', false);
+    });
+
+    it('is cached for performance', function () {
+        Region::factory()->create([
+            'slug' => 'test-region',
+            'is_active' => true,
+        ]);
+
+        // First request - should cache
+        $this->get($this->baseUrl.'/sitemap-regions.xml');
+
+        // Check cache exists
+        expect(Cache::has('sitemap:day-news:regions'))->toBeTrue();
     });
 });

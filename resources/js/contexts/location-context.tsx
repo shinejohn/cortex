@@ -55,7 +55,13 @@ export function LocationProvider({ children }: LocationProviderProps) {
             if (response.data.success) {
                 setCurrentRegion(response.data.region);
                 setConfirmed(true);
-                router.reload({ only: ["location"] });
+
+                // Navigate to region-specific URL for permalink
+                const regionSlug = response.data.region.slug;
+                router.visit(`/${regionSlug}`, {
+                    preserveState: false,
+                    preserveScroll: false,
+                });
             }
         } catch (error) {
             console.error("Failed to set region:", error);
@@ -84,7 +90,13 @@ export function LocationProvider({ children }: LocationProviderProps) {
                         if (response.data.success) {
                             setCurrentRegion(response.data.region);
                             setConfirmed(false);
-                            router.reload({ only: ["location"] });
+
+                            // Navigate to detected region's URL
+                            const regionSlug = response.data.region.slug;
+                            router.visit(`/${regionSlug}`, {
+                                preserveState: false,
+                                preserveScroll: false,
+                            });
                             resolve();
                         } else {
                             reject(new Error("Failed to detect region from coordinates"));

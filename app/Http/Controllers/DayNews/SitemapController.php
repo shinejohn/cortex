@@ -6,6 +6,7 @@ namespace App\Http\Controllers\DayNews;
 
 use App\Http\Controllers\Controller;
 use App\Models\DayNewsPost;
+use App\Models\Region;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Spatie\Sitemap\Sitemap;
@@ -33,6 +34,9 @@ final class SitemapController extends Controller
 
             // Add static sitemap
             $sitemapIndex->add(SitemapTag::create("{$baseUrl}/sitemap-static.xml"));
+
+            // Add regions sitemap
+            $sitemapIndex->add(SitemapTag::create("{$baseUrl}/sitemap-regions.xml"));
 
             // Add posts sitemap(s)
             $postCount = DayNewsPost::published()->count();
@@ -99,6 +103,33 @@ final class SitemapController extends Controller
                     ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY)
                     ->setPriority(1.0)
             );
+
+            return $sitemap->render();
+        });
+
+        return response($content, 200, ['Content-Type' => 'application/xml']);
+    }
+
+    public function regions(): Response
+    {
+        $cacheKey = 'sitemap:day-news:regions';
+
+        $content = Cache::remember($cacheKey, $this->getCacheTtl(), function () {
+            $sitemap = Sitemap::create();
+            $baseUrl = 'https://'.config('domains.day-news');
+
+            $regions = Region::active()
+                ->orderBy('type', 'desc')
+                ->orderBy('name')
+                ->get();
+
+            foreach ($regions as $region) {
+                $sitemap->add(
+                    Url::create("{$baseUrl}/{$region->slug}")
+                        ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                        ->setPriority(0.9)
+                );
+            }
 
             return $sitemap->render();
         });

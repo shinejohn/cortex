@@ -8,6 +8,7 @@ use App\Http\Controllers\DayNews\PostController;
 use App\Http\Controllers\DayNews\PostPaymentController;
 use App\Http\Controllers\DayNews\PostPublishController;
 use App\Http\Controllers\DayNews\PublicPostController;
+use App\Http\Controllers\DayNews\RegionHomeController;
 use App\Http\Controllers\DayNews\SitemapController;
 use App\Models\DayNewsPost;
 use App\Services\SeoService;
@@ -21,6 +22,7 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('day-news.
 Route::get('/sitemap-static.xml', [SitemapController::class, 'static'])->name('day-news.sitemap.static');
 Route::get('/sitemap-posts.xml', [SitemapController::class, 'posts'])->name('day-news.sitemap.posts');
 Route::get('/sitemap-posts-{page}.xml', [SitemapController::class, 'posts'])->where('page', '[0-9]+')->name('day-news.sitemap.posts.page');
+Route::get('/sitemap-regions.xml', [SitemapController::class, 'regions'])->name('day-news.sitemap.regions');
 
 // DayNews home page
 Route::get('/', function () {
@@ -161,3 +163,8 @@ Route::prefix('api/location')->group(function () {
         Route::post('/clear', [LocationController::class, 'clear']);
     });
 });
+
+// Region-specific homepage (must come LAST to avoid matching other routes)
+Route::get('/{regionSlug}', [RegionHomeController::class, 'show'])
+    ->where('regionSlug', '[a-z0-9\-]+')
+    ->name('day-news.region.home');
