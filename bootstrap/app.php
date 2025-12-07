@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
             // DayNews domain routes (shared routes loaded first, then day-news routes with wildcard last)
             Route::domain(config('domains.day-news'))
                 ->middleware('web')
+                ->name('daynews.')
                 ->group(function () {
                     require base_path('routes/auth.php');
                     require base_path('routes/settings.php');
@@ -33,7 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->middleware('web')
                 ->group(base_path('routes/downtown-guide.php'));
 
-            // GoEventCity domain routes
+            // GoEventCity domain routes (primary domain - no prefix to maintain backward compatibility)
             Route::domain(config('domains.event-city'))
                 ->middleware('web')
                 ->group(function () {
