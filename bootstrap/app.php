@@ -33,18 +33,15 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->middleware('web')
                 ->group(base_path('routes/downtown-guide.php'));
 
-            // GoEventCity domain routes (default - matches any other domain)
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
-
-            Route::middleware('web')
-                ->group(base_path('routes/auth.php'));
-
-            Route::middleware('web')
-                ->group(base_path('routes/workspace.php'));
-
-            Route::middleware('web')
-                ->group(base_path('routes/settings.php'));
+            // GoEventCity domain routes
+            Route::domain(config('domains.event-city'))
+                ->middleware('web')
+                ->group(function () {
+                    require base_path('routes/auth.php');
+                    require base_path('routes/settings.php');
+                    require base_path('routes/workspace.php');
+                    require base_path('routes/web.php');
+                });
         },
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
