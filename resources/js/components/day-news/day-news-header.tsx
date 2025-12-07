@@ -156,7 +156,7 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                                         {actionButtons.map((action) => (
                                             <Link
                                                 key={action.type}
-                                                href={route("day-news.posts.create", { type: action.type })}
+                                                href={route("daynews.posts.create", { type: action.type })}
                                                 className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
                                                 onClick={() => setMobileMenuOpen(false)}
                                             >
@@ -195,7 +195,7 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                         <div className="hidden items-center gap-2 md:flex">
                             {actionButtons.map((action) => (
                                 <Button key={action.type} variant="ghost" size="sm" asChild>
-                                    <Link href={route("day-news.posts.create", { type: action.type })}>{action.title}</Link>
+                                    <Link href={route("daynews.posts.create", { type: action.type })}>{action.title}</Link>
                                 </Button>
                             ))}
                         </div>

@@ -17,12 +17,12 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 // Sitemap routes
-Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('day-news.robots');
-Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('day-news.sitemap.index');
-Route::get('/sitemap-static.xml', [SitemapController::class, 'static'])->name('day-news.sitemap.static');
-Route::get('/sitemap-posts.xml', [SitemapController::class, 'posts'])->name('day-news.sitemap.posts');
-Route::get('/sitemap-posts-{page}.xml', [SitemapController::class, 'posts'])->where('page', '[0-9]+')->name('day-news.sitemap.posts.page');
-Route::get('/sitemap-regions.xml', [SitemapController::class, 'regions'])->name('day-news.sitemap.regions');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.index');
+Route::get('/sitemap-static.xml', [SitemapController::class, 'static'])->name('sitemap.static');
+Route::get('/sitemap-posts.xml', [SitemapController::class, 'posts'])->name('sitemap.posts');
+Route::get('/sitemap-posts-{page}.xml', [SitemapController::class, 'posts'])->where('page', '[0-9]+')->name('sitemap.posts.page');
+Route::get('/sitemap-regions.xml', [SitemapController::class, 'regions'])->name('sitemap.regions');
 
 // DayNews home page
 Route::get('/', function () {
@@ -114,34 +114,34 @@ Route::get('/', function () {
             ]),
         ],
     ]);
-})->name('day-news.home');
+})->name('home');
 
 // Authenticated post management routes (must come BEFORE the wildcard {slug} route)
 Route::middleware(['auth', 'verified'])->group(function () {
     // Post CRUD routes
     Route::resource('posts', PostController::class)->names([
-        'index' => 'day-news.posts.index',
-        'create' => 'day-news.posts.create',
-        'store' => 'day-news.posts.store',
-        'edit' => 'day-news.posts.edit',
-        'update' => 'day-news.posts.update',
-        'destroy' => 'day-news.posts.destroy',
+        'index' => 'posts.index',
+        'create' => 'posts.create',
+        'store' => 'posts.store',
+        'edit' => 'posts.edit',
+        'update' => 'posts.update',
+        'destroy' => 'posts.destroy',
     ])->except(['show']);
 
     // Publish workflow routes
-    Route::get('/posts/{post}/publish', [PostPublishController::class, 'show'])->name('day-news.posts.publish.show');
-    Route::post('/posts/{post}/publish', [PostPublishController::class, 'store'])->name('day-news.posts.publish');
+    Route::get('/posts/{post}/publish', [PostPublishController::class, 'show'])->name('posts.publish.show');
+    Route::post('/posts/{post}/publish', [PostPublishController::class, 'store'])->name('posts.publish');
 
     // Payment callback routes (no CSRF needed)
     Route::get('/payment/success', [PostPaymentController::class, 'success'])
         ->withoutMiddleware([VerifyCsrfToken::class])
-        ->name('day-news.posts.payment.success');
+        ->name('posts.payment.success');
     Route::get('/payment/cancel', [PostPaymentController::class, 'cancel'])
-        ->name('day-news.posts.payment.cancel');
+        ->name('posts.payment.cancel');
 });
 
 // Public post view (must come AFTER specific routes to avoid matching them)
-Route::get('/posts/{slug}', [PublicPostController::class, 'show'])->name('day-news.posts.show');
+Route::get('/posts/{slug}', [PublicPostController::class, 'show'])->name('posts.show');
 
 // Advertisement API routes (public, for fetching ads)
 Route::prefix('api/advertisements')->name('api.advertisements.')->group(function () {
@@ -168,4 +168,4 @@ Route::prefix('api/location')->group(function () {
 // Auth routes are loaded before this file in bootstrap/app.php, so they take precedence
 Route::get('/{regionSlug}', [RegionHomeController::class, 'show'])
     ->where('regionSlug', '[a-z0-9\-]+')
-    ->name('day-news.region.home');
+    ->name('region.home');

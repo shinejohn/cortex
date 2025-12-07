@@ -49,7 +49,7 @@ export default function NewsArticleCard({ article, featured = false, compact = f
     const timeAgo = getTimeAgo(publishedDate);
 
     // All articles now use the same route
-    const articleUrl = route("day-news.posts.show", { slug: article.slug });
+    const articleUrl = route("daynews.posts.show", { slug: article.slug });
 
     if (compact) {
         return (
