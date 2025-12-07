@@ -18,10 +18,15 @@ use Sentry\Laravel\Integration;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         using: function () {
-            // DayNews domain routes
+            // DayNews domain routes (shared routes loaded first, then day-news routes with wildcard last)
             Route::domain(config('domains.day-news'))
                 ->middleware('web')
-                ->group(base_path('routes/day-news.php'));
+                ->group(function () {
+                    require base_path('routes/auth.php');
+                    require base_path('routes/settings.php');
+                    require base_path('routes/workspace.php');
+                    require base_path('routes/day-news.php');
+                });
 
             // DowntownGuide domain routes
             Route::domain(config('domains.downtown-guide'))

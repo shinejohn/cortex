@@ -165,6 +165,7 @@ Route::prefix('api/location')->group(function () {
 });
 
 // Region-specific homepage (must come LAST to avoid matching other routes)
+// Auth routes are loaded before this file in bootstrap/app.php, so they take precedence
 Route::get('/{regionSlug}', [RegionHomeController::class, 'show'])
     ->where('regionSlug', '[a-z0-9\-]+')
     ->name('day-news.region.home');

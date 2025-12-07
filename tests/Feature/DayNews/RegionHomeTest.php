@@ -151,4 +151,12 @@ describe('backward compatibility', function () {
             ->component('day-news/index')
         );
     });
+
+    it('does not conflict with register route', function () {
+        // Register route should NOT return 404 (region not found)
+        $response = get($this->baseUrl.'/register');
+
+        // Should not be 404 - that would mean region route caught it
+        $response->assertStatus(200);
+    });
 });

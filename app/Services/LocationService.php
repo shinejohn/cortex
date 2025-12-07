@@ -203,15 +203,9 @@ final class LocationService
 
         $position = $this->detectFromIp($ip);
 
-        if ($position !== null && $position->postalCode !== null) {
-            $region = $this->findPrimaryRegionByZipcode($position->postalCode);
-            if ($region !== null) {
-                return $region;
-            }
-        }
-
+        // Use coordinate-based detection (finds nearest region of any type)
         if ($position !== null && $position->latitude !== null && $position->longitude !== null) {
-            $region = $this->findNearestRegion((float) $position->latitude, (float) $position->longitude, 'city');
+            $region = $this->findNearestRegion((float) $position->latitude, (float) $position->longitude);
             if ($region !== null) {
                 return $region;
             }

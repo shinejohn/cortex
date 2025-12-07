@@ -37,7 +37,7 @@ final class LocationController extends Controller
         $latitude = (float) $request->input('latitude');
         $longitude = (float) $request->input('longitude');
 
-        $region = $this->locationService->findNearestRegion($latitude, $longitude, 'city');
+        $region = $this->locationService->findNearestRegion($latitude, $longitude);
 
         if ($region === null) {
             return response()->json([
