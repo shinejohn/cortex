@@ -27,6 +27,8 @@ interface GeocodingServiceInterface
 
     /**
      * Geocode a region and update its coordinates
+     *
+     * @param  bool  $forceGoogle  Skip free APIs and use Google Maps API directly
      */
-    public function geocodeRegion(\App\Models\Region $region): bool;
+    public function geocodeRegion(\App\Models\Region $region, bool $forceGoogle = false): bool;
 }

@@ -70,6 +70,7 @@ final class ProcessRegionImportJob implements ShouldQueue
         ];
 
         $enableGeocoding = $this->options['enable_geocoding'] ?? true;
+        $forceGoogle = $this->options['force_google'] ?? false;
         $markActive = $this->options['mark_active'] ?? true;
         $storeMetadata = $this->options['store_metadata'] ?? true;
         $parentRegionId = $this->options['parent_region_id'] ?? null;
@@ -154,7 +155,7 @@ final class ProcessRegionImportJob implements ShouldQueue
 
                         // Dispatch geocoding job for newly created cities
                         if ($enableGeocoding) {
-                            GeocodeRegionJob::dispatch($city)->delay(now()->addSeconds($stats['geocode_jobs_dispatched'] * 2));
+                            GeocodeRegionJob::dispatch($city, $forceGoogle)->delay(now()->addSeconds($stats['geocode_jobs_dispatched'] * 2));
                             $stats['geocode_jobs_dispatched']++;
                         }
                     }
@@ -181,7 +182,7 @@ final class ProcessRegionImportJob implements ShouldQueue
                         $stats['neighborhoods_created']++;
 
                         if ($enableGeocoding) {
-                            GeocodeRegionJob::dispatch($neighborhood)->delay(now()->addSeconds($stats['geocode_jobs_dispatched'] * 2));
+                            GeocodeRegionJob::dispatch($neighborhood, $forceGoogle)->delay(now()->addSeconds($stats['geocode_jobs_dispatched'] * 2));
                             $stats['geocode_jobs_dispatched']++;
                         }
                     }
@@ -199,13 +200,13 @@ final class ProcessRegionImportJob implements ShouldQueue
         if ($enableGeocoding) {
             foreach ($stateCache as $state) {
                 if ($state->latitude === null) {
-                    GeocodeRegionJob::dispatch($state)->delay(now()->addSeconds($stats['geocode_jobs_dispatched'] * 2));
+                    GeocodeRegionJob::dispatch($state, $forceGoogle)->delay(now()->addSeconds($stats['geocode_jobs_dispatched'] * 2));
                     $stats['geocode_jobs_dispatched']++;
                 }
             }
             foreach ($countyCache as $county) {
                 if ($county->latitude === null) {
-                    GeocodeRegionJob::dispatch($county)->delay(now()->addSeconds($stats['geocode_jobs_dispatched'] * 2));
+                    GeocodeRegionJob::dispatch($county, $forceGoogle)->delay(now()->addSeconds($stats['geocode_jobs_dispatched'] * 2));
                     $stats['geocode_jobs_dispatched']++;
                 }
             }

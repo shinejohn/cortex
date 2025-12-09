@@ -59,6 +59,7 @@ final class ImportRegions extends Page
             'csv_content' => '',
             'parent_region_id' => null,
             'enable_geocoding' => true,
+            'force_google' => false,
             'mark_active' => true,
             'store_metadata' => true,
         ]);
@@ -121,8 +122,15 @@ final class ImportRegions extends Page
 
                                     Toggle::make('enable_geocoding')
                                         ->label('Enable Geocoding')
-                                        ->helperText('Automatically fetch latitude/longitude coordinates for each region using Google Maps API. This will dispatch background jobs.')
-                                        ->default(true),
+                                        ->helperText('Automatically fetch latitude/longitude coordinates for each region. This will dispatch background jobs.')
+                                        ->default(true)
+                                        ->live(),
+
+                                    Toggle::make('force_google')
+                                        ->label('Force Google API')
+                                        ->helperText('Skip free APIs and use Google Maps API directly for more accurate coordinates. Requires GOOGLE_MAPS_API_KEY to be configured.')
+                                        ->default(false)
+                                        ->visible(fn (callable $get) => $get('enable_geocoding')),
 
                                     Toggle::make('mark_active')
                                         ->label('Mark Regions as Active')
@@ -250,6 +258,7 @@ final class ImportRegions extends Page
             rows: $this->parsedRows,
             options: [
                 'enable_geocoding' => $this->data['enable_geocoding'] ?? true,
+                'force_google' => $this->data['force_google'] ?? false,
                 'mark_active' => $this->data['mark_active'] ?? true,
                 'store_metadata' => $this->data['store_metadata'] ?? true,
                 'parent_region_id' => $this->data['parent_region_id'] ?? null,
@@ -273,6 +282,7 @@ final class ImportRegions extends Page
             'csv_content' => '',
             'parent_region_id' => null,
             'enable_geocoding' => true,
+            'force_google' => false,
             'mark_active' => true,
             'store_metadata' => true,
         ]);

@@ -111,6 +111,7 @@ describe('GeocodeRegionsCommand', function () {
     it('processes synchronously when sync flag is used', function () {
         $geocodingService = $this->mock(GeocodingServiceInterface::class);
         $geocodingService->shouldReceive('geocodeRegion')
+            ->withArgs(fn ($region, $forceGoogle) => $forceGoogle === false)
             ->once()
             ->andReturn(true);
 
@@ -135,11 +136,11 @@ describe('GeocodeRegionsCommand', function () {
 
         $geocodingService = $this->mock(GeocodingServiceInterface::class);
         $geocodingService->shouldReceive('geocodeRegion')
-            ->with(Mockery::on(fn ($r) => $r->id === $regions[0]->id))
+            ->withArgs(fn ($r, $forceGoogle) => $r->id === $regions[0]->id && $forceGoogle === false)
             ->once()
             ->andReturn(true);
         $geocodingService->shouldReceive('geocodeRegion')
-            ->with(Mockery::on(fn ($r) => $r->id === $regions[1]->id))
+            ->withArgs(fn ($r, $forceGoogle) => $r->id === $regions[1]->id && $forceGoogle === false)
             ->once()
             ->andReturn(false);
 
@@ -191,5 +192,67 @@ describe('GeocodeRegionsCommand', function () {
             ->assertSuccessful();
 
         Queue::assertPushed(GeocodeRegionJob::class, 1);
+    });
+
+    it('passes force-google flag to jobs when enabled', function () {
+        Queue::fake();
+
+        Region::factory()->create([
+            'name' => 'Test City',
+            'type' => 'city',
+            'latitude' => null,
+            'longitude' => null,
+        ]);
+
+        $this->artisan('regions:geocode', ['--force-google' => true])
+            ->expectsOutput('Found 1 regions missing coordinates.')
+            ->expectsOutput('Using Google Maps API directly (force-google mode).')
+            ->assertSuccessful();
+
+        Queue::assertPushed(GeocodeRegionJob::class, function ($job) {
+            return $job->forceGoogle === true;
+        });
+    });
+
+    it('processes synchronously with force-google flag', function () {
+        $geocodingService = $this->mock(GeocodingServiceInterface::class);
+        $geocodingService->shouldReceive('geocodeRegion')
+            ->withArgs(function ($region, $forceGoogle) {
+                return $forceGoogle === true;
+            })
+            ->once()
+            ->andReturn(true);
+
+        Region::factory()->create([
+            'name' => 'Test City',
+            'type' => 'city',
+            'latitude' => null,
+            'longitude' => null,
+        ]);
+
+        $this->artisan('regions:geocode', ['--sync' => true, '--force-google' => true])
+            ->expectsOutput('Found 1 regions missing coordinates.')
+            ->expectsOutput('Using Google Maps API directly (force-google mode).')
+            ->expectsOutput('Processing synchronously...')
+            ->assertSuccessful();
+    });
+
+    it('does not use force-google by default', function () {
+        Queue::fake();
+
+        Region::factory()->create([
+            'name' => 'Test City',
+            'type' => 'city',
+            'latitude' => null,
+            'longitude' => null,
+        ]);
+
+        $this->artisan('regions:geocode')
+            ->expectsOutput('Found 1 regions missing coordinates.')
+            ->assertSuccessful();
+
+        Queue::assertPushed(GeocodeRegionJob::class, function ($job) {
+            return $job->forceGoogle === false;
+        });
     });
 });

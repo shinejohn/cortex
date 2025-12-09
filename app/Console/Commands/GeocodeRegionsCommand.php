@@ -16,7 +16,9 @@ final class GeocodeRegionsCommand extends Command
                             {--type= : Filter by region type (state, county, city, neighborhood)}
                             {--dry-run : Show what would be geocoded without making changes}
                             {--sync : Run synchronously instead of dispatching jobs}
-                            {--delay=2 : Delay in seconds between job dispatches (default: 2)}';
+                            {--delay=2 : Delay in seconds between job dispatches (default: 2)}
+                            {--force-google : Skip free APIs and use Google Maps API directly for accurate coordinates}
+                            {--all : Include regions that already have coordinates (useful for re-geocoding with --force-google)}';
 
     protected $description = 'Geocode regions that are missing latitude/longitude coordinates';
 
@@ -26,36 +28,49 @@ final class GeocodeRegionsCommand extends Command
         $dryRun = $this->option('dry-run');
         $sync = $this->option('sync');
         $delay = (int) $this->option('delay');
+        $forceGoogle = (bool) $this->option('force-google');
+        $includeAll = (bool) $this->option('all');
 
-        $query = $this->buildQuery($type);
+        $query = $this->buildQuery($type, $includeAll);
         $regions = $query->get();
 
         if ($regions->isEmpty()) {
-            $this->info('No regions found missing coordinates.');
+            $this->info($includeAll ? 'No regions found.' : 'No regions found missing coordinates.');
 
             return Command::SUCCESS;
         }
 
-        $this->info("Found {$regions->count()} regions missing coordinates.");
+        $message = $includeAll
+            ? "Found {$regions->count()} regions to geocode (including existing coordinates)."
+            : "Found {$regions->count()} regions missing coordinates.";
+        $this->info($message);
+
+        if ($forceGoogle) {
+            $this->info('Using Google Maps API directly (force-google mode).');
+        }
 
         if ($dryRun) {
             return $this->displayDryRun($regions);
         }
 
         if ($sync) {
-            return $this->processSynchronously($regions, $geocodingService);
+            return $this->processSynchronously($regions, $geocodingService, $forceGoogle);
         }
 
-        return $this->processViaQueue($regions, $delay);
+        return $this->processViaQueue($regions, $delay, $forceGoogle);
     }
 
-    private function buildQuery(?string $type): Builder
+    private function buildQuery(?string $type, bool $includeAll = false): Builder
     {
-        $query = Region::query()
-            ->where(function (Builder $query) {
-                $query->whereNull('latitude')
+        $query = Region::query();
+
+        // Only filter for missing coordinates if not including all
+        if (! $includeAll) {
+            $query->where(function (Builder $q) {
+                $q->whereNull('latitude')
                     ->orWhereNull('longitude');
             });
+        }
 
         if ($type) {
             $validTypes = ['state', 'county', 'city', 'neighborhood'];
@@ -108,7 +123,7 @@ final class GeocodeRegionsCommand extends Command
     /**
      * @param  \Illuminate\Database\Eloquent\Collection<int, Region>  $regions
      */
-    private function processSynchronously($regions, GeocodingServiceInterface $geocodingService): int
+    private function processSynchronously($regions, GeocodingServiceInterface $geocodingService, bool $forceGoogle = false): int
     {
         $this->info('Processing synchronously...');
         $this->newLine();
@@ -120,7 +135,7 @@ final class GeocodeRegionsCommand extends Command
         $failed = 0;
 
         foreach ($regions as $region) {
-            $result = $geocodingService->geocodeRegion($region);
+            $result = $geocodingService->geocodeRegion($region, $forceGoogle);
 
             if ($result) {
                 $success++;
@@ -142,7 +157,7 @@ final class GeocodeRegionsCommand extends Command
     /**
      * @param  \Illuminate\Database\Eloquent\Collection<int, Region>  $regions
      */
-    private function processViaQueue($regions, int $delay): int
+    private function processViaQueue($regions, int $delay, bool $forceGoogle = false): int
     {
         $this->info("Dispatching jobs with {$delay} second delay between each...");
         $this->newLine();
@@ -155,7 +170,7 @@ final class GeocodeRegionsCommand extends Command
         foreach ($regions as $index => $region) {
             $jobDelay = $index * $delay;
 
-            GeocodeRegionJob::dispatch($region)->delay(now()->addSeconds($jobDelay));
+            GeocodeRegionJob::dispatch($region, $forceGoogle)->delay(now()->addSeconds($jobDelay));
 
             $dispatched++;
             $bar->advance();

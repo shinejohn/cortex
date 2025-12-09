@@ -26,7 +26,8 @@ final class GeocodeRegionJob implements ShouldQueue
     public int $backoff = 10;
 
     public function __construct(
-        public Region $region
+        public Region $region,
+        public bool $forceGoogle = false
     ) {}
 
     /**
@@ -43,8 +44,8 @@ final class GeocodeRegionJob implements ShouldQueue
 
     public function handle(GeocodingService $geocodingService): void
     {
-        // Skip if region already has coordinates
-        if ($this->region->latitude !== null && $this->region->longitude !== null) {
+        // Skip if region already has coordinates (unless force-google is enabled for re-geocoding)
+        if (! $this->forceGoogle && $this->region->latitude !== null && $this->region->longitude !== null) {
             Log::info('GeocodeRegionJob: Region already has coordinates, skipping', [
                 'region_id' => $this->region->id,
                 'region_name' => $this->region->name,
@@ -57,9 +58,10 @@ final class GeocodeRegionJob implements ShouldQueue
             'region_id' => $this->region->id,
             'region_name' => $this->region->name,
             'region_type' => $this->region->type,
+            'force_google' => $this->forceGoogle,
         ]);
 
-        $success = $geocodingService->geocodeRegion($this->region);
+        $success = $geocodingService->geocodeRegion($this->region, $this->forceGoogle);
 
         if ($success) {
             Log::info('GeocodeRegionJob: Geocoding completed', [

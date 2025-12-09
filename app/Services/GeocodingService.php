@@ -28,13 +28,23 @@ final class GeocodingService implements GeocodingServiceInterface
     /**
      * Geocode an address to coordinates
      *
+     * @param  bool  $forceGoogle  Skip free APIs and use Google Maps API directly
      * @return array{latitude: float, longitude: float, postal_code: ?string, google_place_id: ?string}|null
      */
-    public function geocodeAddress(string $address): ?array
+    public function geocodeAddress(string $address, bool $forceGoogle = false): ?array
     {
-        $cacheKey = 'geocode:'.md5($address);
+        $cacheKey = 'geocode:'.md5($address).($forceGoogle ? ':google' : '');
 
-        return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($address) {
+        return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($address, $forceGoogle) {
+            // If forcing Google, skip free APIs
+            if ($forceGoogle) {
+                Log::info('GeocodingService: Force Google enabled, using Google Maps API directly', [
+                    'address' => $address,
+                ]);
+
+                return $this->geocodeWithGoogle($address);
+            }
+
             // 1. Try free SerpAPI Locations API first (no API key needed, best for cities/regions)
             $result = $this->geocodeWithSerpApiLocations($address);
 
@@ -103,8 +113,10 @@ final class GeocodingService implements GeocodingServiceInterface
 
     /**
      * Geocode a region and update its coordinates
+     *
+     * @param  bool  $forceGoogle  Skip free APIs and use Google Maps API directly
      */
-    public function geocodeRegion(Region $region): bool
+    public function geocodeRegion(Region $region, bool $forceGoogle = false): bool
     {
         $query = $this->buildQueryForRegion($region);
 
@@ -118,13 +130,14 @@ final class GeocodingService implements GeocodingServiceInterface
             return false;
         }
 
-        $result = $this->geocodeAddress($query);
+        $result = $this->geocodeAddress($query, $forceGoogle);
 
         if (! $result) {
             Log::warning('GeocodingService: No coordinates for region', [
                 'region_id' => $region->id,
                 'region_name' => $region->name,
                 'query' => $query,
+                'force_google' => $forceGoogle,
             ]);
 
             return false;
@@ -140,6 +153,7 @@ final class GeocodingService implements GeocodingServiceInterface
             'region_name' => $region->name,
             'latitude' => $result['latitude'],
             'longitude' => $result['longitude'],
+            'force_google' => $forceGoogle,
         ]);
 
         return true;
