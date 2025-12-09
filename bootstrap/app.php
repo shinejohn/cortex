@@ -34,9 +34,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->middleware('web')
                 ->group(base_path('routes/downtown-guide.php'));
 
-            // GoEventCity domain routes (primary domain - no prefix to maintain backward compatibility)
-            Route::domain(config('domains.event-city'))
-                ->middleware('web')
+            // GoEventCity domain routes (fallback - no domain constraint, matches any domain not matched above)
+            Route::middleware('web')
                 ->group(function () {
                     require base_path('routes/auth.php');
                     require base_path('routes/settings.php');
