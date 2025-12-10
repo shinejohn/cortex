@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Jobs\News;
 
+use App\Models\NewsFetchFrequency;
 use App\Models\Region;
+use App\Services\News\FetchFrequencyService;
 use App\Services\News\NewsCollectionService;
 use Exception;
 use Illuminate\Bus\Queueable;
@@ -31,7 +33,7 @@ final class ProcessSingleCategoryNewsCollectionJob implements ShouldQueue
         public Region $region
     ) {}
 
-    public function handle(NewsCollectionService $newsCollection): void
+    public function handle(NewsCollectionService $newsCollection, FetchFrequencyService $frequencyService): void
     {
         Log::info('Starting single category news collection job', [
             'category' => $this->category,
@@ -41,6 +43,9 @@ final class ProcessSingleCategoryNewsCollectionJob implements ShouldQueue
 
         try {
             $articles = $newsCollection->fetchSingleCategoryNews($this->region, $this->category);
+
+            // Mark category as fetched (update last_fetched_at globally)
+            $frequencyService->markCategoryFetched($this->category, NewsFetchFrequency::CATEGORY_TYPE_NEWS);
 
             Log::info('Completed single category news collection job', [
                 'category' => $this->category,

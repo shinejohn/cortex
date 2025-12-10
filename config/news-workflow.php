@@ -46,6 +46,62 @@ return [
         'radius_km' => env('NEWS_WORKFLOW_BUSINESS_RADIUS', 25),
     ],
 
+    // Fetch Frequencies - configure how often each category is fetched
+    'fetch_frequencies' => [
+        // Default frequency for categories not explicitly configured
+        'default' => 'daily',
+
+        // News category frequencies (can be overridden via admin UI)
+        // Format: 'category' => 'daily'|'weekly'|'monthly' OR ['custom_days', N]
+        'news_categories' => [
+            // High frequency (daily) - venues with frequent events/news
+            'night_club' => 'daily',
+            'bar' => 'daily',
+            'restaurant' => 'daily',
+            'cafe' => 'daily',
+            'brewery' => 'daily',
+            'casino' => 'daily',
+
+            // Medium frequency (every 3 days)
+            'performing_arts_theater' => ['custom_days', 3],
+            'concert_hall' => ['custom_days', 3],
+            'movie_theater' => ['custom_days', 3],
+            'stadium' => ['custom_days', 3],
+            'amusement_park' => ['custom_days', 3],
+            'park' => ['custom_days', 3],
+            'convention_center' => ['custom_days', 3],
+            'community_center' => ['custom_days', 3],
+
+            // Low frequency (weekly) - venues with less frequent updates
+            'museum' => 'weekly',
+            'art_gallery' => 'weekly',
+            'library' => 'weekly',
+            'bookstore' => 'weekly',
+            'zoo' => 'weekly',
+            'aquarium' => 'weekly',
+            'bowling_alley' => 'weekly',
+            'gym' => 'weekly',
+            'spa' => 'weekly',
+            'winery' => 'weekly',
+            'shopping_mall' => 'weekly',
+            'campground' => 'weekly',
+            'tourist_attraction' => 'weekly',
+            'university' => 'weekly',
+            'school' => 'weekly',
+            'city_hall' => 'weekly',
+            'courthouse' => 'weekly',
+            'local_government_office' => 'weekly',
+            'town_hall' => 'weekly',
+            'police' => 'weekly',
+            'fire_station' => 'weekly',
+        ],
+
+        // Business category frequencies (for filtering businesses by their categories)
+        'business_categories' => [
+            // If not defined, falls back to 'default'
+        ],
+    ],
+
     // Phase 2: News Collection
     'news_collection' => [
         'enabled' => env('NEWS_WORKFLOW_NEWS_COLLECTION_ENABLED', true),

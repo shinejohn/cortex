@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Jobs\News;
 
 use App\Models\Business;
+use App\Models\NewsFetchFrequency;
 use App\Models\Region;
+use App\Services\News\FetchFrequencyService;
 use App\Services\News\NewsCollectionService;
 use Exception;
 use Illuminate\Bus\Queueable;
@@ -32,7 +34,7 @@ final class ProcessBusinessNewsCollectionJob implements ShouldQueue
         public Region $region
     ) {}
 
-    public function handle(NewsCollectionService $newsCollection): void
+    public function handle(NewsCollectionService $newsCollection, FetchFrequencyService $frequencyService): void
     {
         Log::info('Starting news collection job for business', [
             'business_id' => $this->business->id,
@@ -43,9 +45,16 @@ final class ProcessBusinessNewsCollectionJob implements ShouldQueue
         try {
             $articles = $newsCollection->fetchNewsForBusiness($this->business, $this->region);
 
+            // Mark all business categories as fetched (update last_fetched_at globally)
+            $categories = $this->business->categories ?? [];
+            foreach ($categories as $category) {
+                $frequencyService->markCategoryFetched($category, NewsFetchFrequency::CATEGORY_TYPE_BUSINESS);
+            }
+
             Log::info('Completed news collection job for business', [
                 'business_id' => $this->business->id,
                 'articles_collected' => count($articles),
+                'categories_marked' => count($categories),
             ]);
 
             // Track completed jobs for this region

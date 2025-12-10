@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Jobs\News;
 
 use App\Models\Region;
+use App\Services\News\FetchFrequencyService;
 use App\Services\News\NewsCollectionService;
 use Exception;
 use Illuminate\Bus\Queueable;
@@ -38,7 +39,7 @@ final class ProcessPhase2NewsCollectionJob implements ShouldQueue
         public Region $region
     ) {}
 
-    public function handle(NewsCollectionService $newsCollection): void
+    public function handle(NewsCollectionService $newsCollection, FetchFrequencyService $frequencyService): void
     {
         Log::info('Phase 2: Starting news collection', [
             'region_id' => $this->region->id,
@@ -58,21 +59,30 @@ final class ProcessPhase2NewsCollectionJob implements ShouldQueue
                 return;
             }
 
-            // Count jobs first - each category gets its own job
-            $categories = config('news-workflow.business_discovery.categories', []);
-            $categoryJobsCount = count($categories);
+            // Get categories that are due for fetching today (based on frequency settings)
+            $categoriesToFetch = $frequencyService->getCategoriesForToday();
+            $categoryJobsCount = $categoriesToFetch->count();
 
-            // Get businesses linked to this region
-            $businesses = $this->region->businesses()
+            // Get businesses linked to this region and filter by frequency
+            $allBusinesses = $this->region->businesses()
                 ->limit(50)
                 ->get();
-            $businessJobsCount = $businesses->count();
+            $businessesToFetch = $frequencyService->filterBusinessesByFrequency($allBusinesses);
+            $businessJobsCount = $businessesToFetch->count();
 
             $totalJobs = $categoryJobsCount + $businessJobsCount;
 
+            Log::info('Phase 2: Filtered jobs by fetch frequency', [
+                'region_id' => $this->region->id,
+                'categories_total' => count(config('news-workflow.business_discovery.categories', [])),
+                'categories_to_fetch' => $categoryJobsCount,
+                'businesses_total' => $allBusinesses->count(),
+                'businesses_to_fetch' => $businessJobsCount,
+            ]);
+
             // If no jobs will be dispatched, immediately trigger Phase 3
             if ($totalJobs === 0) {
-                Log::info('Phase 2: No news collection jobs to dispatch, immediately triggering Phase 3', [
+                Log::info('Phase 2: No news collection jobs to dispatch (all categories up to date), triggering Phase 3', [
                     'region_id' => $this->region->id,
                 ]);
 
@@ -84,11 +94,11 @@ final class ProcessPhase2NewsCollectionJob implements ShouldQueue
             // Initialize counter before dispatching jobs
             $this->initializeJobCounter($totalJobs);
 
-            // Dispatch category news collection job
+            // Dispatch category news collection job (will filter internally)
             ProcessCategoryNewsCollectionJob::dispatch($this->region);
 
-            // Dispatch business news collection jobs
-            foreach ($businesses as $business) {
+            // Dispatch business news collection jobs (only for businesses due for fetching)
+            foreach ($businessesToFetch as $business) {
                 ProcessBusinessNewsCollectionJob::dispatch($business, $this->region);
             }
 

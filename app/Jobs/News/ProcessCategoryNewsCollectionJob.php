@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Jobs\News;
 
 use App\Models\Region;
+use App\Services\News\FetchFrequencyService;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -28,7 +29,7 @@ final class ProcessCategoryNewsCollectionJob implements ShouldQueue
         public Region $region
     ) {}
 
-    public function handle(): void
+    public function handle(FetchFrequencyService $frequencyService): void
     {
         Log::info('Starting category news collection dispatcher', [
             'region_id' => $this->region->id,
@@ -36,30 +37,31 @@ final class ProcessCategoryNewsCollectionJob implements ShouldQueue
         ]);
 
         try {
-            // Get configured categories
-            $categories = config('news-workflow.business_discovery.categories', []);
+            // Get categories that are due for fetching today (based on frequency settings)
+            $categoriesToFetch = $frequencyService->getCategoriesForToday();
 
-            if (empty($categories)) {
-                Log::info('No categories configured, skipping category news collection', [
+            if ($categoriesToFetch->isEmpty()) {
+                Log::info('No categories due for fetching today, skipping category news collection', [
                     'region_id' => $this->region->id,
                 ]);
 
                 return;
             }
 
-            Log::info('Dispatching category news collection jobs', [
+            Log::info('Dispatching category news collection jobs (filtered by frequency)', [
                 'region_id' => $this->region->id,
-                'category_count' => count($categories),
+                'total_categories' => count(config('news-workflow.business_discovery.categories', [])),
+                'categories_to_fetch' => $categoriesToFetch->count(),
             ]);
 
-            // Dispatch a job for each category
-            foreach ($categories as $category) {
+            // Dispatch a job for each category that is due
+            foreach ($categoriesToFetch as $category) {
                 ProcessSingleCategoryNewsCollectionJob::dispatch($category, $this->region);
             }
 
             Log::info('Category news collection jobs dispatched', [
                 'region_id' => $this->region->id,
-                'jobs_dispatched' => count($categories),
+                'jobs_dispatched' => $categoriesToFetch->count(),
             ]);
 
         } catch (Exception $e) {
