@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Console\Commands\NewsWorkflow;
 
-use App\Jobs\News\ProcessRegionBusinessDiscoveryJob;
+use App\Jobs\News\ProcessBusinessDiscoveryDispatcherJob;
 use App\Models\Region;
 use Illuminate\Console\Command;
 
@@ -31,20 +31,20 @@ final class RunBusinessDiscovery extends Command
                 return self::FAILURE;
             }
 
-            ProcessRegionBusinessDiscoveryJob::dispatch($region);
+            ProcessBusinessDiscoveryDispatcherJob::dispatch($region);
 
-            $this->info("Dispatched business discovery job for region: {$region->name}");
+            $this->info("Dispatched business discovery dispatcher for region: {$region->name}");
             $this->info('Monitor with: php artisan queue:work');
         } else {
             $regions = Region::active()->get();
 
             $count = 0;
             foreach ($regions as $region) {
-                ProcessRegionBusinessDiscoveryJob::dispatch($region);
+                ProcessBusinessDiscoveryDispatcherJob::dispatch($region);
                 $count++;
             }
 
-            $this->info("Dispatched {$count} business discovery jobs for parallel processing");
+            $this->info("Dispatched {$count} business discovery dispatchers for parallel processing");
             $this->info('Monitor with: php artisan queue:work');
         }
 

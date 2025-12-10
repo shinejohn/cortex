@@ -24,6 +24,8 @@ final class SerpApiService
 
     /**
      * Discover businesses in a region using Google Local search
+     *
+     * @deprecated Use discoverBusinessesForCategory() for parallelized job processing
      */
     public function discoverBusinesses(Region $region, array $categories): array
     {
@@ -46,6 +48,28 @@ final class SerpApiService
         }
 
         return $businesses;
+    }
+
+    /**
+     * Discover businesses for a SINGLE category (used by parallelized jobs)
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function discoverBusinessesForCategory(Region $region, string $category): array
+    {
+        try {
+            return $this->retryWithBackoff(function () use ($region, $category) {
+                return $this->searchLocalBusinesses($region, $category);
+            });
+        } catch (Exception $e) {
+            Log::error('SERP API business discovery failed for category', [
+                'region' => $region->name,
+                'category' => $category,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
     }
 
     /**

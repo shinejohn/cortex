@@ -145,7 +145,7 @@ final class BusinessForm
 
                         Select::make('regions')
                             ->label('Regions')
-                            ->relationship('regions', 'name')
+                            ->relationship('regions', 'name', fn ($query) => $query->select('id', 'name', 'type'))
                             ->multiple()
                             ->searchable()
                             ->preload()

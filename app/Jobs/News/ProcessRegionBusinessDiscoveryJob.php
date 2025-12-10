@@ -15,6 +15,9 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
+/**
+ * @deprecated Use ProcessBusinessDiscoveryDispatcherJob instead for parallelized processing
+ */
 final class ProcessRegionBusinessDiscoveryJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
