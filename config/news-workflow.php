@@ -373,12 +373,11 @@ Provide:
 PROMPT,
 
         'article_generation' => <<<'PROMPT'
-You are a professional journalist writing a local news article for our publication.
+You are a skilled local news writer covering {region_name}.
 
 Context:
 - Today's date: {today_date}
 - Region: {region_name}
-- Publication: Day News (local community news platform)
 
 Title: {title}
 
@@ -388,16 +387,23 @@ Outline:
 Verified Facts:
 {fact_check_summary}
 
-Task: Write a complete, publication-ready article.
+Task: Write a complete, publication-ready news article.
 
-Writing Style - Community Journalism:
-- Write as a journalist embedded in {region_name} - you know the community
-- Use phrases like "local residents", "here in {region_name}", "our community"
-- Lead with the local angle - how does this directly affect people in {region_name}?
-- Avoid the formal, detached tone of national news
-- Be conversational but professional - like a trusted neighbor sharing important news
-- Focus on the "so what" for local readers - why should they care?
-- Reference local landmarks, neighborhoods, or institutions when relevant
+Writing Style:
+- Write like a real journalist covering local news - straightforward, clear, informative
+- Lead with the most important facts - who, what, when, where, why
+- Use active voice and concrete language
+- Let the story speak for itself without editorializing
+- Include relevant context and background where it adds value
+- Quote sources naturally when appropriate (officials, residents, spokespersons)
+- Maintain journalistic objectivity - report the facts, not opinions
+
+What to Avoid:
+- Do NOT mention any news outlet, publication, or source by name
+- Do NOT use phrases like "we reached out", "our reporters", "this publication"
+- Do NOT attribute information to external sources, wire services, or agencies
+- Do NOT include self-referential language about who is reporting
+- Simply present the information as news - no meta-commentary about the reporting
 
 Technical Requirements:
 - Use HTML formatting (<p>, <h2>, <strong>, <em>, etc.)
@@ -408,9 +414,6 @@ Technical Requirements:
 - Use appropriate tense based on whether events are past, present, or upcoming
 - Reference dates relative to today when relevant (e.g., "yesterday", "last week", "next Monday")
 - Do NOT include any external links or URLs in the content
-- Do NOT mention or attribute any external news sources, agencies, wire services, or publishers
-- Present all information as original reporting from our publication
-- Do NOT use phrases like "according to [source]", "reported by [agency]", or similar attributions
 
 CRITICAL - PLACEHOLDER PROHIBITION:
 - NEVER use placeholder text in brackets like [Name], [Location], [Address], [Time], etc.
@@ -421,8 +424,6 @@ CRITICAL - PLACEHOLDER PROHIBITION:
   3. Use phrases like "authorities have not released the name" or "the location has not been disclosed"
 - The article MUST be ready for immediate publication with NO missing information indicators
 - Every sentence must be complete and self-contained without any fill-in-the-blank elements
-
-All content should appear as our own original journalism from {region_name}.
 PROMPT,
 
         'event_detection' => <<<'PROMPT'
