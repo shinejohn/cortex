@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Pages;
 
-use App\Models\NewsWorkflowSetting;
+use App\Services\News\WorkflowSettingsService;
 use BackedEnum;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
@@ -21,55 +21,46 @@ use UnitEnum;
 final class NewsWorkflowSettings extends Page
 {
     /**
-     * Configuration for workflow phases with their database keys and descriptions.
+     * Configuration for workflow phases with their labels and descriptions.
      *
-     * @var array<string, array{label: string, description: string, config_key: string}>
+     * @var array<string, array{label: string, description: string}>
      */
     private const WORKFLOW_PHASES = [
-        'business_discovery_enabled' => [
+        'business_discovery' => [
             'label' => 'Business Discovery',
             'description' => 'Discover local businesses for news sourcing (Phase 1)',
-            'config_key' => 'news-workflow.business_discovery.enabled',
         ],
-        'news_collection_enabled' => [
+        'news_collection' => [
             'label' => 'News Collection',
             'description' => 'Collect news articles from discovered businesses (Phase 2)',
-            'config_key' => 'news-workflow.news_collection.enabled',
         ],
-        'shortlisting_enabled' => [
+        'shortlisting' => [
             'label' => 'Shortlisting',
             'description' => 'AI-powered relevance scoring and shortlisting (Phase 3)',
-            'config_key' => 'news-workflow.shortlisting.enabled',
         ],
-        'fact_checking_enabled' => [
+        'fact_checking' => [
             'label' => 'Fact Checking',
             'description' => 'Verify claims before publication (Phase 4)',
-            'config_key' => 'news-workflow.fact_checking.enabled',
         ],
-        'final_selection_enabled' => [
+        'final_selection' => [
             'label' => 'Final Selection',
             'description' => 'Quality evaluation and final article selection (Phase 5)',
-            'config_key' => 'news-workflow.final_selection.enabled',
         ],
-        'article_generation_enabled' => [
+        'article_generation' => [
             'label' => 'Article Generation',
             'description' => 'AI-powered article writing (Phase 6)',
-            'config_key' => 'news-workflow.article_generation.enabled',
         ],
-        'publishing_enabled' => [
+        'publishing' => [
             'label' => 'Publishing',
             'description' => 'Auto-publish high-quality articles (Phase 7)',
-            'config_key' => 'news-workflow.publishing.enabled',
         ],
-        'event_extraction_enabled' => [
+        'event_extraction' => [
             'label' => 'Event Extraction',
             'description' => 'Extract events from news articles',
-            'config_key' => 'news-workflow.event_extraction.enabled',
         ],
-        'unsplash_enabled' => [
+        'unsplash' => [
             'label' => 'Unsplash Images',
             'description' => 'Fetch images from Unsplash for articles',
-            'config_key' => 'news-workflow.unsplash.enabled',
         ],
     ];
 
@@ -88,6 +79,10 @@ final class NewsWorkflowSettings extends Page
 
     protected string $view = 'filament.pages.news-workflow-settings';
 
+    public function __construct(
+        private readonly WorkflowSettingsService $workflowSettings = new WorkflowSettingsService
+    ) {}
+
     public function mount(): void
     {
         $this->loadSettings();
@@ -103,13 +98,13 @@ final class NewsWorkflowSettings extends Page
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                $this->createToggle('business_discovery_enabled'),
-                                $this->createToggle('news_collection_enabled'),
-                                $this->createToggle('shortlisting_enabled'),
-                                $this->createToggle('fact_checking_enabled'),
-                                $this->createToggle('final_selection_enabled'),
-                                $this->createToggle('article_generation_enabled'),
-                                $this->createToggle('publishing_enabled'),
+                                $this->createToggle('business_discovery'),
+                                $this->createToggle('news_collection'),
+                                $this->createToggle('shortlisting'),
+                                $this->createToggle('fact_checking'),
+                                $this->createToggle('final_selection'),
+                                $this->createToggle('article_generation'),
+                                $this->createToggle('publishing'),
                             ]),
                     ]),
 
@@ -119,8 +114,8 @@ final class NewsWorkflowSettings extends Page
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                $this->createToggle('event_extraction_enabled'),
-                                $this->createToggle('unsplash_enabled'),
+                                $this->createToggle('event_extraction'),
+                                $this->createToggle('unsplash'),
                             ]),
                     ]),
             ])
@@ -129,13 +124,10 @@ final class NewsWorkflowSettings extends Page
 
     public function save(): void
     {
-        foreach (self::WORKFLOW_PHASES as $key => $config) {
-            $value = $this->data[$key] ?? false;
-            NewsWorkflowSetting::set($key, (bool) $value, $config['description']);
+        foreach (array_keys(self::WORKFLOW_PHASES) as $phase) {
+            $value = $this->data[$phase] ?? false;
+            $this->workflowSettings->setPhaseEnabled($phase, (bool) $value);
         }
-
-        // Clear config cache to apply changes immediately
-        NewsWorkflowSetting::clearCache();
 
         Notification::make()
             ->title('Settings saved')
@@ -147,35 +139,22 @@ final class NewsWorkflowSettings extends Page
     /**
      * Create a toggle component for a workflow phase.
      */
-    private function createToggle(string $key): Toggle
+    private function createToggle(string $phase): Toggle
     {
-        $config = self::WORKFLOW_PHASES[$key];
+        $config = self::WORKFLOW_PHASES[$phase];
 
-        return Toggle::make($key)
+        return Toggle::make($phase)
             ->label($config['label'])
             ->helperText($config['description'])
             ->default(true);
     }
 
     /**
-     * Load current settings from database, falling back to config defaults.
+     * Load current settings using the service.
      */
     private function loadSettings(): void
     {
-        $data = [];
-
-        foreach (self::WORKFLOW_PHASES as $key => $config) {
-            // Try to get from database first, fall back to config
-            $dbValue = NewsWorkflowSetting::get($key);
-
-            if ($dbValue !== null) {
-                $data[$key] = (bool) $dbValue;
-            } else {
-                // Fall back to current config value
-                $data[$key] = (bool) config($config['config_key'], true);
-            }
-        }
-
+        $data = $this->workflowSettings->getAllPhaseStatuses();
         $this->form->fill($data);
     }
 }

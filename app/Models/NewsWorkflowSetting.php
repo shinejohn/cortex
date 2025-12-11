@@ -58,16 +58,6 @@ final class NewsWorkflowSetting extends Model
     }
 
     /**
-     * Check if a workflow phase is enabled.
-     */
-    public static function isEnabled(string $phase): bool
-    {
-        $key = str_replace('.', '_', $phase).'_enabled';
-
-        return (bool) self::get($key, true);
-    }
-
-    /**
      * Get all settings as cached array.
      *
      * @return array<string, array{value: string, type: string}>

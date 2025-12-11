@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\NewsWorkflowSetting;
+use App\Services\News\WorkflowSettingsService;
 use Illuminate\Support\Facades\Cache;
 
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
@@ -53,15 +54,72 @@ describe('NewsWorkflowSetting Model', function () {
 
         expect(Cache::has('news_workflow_settings'))->toBeFalse();
     });
+});
 
-    it('checks if phase is enabled using isEnabled helper', function () {
-        NewsWorkflowSetting::set('business_discovery_enabled', true);
+describe('WorkflowSettingsService', function () {
+    it('checks if phase is enabled from database', function () {
+        NewsWorkflowSetting::set('business_discovery_enabled', false);
 
-        expect(NewsWorkflowSetting::isEnabled('business_discovery'))->toBeTrue();
+        $service = new WorkflowSettingsService;
+
+        expect($service->isPhaseEnabled('business_discovery'))->toBeFalse();
     });
 
-    it('returns true by default for isEnabled when setting does not exist', function () {
-        expect(NewsWorkflowSetting::isEnabled('nonexistent_phase'))->toBeTrue();
+    it('falls back to config when database has no value', function () {
+        config(['news-workflow.business_discovery.enabled' => false]);
+
+        $service = new WorkflowSettingsService;
+
+        expect($service->isPhaseEnabled('business_discovery'))->toBeFalse();
+    });
+
+    it('returns true by default when no config or database value', function () {
+        $service = new WorkflowSettingsService;
+
+        expect($service->isPhaseEnabled('nonexistent_phase'))->toBeTrue();
+    });
+
+    it('database value takes priority over config', function () {
+        config(['news-workflow.business_discovery.enabled' => true]);
+        NewsWorkflowSetting::set('business_discovery_enabled', false);
+
+        $service = new WorkflowSettingsService;
+
+        expect($service->isPhaseEnabled('business_discovery'))->toBeFalse();
+    });
+
+    it('can set phase enabled status', function () {
+        $service = new WorkflowSettingsService;
+        $service->setPhaseEnabled('publishing', false);
+
+        expect($service->isPhaseEnabled('publishing'))->toBeFalse();
+    });
+
+    it('gets all phase statuses', function () {
+        $service = new WorkflowSettingsService;
+        $statuses = $service->getAllPhaseStatuses();
+
+        expect($statuses)->toHaveKeys([
+            'business_discovery',
+            'news_collection',
+            'shortlisting',
+            'fact_checking',
+            'final_selection',
+            'article_generation',
+            'publishing',
+            'event_extraction',
+            'unsplash',
+        ]);
+    });
+
+    it('syncs phases from config to database', function () {
+        config(['news-workflow.fact_checking.enabled' => false]);
+
+        $service = new WorkflowSettingsService;
+        $synced = $service->syncFromConfig();
+
+        expect($synced)->toBeGreaterThan(0);
+        expect($service->isPhaseEnabled('fact_checking'))->toBeFalse();
     });
 });
 
