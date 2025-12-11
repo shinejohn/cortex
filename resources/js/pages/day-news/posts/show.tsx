@@ -309,7 +309,7 @@ export default function ShowPost({ auth, post, relatedPosts }: ShowPostProps) {
                         </article>
 
                         {/* Sidebar */}
-                        <aside className="space-y-6">
+                        <aside className="px-4 space-y-6 lg:px-2">
                             {/* Related Posts */}
                             {relatedPosts.length > 0 && (
                                 <div>
