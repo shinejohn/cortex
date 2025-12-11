@@ -69,6 +69,9 @@ final class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'appDomain' => config('app.current_domain', 'event-city'),
+            'analytics' => [
+                'ga4Id' => config('analytics.ga4.'.config('app.current_domain', 'event-city')),
+            ],
             'location' => $this->getLocationData($request),
         ];
     }

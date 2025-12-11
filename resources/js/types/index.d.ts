@@ -41,6 +41,9 @@ export interface SharedData {
     ziggy: Config & { location: string };
     sidebarOpen: boolean;
     appDomain: "event-city" | "day-news" | "downtown-guide";
+    analytics: {
+        ga4Id: string | null;
+    };
     workspaces: {
         enabled: boolean;
         all: Workspace[];
