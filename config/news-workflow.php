@@ -161,6 +161,7 @@ return [
     // Phase 2: News Collection
     'news_collection' => [
         'enabled' => env('NEWS_WORKFLOW_NEWS_COLLECTION_ENABLED', true),
+        'skip_business_sources' => env('NEWS_WORKFLOW_SKIP_BUSINESS_SOURCES', false),
         'max_articles_per_business' => env('NEWS_WORKFLOW_MAX_ARTICLES_PER_BUSINESS', 5),
         'max_category_articles' => env('NEWS_WORKFLOW_MAX_CATEGORY_ARTICLES', 20),
         'lookback_days' => env('NEWS_WORKFLOW_LOOKBACK_DAYS', 7),

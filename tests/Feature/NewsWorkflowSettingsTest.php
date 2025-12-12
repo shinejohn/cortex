@@ -109,7 +109,23 @@ describe('WorkflowSettingsService', function () {
             'publishing',
             'event_extraction',
             'unsplash',
+            'skip_business_sources',
         ]);
+    });
+
+    it('can enable and disable skip_business_sources setting', function () {
+        $service = new WorkflowSettingsService;
+
+        // Default should be false (from config)
+        expect($service->isPhaseEnabled('skip_business_sources'))->toBeFalse();
+
+        // Enable it
+        $service->setPhaseEnabled('skip_business_sources', true);
+        expect($service->isPhaseEnabled('skip_business_sources'))->toBeTrue();
+
+        // Disable it
+        $service->setPhaseEnabled('skip_business_sources', false);
+        expect($service->isPhaseEnabled('skip_business_sources'))->toBeFalse();
     });
 
     it('syncs phases from config to database', function () {

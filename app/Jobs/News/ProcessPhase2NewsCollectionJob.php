@@ -7,6 +7,7 @@ namespace App\Jobs\News;
 use App\Models\Region;
 use App\Services\News\FetchFrequencyService;
 use App\Services\News\NewsCollectionService;
+use App\Services\News\WorkflowSettingsService;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -39,8 +40,11 @@ final class ProcessPhase2NewsCollectionJob implements ShouldQueue
         public Region $region
     ) {}
 
-    public function handle(NewsCollectionService $newsCollection, FetchFrequencyService $frequencyService): void
-    {
+    public function handle(
+        NewsCollectionService $newsCollection,
+        FetchFrequencyService $frequencyService,
+        WorkflowSettingsService $workflowSettings
+    ): void {
         Log::info('Phase 2: Starting news collection', [
             'region_id' => $this->region->id,
             'region_name' => $this->region->name,
@@ -59,16 +63,24 @@ final class ProcessPhase2NewsCollectionJob implements ShouldQueue
                 return;
             }
 
+            // Check if business sources should be skipped
+            $skipBusinessSources = $workflowSettings->isPhaseEnabled('skip_business_sources');
+
             // Get categories that are due for fetching today (based on frequency settings)
             $categoriesToFetch = $frequencyService->getCategoriesForToday();
             $categoryJobsCount = $categoriesToFetch->count();
 
-            // Get businesses linked to this region and filter by frequency
-            $allBusinesses = $this->region->businesses()
-                ->limit(50)
-                ->get();
-            $businessesToFetch = $frequencyService->filterBusinessesByFrequency($allBusinesses);
-            $businessJobsCount = $businessesToFetch->count();
+            // Get businesses linked to this region and filter by frequency (unless skipping)
+            $businessJobsCount = 0;
+            $businessesToFetch = collect();
+
+            if (! $skipBusinessSources) {
+                $allBusinesses = $this->region->businesses()
+                    ->limit(50)
+                    ->get();
+                $businessesToFetch = $frequencyService->filterBusinessesByFrequency($allBusinesses);
+                $businessJobsCount = $businessesToFetch->count();
+            }
 
             $totalJobs = $categoryJobsCount + $businessJobsCount;
 
@@ -76,8 +88,9 @@ final class ProcessPhase2NewsCollectionJob implements ShouldQueue
                 'region_id' => $this->region->id,
                 'categories_total' => count(config('news-workflow.business_discovery.categories', [])),
                 'categories_to_fetch' => $categoryJobsCount,
-                'businesses_total' => $allBusinesses->count(),
+                'businesses_total' => $skipBusinessSources ? 0 : $this->region->businesses()->count(),
                 'businesses_to_fetch' => $businessJobsCount,
+                'skip_business_sources' => $skipBusinessSources,
             ]);
 
             // If no jobs will be dispatched, immediately trigger Phase 3
@@ -98,8 +111,10 @@ final class ProcessPhase2NewsCollectionJob implements ShouldQueue
             ProcessCategoryNewsCollectionJob::dispatch($this->region);
 
             // Dispatch business news collection jobs (only for businesses due for fetching)
-            foreach ($businessesToFetch as $business) {
-                ProcessBusinessNewsCollectionJob::dispatch($business, $this->region);
+            if (! $skipBusinessSources) {
+                foreach ($businessesToFetch as $business) {
+                    ProcessBusinessNewsCollectionJob::dispatch($business, $this->region);
+                }
             }
 
             Log::info('Phase 2: News collection jobs dispatched', [
@@ -107,6 +122,7 @@ final class ProcessPhase2NewsCollectionJob implements ShouldQueue
                 'category_jobs' => $categoryJobsCount,
                 'business_jobs' => $businessJobsCount,
                 'total_jobs' => $totalJobs,
+                'skip_business_sources' => $skipBusinessSources,
             ]);
 
         } catch (Exception $e) {

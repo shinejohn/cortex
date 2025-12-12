@@ -23,6 +23,7 @@ final class WorkflowSettingsService
         'publishing' => 'news-workflow.publishing.enabled',
         'event_extraction' => 'news-workflow.event_extraction.enabled',
         'unsplash' => 'news-workflow.unsplash.enabled',
+        'skip_business_sources' => 'news-workflow.news_collection.skip_business_sources',
     ];
 
     /**

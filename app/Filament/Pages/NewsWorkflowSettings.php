@@ -64,6 +64,18 @@ final class NewsWorkflowSettings extends Page
         ],
     ];
 
+    /**
+     * Configuration for news collection options.
+     *
+     * @var array<string, array{label: string, description: string}>
+     */
+    private const NEWS_COLLECTION_OPTIONS = [
+        'skip_business_sources' => [
+            'label' => 'Skip Business Sources',
+            'description' => 'Only fetch news from categories, skip business-specific news sources',
+        ],
+    ];
+
     /** @var array<string, mixed>|null */
     public ?array $data = [];
 
@@ -108,6 +120,16 @@ final class NewsWorkflowSettings extends Page
                             ]),
                     ]),
 
+                Section::make('News Collection Options')
+                    ->description('Configure how news is collected during Phase 2.')
+                    ->icon('heroicon-o-adjustments-horizontal')
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                $this->createOptionToggle('skip_business_sources'),
+                            ]),
+                    ]),
+
                 Section::make('Additional Features')
                     ->description('Control supplementary features of the news workflow.')
                     ->icon('heroicon-o-puzzle-piece')
@@ -129,6 +151,11 @@ final class NewsWorkflowSettings extends Page
             $this->workflowSettings->setPhaseEnabled($phase, (bool) $value);
         }
 
+        foreach (array_keys(self::NEWS_COLLECTION_OPTIONS) as $option) {
+            $value = $this->data[$option] ?? false;
+            $this->workflowSettings->setPhaseEnabled($option, (bool) $value);
+        }
+
         Notification::make()
             ->title('Settings saved')
             ->body('Workflow settings have been updated successfully.')
@@ -147,6 +174,19 @@ final class NewsWorkflowSettings extends Page
             ->label($config['label'])
             ->helperText($config['description'])
             ->default(true);
+    }
+
+    /**
+     * Create a toggle component for a news collection option.
+     */
+    private function createOptionToggle(string $option): Toggle
+    {
+        $config = self::NEWS_COLLECTION_OPTIONS[$option];
+
+        return Toggle::make($option)
+            ->label($config['label'])
+            ->helperText($config['description'])
+            ->default(false);
     }
 
     /**
