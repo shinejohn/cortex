@@ -156,3 +156,44 @@ it('includes fact checks in trust analysis context', function () {
     expect($factChecks)->toHaveCount(3);
     expect($factChecks->first()->verification_result)->toBe('verified');
 });
+
+it('rejects drafts with missing outlines during evaluation', function () {
+    $article = NewsArticle::factory()->create(['region_id' => $this->region->id]);
+    $draft = NewsArticleDraft::factory()->create([
+        'news_article_id' => $article->id,
+        'region_id' => $this->region->id,
+        'status' => 'ready_for_generation',
+        'outline' => null, // Missing outline
+        'relevance_score' => 85,
+    ]);
+
+    // Dispatch the evaluation job
+    $job = new App\Jobs\News\ProcessSingleDraftEvaluationJob($draft, $this->region);
+    $job->handle(app(App\Services\News\PrismAiService::class));
+
+    $draft->refresh();
+
+    expect($draft->status)->toBe('rejected');
+    expect($draft->rejection_reason)->toContain('Missing outline');
+});
+
+it('dispatches outline generation jobs even when fact-checking is disabled', function () {
+    Illuminate\Support\Facades\Queue::fake();
+    config(['news-workflow.fact_checking.enabled' => false]);
+
+    $article = NewsArticle::factory()->create(['region_id' => $this->region->id]);
+    NewsArticleDraft::factory()->create([
+        'news_article_id' => $article->id,
+        'region_id' => $this->region->id,
+        'status' => 'shortlisted',
+    ]);
+
+    // Dispatch the Phase 4 job
+    $job = new App\Jobs\News\ProcessPhase4FactCheckingJob($this->region);
+    $job->handle();
+
+    // Should dispatch ProcessSingleDraftFactCheckingJob for outline generation
+    Illuminate\Support\Facades\Queue::assertPushed(
+        App\Jobs\News\ProcessSingleDraftFactCheckingJob::class
+    );
+});

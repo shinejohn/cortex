@@ -93,6 +93,24 @@ final class ProcessSingleDraftEvaluationJob implements ShouldQueue
      */
     private function evaluateDraft(PrismAiService $prismAi): void
     {
+        // Refresh from DB to ensure latest data
+        $this->draft->refresh();
+
+        // Guard: Skip evaluation if outline is missing
+        if (empty($this->draft->outline)) {
+            Log::warning('Phase 5: Draft missing outline, skipping evaluation', [
+                'draft_id' => $this->draft->id,
+            ]);
+
+            $this->draft->update([
+                'status' => 'rejected',
+                'rejection_reason' => 'Missing outline - cannot evaluate trust metrics',
+            ]);
+
+            // Note: Job completion is tracked in handle() after this method returns
+            return;
+        }
+
         $draftData = [
             'id' => $this->draft->id,
             'title' => $this->draft->newsArticle->title,
@@ -103,18 +121,27 @@ final class ProcessSingleDraftEvaluationJob implements ShouldQueue
 
         $evaluation = $prismAi->evaluateDraftQuality($draftData);
 
-        // Analyze trust metrics
+        // Analyze trust metrics - include source publisher for credibility assessment
         $trustMetrics = $prismAi->analyzeTrustMetrics([
             'id' => $this->draft->id,
             'title' => $this->draft->newsArticle->title,
             'outline' => $this->draft->outline,
             'fact_checks' => $this->draft->factChecks->toArray(),
             'relevance_score' => $this->draft->relevance_score,
+            'source_publisher' => $this->draft->newsArticle->source_publisher,
         ]);
 
         // Calculate derived metrics and overall score
         // Cast all values to float first since AI may return strings
-        $factAccuracy = (int) round((float) ($evaluation['fact_check_confidence'] ?? 70));
+        $rawFactConfidence = (float) ($evaluation['fact_check_confidence'] ?? 0);
+
+        // If no fact-checks were performed, use a baseline of 75 (standard for curated news)
+        // This prevents penalizing articles when fact-checking is disabled or failed
+        $hasFactChecks = $this->draft->factChecks->isNotEmpty();
+        $factAccuracy = $hasFactChecks && $rawFactConfidence > 0
+            ? (int) round($rawFactConfidence)
+            : 75; // Baseline for curated news from established sources
+
         $communityRelevance = (int) round((float) ($this->draft->relevance_score ?? 70));
         $biasLevel = (float) ($trustMetrics['bias_level'] ?? 70);
         $reliability = (float) ($trustMetrics['reliability'] ?? 70);

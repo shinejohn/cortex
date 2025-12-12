@@ -38,27 +38,9 @@ final class ProcessPhase4FactCheckingJob implements ShouldQueue
         ]);
 
         try {
-            // Check if fact-checking is enabled
-            if (! config('news-workflow.fact_checking.enabled', true)) {
-                Log::info('Phase 4: Fact-checking is disabled, updating drafts and skipping to Phase 5', [
-                    'region_id' => $this->region->id,
-                ]);
-
-                // Update all shortlisted drafts to 'ready_for_generation' since we're skipping fact-checking
-                $updatedCount = NewsArticleDraft::where('region_id', $this->region->id)
-                    ->where('status', 'shortlisted')
-                    ->update(['status' => 'ready_for_generation']);
-
-                Log::info('Phase 4: Updated shortlisted drafts to ready_for_generation', [
-                    'region_id' => $this->region->id,
-                    'updated_count' => $updatedCount,
-                ]);
-
-                // Skip directly to Phase 5
-                ProcessPhase5SelectionJob::dispatch($this->region);
-
-                return;
-            }
+            // Note: Even when fact-checking is disabled, we still need to dispatch
+            // individual jobs to generate outlines for trust metrics evaluation.
+            // The ProcessSingleDraftFactCheckingJob handles the disabled case correctly.
 
             // Get shortlisted drafts
             $drafts = NewsArticleDraft::where('region_id', $this->region->id)
@@ -86,9 +68,12 @@ final class ProcessPhase4FactCheckingJob implements ShouldQueue
                 ProcessSingleDraftFactCheckingJob::dispatch($draft, $this->region);
             }
 
-            Log::info('Phase 4: Fact-checking jobs dispatched', [
+            $factCheckingEnabled = config('news-workflow.fact_checking.enabled', true);
+
+            Log::info('Phase 4: Outline generation and fact-checking jobs dispatched', [
                 'region_id' => $this->region->id,
                 'total_drafts' => $totalDrafts,
+                'fact_checking_enabled' => $factCheckingEnabled,
             ]);
 
         } catch (Exception $e) {

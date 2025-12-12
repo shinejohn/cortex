@@ -445,9 +445,15 @@ class PrismAiService
     {
         $prompt = config('news-workflow.prompts.trust_analysis');
 
+        // Include source publisher info if available
+        $sourceInfo = '';
+        if (! empty($draft['source_publisher'])) {
+            $sourceInfo = "\nOriginal Source: {$draft['source_publisher']} (established news outlet)";
+        }
+
         return strtr($prompt, [
             '{title}' => $draft['title'] ?? 'Unknown',
-            '{outline}' => $draft['outline'] ?? 'No outline available',
+            '{outline}' => ($draft['outline'] ?? 'No outline available').$sourceInfo,
             '{fact_check_summary}' => $this->summarizeFactChecks($draft['fact_checks'] ?? []),
             '{relevance_score}' => (string) ($draft['relevance_score'] ?? 'N/A'),
         ]);

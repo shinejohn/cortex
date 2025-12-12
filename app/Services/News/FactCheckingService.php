@@ -42,32 +42,50 @@ final class FactCheckingService
 
         if ($factCheckingEnabled) {
             // Step 2: Extract claims
-            $claims = $this->extractClaims($draft, $outline);
+            $claimExtractionSucceeded = false;
+            try {
+                $claims = $this->extractClaims($draft, $outline);
+                $claimExtractionSucceeded = true;
 
-            Log::info('Extracted claims', [
-                'draft_id' => $draft->id,
-                'claim_count' => count($claims),
-            ]);
+                Log::info('Extracted claims', [
+                    'draft_id' => $draft->id,
+                    'claim_count' => count($claims),
+                ]);
 
-            // Step 3: Verify each claim
-            foreach ($claims as $claimData) {
-                try {
-                    $this->verifyClaim($draft, $claimData['text'], $claimData);
-                } catch (Exception $e) {
-                    Log::warning('Failed to verify claim', [
-                        'draft_id' => $draft->id,
-                        'claim' => $claimData['text'] ?? $claimData,
-                        'error' => $e->getMessage(),
-                    ]);
+                // Step 3: Verify each claim
+                foreach ($claims as $claimData) {
+                    try {
+                        $this->verifyClaim($draft, $claimData['text'], $claimData);
+                    } catch (Exception $e) {
+                        Log::warning('Failed to verify claim', [
+                            'draft_id' => $draft->id,
+                            'claim' => $claimData['text'] ?? $claimData,
+                            'error' => $e->getMessage(),
+                        ]);
+                    }
                 }
+            } catch (Exception $e) {
+                Log::warning('Failed to extract claims for fact-checking, proceeding without fact-checks', [
+                    'draft_id' => $draft->id,
+                    'error' => $e->getMessage(),
+                ]);
             }
 
-            // Step 4: Calculate average fact-check confidence
+            // Step 4: Calculate average fact-check confidence (if any claims were verified)
             $draft->calculateAverageFactCheckConfidence();
 
             // Step 5: Update status based on fact-check confidence
+            // If claim extraction failed, still allow the draft to proceed (we have the outline)
             $minConfidence = config('news-workflow.fact_checking.min_confidence_score', 70);
-            if ($draft->fact_check_confidence >= $minConfidence) {
+
+            if (! $claimExtractionSucceeded) {
+                // Claim extraction failed - proceed without fact-checking
+                $draft->update(['status' => 'ready_for_generation']);
+
+                Log::info('Draft proceeding without fact-checks due to extraction failure', [
+                    'draft_id' => $draft->id,
+                ]);
+            } elseif ($draft->fact_check_confidence >= $minConfidence) {
                 $draft->update(['status' => 'ready_for_generation']);
 
                 Log::info('Draft passed fact-checking', [

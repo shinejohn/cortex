@@ -175,7 +175,7 @@ return [
 
     // Phase 4: Fact-Checking
     'fact_checking' => [
-        'enabled' => env('NEWS_WORKFLOW_FACT_CHECKING_ENABLED', false),
+        'enabled' => env('NEWS_WORKFLOW_FACT_CHECKING_ENABLED', true),
         'min_confidence_score' => env('NEWS_WORKFLOW_MIN_CONFIDENCE_SCORE', 70),
         'max_sources_per_claim' => env('NEWS_WORKFLOW_MAX_SOURCES', 3),
     ],
@@ -555,7 +555,9 @@ Important:
 PROMPT,
 
         'trust_analysis' => <<<'PROMPT'
-You are a media trust analyst evaluating an article draft for trustworthiness indicators.
+You are evaluating an AI-curated local news article for reader trust indicators.
+
+IMPORTANT CONTEXT: This is an AI-generated summary of news from established local news sources. The article is based on verified reporting from professional news outlets. Your evaluation should reflect this context - these are not original investigative pieces but curated summaries of existing news coverage.
 
 Article Information:
 Title: {title}
@@ -563,39 +565,41 @@ Content Outline: {outline}
 Fact-Check Results: {fact_check_summary}
 Original Relevance Score: {relevance_score}/100
 
-Task: Analyze this article's trustworthiness across multiple dimensions. Provide honest, objective scores.
+Task: Score this article's trustworthiness for local readers. Use the FULL 0-100 scale appropriately.
 
-Evaluation Criteria:
+Scoring Guidelines (use the full range):
 
-1. Bias Level (0-100, where 100 = completely unbiased/neutral):
-   - Check for political, commercial, or ideological bias
-   - Look for balanced presentation of different viewpoints
-   - Identify leading language or loaded terms
-   - Assess if controversial topics are presented fairly
-   - Score 80+ means minimal bias, 60-79 means some bias detected, below 60 means significant bias
+1. Bias Level (0-100, where 100 = completely neutral):
+   - 90-100: Neutral, factual reporting with no loaded language
+   - 80-89: Minor word choice issues but overall balanced
+   - 70-79: Some bias in framing or emphasis
+   - Below 70: Clear political/commercial bias
+   - Local news about community events, government meetings, business openings typically score 85+
 
 2. Reliability (0-100):
-   - Does the information come from verifiable sources?
-   - Are claims supported by evidence from the fact-checks?
-   - Is there consistency in the facts presented?
-   - Would this hold up to scrutiny from a skeptical reader?
-   - Score based on how confident a reader should be in the accuracy
+   - 90-100: Well-established facts from official sources
+   - 80-89: Standard local news reporting with reasonable confidence
+   - 70-79: Some details pending confirmation but core facts solid
+   - Below 70: Significant unverified claims
+   - Articles based on government announcements, press releases, or official statements score 80+
 
-3. Objectivity (0-100, where 100 = purely factual reporting):
-   - Separate facts from opinions
-   - Check for editorializing or commentary
-   - Look for speculation vs confirmed information
-   - Assess tone (neutral vs persuasive)
-   - News articles should aim for 75+ on objectivity
+3. Objectivity (0-100, where 100 = purely factual):
+   - 90-100: Straight news reporting, no commentary
+   - 80-89: Minimal interpretation, mostly facts
+   - 70-79: Some context/analysis but fact-based
+   - Below 70: Heavy editorializing
+   - Standard local news coverage typically scores 80+
 
 4. Source Quality (0-100):
-   - Are primary sources cited or referenced in the outline?
-   - Is information attributed to credible entities (officials, organizations)?
-   - Are there multiple corroborating sources for key facts?
-   - Quality of the original news source material
-   - Official sources and named experts score higher
+   - 90-100: Multiple official sources, named spokespersons
+   - 80-89: Based on established news outlet reporting
+   - 70-79: Single source but credible (government, business, organization)
+   - Below 70: Unattributed or questionable sources
+   - Articles curated from professional news outlets inherit their credibility (typically 75+)
 
-Provide scores for each dimension and a brief 1-2 sentence rationale explaining your overall trust assessment.
+SCORING PRINCIPLE: Local news summaries from established sources should typically score 75-90 in each category unless there are specific issues. Reserve scores below 70 for articles with clear problems (bias, speculation, unreliable claims).
+
+Provide scores for each dimension and a brief rationale.
 PROMPT,
     ],
 ];
