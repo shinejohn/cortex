@@ -195,6 +195,74 @@ class PrismAiService
     }
 
     /**
+     * Analyze trust metrics for an article draft (Phase 5)
+     *
+     * @return array{bias_level: int, reliability: int, objectivity: int, source_quality: int, analysis_rationale: string}
+     */
+    public function analyzeTrustMetrics(array $draft): array
+    {
+        try {
+            $model = config('news-workflow.ai_models.trust_analysis');
+            $response = prism()
+                ->structured()
+                ->using(...$model)
+                ->withClientOptions(['timeout' => self::CLIENT_TIMEOUT])
+                ->withPrompt($this->buildTrustAnalysisPrompt($draft))
+                ->withSchema(new RawSchema('trust_analysis', [
+                    'type' => 'object',
+                    'properties' => [
+                        'bias_level' => [
+                            'type' => 'number',
+                            'description' => 'How unbiased the article is (100 = completely neutral, 0 = highly biased)',
+                            'minimum' => 0,
+                            'maximum' => 100,
+                        ],
+                        'reliability' => [
+                            'type' => 'number',
+                            'description' => 'How reliable the information appears based on verifiable facts and sources',
+                            'minimum' => 0,
+                            'maximum' => 100,
+                        ],
+                        'objectivity' => [
+                            'type' => 'number',
+                            'description' => 'How objective vs opinionated the content is (100 = purely factual, 0 = purely opinion)',
+                            'minimum' => 0,
+                            'maximum' => 100,
+                        ],
+                        'source_quality' => [
+                            'type' => 'number',
+                            'description' => 'Quality assessment of information sources (100 = high-quality primary sources, 0 = no verifiable sources)',
+                            'minimum' => 0,
+                            'maximum' => 100,
+                        ],
+                        'analysis_rationale' => [
+                            'type' => 'string',
+                            'description' => 'Brief 1-2 sentence explanation of the trust assessment',
+                        ],
+                    ],
+                    'required' => ['bias_level', 'reliability', 'objectivity', 'source_quality', 'analysis_rationale'],
+                ]))
+                ->generate();
+
+            return $response->structured;
+        } catch (Exception $e) {
+            Log::error('Prism AI trust analysis failed', [
+                'draft_id' => $draft['id'] ?? 'Unknown',
+                'error' => $e->getMessage(),
+            ]);
+
+            // Return neutral defaults on failure
+            return [
+                'bias_level' => 70,
+                'reliability' => 70,
+                'objectivity' => 70,
+                'source_quality' => 70,
+                'analysis_rationale' => 'Trust analysis unavailable due to processing error.',
+            ];
+        }
+    }
+
+    /**
      * Evaluate draft quality (Phase 5)
      */
     public function evaluateDraftQuality(array $draft): array
@@ -367,6 +435,21 @@ class PrismAiService
         return strtr($prompt, [
             '{outline}' => $draft['outline'] ?? 'No outline available',
             '{fact_check_count}' => (string) count($draft['fact_checks'] ?? []),
+        ]);
+    }
+
+    /**
+     * Build trust analysis prompt
+     */
+    private function buildTrustAnalysisPrompt(array $draft): string
+    {
+        $prompt = config('news-workflow.prompts.trust_analysis');
+
+        return strtr($prompt, [
+            '{title}' => $draft['title'] ?? 'Unknown',
+            '{outline}' => $draft['outline'] ?? 'No outline available',
+            '{fact_check_summary}' => $this->summarizeFactChecks($draft['fact_checks'] ?? []),
+            '{relevance_score}' => (string) ($draft['relevance_score'] ?? 'N/A'),
         ]);
     }
 

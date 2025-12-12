@@ -103,14 +103,56 @@ final class ProcessSingleDraftEvaluationJob implements ShouldQueue
 
         $evaluation = $prismAi->evaluateDraftQuality($draftData);
 
+        // Analyze trust metrics
+        $trustMetrics = $prismAi->analyzeTrustMetrics([
+            'id' => $this->draft->id,
+            'title' => $this->draft->newsArticle->title,
+            'outline' => $this->draft->outline,
+            'fact_checks' => $this->draft->factChecks->toArray(),
+            'relevance_score' => $this->draft->relevance_score,
+        ]);
+
+        // Calculate derived metrics and overall score
+        // Cast all values to float first since AI may return strings
+        $factAccuracy = (int) round((float) ($evaluation['fact_check_confidence'] ?? 70));
+        $communityRelevance = (int) round((float) ($this->draft->relevance_score ?? 70));
+        $biasLevel = (float) ($trustMetrics['bias_level'] ?? 70);
+        $reliability = (float) ($trustMetrics['reliability'] ?? 70);
+        $objectivity = (float) ($trustMetrics['objectivity'] ?? 70);
+        $sourceQuality = (float) ($trustMetrics['source_quality'] ?? 70);
+
+        $overallScore = (int) round(
+            ($factAccuracy * 0.25) +
+            ($biasLevel * 0.15) +
+            ($reliability * 0.20) +
+            ($objectivity * 0.15) +
+            ($sourceQuality * 0.10) +
+            ($communityRelevance * 0.15)
+        );
+
+        // Build trust metrics array
+        $aiMetadata = $this->draft->ai_metadata ?? [];
+        $aiMetadata['trust_metrics'] = [
+            'fact_accuracy' => $factAccuracy,
+            'bias_level' => (int) round($biasLevel),
+            'reliability' => (int) round($reliability),
+            'objectivity' => (int) round($objectivity),
+            'source_quality' => (int) round($sourceQuality),
+            'community_relevance' => $communityRelevance,
+            'overall_score' => $overallScore,
+            'analysis_rationale' => $trustMetrics['analysis_rationale'] ?? '',
+        ];
+
         $this->draft->update([
             'quality_score' => $evaluation['quality_score'],
             'fact_check_confidence' => $evaluation['fact_check_confidence'],
+            'ai_metadata' => $aiMetadata,
         ]);
 
-        Log::debug('Phase 5: Draft evaluated', [
+        Log::debug('Phase 5: Draft evaluated with trust metrics', [
             'draft_id' => $this->draft->id,
             'quality_score' => $evaluation['quality_score'],
+            'trust_overall' => $overallScore,
         ]);
     }
 

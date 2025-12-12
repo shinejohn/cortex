@@ -287,7 +287,8 @@ final class SerpApiService
     private function searchBusinessNews(Business $business): array
     {
         $state = $business->state ?? '';
-        $query = "\"{$business->name}\" \"{$business->city}, {$state}\" local news";
+        // Use flexible query - quoted business name but unquoted location for better results
+        $query = "\"{$business->name}\" {$business->city} {$state} news";
         $lookbackDays = config('news-workflow.news_collection.lookback_days', 7);
 
         $response = Http::timeout(30)->get($this->baseUrl, [
@@ -332,8 +333,13 @@ final class SerpApiService
      */
     private function searchCategoryNews(Region $region, string $category): array
     {
-        $stateAbbr = $this->getStateFromRegion($region);
-        $query = "\"{$region->name}, {$stateAbbr}\" local {$category} news";
+        // Use news-friendly search terms if available, otherwise fall back to category label
+        $categoryTerms = config("news-workflow.category_news_terms.{$category}");
+        $searchTerms = $categoryTerms ?? str_replace('_', ' ', $category);
+
+        // Simple query format: "[Region Name] [search terms]" works best for Google News
+        // Avoid adding state abbreviation as it makes queries too restrictive
+        $query = "{$region->name} {$searchTerms}";
         $lookbackDays = config('news-workflow.news_collection.lookback_days', 7);
 
         $response = Http::timeout(30)->get($this->baseUrl, [

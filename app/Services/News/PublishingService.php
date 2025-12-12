@@ -127,6 +127,12 @@ final class PublishingService
                 'source_draft_id' => $draft->id,
             ];
 
+            // Transfer trust metrics if available (AI-generated articles)
+            if (isset($draft->ai_metadata['trust_metrics'])) {
+                $metadata['trust_metrics'] = $draft->ai_metadata['trust_metrics'];
+                $metadata['is_ai_generated'] = true;
+            }
+
             // Generate unique slug (handles duplicates)
             $baseSlug = $draft->seo_metadata['slug'] ?? $this->generateSlug($draft->generated_title ?? '');
             $uniqueSlug = $this->ensureUniqueSlug($baseSlug);

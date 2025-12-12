@@ -102,6 +102,62 @@ return [
         ],
     ],
 
+    // News-friendly search terms for category news queries
+    // Maps business categories to simple, effective Google News search terms
+    // Keep terms short and broad - "[Region] [term]" format works best
+    'category_news_terms' => [
+        // Entertainment & Nightlife
+        'night_club' => 'entertainment',
+        'bar' => 'nightlife',
+        'casino' => 'casino',
+
+        // Food & Drink
+        'restaurant' => 'restaurants',
+        'cafe' => 'restaurants',
+        'brewery' => 'brewery',
+        'winery' => 'winery',
+
+        // Arts & Culture
+        'performing_arts_theater' => 'theater',
+        'concert_hall' => 'concerts',
+        'movie_theater' => 'movies',
+        'museum' => 'museum',
+        'art_gallery' => 'art',
+        'library' => 'library',
+        'bookstore' => 'books',
+
+        // Sports & Recreation
+        'stadium' => 'sports',
+        'bowling_alley' => 'entertainment',
+        'gym' => 'fitness',
+        'spa' => 'wellness',
+
+        // Family & Outdoor
+        'amusement_park' => 'attractions',
+        'park' => 'parks',
+        'zoo' => 'zoo',
+        'aquarium' => 'aquarium',
+        'campground' => 'outdoors',
+
+        // Education & Community
+        'university' => 'university',
+        'school' => 'schools',
+        'community_center' => 'community events',
+
+        // Government & Public Services
+        'local_government_office' => 'news',
+        'city_hall' => 'city council',
+        'town_hall' => 'news',
+        'courthouse' => 'court',
+        'police' => 'crime',
+        'fire_station' => 'fire',
+
+        // Shopping & Tourism
+        'shopping_mall' => 'shopping',
+        'tourist_attraction' => 'tourism',
+        'convention_center' => 'events',
+    ],
+
     // Phase 2: News Collection
     'news_collection' => [
         'enabled' => env('NEWS_WORKFLOW_NEWS_COLLECTION_ENABLED', true),
@@ -200,6 +256,7 @@ return [
         'generation' => ['openrouter', env('NEWS_WORKFLOW_AI_MODEL_GENERATION', env('PRISM_MODEL', 'meta-llama/llama-3.1-8b-instruct'))], // Phase 6
         'event_detection' => ['openrouter', env('NEWS_WORKFLOW_AI_MODEL_EVENT_DETECTION', env('PRISM_MODEL', 'meta-llama/llama-3.1-8b-instruct'))], // Event Detection
         'event_extraction' => ['openrouter', env('NEWS_WORKFLOW_AI_MODEL_EVENT_EXTRACTION', env('PRISM_MODEL', 'meta-llama/llama-3.1-8b-instruct'))], // Event Extraction
+        'trust_analysis' => ['openrouter', env('NEWS_WORKFLOW_AI_MODEL_TRUST', env('PRISM_MODEL', 'meta-llama/llama-3.1-8b-instruct'))], // Trust Metrics Analysis
     ],
 
     // External APIs
@@ -495,6 +552,50 @@ Important:
 - Do NOT include external links or URLs
 - If information is unclear, use general descriptive language rather than placeholders
 - Dates must be in the future relative to the published date
+PROMPT,
+
+        'trust_analysis' => <<<'PROMPT'
+You are a media trust analyst evaluating an article draft for trustworthiness indicators.
+
+Article Information:
+Title: {title}
+Content Outline: {outline}
+Fact-Check Results: {fact_check_summary}
+Original Relevance Score: {relevance_score}/100
+
+Task: Analyze this article's trustworthiness across multiple dimensions. Provide honest, objective scores.
+
+Evaluation Criteria:
+
+1. Bias Level (0-100, where 100 = completely unbiased/neutral):
+   - Check for political, commercial, or ideological bias
+   - Look for balanced presentation of different viewpoints
+   - Identify leading language or loaded terms
+   - Assess if controversial topics are presented fairly
+   - Score 80+ means minimal bias, 60-79 means some bias detected, below 60 means significant bias
+
+2. Reliability (0-100):
+   - Does the information come from verifiable sources?
+   - Are claims supported by evidence from the fact-checks?
+   - Is there consistency in the facts presented?
+   - Would this hold up to scrutiny from a skeptical reader?
+   - Score based on how confident a reader should be in the accuracy
+
+3. Objectivity (0-100, where 100 = purely factual reporting):
+   - Separate facts from opinions
+   - Check for editorializing or commentary
+   - Look for speculation vs confirmed information
+   - Assess tone (neutral vs persuasive)
+   - News articles should aim for 75+ on objectivity
+
+4. Source Quality (0-100):
+   - Are primary sources cited or referenced in the outline?
+   - Is information attributed to credible entities (officials, organizations)?
+   - Are there multiple corroborating sources for key facts?
+   - Quality of the original news source material
+   - Official sources and named experts score higher
+
+Provide scores for each dimension and a brief 1-2 sentence rationale explaining your overall trust assessment.
 PROMPT,
     ],
 ];

@@ -2,6 +2,7 @@ import { SEO } from "@/components/common/seo";
 import Advertisement from "@/components/day-news/advertisement";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import NewsArticleCard from "@/components/day-news/news-article-card";
+import { TrustMetrics } from "@/components/day-news/trust-metrics";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { LocationProvider } from "@/contexts/location-context";
@@ -43,6 +44,17 @@ interface Post {
         image_attribution?: string;
         image_photographer?: string;
         image_alt?: string;
+        trust_metrics?: {
+            fact_accuracy: number;
+            bias_level: number;
+            reliability: number;
+            objectivity: number;
+            source_quality: number;
+            community_relevance: number;
+            overall_score: number;
+            analysis_rationale?: string;
+        };
+        is_ai_generated?: boolean;
         [key: string]: unknown;
     };
 }
@@ -261,15 +273,14 @@ export default function ShowPost({ auth, post, relatedPosts }: ShowPostProps) {
 
                             <Separator className="my-6" />
 
+                            {/* Trust Metrics for AI-generated articles */}
+                            {post.metadata?.trust_metrics && <TrustMetrics metrics={post.metadata.trust_metrics} />}
+
                             {/* Featured image */}
                             {post.featured_image && (
                                 <div className="mb-6">
                                     <div className="overflow-hidden rounded-lg">
-                                        <img
-                                            src={post.featured_image}
-                                            alt={post.metadata?.image_alt || post.title}
-                                            className="w-full"
-                                        />
+                                        <img src={post.featured_image} alt={post.metadata?.image_alt || post.title} className="w-full" />
                                     </div>
                                     {post.metadata?.image_attribution && (
                                         <div
@@ -286,10 +297,7 @@ export default function ShowPost({ auth, post, relatedPosts }: ShowPostProps) {
                             )}
 
                             {/* Content with inline ad */}
-                            <div
-                                className="prose prose-lg max-w-none dark:prose-invert"
-                                dangerouslySetInnerHTML={{ __html: firstHalfContent }}
-                            />
+                            <div className="prose prose-lg max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: firstHalfContent }} />
 
                             {/* Inline Ad in the middle of content */}
                             {inlineAds.length > 0 && secondHalfContent && (
