@@ -19,7 +19,7 @@ final class WriterAgentFactory extends Factory
      */
     public function definition(): array
     {
-        $name = fake()->name();
+        $name = fake()->unique()->name();
         $categories = ['local_news', 'business', 'sports', 'entertainment', 'community', 'education', 'health', 'politics', 'crime', 'weather', 'events'];
 
         return [
@@ -50,7 +50,7 @@ final class WriterAgentFactory extends Factory
      */
     public function inactive(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn () => [
             'is_active' => false,
         ]);
     }
@@ -60,7 +60,7 @@ final class WriterAgentFactory extends Factory
      */
     public function withStyle(string $style): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn () => [
             'writing_style' => $style,
         ]);
     }
@@ -72,7 +72,7 @@ final class WriterAgentFactory extends Factory
      */
     public function withCategories(array $categories): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn () => [
             'categories' => $categories,
         ]);
     }

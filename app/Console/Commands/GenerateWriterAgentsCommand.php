@@ -18,7 +18,8 @@ final class GenerateWriterAgentsCommand extends Command
      */
     protected $signature = 'agents:generate
                             {--count=1 : Number of agents to generate}
-                            {--dry-run : Preview without creating}';
+                            {--dry-run : Preview without creating}
+                            {--dedupe : Find and fix duplicate agent names}';
 
     /**
      * The console command description.
@@ -37,6 +38,58 @@ final class GenerateWriterAgentsCommand extends Command
      * Execute the console command.
      */
     public function handle(): int
+    {
+        if ($this->option('dedupe')) {
+            return $this->handleDeduplication();
+        }
+
+        return $this->handleGeneration();
+    }
+
+    private function handleDeduplication(): int
+    {
+        $this->info('Scanning for duplicate agent names...');
+
+        if ($this->option('dry-run')) {
+            $duplicates = WriterAgent::query()
+                ->selectRaw('name, COUNT(*) as count')
+                ->groupBy('name')
+                ->havingRaw('COUNT(*) > 1')
+                ->get();
+
+            if ($duplicates->isEmpty()) {
+                $this->info('No duplicate names found.');
+
+                return self::SUCCESS;
+            }
+
+            $this->warn('DRY RUN - Found duplicates:');
+            $this->table(
+                ['Name', 'Count'],
+                $duplicates->map(fn ($d) => [$d->name, $d->count])->toArray()
+            );
+
+            return self::SUCCESS;
+        }
+
+        $result = $this->generationService->deduplicateAgents();
+
+        if ($result['duplicates_found'] === 0) {
+            $this->info('No duplicate names found.');
+
+            return self::SUCCESS;
+        }
+
+        $this->info("Fixed {$result['duplicates_found']} duplicate(s):");
+        $this->table(
+            ['Agent ID', 'Change'],
+            collect($result['agents_fixed'])->map(fn ($change, $id) => [$id, $change])->toArray()
+        );
+
+        return self::SUCCESS;
+    }
+
+    private function handleGeneration(): int
     {
         $count = (int) $this->option('count');
         $dryRun = (bool) $this->option('dry-run');

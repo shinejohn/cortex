@@ -25,10 +25,19 @@ it('auto generates slug from name', function () {
     expect($agent->slug)->toBe('john-smith');
 });
 
-it('auto generates unique slugs', function () {
-    WriterAgent::factory()->create(['name' => 'John Smith']);
+it('auto generates unique slugs even with similar names', function () {
+    $agent1 = WriterAgent::factory()->create(['name' => 'John Smith']);
+    $agent2 = WriterAgent::factory()->create(['name' => 'John A. Smith']);
+
+    expect($agent1->slug)->toBe('john-smith');
+    expect($agent2->slug)->toBe('john-a-smith');
+});
+
+it('auto generates unique slugs for duplicate names', function () {
+    $agent1 = WriterAgent::factory()->create(['name' => 'John Smith']);
     $agent2 = WriterAgent::factory()->create(['name' => 'John Smith']);
 
+    expect($agent1->slug)->toBe('john-smith');
     expect($agent2->slug)->toBe('john-smith-1');
 });
 

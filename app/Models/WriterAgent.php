@@ -45,6 +45,20 @@ final class WriterAgent extends Model
         'is_active',
     ];
 
+    public static function generateUniqueSlug(string $name): string
+    {
+        $slug = Str::slug($name);
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (self::where('slug', $slug)->exists()) {
+            $slug = $originalSlug.'-'.$count;
+            $count++;
+        }
+
+        return $slug;
+    }
+
     public function regions(): BelongsToMany
     {
         return $this->belongsToMany(Region::class, 'writer_agent_region')
@@ -151,20 +165,6 @@ final class WriterAgent extends Model
                 $agent->avatar = "https://api.dicebear.com/7.x/personas/svg?seed={$seed}";
             }
         });
-    }
-
-    protected static function generateUniqueSlug(string $name): string
-    {
-        $slug = Str::slug($name);
-        $originalSlug = $slug;
-        $count = 1;
-
-        while (self::where('slug', $slug)->exists()) {
-            $slug = $originalSlug.'-'.$count;
-            $count++;
-        }
-
-        return $slug;
     }
 
     protected function casts(): array

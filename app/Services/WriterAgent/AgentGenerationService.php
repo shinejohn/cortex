@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Prism\Prism\Schema\RawSchema;
 
 final class AgentGenerationService
@@ -39,11 +40,17 @@ final class AgentGenerationService
     {
         // Get target regions and categories
         $regions = $this->resolveRegions($options['region_ids'] ?? null);
-        $categories = $options['categories'] ?? $this->selectCategories($regions);
+        $categories = $options['categories'] ?? $this->selectCategories();
         $writingStyle = $options['writing_style'] ?? $this->selectWritingStyle();
 
+        // Get existing names to avoid duplicates
+        $existingNames = WriterAgent::pluck('name')->toArray();
+
         // Generate agent profile using AI
-        $profile = $this->generateAgentProfile($regions, $categories, $writingStyle);
+        $profile = $this->generateAgentProfile($regions, $categories, $writingStyle, $existingNames);
+
+        // Ensure name is unique (fallback if AI still generates duplicate)
+        $profile['name'] = $this->ensureUniqueName($profile['name'], $existingNames);
 
         // Create the agent
         $agent = DB::transaction(function () use ($profile, $regions, $categories, $writingStyle) {
@@ -80,6 +87,83 @@ final class AgentGenerationService
         ]);
 
         return $agent;
+    }
+
+    /**
+     * Regenerate profile for an existing agent (for deduplication).
+     *
+     * @param  array<string>  $excludeNames
+     */
+    public function regenerateAgentProfile(WriterAgent $agent, array $excludeNames = []): WriterAgent
+    {
+        $regions = $agent->regions;
+        $categories = $agent->categories ?? [];
+        $writingStyle = $agent->writing_style;
+
+        // Generate new profile
+        $profile = $this->generateAgentProfile($regions, $categories, $writingStyle, $excludeNames);
+
+        // Ensure name is unique
+        $profile['name'] = $this->ensureUniqueName($profile['name'], $excludeNames);
+
+        // Update agent
+        $agent->update([
+            'name' => $profile['name'],
+            'slug' => WriterAgent::generateUniqueSlug($profile['name']),
+            'bio' => $profile['bio'],
+            'persona_traits' => $profile['persona_traits'],
+            'expertise_areas' => $profile['expertise_areas'],
+            'prompts' => $this->generatePrompts($profile, $writingStyle),
+            'avatar' => 'https://api.dicebear.com/7.x/personas/svg?seed='.urlencode($profile['name']),
+        ]);
+
+        Log::info('Regenerated writer agent profile', [
+            'agent_id' => $agent->id,
+            'new_name' => $agent->name,
+        ]);
+
+        return $agent->fresh();
+    }
+
+    /**
+     * Find and fix duplicate agent names.
+     *
+     * @return array{duplicates_found: int, agents_fixed: array<string, string>}
+     */
+    public function deduplicateAgents(): array
+    {
+        $duplicates = WriterAgent::select('name', DB::raw('COUNT(*) as count'))
+            ->groupBy('name')
+            ->having('count', '>', 1)
+            ->pluck('count', 'name');
+
+        if ($duplicates->isEmpty()) {
+            return ['duplicates_found' => 0, 'agents_fixed' => []];
+        }
+
+        $agentsFixed = [];
+        $allNames = WriterAgent::pluck('name')->toArray();
+
+        foreach ($duplicates as $name => $count) {
+            // Get all agents with this duplicate name (except the first one)
+            $duplicateAgents = WriterAgent::where('name', $name)
+                ->orderBy('created_at')
+                ->skip(1) // Keep the first one
+                ->take($count - 1)
+                ->get();
+
+            foreach ($duplicateAgents as $agent) {
+                $oldName = $agent->name;
+                $this->regenerateAgentProfile($agent, $allNames);
+                $allNames[] = $agent->fresh()->name; // Add new name to exclusion list
+                $agentsFixed[$agent->id] = "{$oldName} -> {$agent->fresh()->name}";
+            }
+        }
+
+        return [
+            'duplicates_found' => $duplicates->sum(),
+            'agents_fixed' => $agentsFixed,
+        ];
     }
 
     /**
@@ -120,6 +204,45 @@ final class AgentGenerationService
     }
 
     /**
+     * Ensure name is unique by appending suffix if needed.
+     *
+     * @param  array<string>  $existingNames
+     */
+    private function ensureUniqueName(string $name, array $existingNames): string
+    {
+        if (! in_array($name, $existingNames, true)) {
+            return $name;
+        }
+
+        // Try adding middle initial
+        $parts = explode(' ', $name);
+        if (count($parts) === 2) {
+            $middleInitials = ['A', 'B', 'C', 'D', 'E', 'J', 'K', 'L', 'M', 'R', 'S', 'T'];
+            foreach ($middleInitials as $initial) {
+                $newName = $parts[0].' '.$initial.'. '.$parts[1];
+                if (! in_array($newName, $existingNames, true)) {
+                    return $newName;
+                }
+            }
+        }
+
+        // Fallback: append roman numeral
+        $count = 2;
+        $baseName = $name;
+        while (in_array($name, $existingNames, true)) {
+            $name = $baseName.' '.Str::romanNumeral($count);
+            $count++;
+            if ($count > 10) {
+                // Ultimate fallback
+                $name = $baseName.'-'.Str::random(4);
+                break;
+            }
+        }
+
+        return $name;
+    }
+
+    /**
      * Resolve regions from IDs or find underserved ones.
      *
      * @param  array<string>|null  $regionIds
@@ -141,7 +264,7 @@ final class AgentGenerationService
      *
      * @return array<string>
      */
-    private function selectCategories(?Collection $regions): array
+    private function selectCategories(): array
     {
         $gaps = $this->identifyGaps();
 
@@ -168,13 +291,20 @@ final class AgentGenerationService
      * Generate agent profile using AI.
      *
      * @param  array<string>  $categories
+     * @param  array<string>  $existingNames
      * @return array{name: string, bio: string, persona_traits: array<string, string>, expertise_areas: array<string>}
      */
-    private function generateAgentProfile(Collection $regions, array $categories, string $writingStyle): array
+    private function generateAgentProfile(Collection $regions, array $categories, string $writingStyle, array $existingNames = []): array
     {
         try {
             $regionNames = $regions->pluck('name')->implode(', ') ?: 'general coverage';
             $categoryList = implode(', ', $categories);
+
+            $existingNamesNote = '';
+            if (! empty($existingNames)) {
+                $namesList = implode(', ', array_slice($existingNames, -20)); // Last 20 names for context
+                $existingNamesNote = "\n\nIMPORTANT: The following names are already in use and MUST NOT be used: {$namesList}\nGenerate a completely different and unique name.";
+            }
 
             $prompt = <<<PROMPT
 Generate a realistic journalist/writer profile for a local news writer with the following characteristics:
@@ -184,12 +314,12 @@ Generate a realistic journalist/writer profile for a local news writer with the 
 - Writing style: {$writingStyle}
 
 Create a believable American journalist persona with:
-1. A realistic full name (first and last name)
+1. A realistic full name (first and last name) - MUST BE UNIQUE
 2. A professional bio (2-3 sentences describing their journalism background and interests)
 3. Personality traits that affect their writing
 4. Areas of expertise based on the categories
 
-The persona should feel like a real local news journalist.
+The persona should feel like a real local news journalist.{$existingNamesNote}
 PROMPT;
 
             $model = config('news-workflow.ai_models.scoring', ['anthropic', 'claude-sonnet-4-20250514']);
@@ -204,7 +334,7 @@ PROMPT;
                     'properties' => [
                         'name' => [
                             'type' => 'string',
-                            'description' => 'Full name of the journalist (first and last name)',
+                            'description' => 'Full name of the journalist (first and last name) - must be unique',
                         ],
                         'bio' => [
                             'type' => 'string',
@@ -245,21 +375,44 @@ PROMPT;
             ]);
 
             // Fallback to simple generated profile
-            return $this->generateFallbackProfile($writingStyle);
+            return $this->generateFallbackProfile($existingNames);
         }
     }
 
     /**
      * Generate fallback profile without AI.
      *
+     * @param  array<string>  $existingNames
      * @return array{name: string, bio: string, persona_traits: array<string, string>, expertise_areas: array<string>}
      */
-    private function generateFallbackProfile(string $writingStyle): array
+    private function generateFallbackProfile(array $existingNames = []): array
     {
-        $firstNames = ['Sarah', 'Michael', 'Emily', 'James', 'Jessica', 'David', 'Amanda', 'Christopher', 'Jennifer', 'Matthew'];
-        $lastNames = ['Mitchell', 'Thompson', 'Garcia', 'Anderson', 'Wilson', 'Martinez', 'Taylor', 'Brown', 'Davis', 'Miller'];
+        $firstNames = [
+            'James', 'Michael', 'Robert', 'David', 'William', 'Richard', 'Joseph', 'Thomas', 'Christopher', 'Charles',
+            'Daniel', 'Matthew', 'Anthony', 'Mark', 'Steven', 'Paul', 'Andrew', 'Joshua', 'Kenneth', 'Kevin',
+            'Mary', 'Patricia', 'Jennifer', 'Linda', 'Barbara', 'Elizabeth', 'Susan', 'Jessica', 'Sarah', 'Karen',
+            'Lisa', 'Nancy', 'Betty', 'Margaret', 'Sandra', 'Ashley', 'Kimberly', 'Emily', 'Donna', 'Michelle',
+        ];
 
-        $name = $firstNames[array_rand($firstNames)].' '.$lastNames[array_rand($lastNames)];
+        $lastNames = [
+            'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
+            'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin',
+            'Lee', 'Perez', 'Thompson', 'White', 'Harris', 'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson',
+            'Walker', 'Young', 'Allen', 'King', 'Wright', 'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores',
+        ];
+
+        // Try to generate a unique name
+        $attempts = 0;
+        $maxAttempts = 50;
+        do {
+            $firstName = $firstNames[array_rand($firstNames)];
+            $lastName = $lastNames[array_rand($lastNames)];
+            $name = $firstName.' '.$lastName;
+            $attempts++;
+        } while (in_array($name, $existingNames, true) && $attempts < $maxAttempts);
+
+        // If still duplicate, use ensureUniqueName fallback
+        $name = $this->ensureUniqueName($name, $existingNames);
 
         return [
             'name' => $name,
