@@ -7,12 +7,18 @@ namespace App\Services\News;
 use App\Models\DayNewsPost;
 use App\Models\NewsArticleDraft;
 use App\Models\Region;
+use App\Models\WriterAgent;
+use App\Services\WriterAgent\AgentAssignmentService;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 final class PublishingService
 {
+    public function __construct(
+        private readonly AgentAssignmentService $agentAssignmentService
+    ) {}
+
     /**
      * Publish articles (Phase 7)
      */
@@ -137,6 +143,19 @@ final class PublishingService
             $baseSlug = $draft->seo_metadata['slug'] ?? $this->generateSlug($draft->generated_title ?? '');
             $uniqueSlug = $this->ensureUniqueSlug($baseSlug);
 
+            // Determine article category
+            $category = $this->mapTopicTagToCategory($draft->topic_tags[0] ?? null);
+
+            // Check if writer agent was pre-assigned during article generation (Phase 6)
+            $preAssignedAgentId = $draft->ai_metadata['writer_agent_id'] ?? null;
+            $agent = $preAssignedAgentId ? WriterAgent::find($preAssignedAgentId) : null;
+
+            // Fallback to finding a suitable agent if not pre-assigned
+            if (! $agent) {
+                $region = Region::find($draft->region_id);
+                $agent = $region ? $this->agentAssignmentService->findBestAgent($region, $category) : null;
+            }
+
             // Create DayNewsPost
             $post = DayNewsPost::create([
                 'title' => $draft->generated_title,
@@ -150,8 +169,21 @@ final class PublishingService
                 'featured_image_disk' => $draft->featured_image_disk,
                 'metadata' => $metadata,
                 'type' => 'article',
-                'category' => $this->mapTopicTagToCategory($draft->topic_tags[0] ?? null),
+                'category' => $category,
+                'writer_agent_id' => $agent?->id,
             ]);
+
+            // Increment agent's article count
+            if ($agent) {
+                $this->agentAssignmentService->incrementArticleCount($agent);
+
+                Log::debug('Using writer agent for article', [
+                    'post_id' => $post->id,
+                    'agent_id' => $agent->id,
+                    'agent_name' => $agent->name,
+                    'pre_assigned' => $preAssignedAgentId !== null,
+                ]);
+            }
 
             // Attach region using many-to-many relationship
             $post->regions()->attach($draft->region_id);

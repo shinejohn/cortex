@@ -12,15 +12,20 @@ use App\Services\News\UnsplashService;
 use Illuminate\Support\Facades\Config;
 
 beforeEach(function () {
-    // Create anonymous classes that extend the final classes for testing
+    // Create mocks for the dependencies
     $this->prismAiMock = Mockery::mock(PrismAiService::class)->makePartial();
-    $this->unsplashMock = Mockery::mock(UnsplashService::class)->makePartial();
 
-    // Make Unsplash return null by default (no image)
+    // Bind the mock to the container
+    $this->app->instance(PrismAiService::class, $this->prismAiMock);
+
+    // For the UnsplashService, create a partial mock that returns null by default
+    $this->unsplashMock = Mockery::mock(UnsplashService::class)->makePartial();
     $this->unsplashMock->shouldReceive('searchImage')->andReturn(null)->byDefault();
     $this->unsplashMock->shouldReceive('getRandomImage')->andReturn(null)->byDefault();
+    $this->app->instance(UnsplashService::class, $this->unsplashMock);
 
-    $this->service = new ArticleGenerationService($this->prismAiMock, $this->unsplashMock);
+    // Resolve ArticleGenerationService from the container (uses real AgentAssignmentService)
+    $this->service = app(ArticleGenerationService::class);
 });
 
 it('generates articles for drafts ready for generation', function () {
@@ -126,7 +131,7 @@ it('includes verified fact checks in article generation', function () {
     $this->prismAiMock
         ->shouldReceive('generateFinalArticle')
         ->once()
-        ->withArgs(function ($draftData, $factChecks) {
+        ->withArgs(function ($draftData, $factChecks, $writerStyleInstructions) {
             return is_array($draftData) &&
                    count($factChecks) === 1 &&
                    $factChecks[0]['claim'] === 'Business opened in 2024';

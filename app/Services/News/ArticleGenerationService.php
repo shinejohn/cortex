@@ -6,6 +6,7 @@ namespace App\Services\News;
 
 use App\Models\NewsArticleDraft;
 use App\Models\Region;
+use App\Services\WriterAgent\AgentAssignmentService;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
@@ -14,7 +15,8 @@ final class ArticleGenerationService
 {
     public function __construct(
         private readonly PrismAiService $prismAi,
-        private readonly UnsplashService $unsplash
+        private readonly UnsplashService $unsplash,
+        private readonly AgentAssignmentService $agentAssignmentService
     ) {}
 
     /**
@@ -50,6 +52,12 @@ final class ArticleGenerationService
                 // Generate full article content
                 $articleData = $this->generateArticle($draft);
 
+                // Merge writer_agent_id into ai_metadata for PublishingService
+                $aiMetadata = $draft->ai_metadata ?? [];
+                if ($articleData['writer_agent_id'] ?? null) {
+                    $aiMetadata['writer_agent_id'] = $articleData['writer_agent_id'];
+                }
+
                 // Update draft with generated content
                 $draft->update([
                     'generated_title' => $articleData['title'],
@@ -59,6 +67,7 @@ final class ArticleGenerationService
                     'featured_image_url' => $articleData['featured_image_url'] ?? null,
                     'featured_image_path' => $articleData['featured_image_path'] ?? null,
                     'featured_image_disk' => $articleData['featured_image_disk'] ?? null,
+                    'ai_metadata' => $aiMetadata,
                     'status' => 'ready_for_publishing',
                 ]);
 
@@ -67,6 +76,7 @@ final class ArticleGenerationService
                 Log::info('Generated article content', [
                     'draft_id' => $draft->id,
                     'title' => $articleData['title'],
+                    'writer_agent_id' => $articleData['writer_agent_id'] ?? null,
                 ]);
             } catch (Exception $e) {
                 Log::error('Failed to generate article', [
@@ -95,6 +105,16 @@ final class ArticleGenerationService
     private function generateArticle(NewsArticleDraft $draft): array
     {
         $sourceArticle = $draft->newsArticle;
+        $region = Region::find($draft->region_id);
+
+        // Find the best writer agent for this article
+        $category = $this->mapTopicTagToCategory($draft->topic_tags[0] ?? null);
+        $agent = $region ? $this->agentAssignmentService->findBestAgent($region, $category) : null;
+
+        // Fallback to any active agent if no match found
+        if (! $agent) {
+            $agent = $this->agentAssignmentService->findAnyAgent();
+        }
 
         $draftData = [
             'id' => $draft->id,
@@ -105,6 +125,7 @@ final class ArticleGenerationService
             'source_content' => $sourceArticle->content_snippet,
             'source_publisher' => $sourceArticle->source_publisher,
             'published_at' => $sourceArticle->published_at?->toIso8601String(),
+            'region_name' => $region?->name ?? 'Local Area',
         ];
 
         $factChecks = $draft->factChecks()
@@ -118,7 +139,19 @@ final class ArticleGenerationService
             ])
             ->toArray();
 
-        $result = $this->prismAi->generateFinalArticle($draftData, $factChecks);
+        // Get writer agent style instructions if available
+        $writerStyleInstructions = $agent?->style_instructions;
+
+        if ($agent) {
+            Log::debug('Using writer agent for article generation', [
+                'draft_id' => $draft->id,
+                'agent_id' => $agent->id,
+                'agent_name' => $agent->name,
+                'writing_style' => $agent->writing_style,
+            ]);
+        }
+
+        $result = $this->prismAi->generateFinalArticle($draftData, $factChecks, $writerStyleInstructions);
 
         // Validate AI response has required fields
         if (! is_array($result) || ! isset($result['title'], $result['content'], $result['excerpt'])) {
@@ -151,7 +184,34 @@ final class ArticleGenerationService
             'featured_image_url' => $imageData['url'] ?? null,
             'featured_image_path' => $imageData['storage_path'] ?? null,
             'featured_image_disk' => $imageData['storage_disk'] ?? null,
+            'writer_agent_id' => $agent?->id,
         ];
+    }
+
+    /**
+     * Map topic tag to valid DayNewsPost category
+     */
+    private function mapTopicTagToCategory(?string $topicTag): string
+    {
+        $mapping = [
+            'local' => 'local_news',
+            'business' => 'business',
+            'sports' => 'sports',
+            'entertainment' => 'entertainment',
+            'community' => 'community',
+            'education' => 'education',
+            'health' => 'health',
+            'politics' => 'politics',
+            'crime' => 'crime',
+            'weather' => 'weather',
+            'events' => 'events',
+            'obituary' => 'obituary',
+            'missing_person' => 'missing_person',
+            'emergency' => 'emergency',
+            'public_notice' => 'public_notice',
+        ];
+
+        return $mapping[$topicTag] ?? 'local_news';
     }
 
     /**

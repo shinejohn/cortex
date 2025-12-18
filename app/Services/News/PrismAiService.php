@@ -321,8 +321,12 @@ class PrismAiService
 
     /**
      * Generate final article content (Phase 6)
+     *
+     * @param  array  $draft  Draft data including outline and source info
+     * @param  array  $factChecks  Verified fact-checks to incorporate
+     * @param  string|null  $writerStyleInstructions  Optional writer agent style instructions
      */
-    public function generateFinalArticle(array $draft, array $factChecks): array
+    public function generateFinalArticle(array $draft, array $factChecks, ?string $writerStyleInstructions = null): array
     {
         try {
             $model = config('news-workflow.ai_models.generation');
@@ -333,7 +337,7 @@ class PrismAiService
                 ->using(...$model)
                 ->usingTemperature($temperature)
                 ->withClientOptions(['timeout' => self::CLIENT_TIMEOUT])
-                ->withPrompt($this->buildArticleGenerationPrompt($draft, $factChecks))
+                ->withPrompt($this->buildArticleGenerationPrompt($draft, $factChecks, $writerStyleInstructions))
                 ->withSchema(new RawSchema('article_generation', [
                     'type' => 'object',
                     'properties' => [
@@ -462,17 +466,24 @@ class PrismAiService
     /**
      * Build article generation prompt
      */
-    private function buildArticleGenerationPrompt(array $draft, array $factChecks): string
+    private function buildArticleGenerationPrompt(array $draft, array $factChecks, ?string $writerStyleInstructions = null): string
     {
         $prompt = config('news-workflow.prompts.article_generation');
 
-        return strtr($prompt, [
+        $basePrompt = strtr($prompt, [
             '{today_date}' => now()->format('F j, Y'),
             '{region_name}' => $draft['region_name'] ?? 'Local Area',
             '{title}' => $draft['generated_title'] ?? '',
             '{outline}' => $draft['outline'] ?? '',
             '{fact_check_summary}' => $this->summarizeFactChecks($factChecks),
         ]);
+
+        // Append writer agent style instructions if provided
+        if ($writerStyleInstructions) {
+            $basePrompt .= "\n\n## WRITING STYLE INSTRUCTIONS\n".$writerStyleInstructions;
+        }
+
+        return $basePrompt;
     }
 
     /**

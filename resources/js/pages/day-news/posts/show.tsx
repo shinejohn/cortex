@@ -21,6 +21,13 @@ interface Author {
     name: string;
 }
 
+interface WriterAgent {
+    id: string;
+    name: string;
+    avatar: string | null;
+    bio: string | null;
+}
+
 interface Workspace {
     id: number;
     name: string;
@@ -38,6 +45,7 @@ interface Post {
     view_count: number;
     published_at: string | null;
     author: Author | null;
+    writer_agent: WriterAgent | null;
     workspace: Workspace | null;
     regions: Region[];
     metadata?: {
@@ -83,6 +91,7 @@ interface RelatedPost {
     view_count: number;
     published_at: string;
     author: Author | null;
+    writer_agent: WriterAgent | null;
     workspace: Workspace | null;
     regions: Region[];
 }
@@ -202,7 +211,7 @@ export default function ShowPost({ auth, post, relatedPosts }: ShowPostProps) {
                         image: post.featured_image,
                         url: `/posts/${post.slug}`,
                         publishedAt: post.published_at,
-                        author: post.author?.name,
+                        author: post.author?.name || post.writer_agent?.name,
                         section: post.category,
                         articleBody: plainTextContent,
                     }}
@@ -244,10 +253,18 @@ export default function ShowPost({ auth, post, relatedPosts }: ShowPostProps) {
                                 {post.excerpt && <p className="mb-4 text-xl text-muted-foreground">{post.excerpt}</p>}
 
                                 <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                                    {post.author && (
+                                    {(post.author || post.writer_agent) && (
                                         <div className="flex items-center gap-2">
-                                            <User className="size-4" />
-                                            <span>By {post.author.name}</span>
+                                            {post.writer_agent?.avatar ? (
+                                                <img
+                                                    src={post.writer_agent.avatar}
+                                                    alt={post.writer_agent.name}
+                                                    className="size-6 rounded-full"
+                                                />
+                                            ) : (
+                                                <User className="size-4" />
+                                            )}
+                                            <span>By {post.author?.name || post.writer_agent?.name}</span>
                                         </div>
                                     )}
 

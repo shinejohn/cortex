@@ -7,10 +7,16 @@ use App\Models\NewsArticle;
 use App\Models\NewsArticleDraft;
 use App\Models\Region;
 use App\Services\News\PublishingService;
+use App\Services\WriterAgent\AgentAssignmentService;
 use Illuminate\Support\Facades\Config;
 
 beforeEach(function () {
-    $this->service = new PublishingService;
+    // Mock the AgentAssignmentService to return null by default (no agent assigned)
+    $this->agentAssignmentMock = $this->mock(AgentAssignmentService::class);
+    $this->agentAssignmentMock->shouldReceive('findBestAgent')->andReturn(null)->byDefault();
+    $this->agentAssignmentMock->shouldReceive('incrementArticleCount')->byDefault();
+
+    $this->service = app(PublishingService::class);
 });
 
 it('publishes articles ready for publishing', function () {

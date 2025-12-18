@@ -20,6 +20,7 @@ final class DayNewsPost extends Model
     protected $fillable = [
         'workspace_id',
         'author_id',
+        'writer_agent_id',
         'rss_feed_id',
         'rss_feed_item_id',
         'source_type',
@@ -47,6 +48,43 @@ final class DayNewsPost extends Model
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function writerAgent(): BelongsTo
+    {
+        return $this->belongsTo(WriterAgent::class);
+    }
+
+    /**
+     * Get the display author name (author or writer agent).
+     */
+    public function getDisplayAuthorAttribute(): ?string
+    {
+        if ($this->author) {
+            return $this->author->name;
+        }
+
+        if ($this->writerAgent) {
+            return $this->writerAgent->name;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the display author avatar URL.
+     */
+    public function getDisplayAuthorAvatarAttribute(): ?string
+    {
+        if ($this->author) {
+            return $this->author->profile_photo_url ?? null;
+        }
+
+        if ($this->writerAgent) {
+            return $this->writerAgent->avatar_url;
+        }
+
+        return null;
     }
 
     public function regions(): BelongsToMany

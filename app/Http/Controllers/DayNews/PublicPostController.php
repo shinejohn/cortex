@@ -16,7 +16,7 @@ final class PublicPostController extends Controller
     {
         $post = DayNewsPost::where('slug', $slug)
             ->published()
-            ->with(['author', 'regions', 'workspace'])
+            ->with(['author', 'writerAgent', 'regions', 'workspace'])
             ->firstOrFail();
 
         $post->incrementViewCount();
@@ -28,7 +28,7 @@ final class PublicPostController extends Controller
             ->whereHas('regions', function ($q) use ($regionIds) {
                 $q->whereIn('regions.id', $regionIds);
             })
-            ->with(['author', 'regions', 'workspace'])
+            ->with(['author', 'writerAgent', 'regions', 'workspace'])
             ->orderBy('published_at', 'desc')
             ->limit(5)
             ->get();
@@ -41,7 +41,7 @@ final class PublicPostController extends Controller
             'image' => $post->featured_image,
             'url' => "/posts/{$post->slug}",
             'publishedAt' => $post->published_at?->toISOString(),
-            'author' => $post->author?->name,
+            'author' => $post->display_author,
             'section' => $post->category,
             'articleBody' => $plainTextContent,
         ];
@@ -66,6 +66,12 @@ final class PublicPostController extends Controller
                     'id' => $post->author->id,
                     'name' => $post->author->name,
                 ] : null,
+                'writer_agent' => $post->writerAgent ? [
+                    'id' => $post->writerAgent->id,
+                    'name' => $post->writerAgent->name,
+                    'avatar' => $post->writerAgent->avatar_url,
+                    'bio' => $post->writerAgent->bio,
+                ] : null,
                 'workspace' => $post->workspace ? [
                     'id' => $post->workspace->id,
                     'name' => $post->workspace->name,
@@ -88,6 +94,11 @@ final class PublicPostController extends Controller
                 'author' => $relatedPost->author ? [
                     'id' => $relatedPost->author->id,
                     'name' => $relatedPost->author->name,
+                ] : null,
+                'writer_agent' => $relatedPost->writerAgent ? [
+                    'id' => $relatedPost->writerAgent->id,
+                    'name' => $relatedPost->writerAgent->name,
+                    'avatar' => $relatedPost->writerAgent->avatar_url,
                 ] : null,
                 'workspace' => $relatedPost->workspace ? [
                     'id' => $relatedPost->workspace->id,
