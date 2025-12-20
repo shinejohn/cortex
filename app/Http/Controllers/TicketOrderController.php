@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TicketOrder;
 use App\Models\TicketPlan;
+use App\Services\PromoCodeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -73,9 +74,21 @@ final class TicketOrderController extends Controller
 
             $fees = $subtotal > 0 ? $subtotal * 0.1 : 0;
             $discount = 0;
+            $promoCode = null;
 
-            if (isset($validated['promo_code']['code']) && $validated['promo_code']['code'] === 'JAZZ10') {
-                $discount = $subtotal * 0.1;
+            // Use PromoCodeService for promo code validation
+            if (isset($validated['promo_code']['code'])) {
+                $promoCodeService = app(PromoCodeService::class);
+                $validation = $promoCodeService->validateCode(
+                    $validated['promo_code']['code'],
+                    $subtotal,
+                    $validated['event_id'] ?? null
+                );
+
+                if ($validation['valid']) {
+                    $discount = $validation['discount'];
+                    $promoCode = $validation['promo_code'];
+                }
             }
 
             $total = round($subtotal + $fees - $discount, 2);
@@ -89,7 +102,7 @@ final class TicketOrderController extends Controller
                 'fees' => $fees,
                 'discount' => $discount,
                 'total' => $total,
-                'promo_code' => $validated['promo_code'] ?? null,
+                'promo_code' => $promoCode ? ['code' => $promoCode->code, 'discount' => $discount] : null,
                 'billing_info' => $validated['billing_info'] ?? null,
                 'payment_status' => $isFree ? 'completed' : 'pending',
                 'completed_at' => $isFree ? now() : null,
@@ -100,6 +113,12 @@ final class TicketOrderController extends Controller
                     ...$item,
                     'ticket_order_id' => $order->id,
                 ]);
+            }
+
+            // Record promo code usage if applicable
+            if ($promoCode && $discount > 0) {
+                $promoCodeService = app(PromoCodeService::class);
+                $promoCodeService->applyCode($promoCode, $order, $request->user());
             }
 
             return response()->json($order->load(['items.ticketPlan', 'event']), 201);

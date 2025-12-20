@@ -142,6 +142,11 @@ final class User extends Authenticatable implements FilamentUser
         return $this->hasMany(SocialPost::class);
     }
 
+    public function authoredDayNewsPosts(): HasMany
+    {
+        return $this->hasMany(DayNewsPost::class, 'author_id');
+    }
+
     public function socialProfile(): HasOne
     {
         return $this->hasOne(SocialUserProfile::class);
@@ -289,6 +294,26 @@ final class User extends Authenticatable implements FilamentUser
     public function follows(): HasMany
     {
         return $this->hasMany(Follow::class);
+    }
+
+    public function ticketOrders(): HasMany
+    {
+        return $this->hasMany(TicketOrder::class);
+    }
+
+    public function checkIns(): HasMany
+    {
+        return $this->hasMany(CheckIn::class);
+    }
+
+    public function plannedEvents(): HasMany
+    {
+        return $this->hasMany(PlannedEvent::class);
+    }
+
+    public function hubMemberships(): HasMany
+    {
+        return $this->hasMany(HubMember::class);
     }
 
     /**

@@ -194,11 +194,43 @@ final class EventController extends Controller
             $canEdit = $request->user()->can('update', $event);
         }
 
+        // Get weather data
+        $weather = null;
+        if ($event->latitude && $event->longitude) {
+            try {
+                $weatherService = app(\App\Services\WeatherService::class);
+                $weather = $weatherService->getWeatherForEvent($event);
+            } catch (\Exception $e) {
+                // Weather service failed, continue without weather
+            }
+        }
+
+        // Get check-in status
+        $isCheckedIn = false;
+        if ($request->user()) {
+            $isCheckedIn = \App\Models\CheckIn::where('event_id', $event->id)
+                ->where('user_id', $request->user()->id)
+                ->exists();
+        }
+
+        // Get recent check-ins
+        $recentCheckIns = \App\Models\CheckIn::where('event_id', $event->id)
+            ->with('user')
+            ->public()
+            ->recent(24)
+            ->latest('checked_in_at')
+            ->limit(10)
+            ->get();
+
         return Inertia::render('event-city/events/event-detail', [
-            'event' => $event,
+            'event' => array_merge($event->toArray(), [
+                'weather' => $weather,
+            ]),
             'similarEvents' => $similarEvents,
             'isFollowing' => $isFollowing,
             'canEdit' => $canEdit,
+            'isCheckedIn' => $isCheckedIn,
+            'recentCheckIns' => $recentCheckIns,
         ]);
     }
 

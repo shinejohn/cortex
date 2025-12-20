@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\TicketOrder;
+use App\Services\PromoCodeService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;

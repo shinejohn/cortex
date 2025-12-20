@@ -149,6 +149,68 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Authenticated ticket routes
     Route::get('/tickets/my-tickets', [TicketPageController::class, 'myTickets'])->name('tickets.my-tickets');
 
+    // Hub routes
+    Route::resource('hubs', HubController::class)->except(['show']);
+    Route::get('/hubs/{hub:slug}', [HubController::class, 'show'])->name('hubs.show')->withoutMiddleware(['auth', 'verified']);
+    Route::get('/hubs/{hub}/builder', [HubBuilderController::class, 'show'])->name('hubs.builder');
+    Route::post('/hubs/{hub}/builder/design', [HubBuilderController::class, 'updateDesign'])->name('hubs.builder.design');
+    Route::post('/hubs/{hub}/builder/sections', [HubBuilderController::class, 'updateSections'])->name('hubs.builder.sections');
+    Route::delete('/hubs/{hub}/builder/sections/{section}', [HubBuilderController::class, 'deleteSection'])->name('hubs.builder.sections.delete');
+    Route::get('/hubs/{hub}/preview', [HubBuilderController::class, 'preview'])->name('hubs.preview');
+    Route::post('/hubs/{hub}/publish', [HubBuilderController::class, 'publish'])->name('hubs.publish');
+    Route::get('/hubs/{hub}/analytics', [HubAnalyticsController::class, 'index'])->name('hubs.analytics');
+    Route::get('/api/hubs/{hub}/analytics/stats', [HubAnalyticsController::class, 'getStats'])->name('api.hubs.analytics.stats');
+    Route::post('/api/hubs/{hub}/analytics/track-view', [HubAnalyticsController::class, 'trackPageView'])->name('api.hubs.analytics.track-view');
+    Route::post('/api/hubs/{hub}/analytics/track-visitor', [HubAnalyticsController::class, 'trackVisitor'])->name('api.hubs.analytics.track-visitor');
+
+    // Check-in routes
+    Route::resource('check-ins', CheckInController::class)->except(['create', 'edit']);
+    Route::post('/api/events/{event}/check-in', [CheckInController::class, 'store'])->name('api.events.check-in');
+    Route::get('/api/events/{event}/check-ins', [CheckInController::class, 'forEvent'])->name('api.events.check-ins');
+
+    // Planned events routes
+    Route::post('/api/events/{event}/plan', function (Request $request, Event $event) {
+        $plannedEvent = PlannedEvent::firstOrCreate([
+            'event_id' => $event->id,
+            'user_id' => $request->user()->id,
+        ], [
+            'planned_at' => now(),
+        ]);
+        return response()->json($plannedEvent);
+    })->name('api.events.plan');
+    Route::delete('/api/events/{event}/unplan', function (Request $request, Event $event) {
+        PlannedEvent::where('event_id', $event->id)
+            ->where('user_id', $request->user()->id)
+            ->delete();
+        return response()->json(['success' => true]);
+    })->name('api.events.unplan');
+
+    // Promo code routes
+    Route::resource('promo-codes', PromoCodeController::class);
+    Route::post('/api/promo-codes/validate', [PromoCodeController::class, 'validate'])->name('api.promo-codes.validate');
+
+    // Ticket marketplace routes
+    Route::get('/tickets/marketplace', [TicketMarketplaceController::class, 'index'])->name('tickets.marketplace.index')->withoutMiddleware(['auth', 'verified']);
+    Route::get('/tickets/list-for-sale', [TicketMarketplaceController::class, 'create'])->name('tickets.marketplace.create');
+    Route::post('/tickets/list-for-sale', [TicketMarketplaceController::class, 'store'])->name('tickets.marketplace.store');
+    Route::get('/tickets/marketplace/{listing}', [TicketMarketplaceController::class, 'show'])->name('tickets.marketplace.show')->withoutMiddleware(['auth', 'verified']);
+    Route::post('/tickets/marketplace/{listing}/purchase', [TicketMarketplaceController::class, 'purchase'])->name('tickets.marketplace.purchase');
+    Route::delete('/tickets/marketplace/{listing}', [TicketMarketplaceController::class, 'destroy'])->name('tickets.marketplace.destroy');
+
+    // Ticket transfer routes
+    Route::get('/tickets/transfer/{ticketOrderItem}', [TicketTransferController::class, 'create'])->name('tickets.transfer.create');
+    Route::post('/tickets/transfer/{ticketOrderItem}', [TicketTransferController::class, 'store'])->name('tickets.transfer.store');
+    Route::get('/tickets/transfer/accept/{token}', [TicketTransferController::class, 'accept'])->name('tickets.transfer.accept')->withoutMiddleware(['auth', 'verified']);
+    Route::post('/tickets/transfer/{transfer}/complete', [TicketTransferController::class, 'complete'])->name('tickets.transfer.complete');
+    Route::post('/tickets/transfer/{transfer}/cancel', [TicketTransferController::class, 'cancel'])->name('tickets.transfer.cancel');
+
+    // Ticket gift routes
+    Route::get('/tickets/gift/{ticketOrderItem}', [TicketGiftController::class, 'create'])->name('tickets.gift.create');
+    Route::post('/tickets/gift/{ticketOrderItem}', [TicketGiftController::class, 'store'])->name('tickets.gift.store');
+    Route::get('/tickets/gift/redeem/{token}', [TicketGiftController::class, 'redeem'])->name('tickets.gift.redeem')->withoutMiddleware(['auth', 'verified']);
+    Route::post('/tickets/gift/{gift}/complete', [TicketGiftController::class, 'complete'])->name('tickets.gift.complete');
+    Route::post('/tickets/gift/{gift}/cancel', [TicketGiftController::class, 'cancel'])->name('tickets.gift.cancel');
+
     // Community thread management routes (require authentication)
     Route::get('/community/{id}/new-thread', [CommunityController::class, 'createThread'])->name('community.thread.create');
     Route::post('/community/{id}/threads', [CommunityController::class, 'storeThread'])->name('community.thread.store');

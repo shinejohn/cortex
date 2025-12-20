@@ -72,11 +72,24 @@ export default function TicketSelection() {
     };
 
     // Apply promo code
-    const handleApplyPromoCode = () => {
-        if (promoCode.toLowerCase() === "jazz10") {
-            setPromoApplied(true);
-            setPromoError(false);
-        } else {
+    const handleApplyPromoCode = async () => {
+        if (!promoCode.trim()) {
+            setPromoError(true);
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/promo-codes/validate?code=${encodeURIComponent(promoCode)}&amount=${calculateSubtotal()}&event_id=${event.id}`);
+            const data = await response.json();
+
+            if (data.valid) {
+                setPromoApplied(true);
+                setPromoError(false);
+            } else {
+                setPromoApplied(false);
+                setPromoError(true);
+            }
+        } catch (error) {
             setPromoApplied(false);
             setPromoError(true);
         }

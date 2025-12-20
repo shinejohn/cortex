@@ -42,6 +42,12 @@ interface Event {
     is_free: boolean;
     price_min: number;
     price_max: number;
+    weather?: {
+        temperature: number;
+        condition: string;
+        description: string;
+        icon: string;
+    };
     venue: {
         id: string;
         name: string;
@@ -84,10 +90,22 @@ interface Props {
     similarEvents: SimilarEvent[];
     isFollowing: boolean;
     canEdit: boolean;
+    isCheckedIn?: boolean;
+    recentCheckIns?: Array<{
+        id: string;
+        user: {
+            id: string;
+            name: string;
+            avatar: string;
+        };
+        checked_in_at: string;
+        notes?: string;
+    }>;
 }
 
-export default function EventDetail({ auth, event, similarEvents, isFollowing, canEdit }: Props) {
+export default function EventDetail({ auth, event, similarEvents, isFollowing, canEdit, isCheckedIn = false, recentCheckIns = [] }: Props) {
     const [activeTab, setActiveTab] = useState("overview");
+    const [showCheckInModal, setShowCheckInModal] = useState(false);
 
     const formatEventDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -277,10 +295,18 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                 {event.venue.neighborhood}
                             </div>
                         )}
-                        <div className="flex items-center text-sm text-gray-700">
-                            <Sun className="h-4 w-4 text-yellow-500 mr-1" />
-                            Perfect weather expected
-                        </div>
+                        {event.weather && (
+                            <div className="flex items-center text-sm text-gray-700">
+                                {event.weather.condition === 'Clear' ? (
+                                    <Sun className="h-4 w-4 text-yellow-500 mr-1" />
+                                ) : event.weather.condition === 'Rain' ? (
+                                    <CloudRain className="h-4 w-4 text-blue-500 mr-1" />
+                                ) : (
+                                    <Cloud className="h-4 w-4 text-gray-500 mr-1" />
+                                )}
+                                {event.weather.temperature ? `${Math.round(event.weather.temperature)}°F` : 'Weather info'}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -399,12 +425,49 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                 <Ticket className="h-5 w-5 mr-2" />
                                 Get Tickets
                             </Button>
+                            {auth.user && !isCheckedIn && (
+                                <CheckInButton
+                                    eventId={event.id}
+                                    eventName={event.title}
+                                    venueName={event.venue?.name || "TBA"}
+                                />
+                            )}
+                            {auth.user && isCheckedIn && (
+                                <Button variant="outline" disabled>
+                                    <CheckCircle className="h-5 w-5 mr-2" />
+                                    Checked In
+                                </Button>
+                            )}
                             <FollowButton followableType="event" followableId={event.id} variant="default" initialFollowing={isFollowing} />
                             <Button variant="outline" onClick={handleShare}>
                                 <Share2 className="h-5 w-5 mr-2" />
                                 Share
                             </Button>
                         </div>
+
+                        {/* Recent Check-ins */}
+                        {recentCheckIns && recentCheckIns.length > 0 && (
+                            <Card className="mb-8">
+                                <CardHeader>
+                                    <CardTitle>Recent Check-ins</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <CheckInFeed checkIns={recentCheckIns.map((ci) => ({
+                                        id: ci.id,
+                                        user: ci.user,
+                                        event: {
+                                            id: event.id,
+                                            title: event.title,
+                                            venue: {
+                                                name: event.venue?.name || "TBA",
+                                            },
+                                        },
+                                        checked_in_at: ci.checked_in_at,
+                                        notes: ci.notes,
+                                    }))} />
+                                </CardContent>
+                            </Card>
+                        )}
 
                         {/* Content Tabs */}
                         <Tabs value={activeTab} onValueChange={setActiveTab}>

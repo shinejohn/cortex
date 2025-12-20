@@ -103,6 +103,21 @@ final class Event extends Model
         return $this->hasMany(TicketOrder::class);
     }
 
+    public function hub(): BelongsTo
+    {
+        return $this->belongsTo(Hub::class);
+    }
+
+    public function checkIns(): HasMany
+    {
+        return $this->hasMany(CheckIn::class);
+    }
+
+    public function plannedEvents(): HasMany
+    {
+        return $this->hasMany(PlannedEvent::class);
+    }
+
     public function follows(): MorphMany
     {
         return $this->morphMany(Follow::class, 'followable');
