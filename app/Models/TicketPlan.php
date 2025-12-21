@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 final class TicketPlan extends Model
 {
     /** @use HasFactory<\Database\Factories\TicketPlanFactory> */
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuid, \App\Traits\RelatableToOrganizations;
 
     protected $fillable = [
         'event_id',

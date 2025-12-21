@@ -77,6 +77,14 @@ final class Business extends Model
         'status',
         'claimable_type',
         'claimable_id',
+        // Organization fields
+        'organization_type',
+        'organization_level',
+        'parent_organization_id',
+        'organization_category',
+        'is_organization',
+        'organization_identifier',
+        'organization_hierarchy',
     ];
 
     public function workspace(): BelongsTo
@@ -104,6 +112,31 @@ final class Business extends Model
         return $this->hasMany(RssFeed::class)
             ->where('health_status', 'healthy')
             ->where('status', 'active');
+    }
+
+    // Organization relationships
+    public function parentOrganization(): BelongsTo
+    {
+        return $this->belongsTo(Business::class, 'parent_organization_id');
+    }
+
+    public function childOrganizations(): HasMany
+    {
+        return $this->hasMany(Business::class, 'parent_organization_id');
+    }
+
+    public function organizationRelationships(): HasMany
+    {
+        return $this->hasMany(\App\Models\OrganizationRelationship::class, 'organization_id');
+    }
+
+    public function relatedContent(string $type = null): HasMany
+    {
+        $query = $this->hasMany(\App\Models\OrganizationRelationship::class, 'organization_id');
+        if ($type) {
+            $query->where('relatable_type', $type);
+        }
+        return $query;
     }
 
     // Scopes
@@ -150,6 +183,40 @@ final class Business extends Model
     public function scopeByCategory($query, string $category)
     {
         return $query->whereJsonContains('categories', $category);
+    }
+
+    // Organization scopes
+    public function scopeOrganizations($query)
+    {
+        return $query->where('is_organization', true);
+    }
+
+    public function scopeByOrganizationType($query, string $type)
+    {
+        return $query->where('organization_type', $type);
+    }
+
+    public function scopeByOrganizationLevel($query, string $level)
+    {
+        return $query->where('organization_level', $level);
+    }
+
+    public function scopeGovernment($query)
+    {
+        return $query->where('organization_type', 'government');
+    }
+
+    public function scopeNational($query)
+    {
+        return $query->where(function ($q) {
+            $q->where('organization_level', 'national')
+              ->orWhere('organization_level', 'international');
+        });
+    }
+
+    public function scopeLocal($query)
+    {
+        return $query->where('organization_level', 'local');
     }
 
     public function scopeWithinRadius($query, float $lat, float $lng, float $radius)
@@ -230,6 +297,8 @@ final class Business extends Model
             'service_area' => 'array',
             'service_options' => 'array',
             'is_verified' => 'boolean',
+            'is_organization' => 'boolean',
+            'organization_hierarchy' => 'array',
             'rating' => 'decimal:2',
             'latitude' => 'decimal:8',
             'longitude' => 'decimal:8',

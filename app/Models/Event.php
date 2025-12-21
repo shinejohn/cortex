@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 final class Event extends Model
 {
     /** @use HasFactory<\Database\Factories\EventFactory> */
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuid, \App\Traits\RelatableToOrganizations;
 
     protected $appends = [
         'date',

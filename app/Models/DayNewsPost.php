@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Traits\HasReviewsAndRatings;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
@@ -15,7 +17,7 @@ use Illuminate\Support\Str;
 final class DayNewsPost extends Model
 {
     /** @use HasFactory<\Database\Factories\DayNewsPostFactory> */
-    use HasFactory;
+    use HasFactory, HasReviewsAndRatings, \App\Traits\RelatableToOrganizations;
 
     protected $fillable = [
         'workspace_id',
@@ -111,6 +113,27 @@ final class DayNewsPost extends Model
     public function rssFeedItem(): BelongsTo
     {
         return $this->belongsTo(RssFeedItem::class);
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(ArticleComment::class, 'article_id');
+    }
+
+    public function activeComments(): HasMany
+    {
+        return $this->comments()->where('is_active', true);
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'day_news_post_tag')
+            ->withTimestamps();
+    }
+
+    public function activities(): MorphMany
+    {
+        return $this->morphMany(SocialActivity::class, 'subject');
     }
 
     public function scopePublished($query)
