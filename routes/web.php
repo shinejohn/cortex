@@ -21,6 +21,15 @@ use App\Http\Controllers\TicketOrderController;
 use App\Http\Controllers\TicketPageController;
 use App\Http\Controllers\TicketPlanController;
 use App\Http\Controllers\VenueController;
+use App\Http\Controllers\HubController;
+use App\Http\Controllers\HubBuilderController;
+use App\Http\Controllers\HubAnalyticsController;
+use App\Http\Controllers\CheckInController;
+use App\Http\Controllers\PromoCodeController;
+use App\Http\Controllers\TicketMarketplaceController;
+use App\Http\Controllers\TicketTransferController;
+use App\Http\Controllers\TicketGiftController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -40,6 +49,46 @@ Route::get('/sitemap-community.xml', [EventCitySitemapController::class, 'commun
 // Public routes
 Route::get('/', [HomePageController::class, 'index'])->name('home');
 
+// Marketing pages
+Route::get('/about', function () {
+    return Inertia::render('event-city/about');
+})->name('about');
+Route::get('/contact', function () {
+    return Inertia::render('event-city/contact');
+})->name('contact');
+Route::get('/how-it-works', function () {
+    return Inertia::render('event-city/how-it-works');
+})->name('how-it-works');
+Route::get('/success-stories', function () {
+    return Inertia::render('event-city/marketing/success-stories', [
+        'stories' => [],
+    ]);
+})->name('success-stories');
+Route::get('/advertise', function () {
+    return Inertia::render('event-city/marketing/advertise');
+})->name('advertise');
+Route::get('/partner', function () {
+    return Inertia::render('event-city/marketing/partner');
+})->name('partner');
+Route::get('/press', function () {
+    return Inertia::render('event-city/marketing/press', [
+        'pressReleases' => [],
+        'mediaContacts' => [],
+    ]);
+})->name('press');
+Route::get('/careers', function () {
+    return Inertia::render('event-city/marketing/careers', [
+        'jobs' => [],
+    ]);
+})->name('careers');
+Route::get('/gear', function () {
+    return Inertia::render('event-city/marketing/gear', [
+        'products' => [],
+        'categories' => [],
+    ]);
+})->name('gear');
+Route::get('/calendar', [CalendarController::class, 'publicIndex'])->name('calendar.index');
+
 // Create routes must come before {id} routes to avoid conflicts
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
@@ -51,9 +100,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/events', [EventController::class, 'publicIndex'])->name('events');
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show')->can('view', 'event');
 Route::get('/performers', [PerformerController::class, 'publicIndex'])->name('performers');
+Route::get('/performers/discovery', function () {
+    return Inertia::render('event-city/performers/discovery', [
+        'performers' => [],
+        'filters' => [],
+    ]);
+})->name('performers.discovery');
+Route::get('/performers/market-report', function () {
+    return Inertia::render('event-city/performers/market-report', [
+        'marketData' => [],
+        'locations' => [],
+        'genres' => [],
+    ]);
+})->name('performers.market-report');
 Route::get('/performers/{performer}', [PerformerController::class, 'show'])->name('performers.show')->can('view', 'performer');
 Route::get('/venues', [VenueController::class, 'publicIndex'])->name('venues');
+Route::get('/venues/submit', function () {
+    return Inertia::render('event-city/venues/submit');
+})->name('venues.submit');
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show')->can('view', 'venue');
+
+// EventCity Business Directory (unique from venues - shows all businesses with event focus)
+Route::get('/businesses', [\App\Http\Controllers\EventCity\BusinessController::class, 'index'])->name('event-city.businesses.index');
+Route::get('/businesses/{business:slug}', [\App\Http\Controllers\EventCity\BusinessController::class, 'show'])->name('event-city.businesses.show');
 
 // Calendar routes
 Route::get('/calendars', [CalendarController::class, 'index'])->name('calendars.index');
@@ -148,6 +217,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Authenticated ticket routes
     Route::get('/tickets/my-tickets', [TicketPageController::class, 'myTickets'])->name('tickets.my-tickets');
+    Route::get('/tickets/checkout/success/{ticketOrder}', [TicketOrderController::class, 'checkoutSuccess'])->name('tickets.checkout.success');
+    Route::get('/tickets/checkout/cancel/{ticketOrder}', [TicketOrderController::class, 'checkoutCancel'])->name('tickets.checkout.cancel');
+    
+    // Public ticket verification route
+    Route::get('/tickets/verify/{ticketCode}', [TicketPageController::class, 'verifyTicket'])->name('tickets.verify')->withoutMiddleware(['auth', 'verified']);
 
     // Hub routes
     Route::resource('hubs', HubController::class)->except(['show']);
@@ -210,6 +284,65 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/tickets/gift/redeem/{token}', [TicketGiftController::class, 'redeem'])->name('tickets.gift.redeem')->withoutMiddleware(['auth', 'verified']);
     Route::post('/tickets/gift/{gift}/complete', [TicketGiftController::class, 'complete'])->name('tickets.gift.complete');
     Route::post('/tickets/gift/{gift}/cancel', [TicketGiftController::class, 'cancel'])->name('tickets.gift.cancel');
+
+    // Dashboard routes
+    Route::get('/dashboard/fan', function (Request $request) {
+        return Inertia::render('event-city/dashboard/fan', [
+            'user' => $request->user(),
+            'upcomingEvents' => [],
+            'pastEvents' => [],
+            'plannedEvents' => [],
+            'stats' => [
+                'total_events_attended' => 0,
+                'upcoming_events' => 0,
+                'total_spent' => 0,
+                'favorite_performers' => 0,
+            ],
+        ]);
+    })->name('dashboard.fan');
+    Route::get('/dashboard/organizer', function (Request $request) {
+        return Inertia::render('event-city/dashboard/organizer', [
+            'events' => [],
+            'stats' => [
+                'total_events' => 0,
+                'upcoming_events' => 0,
+                'total_revenue' => 0,
+                'total_attendees' => 0,
+                'ticket_sales' => 0,
+            ],
+        ]);
+    })->name('dashboard.organizer');
+    Route::get('/dashboard/performer', function (Request $request) {
+        return Inertia::render('event-city/dashboard/performer', [
+            'performer' => [],
+            'upcomingGigs' => [],
+            'pastGigs' => [],
+            'stats' => [
+                'total_gigs' => 0,
+                'total_revenue' => 0,
+                'average_rating' => 0,
+                'upcoming_shows' => 0,
+            ],
+        ]);
+    })->name('dashboard.performer');
+    Route::get('/dashboard/venue-owner', function (Request $request) {
+        return Inertia::render('event-city/dashboard/venue-owner', [
+            'venues' => [],
+            'upcomingBookings' => [],
+            'stats' => [
+                'total_venues' => 0,
+                'total_bookings' => 0,
+                'total_revenue' => 0,
+                'upcoming_bookings' => 0,
+            ],
+        ]);
+    })->name('dashboard.venue-owner');
+    Route::get('/dashboard/calendar', function (Request $request) {
+        return Inertia::render('event-city/dashboard/calendar', [
+            'events' => [],
+            'currentDate' => now()->toDateString(),
+        ]);
+    })->name('dashboard.calendar');
 
     // Community thread management routes (require authentication)
     Route::get('/community/{id}/new-thread', [CommunityController::class, 'createThread'])->name('community.thread.create');

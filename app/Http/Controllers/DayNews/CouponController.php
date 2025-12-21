@@ -14,6 +14,10 @@ use Inertia\Response;
 
 final class CouponController extends Controller
 {
+    public function __construct(
+        private readonly \App\Services\CouponService $couponService
+    ) {}
+
     /**
      * Display coupons listing
      */
@@ -23,10 +27,13 @@ final class CouponController extends Controller
         $search = $request->get('search', '');
         $businessId = $request->get('business_id');
 
-        $query = Coupon::active()
-            ->with(['business', 'regions'])
-            ->orderBy('end_date', 'asc')
-            ->orderBy('created_at', 'desc');
+        // Use shared CouponService
+        $filters = [
+            'region_id' => $currentRegion?->id,
+            'business_id' => $businessId,
+        ];
+
+        $coupons = $this->couponService->getActiveCoupons($filters, 20);
 
         // Filter by region
         if ($currentRegion) {
