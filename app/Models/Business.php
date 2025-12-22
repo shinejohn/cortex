@@ -85,6 +85,20 @@ final class Business extends Model
         'is_organization',
         'organization_identifier',
         'organization_hierarchy',
+        // AlphaSite fields
+        'alphasite_subdomain',
+        'template_id',
+        'ai_services_enabled',
+        'premium_enrolled_at',
+        'premium_expires_at',
+        'subscription_tier',
+        'homepage_content',
+        'social_links',
+        'amenities',
+        'featured',
+        'promoted',
+        'seo_metadata',
+        'industry_id',
     ];
 
     public function workspace(): BelongsTo
@@ -137,6 +151,62 @@ final class Business extends Model
             $query->where('relatable_type', $type);
         }
         return $query;
+    }
+
+    // AlphaSite relationships
+    public function industry(): BelongsTo
+    {
+        return $this->belongsTo(Industry::class);
+    }
+
+    public function template(): BelongsTo
+    {
+        return $this->belongsTo(BusinessTemplate::class, 'template_id');
+    }
+
+    public function subscription(): BelongsTo
+    {
+        return $this->belongsTo(BusinessSubscription::class, 'business_id');
+    }
+
+    public function achievements(): HasMany
+    {
+        return $this->hasMany(Achievement::class);
+    }
+
+    public function featuredAchievements(): HasMany
+    {
+        return $this->hasMany(Achievement::class)->where('is_featured', true);
+    }
+
+    public function faqs(): HasMany
+    {
+        return $this->hasMany(BusinessFaq::class);
+    }
+
+    public function activeFaqs(): HasMany
+    {
+        return $this->hasMany(BusinessFaq::class)->where('is_active', true);
+    }
+
+    public function surveys(): HasMany
+    {
+        return $this->hasMany(BusinessSurvey::class);
+    }
+
+    public function activeSurveys(): HasMany
+    {
+        return $this->hasMany(BusinessSurvey::class)->where('is_active', true);
+    }
+
+    public function crmCustomers(): HasMany
+    {
+        return $this->hasMany(SMBCrmCustomer::class);
+    }
+
+    public function crmInteractions(): HasMany
+    {
+        return $this->hasMany(SMBCrmInteraction::class);
     }
 
     // Scopes
@@ -299,6 +369,16 @@ final class Business extends Model
             'is_verified' => 'boolean',
             'is_organization' => 'boolean',
             'organization_hierarchy' => 'array',
+            // AlphaSite casts
+            'ai_services_enabled' => 'boolean',
+            'premium_enrolled_at' => 'datetime',
+            'premium_expires_at' => 'datetime',
+            'homepage_content' => 'array',
+            'social_links' => 'array',
+            'amenities' => 'array',
+            'featured' => 'boolean',
+            'promoted' => 'boolean',
+            'seo_metadata' => 'array',
             'rating' => 'decimal:2',
             'latitude' => 'decimal:8',
             'longitude' => 'decimal:8',

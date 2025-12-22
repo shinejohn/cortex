@@ -34,6 +34,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->middleware('web')
                 ->group(base_path('routes/downtown-guide.php'));
 
+            // AlphaSite domain routes (subdomain and main domain)
+            Route::middleware('web')
+                ->group(base_path('routes/alphasite.php'));
+
             // GoEventCity domain routes (fallback - no domain constraint, matches any domain not matched above)
             Route::middleware('web')
                 ->group(function () {

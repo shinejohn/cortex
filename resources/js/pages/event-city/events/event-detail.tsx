@@ -297,14 +297,23 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                         )}
                         {event.weather && (
                             <div className="flex items-center text-sm text-gray-700">
-                                {event.weather.condition === 'Clear' ? (
+                                {event.weather.icon ? (
+                                    <img
+                                        src={`https://openweathermap.org/img/wn/${event.weather.icon}@2x.png`}
+                                        alt={event.weather.description || event.weather.condition}
+                                        className="h-6 w-6 mr-1"
+                                    />
+                                ) : event.weather.condition === 'Clear' ? (
                                     <Sun className="h-4 w-4 text-yellow-500 mr-1" />
                                 ) : event.weather.condition === 'Rain' ? (
                                     <CloudRain className="h-4 w-4 text-blue-500 mr-1" />
                                 ) : (
                                     <Cloud className="h-4 w-4 text-gray-500 mr-1" />
                                 )}
-                                {event.weather.temperature ? `${Math.round(event.weather.temperature)}°F` : 'Weather info'}
+                                <span>
+                                    {event.weather.temperature ? `${Math.round(event.weather.temperature)}°F` : 'Weather info'}
+                                    {event.weather.description && `, ${event.weather.description}`}
+                                </span>
                             </div>
                         )}
                     </div>
@@ -471,10 +480,13 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
 
                         {/* Content Tabs */}
                         <Tabs value={activeTab} onValueChange={setActiveTab}>
-                            <TabsList className="grid w-full grid-cols-3">
-                                <TabsTrigger value="overview">Overview</TabsTrigger>
+                            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
+                                <TabsTrigger value="overview">About</TabsTrigger>
+                                <TabsTrigger value="tickets">Tickets</TabsTrigger>
                                 <TabsTrigger value="venue">Venue</TabsTrigger>
-                                <TabsTrigger value="performer">Performer</TabsTrigger>
+                                <TabsTrigger value="lineup">Lineup</TabsTrigger>
+                                <TabsTrigger value="reviews">Reviews</TabsTrigger>
+                                <TabsTrigger value="discussion">Discussion</TabsTrigger>
                             </TabsList>
 
                             <TabsContent value="overview" className="mt-6">
@@ -522,39 +534,131 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                 </Card>
                             </TabsContent>
 
-                            <TabsContent value="performer" className="mt-6">
+                            <TabsContent value="tickets" className="mt-6">
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle>Performer Information</CardTitle>
+                                        <CardTitle>Tickets</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        {event.ticket_plans && event.ticket_plans.length > 0 ? (
+                                            <div className="space-y-4">
+                                                {event.ticket_plans.map((plan) => (
+                                                    <div key={plan.id} className="border rounded-lg p-4">
+                                                        <div className="flex justify-between items-start mb-2">
+                                                            <div>
+                                                                <h4 className="font-medium text-gray-900">{plan.name}</h4>
+                                                                <p className="text-sm text-gray-600 mt-1">{plan.description}</p>
+                                                            </div>
+                                                            <span className="font-bold text-lg text-gray-900">
+                                                                {plan.price === 0 ? "Free" : `$${plan.price}`}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex items-center justify-between mt-3">
+                                                            <span className="text-sm text-gray-500">
+                                                                {plan.available_quantity} of {plan.max_quantity} available
+                                                            </span>
+                                                            <Button onClick={handleGetTickets} size="sm">
+                                                                {plan.price === 0 ? "Register" : "Select"}
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                <div className="pt-4 border-t">
+                                                    <Button onClick={handleGetTickets} className="w-full">
+                                                        {event.is_free ? "Register Now" : "Get Tickets"}
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-8">
+                                                <Ticket className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                                                <p className="text-gray-500">Tickets will be available soon</p>
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+
+                            <TabsContent value="lineup" className="mt-6">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Lineup</CardTitle>
                                     </CardHeader>
                                     <CardContent>
                                         {event.performer ? (
-                                            <div>
-                                                <div className="flex items-center mb-4">
-                                                    <div className="h-16 w-16 rounded-full overflow-hidden mr-4">
+                                            <div className="space-y-4">
+                                                <div className="flex items-start">
+                                                    <div className="h-20 w-20 rounded-lg overflow-hidden flex-shrink-0 mr-4">
                                                         <img
                                                             src={
                                                                 event.performer.image ||
-                                                                "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face"
+                                                                "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face"
                                                             }
                                                             alt={event.performer.name}
                                                             className="h-full w-full object-cover"
                                                         />
                                                     </div>
-                                                    <div>
-                                                        <h4 className="font-medium text-gray-900 flex items-center">
-                                                            {event.performer.name}
-                                                            {event.performer.verified && <CheckCircle className="h-5 w-5 text-blue-500 ml-2" />}
-                                                        </h4>
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center mb-2">
+                                                            <h4 className="font-medium text-gray-900 text-lg">
+                                                                {event.performer.name}
+                                                            </h4>
+                                                            {event.performer.verified && (
+                                                                <CheckCircle className="h-5 w-5 text-blue-500 ml-2" />
+                                                            )}
+                                                        </div>
+                                                        <p className="text-gray-700 leading-relaxed">
+                                                            {event.performer.bio || "No performer information available."}
+                                                        </p>
+                                                        <Link
+                                                            href={`/performers/${event.performer.id}`}
+                                                            className="text-indigo-600 hover:text-indigo-800 text-sm mt-2 inline-flex items-center"
+                                                        >
+                                                            View Performer Profile
+                                                            <ArrowRight className="h-4 w-4 ml-1" />
+                                                        </Link>
                                                     </div>
                                                 </div>
-                                                <p className="text-gray-700 leading-relaxed">
-                                                    {event.performer.bio || "No performer information available."}
-                                                </p>
                                             </div>
                                         ) : (
-                                            <p className="text-gray-500">Performer information not available</p>
+                                            <p className="text-gray-500">Lineup information will be announced soon.</p>
                                         )}
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+
+                            <TabsContent value="reviews" className="mt-6">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Reviews</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="text-center py-8">
+                                            <Users className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                                            <p className="text-gray-500 mb-4">No reviews yet</p>
+                                            {auth.user && (
+                                                <Button variant="outline">Write a Review</Button>
+                                            )}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+
+                            <TabsContent value="discussion" className="mt-6">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Discussion</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="text-center py-8">
+                                            <Users className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                                            <p className="text-gray-500 mb-4">Start a discussion about this event</p>
+                                            {auth.user ? (
+                                                <Button variant="outline">Start Discussion</Button>
+                                            ) : (
+                                                <p className="text-sm text-gray-400">Please log in to participate in discussions</p>
+                                            )}
+                                        </div>
                                     </CardContent>
                                 </Card>
                             </TabsContent>

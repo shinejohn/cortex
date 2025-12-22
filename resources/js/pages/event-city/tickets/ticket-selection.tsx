@@ -1,6 +1,9 @@
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
 import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/common/LoadingButton";
+import { ErrorMessage } from "@/components/common/ErrorMessage";
+import { SuccessMessage } from "@/components/common/SuccessMessage";
 import { Auth } from "@/types";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import { CalendarIcon, ClockIcon, InfoIcon, MapPinIcon, MinusIcon, PlusIcon, TagIcon, TicketIcon } from "lucide-react";
@@ -44,7 +47,10 @@ export default function TicketSelection() {
     const [promoCode, setPromoCode] = useState("");
     const [promoApplied, setPromoApplied] = useState(false);
     const [promoError, setPromoError] = useState(false);
+    const [promoErrorMessage, setPromoErrorMessage] = useState("");
+    const [promoDiscount, setPromoDiscount] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [isValidatingPromo, setIsValidatingPromo] = useState(false);
 
     // Initialize selected tickets
     useEffect(() => {
@@ -75,23 +81,48 @@ export default function TicketSelection() {
     const handleApplyPromoCode = async () => {
         if (!promoCode.trim()) {
             setPromoError(true);
+            setPromoErrorMessage("Please enter a promo code");
             return;
         }
 
+        setIsValidatingPromo(true);
+        setPromoError(false);
+        setPromoErrorMessage("");
+
         try {
-            const response = await fetch(`/api/promo-codes/validate?code=${encodeURIComponent(promoCode)}&amount=${calculateSubtotal()}&event_id=${event.id}`);
+            const subtotal = calculateSubtotal();
+            const response = await fetch("/api/promo-codes/validate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "",
+                },
+                body: JSON.stringify({
+                    code: promoCode.trim().toUpperCase(),
+                    amount: subtotal,
+                    event_id: event.id,
+                }),
+            });
+
             const data = await response.json();
 
-            if (data.valid) {
+            if (response.ok && data.valid) {
                 setPromoApplied(true);
                 setPromoError(false);
+                setPromoDiscount(data.discount || 0);
             } else {
                 setPromoApplied(false);
                 setPromoError(true);
+                setPromoDiscount(0);
+                setPromoErrorMessage(data.message || "Invalid promo code. Please try again.");
             }
         } catch (error) {
             setPromoApplied(false);
             setPromoError(true);
+            setPromoDiscount(0);
+            setPromoErrorMessage("Failed to validate promo code. Please try again.");
+        } finally {
+            setIsValidatingPromo(false);
         }
     };
 
@@ -109,8 +140,8 @@ export default function TicketSelection() {
     const calculateTotal = () => {
         const subtotal = calculateSubtotal();
         const fee = calculateMarketplaceFee();
-        const discount = promoApplied ? subtotal * 0.1 : 0;
-        return subtotal + fee - discount;
+        const discount = promoApplied ? promoDiscount : 0;
+        return Math.max(0, subtotal + fee - discount);
     };
 
     // Check if any tickets are selected
@@ -121,7 +152,7 @@ export default function TicketSelection() {
         hasSelectedTickets && selectedTickets.every((ticket) => (ticket.quantity > 0 && Number(ticket.price) === 0) || ticket.quantity === 0);
 
     // Proceed to checkout
-    const handleProceedToCheckout = () => {
+    const handleProceedToCheckout = async () => {
         if (!hasSelectedTickets || !auth.user) return;
 
         setIsLoading(true);
@@ -134,19 +165,46 @@ export default function TicketSelection() {
                     ticket_plan_id: ticket.id,
                     quantity: ticket.quantity,
                 })),
-            promo_code: promoApplied ? { code: promoCode, discount: 0.1 } : null,
+            promo_code: promoApplied ? { code: promoCode } : null,
         };
 
-        router.post("/api/ticket-orders", orderData, {
-            onSuccess: (response) => {
-                // Redirect to confirmation page or my tickets
-                router.visit("/tickets/my-tickets");
-            },
-            onError: (errors) => {
-                console.error("Order failed:", errors);
-                setIsLoading(false);
-            },
-        });
+        try {
+            const response = await fetch("/api/ticket-orders", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "",
+                },
+                body: JSON.stringify(orderData),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Failed to create order");
+            }
+
+            // If free tickets, redirect to my tickets
+            if (hasOnlyFreeTickets || !data.checkout_session) {
+                router.visit("/tickets/my-tickets", {
+                    onSuccess: () => {
+                        setIsLoading(false);
+                    },
+                });
+                return;
+            }
+
+            // Redirect to Stripe checkout
+            if (data.checkout_session?.url) {
+                window.location.href = data.checkout_session.url;
+            } else {
+                throw new Error("No checkout URL received");
+            }
+        } catch (error) {
+            console.error("Order failed:", error);
+            setIsLoading(false);
+            // TODO: Show error message to user
+        }
     };
 
     return (
@@ -266,15 +324,40 @@ export default function TicketSelection() {
                                 <div className="flex space-x-2">
                                     <input
                                         type="text"
-                                        className="flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                        className={`flex-grow rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
+                                            promoError ? "border-red-300" : promoApplied ? "border-green-300" : ""
+                                        }`}
                                         placeholder="Enter promo code"
                                         value={promoCode}
-                                        onChange={(e) => setPromoCode(e.target.value)}
+                                        onChange={(e) => {
+                                            setPromoCode(e.target.value);
+                                            // Reset promo state when user types
+                                            if (promoApplied || promoError) {
+                                                setPromoApplied(false);
+                                                setPromoError(false);
+                                                setPromoDiscount(0);
+                                                setPromoErrorMessage("");
+                                            }
+                                        }}
+                                        onKeyPress={(e) => {
+                                            if (e.key === "Enter") {
+                                                handleApplyPromoCode();
+                                            }
+                                        }}
+                                        disabled={isValidatingPromo}
                                     />
-                                    <Button onClick={handleApplyPromoCode}>Apply</Button>
+                                    <Button onClick={handleApplyPromoCode} disabled={isValidatingPromo || !promoCode.trim()}>
+                                        {isValidatingPromo ? "..." : "Apply"}
+                                    </Button>
                                 </div>
-                                {promoApplied && <p className="mt-2 text-sm text-green-600">Promo code applied! 10% discount added.</p>}
-                                {promoError && <p className="mt-2 text-sm text-red-600">Invalid promo code. Please try again.</p>}
+                                {promoApplied && (
+                                    <p className="mt-2 text-sm text-green-600">
+                                        Promo code applied! ${promoDiscount.toFixed(2)} discount added.
+                                    </p>
+                                )}
+                                {promoError && (
+                                    <p className="mt-2 text-sm text-red-600">{promoErrorMessage || "Invalid promo code. Please try again."}</p>
+                                )}
                             </div>
                         </div>
 
@@ -313,10 +396,10 @@ export default function TicketSelection() {
                                                     <p>${calculateMarketplaceFee().toFixed(2)}</p>
                                                 </div>
                                             )}
-                                            {promoApplied && (
+                                            {promoApplied && promoDiscount > 0 && (
                                                 <div className="flex justify-between text-sm mb-2 text-green-600">
-                                                    <p>Discount (10%)</p>
-                                                    <p>-${(calculateSubtotal() * 0.1).toFixed(2)}</p>
+                                                    <p>Discount</p>
+                                                    <p>-${promoDiscount.toFixed(2)}</p>
                                                 </div>
                                             )}
                                         </div>

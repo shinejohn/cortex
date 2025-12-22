@@ -366,4 +366,22 @@ final class SeoService
             default => [],
         };
     }
+
+    /**
+     * Generate SEO metadata for a business (for AlphaSite)
+     */
+    public static function generateBusinessSeo(\App\Models\Business $business): array
+    {
+        $url = $business->alphasite_subdomain 
+            ? "https://{$business->alphasite_subdomain}.alphasite.com"
+            : "https://alphasite.com/business/{$business->slug}";
+
+        return [
+            'title' => "{$business->name} - {$business->industry?->name} in {$business->city}, {$business->state} | AlphaSite",
+            'description' => $business->description ?? "{$business->name} located in {$business->city}, {$business->state}. " . 
+                ($business->industry ? "Find {$business->industry->name} services near you." : "Local business directory."),
+            'canonical' => $url,
+            'image' => $business->images[0] ?? null,
+        ];
+    }
 }

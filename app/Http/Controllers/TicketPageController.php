@@ -6,7 +6,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\TicketOrder;
+use App\Models\TicketOrderItem;
 use App\Services\PromoCodeService;
+use App\Services\QRCodeService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -122,13 +124,58 @@ final class TicketPageController extends Controller
 
     public function myTickets(Request $request): Response
     {
+        $qrCodeService = app(QRCodeService::class);
+        
         $orders = TicketOrder::forUser($request->user()->id)
             ->with(['event.venue', 'items.ticketPlan'])
             ->latest()
-            ->get();
+            ->get()
+            ->map(function ($order) use ($qrCodeService) {
+                $order->items->transform(function ($item) use ($qrCodeService) {
+                    if ($item->qr_code) {
+                        $item->qr_code_url = $qrCodeService->getQRCodeUrl($item->qr_code);
+                    }
+                    return $item;
+                });
+                return $order;
+            });
 
         return Inertia::render('event-city/tickets/my-tickets', [
             'orders' => $orders,
+        ]);
+    }
+
+    public function verifyTicket(Request $request, string $ticketCode): Response
+    {
+        $qrCodeService = app(QRCodeService::class);
+        $ticketOrderItem = $qrCodeService->verifyTicketCode($ticketCode);
+
+        if (!$ticketOrderItem) {
+            return Inertia::render('event-city/tickets/verify', [
+                'valid' => false,
+                'message' => 'Invalid or expired ticket code.',
+            ]);
+        }
+
+        return Inertia::render('event-city/tickets/verify', [
+            'valid' => true,
+            'ticket' => [
+                'code' => $ticketOrderItem->ticket_code,
+                'event' => [
+                    'title' => $ticketOrderItem->ticketOrder->event->title,
+                    'date' => $ticketOrderItem->ticketOrder->event->event_date,
+                    'venue' => $ticketOrderItem->ticketOrder->event->venue?->name,
+                ],
+                'plan' => [
+                    'name' => $ticketOrderItem->ticketPlan->name,
+                    'quantity' => $ticketOrderItem->quantity,
+                ],
+                'order' => [
+                    'id' => $ticketOrderItem->ticketOrder->id,
+                    'purchased_at' => $ticketOrderItem->ticketOrder->created_at,
+                ],
+                'qr_code_url' => $ticketOrderItem->qr_code ? $qrCodeService->getQRCodeUrl($ticketOrderItem->qr_code) : null,
+            ],
         ]);
     }
 

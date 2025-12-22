@@ -107,7 +107,7 @@ final class BusinessService
     {
         $cacheKey = "business:slug:{$slug}";
         
-        return $this->cacheService->remember($cacheKey, now()->addHours(1), function () use ($slug) {
+        return $this->cacheService->remember($cacheKey, CacheService::DURATION_LONG, function () use ($slug) {
             return Business::with(['regions', 'workspace'])->where('slug', $slug)->first();
         });
     }
@@ -301,6 +301,72 @@ final class BusinessService
         
         // Clear search caches (pattern matching would be ideal, but Cache doesn't support it)
         // In production, consider using Redis with pattern matching or cache tags
+    }
+
+    /**
+     * Get business by slug or subdomain for AlphaSite page
+     */
+    public function getBusinessForAlphaSite(string $slugOrSubdomain): ?Business
+    {
+        $cacheKey = "alphasite:business:{$slugOrSubdomain}";
+        
+        return $this->cacheService->remember($cacheKey, now()->addHours(1), function () use ($slugOrSubdomain) {
+            return Business::with([
+                'industry',
+                'template',
+                'subscription',
+                'achievements' => fn($q) => $q->orderBy('display_order'),
+                'reviews' => fn($q) => $q->latest()->limit(10),
+                'faqs' => fn($q) => $q->where('is_active', true),
+            ])
+            ->where('slug', $slugOrSubdomain)
+            ->orWhere('alphasite_subdomain', $slugOrSubdomain)
+            ->first();
+        });
+    }
+
+    /**
+     * Get businesses by industry for directory
+     */
+    public function getByIndustry(
+        string $industrySlug,
+        ?string $city = null,
+        ?string $state = null,
+        int $perPage = 24
+    ): LengthAwarePaginator {
+        $query = Business::query()
+            ->with(['industry', 'subscription'])
+            ->whereHas('industry', fn($q) => $q->where('slug', $industrySlug))
+            ->where('status', 'active');
+        
+        if ($city) {
+            $query->where('city', $city);
+        }
+        
+        if ($state) {
+            $query->where('state', $state);
+        }
+        
+        return $query
+            ->orderByDesc('featured')
+            ->orderByDesc('rating')
+            ->paginate($perPage);
+    }
+
+    /**
+     * Get related businesses (same industry, nearby)
+     */
+    public function getRelatedBusinesses(Business $business, int $limit = 6): Collection
+    {
+        return Business::query()
+            ->with(['industry'])
+            ->where('id', '!=', $business->id)
+            ->where('industry_id', $business->industry_id)
+            ->where('city', $business->city)
+            ->where('status', 'active')
+            ->orderByDesc('rating')
+            ->limit($limit)
+            ->get();
     }
 }
 

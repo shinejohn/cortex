@@ -33,6 +33,13 @@ final class EngagementController extends Controller
                     'profile_view',
                     'scroll_depth',
                     'time_spent',
+                    // Day News article engagement types
+                    'article_view',
+                    'article_like',
+                    'article_comment',
+                    'article_share',
+                    'article_read_time',
+                    'article_scroll_depth',
                 ]),
             ],
             'engagements.*.data' => 'sometimes|array',

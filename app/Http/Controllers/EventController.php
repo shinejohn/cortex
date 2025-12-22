@@ -9,12 +9,19 @@ use App\Models\Event;
 use App\Models\Follow;
 use App\Models\Performer;
 use App\Models\Venue;
+use App\Services\CacheService;
+use App\Services\EventService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
 final class EventController extends Controller
 {
+    public function __construct(
+        private readonly CacheService $cacheService,
+        private readonly EventService $eventService
+    ) {}
     /**
      * Public events page (no authentication required)
      */
@@ -27,51 +34,45 @@ final class EventController extends Controller
             $currentWorkspace = $user->currentWorkspace ?? $user->workspaces->first();
         }
 
-        // Get featured events
-        $featuredEvents = Event::published()
-            ->upcoming()
-            ->with(['venue', 'performer'])
-            ->take(6)
-            ->get()
-            ->map(function ($event) {
-                return [
-                    'id' => $event->id,
-                    'title' => $event->title,
-                    'date' => $event->event_date->format('Y-m-d\TH:i:s.000\Z'),
-                    'venue' => $event->venue?->name ?? 'TBA',
-                    'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
-                    'category' => $event->category,
-                    'image' => $event->image,
-                ];
-            })
-            ->toArray();
+        // Get featured events using EventService
+        $featuredEvents = $this->eventService->getFeatured(6)->map(function ($event) {
+            return [
+                'id' => $event->id,
+                'title' => $event->title,
+                'date' => $event->event_date->format('Y-m-d\TH:i:s.000\Z'),
+                'venue' => $event->venue?->name ?? 'TBA',
+                'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
+                'category' => $event->category,
+                'image' => $event->image,
+            ];
+        })->toArray();
 
-        // Get upcoming events (next 7 days)
-        $upcomingEvents = Event::published()
-            ->upcoming()
-            ->with(['venue', 'performer'])
-            ->whereBetween('event_date', [now(), now()->addDays(7)])
-            ->orderBy('event_date')
-            ->orderBy('time')
-            ->get()
-            ->map(function ($event) {
-                $eventDateTime = $event->event_date->copy();
-                if ($event->time) {
-                    $timeParts = explode(':', $event->time);
-                    $eventDateTime->setTime((int) $timeParts[0], (int) $timeParts[1]);
-                }
+        // Get upcoming events (next 7 days) using EventService
+        $upcomingFilters = [
+            'date_from' => now(),
+            'date_to' => now()->addDays(7),
+            'sort_by' => 'event_date',
+            'sort_order' => 'asc',
+        ];
+        $upcomingEvents = $this->eventService->getUpcoming($upcomingFilters, 50)->items();
+        
+        $upcomingEvents = collect($upcomingEvents)->map(function ($event) {
+            $eventDateTime = $event->event_date->copy();
+            if ($event->time) {
+                $timeParts = explode(':', $event->time);
+                $eventDateTime->setTime((int) $timeParts[0], (int) $timeParts[1]);
+            }
 
-                return [
-                    'id' => $event->id,
-                    'title' => $event->title,
-                    'date' => $eventDateTime->format('Y-m-d\TH:i:s.000\Z'),
-                    'venue' => $event->venue?->name ?? 'TBA',
-                    'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
-                    'category' => $event->category,
-                    'image' => $event->image ?? 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop',
-                ];
-            })
-            ->toArray();
+            return [
+                'id' => $event->id,
+                'title' => $event->title,
+                'date' => $eventDateTime->format('Y-m-d\TH:i:s.000\Z'),
+                'venue' => $event->venue?->name ?? 'TBA',
+                'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
+                'category' => $event->category,
+                'image' => $event->image ?? 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop',
+            ];
+        })->toArray();
 
         return Inertia::render('event-city/events/index', [
             'featuredEvents' => $featuredEvents,
@@ -162,25 +163,18 @@ final class EventController extends Controller
             },
         ]);
 
-        // Get similar events
-        $similarEvents = Event::published()
-            ->upcoming()
-            ->where('id', '!=', $event->id)
-            ->where('category', $event->category)
-            ->with(['venue', 'performer'])
-            ->take(6)
-            ->get()
-            ->map(function ($e) {
-                return [
-                    'id' => $e->id,
-                    'title' => $e->title,
-                    'date' => $e->event_date->format('Y-m-d\TH:i:s.000\Z'),
-                    'venue' => $e->venue?->name ?? 'TBA',
-                    'price' => $e->is_free ? 'Free' : '$'.number_format((float) ($e->price_min ?? 0)),
-                    'category' => $e->category,
-                    'image' => $e->image,
-                ];
-            });
+        // Get similar events using EventService
+        $similarEvents = $this->eventService->getRelated($event, 6)->map(function ($e) {
+            return [
+                'id' => $e->id,
+                'title' => $e->title,
+                'date' => $e->event_date->format('Y-m-d\TH:i:s.000\Z'),
+                'venue' => $e->venue?->name ?? 'TBA',
+                'price' => $e->is_free ? 'Free' : '$'.number_format((float) ($e->price_min ?? 0)),
+                'category' => $e->category,
+                'image' => $e->image,
+            ];
+        });
 
         $isFollowing = false;
         $canEdit = false;
@@ -194,7 +188,7 @@ final class EventController extends Controller
             $canEdit = $request->user()->can('update', $event);
         }
 
-        // Get weather data
+        // Get weather data (cached - weather service already has caching)
         $weather = null;
         if ($event->latitude && $event->longitude) {
             try {

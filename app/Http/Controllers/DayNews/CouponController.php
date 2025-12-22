@@ -35,29 +35,24 @@ final class CouponController extends Controller
 
         $coupons = $this->couponService->getActiveCoupons($filters, 20);
 
-        // Filter by region
-        if ($currentRegion) {
-            $query->forRegion($currentRegion->id);
-        }
-
-        // Filter by business
-        if ($businessId) {
-            $query->byBusiness($businessId);
-        }
-
-        // Search
+        // Filter by search if provided
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%")
-                    ->orWhere('business_name', 'like', "%{$search}%");
+            $coupons = $coupons->filter(function ($coupon) use ($search) {
+                return stripos($coupon->title, $search) !== false
+                    || stripos($coupon->description ?? '', $search) !== false
+                    || stripos($coupon->business_name ?? '', $search) !== false;
             });
         }
 
-        $coupons = $query->paginate(20)->withQueryString();
+        // Paginate manually since getActiveCoupons returns Collection
+        $perPage = 20;
+        $currentPage = (int) $request->get('page', 1);
+        $items = $coupons->slice(($currentPage - 1) * $perPage, $perPage);
+        $total = $coupons->count();
 
         return Inertia::render('day-news/coupons/index', [
-            'coupons' => $coupons->through(fn ($coupon) => [
+            'coupons' => [
+                'data' => $items->map(fn ($coupon) => [
                 'id' => $coupon->id,
                 'title' => $coupon->title,
                 'description' => $coupon->description,
@@ -82,7 +77,12 @@ final class CouponController extends Controller
                     'id' => $r->id,
                     'name' => $r->name,
                 ]),
-            ]),
+                ])->values(),
+                'current_page' => $currentPage,
+                'last_page' => (int) ceil($total / $perPage),
+                'per_page' => $perPage,
+                'total' => $total,
+            ],
             'filters' => [
                 'search' => $search,
                 'business_id' => $businessId,
@@ -105,9 +105,10 @@ final class CouponController extends Controller
     public function store(StoreCouponRequest $request): \Illuminate\Http\RedirectResponse
     {
         $validated = $request->validated();
+        $currentRegion = $request->attributes->get('detected_region');
 
-        $coupon = Coupon::create([
-            'user_id' => $request->user()->id,
+        // Prepare data for CouponService
+        $couponData = [
             'business_id' => $validated['business_id'] ?? null,
             'title' => $validated['title'],
             'description' => $validated['description'] ?? null,
@@ -121,20 +122,23 @@ final class CouponController extends Controller
             'end_date' => $validated['end_date'],
             'usage_limit' => $validated['usage_limit'] ?? null,
             'status' => 'active', // Coupons are free to publish
-        ]);
+        ];
 
         // Handle image upload
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('coupons', 'public');
-            $coupon->update(['image' => $path]);
+            $couponData['image'] = $path;
         }
 
         // Attach regions
         if (!empty($validated['region_ids'])) {
-            $coupon->regions()->attach($validated['region_ids']);
-        } elseif ($currentRegion = $request->attributes->get('detected_region')) {
-            $coupon->regions()->attach($currentRegion->id);
+            $couponData['regions'] = $validated['region_ids'];
+        } elseif ($currentRegion) {
+            $couponData['regions'] = [$currentRegion->id];
         }
+
+        // Use CouponService to create
+        $coupon = $this->couponService->create($couponData, $request->user()->id);
 
         return redirect()
             ->route('day-news.coupons.show', $coupon->id)
@@ -147,17 +151,16 @@ final class CouponController extends Controller
     public function show(Request $request, Coupon $coupon): Response
     {
         $coupon->load(['business', 'regions']);
-        $coupon->incrementViewsCount();
+        
+        // Track view using CouponService
+        $this->couponService->trackView($coupon);
 
-        // Get related coupons
-        $related = Coupon::active()
-            ->where('id', '!=', $coupon->id)
-            ->whereHas('regions', function ($q) use ($coupon) {
-                $q->whereIn('region_id', $coupon->regions->pluck('id'));
-            })
-            ->with(['business', 'regions'])
-            ->limit(6)
-            ->get();
+        // Get related coupons using CouponService
+        $relatedFilters = [
+            'region_id' => $coupon->regions->first()?->id,
+        ];
+        $allRelated = $this->couponService->getActiveCoupons($relatedFilters, 10);
+        $related = $allRelated->filter(fn ($c) => $c->id !== $coupon->id)->take(6);
 
         return Inertia::render('day-news/coupons/show', [
             'coupon' => [
@@ -199,19 +202,27 @@ final class CouponController extends Controller
      */
     public function use(Request $request, Coupon $coupon): \Illuminate\Http\JsonResponse
     {
-        if (!$coupon->canBeUsed()) {
+        // Validate coupon using CouponService
+        $validation = $this->couponService->validate($coupon->code, $request->user()?->id);
+        
+        if (!$validation['valid']) {
             return response()->json([
-                'error' => 'This coupon is no longer available',
+                'error' => $validation['error'],
             ], 422);
         }
 
-        $coupon->incrementClicksCount();
+        // Track click using CouponService
+        $this->couponService->trackClick($coupon);
 
         // Record usage if user is authenticated
         if ($request->user()) {
-            $coupon->recordUsage($request->user()->id);
-        } else {
-            $coupon->recordUsage(null, $request->ip());
+            try {
+                $this->couponService->apply($coupon, $request->user()->id);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => $e->getMessage(),
+                ], 422);
+            }
         }
 
         return response()->json([
@@ -246,18 +257,20 @@ final class CouponController extends Controller
     {
         $validated = $request->validated();
 
-        $coupon->update($validated);
-
         // Handle image upload
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('coupons', 'public');
-            $coupon->update(['image' => $path]);
+            $validated['image'] = $path;
         }
 
-        // Update regions
+        // Update regions if provided
         if (isset($validated['region_ids'])) {
-            $coupon->regions()->sync($validated['region_ids']);
+            $validated['regions'] = $validated['region_ids'];
+            unset($validated['region_ids']);
         }
+
+        // Use CouponService to update
+        $this->couponService->update($coupon, $validated);
 
         return redirect()
             ->route('day-news.coupons.show', $coupon->id)

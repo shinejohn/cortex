@@ -1,14 +1,17 @@
+import { ArticleComments } from "@/components/day-news/article-comments";
 import { SEO } from "@/components/common/seo";
 import Advertisement from "@/components/day-news/advertisement";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import NewsArticleCard from "@/components/day-news/news-article-card";
 import { TrustMetrics } from "@/components/day-news/trust-metrics";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
+import { router } from "@inertiajs/react";
 import DOMPurify from "dompurify";
-import { Calendar, Eye, MapPin, User } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Eye, MapPin, User } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 
 interface Region {
@@ -96,10 +99,39 @@ interface RelatedPost {
     regions: Region[];
 }
 
+interface Comment {
+    id: string;
+    content: string;
+    user: {
+        id: string;
+        name: string;
+        avatar: string | null;
+    };
+    created_at: string;
+    time_ago: string;
+    likes_count: number;
+    replies_count: number;
+    is_liked_by_user: boolean;
+    is_pinned?: boolean;
+    replies?: Comment[];
+}
+
 interface ShowPostProps {
     auth?: Auth;
     post: Post;
     relatedPosts: RelatedPost[];
+    comments: Comment[];
+    commentsCount: number;
+    previousPost?: {
+        id: number;
+        title: string;
+        slug: string;
+    } | null;
+    nextPost?: {
+        id: number;
+        title: string;
+        slug: string;
+    } | null;
 }
 
 /**
@@ -150,7 +182,7 @@ function splitHtmlContent(html: string): [string, string] {
     return [sanitized.slice(0, splitIndex), sanitized.slice(splitIndex)];
 }
 
-export default function ShowPost({ auth, post, relatedPosts }: ShowPostProps) {
+export default function ShowPost({ auth, post, relatedPosts, comments, commentsCount, previousPost, nextPost }: ShowPostProps) {
     const [sidebarAds, setSidebarAds] = useState<Ad[]>([]);
     const [bannerAds, setBannerAds] = useState<Ad[]>([]);
     const [inlineAds, setInlineAds] = useState<Ad[]>([]);
@@ -331,6 +363,39 @@ export default function ShowPost({ auth, post, relatedPosts }: ShowPostProps) {
                                     dangerouslySetInnerHTML={{ __html: secondHalfContent }}
                                 />
                             )}
+
+                            {/* Article Navigation */}
+                            <div className="mt-8 flex items-center justify-between border-t pt-6">
+                                {previousPost && (
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => router.visit(`/posts/${previousPost.slug}`)}
+                                        className="flex items-center gap-2"
+                                    >
+                                        <ChevronLeft className="size-4" />
+                                        <div className="text-left">
+                                            <div className="text-xs text-muted-foreground">Previous</div>
+                                            <div className="text-sm font-medium">{previousPost.title}</div>
+                                        </div>
+                                    </Button>
+                                )}
+                                {nextPost && (
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => router.visit(`/posts/${nextPost.slug}`)}
+                                        className={`flex items-center gap-2 ${!previousPost ? "ml-auto" : ""}`}
+                                    >
+                                        <div className="text-right">
+                                            <div className="text-xs text-muted-foreground">Next</div>
+                                            <div className="text-sm font-medium">{nextPost.title}</div>
+                                        </div>
+                                        <ChevronRight className="size-4" />
+                                    </Button>
+                                )}
+                            </div>
+
+                            {/* Comments Section */}
+                            <ArticleComments articleId={post.id} comments={comments} total={commentsCount} auth={auth} />
                         </article>
 
                         {/* Sidebar */}

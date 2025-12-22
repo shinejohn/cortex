@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\Classified;
+use App\Models\ClassifiedPayment;
 use App\Models\DayNewsPost;
 use App\Models\DayNewsPostPayment;
 use App\Models\Workspace;
@@ -135,5 +137,57 @@ final class DayNewsPaymentService
         }
 
         return "Post: {$post->title}";
+    }
+
+    /**
+     * Create Stripe checkout session for classified
+     */
+    public function createClassifiedCheckoutSession(Classified $classified, ClassifiedPayment $payment, string $successUrl, string $cancelUrl): Session
+    {
+        $session = $this->stripe->checkout->sessions->create([
+            'mode' => 'payment',
+            'line_items' => [
+                [
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => 'Classified Listing',
+                            'description' => "Classified: {$classified->title}",
+                        ],
+                        'unit_amount' => $payment->amount,
+                    ],
+                    'quantity' => 1,
+                ],
+            ],
+            'success_url' => $successUrl . '?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => $cancelUrl,
+            'metadata' => [
+                'classified_id' => $classified->id,
+                'payment_id' => $payment->id,
+                'workspace_id' => $payment->workspace_id,
+                'type' => 'classified',
+            ],
+        ]);
+
+        $payment->update(['stripe_checkout_session_id' => $session->id]);
+
+        return $session;
+    }
+
+    /**
+     * Handle successful classified payment
+     */
+    public function handleSuccessfulClassifiedPayment(string $sessionId): Classified
+    {
+        $session = $this->stripe->checkout->sessions->retrieve($sessionId);
+
+        $payment = ClassifiedPayment::where('stripe_checkout_session_id', $sessionId)->firstOrFail();
+
+        $payment->update([
+            'stripe_payment_intent_id' => $session->payment_intent,
+            'status' => 'paid',
+        ]);
+
+        return $payment->classified;
     }
 }

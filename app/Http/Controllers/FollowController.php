@@ -17,7 +17,7 @@ final class FollowController extends Controller
     public function toggle(Request $request): JsonResponse
     {
         $request->validate([
-            'followable_type' => 'required|string|in:event,performer,venue,calendar',
+            'followable_type' => 'required|string|in:event,performer,venue,calendar,tag,author',
             'followable_id' => 'required|string',
         ]);
 
@@ -26,6 +26,9 @@ final class FollowController extends Controller
             'performer' => Performer::class,
             'venue' => Venue::class,
             'calendar' => Calendar::class,
+            'tag' => \App\Models\Tag::class, // Will be created in Phase 2
+            'author' => \App\Models\User::class, // Users can be followed as authors
+            default => throw new \InvalidArgumentException('Invalid followable type'),
         };
 
         $followable = $followableType::findOrFail($request->followable_id);
@@ -59,7 +62,7 @@ final class FollowController extends Controller
     public function checkStatus(Request $request): JsonResponse
     {
         $request->validate([
-            'followable_type' => 'required|string|in:event,performer,venue,calendar',
+            'followable_type' => 'required|string|in:event,performer,venue,calendar,tag,author',
             'followable_id' => 'required|string',
         ]);
 
@@ -68,6 +71,9 @@ final class FollowController extends Controller
             'performer' => Performer::class,
             'venue' => Venue::class,
             'calendar' => Calendar::class,
+            'tag' => \App\Models\Tag::class, // Will be created in Phase 2
+            'author' => \App\Models\User::class, // Users can be followed as authors
+            default => throw new \InvalidArgumentException('Invalid followable type'),
         };
 
         $isFollowing = Follow::where('user_id', $request->user()->id)

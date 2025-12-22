@@ -8,10 +8,14 @@ use App\Models\DayNewsPostPayment;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Store;
+use App\Models\TicketOrder;
+use App\Notifications\TicketOrderConfirmationNotification;
 use App\Services\DayNewsPostService;
+use App\Services\QRCodeService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Webhook;
@@ -94,6 +98,13 @@ final class StripeWebhookController extends Controller
             return;
         }
 
+        // Check if this is a ticket order
+        if (isset($session->metadata->ticket_order_id)) {
+            $this->handleTicketOrderPayment($session);
+
+            return;
+        }
+
         // Otherwise, handle as ecommerce order
         $order = Order::where('stripe_payment_intent_id', $session->payment_intent)->first();
 
@@ -131,6 +142,36 @@ final class StripeWebhookController extends Controller
      */
     private function handlePaymentIntentSucceeded(object $paymentIntent): void
     {
+        // Check for ticket order first
+        $ticketOrder = TicketOrder::where('payment_intent_id', $paymentIntent->id)->first();
+
+        if ($ticketOrder && $ticketOrder->payment_status !== 'completed') {
+            DB::transaction(function () use ($ticketOrder, $paymentIntent) {
+                $ticketOrder->update([
+                    'status' => 'completed',
+                    'payment_status' => 'completed',
+                    'payment_intent_id' => $paymentIntent->id,
+                    'completed_at' => now(),
+                ]);
+
+                // Generate QR codes for all ticket items
+                $qrCodeService = app(QRCodeService::class);
+                foreach ($ticketOrder->items as $item) {
+                    if (!$item->qr_code) {
+                        $qrCodeService->generateForTicketOrderItem($item);
+                    }
+                }
+
+                // Send confirmation email
+                $ticketOrder->user->notify(new TicketOrderConfirmationNotification($ticketOrder));
+
+                Log::info('Ticket order payment succeeded', ['order_id' => $ticketOrder->id]);
+            });
+
+            return;
+        }
+
+        // Otherwise, handle as ecommerce order
         $order = Order::where('stripe_payment_intent_id', $paymentIntent->id)->first();
 
         if ($order && $order->payment_status !== 'paid') {
@@ -162,6 +203,31 @@ final class StripeWebhookController extends Controller
      */
     private function handlePaymentIntentFailed(object $paymentIntent): void
     {
+        // Check for ticket order first
+        $ticketOrder = TicketOrder::where('payment_intent_id', $paymentIntent->id)->first();
+
+        if ($ticketOrder) {
+            DB::transaction(function () use ($ticketOrder, $paymentIntent) {
+                // Restore ticket quantities
+                foreach ($ticketOrder->items as $item) {
+                    $item->ticketPlan->increment('available_quantity', $item->quantity);
+                }
+
+                $ticketOrder->update([
+                    'status' => 'cancelled',
+                    'payment_status' => 'failed',
+                ]);
+
+                Log::info('Ticket order payment failed', [
+                    'order_id' => $ticketOrder->id,
+                    'error' => $paymentIntent->last_payment_error->message ?? 'Unknown error',
+                ]);
+            });
+
+            return;
+        }
+
+        // Otherwise, handle as ecommerce order
         $order = Order::where('stripe_payment_intent_id', $paymentIntent->id)->first();
 
         if ($order) {
@@ -241,5 +307,56 @@ final class StripeWebhookController extends Controller
             'payment_id' => $payment->id,
             'post_id' => $payment->post_id,
         ]);
+    }
+
+    /**
+     * Handle ticket order payment
+     */
+    private function handleTicketOrderPayment(object $session): void
+    {
+        $ticketOrderId = $session->metadata->ticket_order_id ?? null;
+
+        if (! $ticketOrderId) {
+            Log::warning('Ticket order ID not found in session metadata', [
+                'session_id' => $session->id,
+            ]);
+
+            return;
+        }
+
+        $ticketOrder = TicketOrder::find($ticketOrderId);
+
+        if (! $ticketOrder) {
+            Log::warning('Ticket order not found', [
+                'order_id' => $ticketOrderId,
+            ]);
+
+            return;
+        }
+
+        DB::transaction(function () use ($ticketOrder, $session) {
+            $ticketOrder->update([
+                'status' => 'completed',
+                'payment_status' => 'completed',
+                'payment_intent_id' => $session->payment_intent,
+                'completed_at' => now(),
+            ]);
+
+            // Generate QR codes for all ticket items
+            $qrCodeService = app(QRCodeService::class);
+            foreach ($ticketOrder->items as $item) {
+                if (!$item->qr_code) {
+                    $qrCodeService->generateForTicketOrderItem($item);
+                }
+            }
+
+            // Send confirmation email
+            $ticketOrder->user->notify(new TicketOrderConfirmationNotification($ticketOrder));
+
+            Log::info('Ticket order payment completed', [
+                'order_id' => $ticketOrder->id,
+                'event_id' => $ticketOrder->event_id,
+            ]);
+        });
     }
 }

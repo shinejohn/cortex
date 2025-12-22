@@ -20,6 +20,8 @@ final class TicketOrderItem extends Model
         'quantity',
         'unit_price',
         'total_price',
+        'ticket_code',
+        'qr_code',
     ];
 
     public function ticketOrder(): BelongsTo

@@ -6,13 +6,21 @@ namespace App\Http\Controllers;
 
 use App\Models\TicketOrder;
 use App\Models\TicketPlan;
+use App\Notifications\TicketOrderConfirmationNotification;
 use App\Services\PromoCodeService;
+use App\Services\QRCodeService;
+use App\Services\TicketPaymentService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 final class TicketOrderController extends Controller
 {
+    public function __construct(
+        private readonly TicketPaymentService $ticketPaymentService,
+        private readonly QRCodeService $qrCodeService
+    ) {}
     public function index(Request $request): JsonResponse
     {
         $query = TicketOrder::query()
@@ -121,7 +129,46 @@ final class TicketOrderController extends Controller
                 $promoCodeService->applyCode($promoCode, $order, $request->user());
             }
 
-            return response()->json($order->load(['items.ticketPlan', 'event']), 201);
+            // Generate QR codes for completed orders (free tickets)
+            if ($isFree) {
+                foreach ($order->items as $item) {
+                    $this->qrCodeService->generateForTicketOrderItem($item);
+                }
+                // Send confirmation email for free tickets
+                $order->user->notify(new TicketOrderConfirmationNotification($order));
+                return response()->json($order->load(['items.ticketPlan', 'event']), 201);
+            }
+
+            // Create Stripe checkout session for paid orders
+            $successUrl = route('tickets.checkout.success', ['order' => $order->id]);
+            $cancelUrl = route('tickets.checkout.cancel', ['order' => $order->id]);
+
+            try {
+                $session = $this->ticketPaymentService->createCheckoutSession($order, $successUrl, $cancelUrl);
+
+                return response()->json([
+                    'order' => $order->load(['items.ticketPlan', 'event']),
+                    'checkout_session' => [
+                        'id' => $session->id,
+                        'url' => $session->url,
+                    ],
+                ], 201);
+            } catch (\Exception $e) {
+                // If Stripe checkout fails, mark order as failed
+                $order->update([
+                    'status' => 'cancelled',
+                    'payment_status' => 'failed',
+                ]);
+
+                // Restore ticket quantities
+                foreach ($order->items as $item) {
+                    $item->ticketPlan->increment('available_quantity', $item->quantity);
+                }
+
+                return response()->json([
+                    'error' => 'Failed to create checkout session: '.$e->getMessage(),
+                ], 500);
+            }
         });
     }
 
@@ -164,5 +211,66 @@ final class TicketOrderController extends Controller
         });
 
         return response()->json(['message' => 'Order deleted successfully']);
+    }
+
+    /**
+     * Handle successful ticket checkout
+     */
+    public function checkoutSuccess(Request $request, TicketOrder $ticketOrder): RedirectResponse
+    {
+        // Verify the order belongs to the user
+        if ($request->user() && $ticketOrder->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
+        // If order is already completed, redirect to my tickets
+        if ($ticketOrder->status === 'completed') {
+            return redirect()->route('tickets.my-tickets')->with('success', 'Your tickets have been confirmed!');
+        }
+
+        // Check payment status
+        if ($ticketOrder->payment_status === 'completed') {
+            $ticketOrder->update([
+                'status' => 'completed',
+                'completed_at' => now(),
+            ]);
+
+            // Generate QR codes for all ticket items
+            foreach ($ticketOrder->items as $item) {
+                if (!$item->qr_code) {
+                    $this->qrCodeService->generateForTicketOrderItem($item);
+                }
+            }
+
+            // Send confirmation email
+            $ticketOrder->user->notify(new TicketOrderConfirmationNotification($ticketOrder));
+
+            return redirect()->route('tickets.my-tickets')->with('success', 'Your tickets have been confirmed!');
+        }
+
+        // If payment is still pending, show pending message
+        return redirect()->route('tickets.my-tickets')->with('info', 'Your payment is being processed. You will receive a confirmation email shortly.');
+    }
+
+    /**
+     * Handle cancelled ticket checkout
+     */
+    public function checkoutCancel(Request $request, TicketOrder $ticketOrder): RedirectResponse
+    {
+        // Restore ticket quantities
+        DB::transaction(function () use ($ticketOrder) {
+            foreach ($ticketOrder->items as $item) {
+                $item->ticketPlan->increment('available_quantity', $item->quantity);
+            }
+
+            // Mark order as cancelled
+            $ticketOrder->update([
+                'status' => 'cancelled',
+                'payment_status' => 'cancelled',
+            ]);
+        });
+
+        return redirect()->route('events.tickets.selection', ['event' => $ticketOrder->event_id])
+            ->with('error', 'Your order was cancelled. Please try again if you wish to purchase tickets.');
     }
 }

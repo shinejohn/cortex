@@ -7,8 +7,12 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Performer;
+use App\Models\User;
 use App\Models\Venue;
+use App\Notifications\BookingConfirmationNotification;
+use App\Services\BookingWorkflowService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -79,8 +83,18 @@ final class BookingController extends Controller
             'createdBy',
         ]);
 
+        $currentStep = $this->workflowService->getCurrentStep($booking);
+        $progress = $this->workflowService->getProgressPercentage($booking);
+        $financialBreakdown = $this->workflowService->getFinancialBreakdown($booking);
+        $canProceed = $this->workflowService->canProceedToNextStep($booking);
+
         return Inertia::render('event-city/bookings/Show', [
             'booking' => $booking,
+            'currentStep' => $currentStep,
+            'progress' => $progress,
+            'financialBreakdown' => $financialBreakdown,
+            'canProceed' => $canProceed,
+            'steps' => $this->workflowService->getStepsForBookingType($booking->booking_type),
         ]);
     }
 
@@ -107,11 +121,16 @@ final class BookingController extends Controller
             ->where('available_for_booking', true)
             ->get(['id', 'name', 'genres', 'base_price', 'minimum_booking_hours']);
 
+        $bookingType = $request->get('type', 'event');
+        $steps = $this->workflowService->getStepsForBookingType($bookingType);
+
         return Inertia::render('event-city/bookings/Create', [
             'events' => $events,
             'venues' => $venues,
             'performers' => $performers,
-            'bookingType' => $request->get('type', 'event'), // Default to event booking
+            'bookingType' => $bookingType,
+            'steps' => $steps,
+            'currentStep' => $steps[0] ?? BookingWorkflowService::STEP_INITIAL_REQUEST,
         ]);
     }
 
@@ -161,13 +180,28 @@ final class BookingController extends Controller
             'sound_requirements' => 'nullable|array',
         ]);
 
-        $booking = Booking::create([
+        // Use workflow service to create booking draft
+        $booking = $this->workflowService->createBookingDraft([
             ...$validated,
             'workspace_id' => $currentWorkspace->id,
             'created_by' => $request->user()->id,
             'status' => 'pending',
             'payment_status' => 'pending',
         ]);
+
+        // Calculate and update quote
+        $booking = $this->workflowService->updateQuote($booking);
+
+        // Send booking confirmation email to contact email
+        if ($booking->contact_email) {
+            $user = User::where('email', $booking->contact_email)->first();
+            if ($user) {
+                $user->notify(new BookingConfirmationNotification($booking));
+            } else {
+                // Send via Mail facade if user doesn't exist
+                Mail::to($booking->contact_email)->send(new \App\Mail\BookingConfirmationMail($booking));
+            }
+        }
 
         return redirect()->route('bookings.show', $booking)
             ->with('success', 'Booking created successfully! Booking number: '.$booking->booking_number);
@@ -253,7 +287,19 @@ final class BookingController extends Controller
     {
         $this->authorize('update', $booking);
 
+        $wasPending = $booking->status === 'pending';
         $booking->markAsConfirmed();
+
+        // Send confirmation email when booking is confirmed
+        if ($wasPending && $booking->contact_email) {
+            $user = User::where('email', $booking->contact_email)->first();
+            if ($user) {
+                $user->notify(new BookingConfirmationNotification($booking));
+            } else {
+                // Send via Mail facade if user doesn't exist
+                Mail::to($booking->contact_email)->send(new \App\Mail\BookingConfirmationMail($booking));
+            }
+        }
 
         return redirect()->route('bookings.show', $booking)
             ->with('success', 'Booking confirmed successfully!');
