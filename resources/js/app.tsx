@@ -3,6 +3,7 @@ import "../css/app.css";
 import { createInertiaApp, router } from "@inertiajs/react";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { createRoot, hydrateRoot } from "react-dom/client";
+import CrossDomainAuthSync from "./components/common/cross-domain-auth-sync";
 import { initializeTheme } from "./hooks/use-appearance";
 import { initializeAnalytics, trackPageView } from "./lib/analytics";
 
@@ -23,10 +24,17 @@ createInertiaApp({
         });
 
         // Check if SSR rendered content exists - if so, hydrate, otherwise create fresh
+        const rootElement = (
+            <>
+                <App {...props} />
+                <CrossDomainAuthSync />
+            </>
+        );
+
         if (el.hasChildNodes()) {
-            hydrateRoot(el, <App {...props} />);
+            hydrateRoot(el, rootElement);
         } else {
-            createRoot(el).render(<App {...props} />);
+            createRoot(el).render(rootElement);
         }
     },
     progress: {

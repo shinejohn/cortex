@@ -8,6 +8,7 @@ use App\Events\Registered;
 use App\Http\Controllers\Controller;
 use App\Models\SocialAccount;
 use App\Models\User;
+use App\Services\CrossDomainAuthService;
 use App\Services\Workspace\WorkspaceInvitationService;
 use Exception;
 use Illuminate\Http\Request;
@@ -18,6 +19,9 @@ use Laravel\Socialite\Facades\Socialite;
 
 final class SocialiteController extends Controller
 {
+    public function __construct(
+        private readonly CrossDomainAuthService $crossDomainAuthService
+    ) {}
     /**
      * Redirect the user to the provider authentication page.
      */
@@ -108,6 +112,36 @@ final class SocialiteController extends Controller
     }
 
     /**
+     * Sync authentication to other domains after login
+     */
+    private function syncAuthToOtherDomains(\App\Models\User $user, \Illuminate\Http\Request $request): void
+    {
+        try {
+            $sourceDomain = $request->getHost();
+            $result = $this->crossDomainAuthService->generateToken($user, $sourceDomain);
+            
+            $plainToken = $result['plain_token'];
+            
+            // Generate auth URLs for other domains
+            $authUrls = $this->crossDomainAuthService->getAuthUrls(
+                $plainToken,
+                $sourceDomain,
+                $request->get('return', '/')
+            );
+
+            // Store token and URLs in session for frontend to handle redirects
+            $request->session()->put('cross_domain_auth_token', $plainToken);
+            $request->session()->put('cross_domain_auth_urls', $authUrls);
+        } catch (\Exception $e) {
+            // Log error but don't fail login
+            \Log::error('Failed to sync auth to other domains', [
+                'error' => $e->getMessage(),
+                'user_id' => $user->id,
+            ]);
+        }
+    }
+
+    /**
      * Handle invitation after authentication
      */
     private function handlePostAuthInvitation(?string $invitationToken, User $user)
@@ -125,7 +159,10 @@ final class SocialiteController extends Controller
 
             $messageType = $result->wasSuccessful() ? 'success' : 'warning';
 
-            return redirect()->intended(route('dashboard'))
+            // Sync auth to other domains
+        $this->syncAuthToOtherDomains($user, request());
+
+        return redirect()->intended(route('dashboard'))
                 ->with($messageType, $message);
         }
 
@@ -135,6 +172,9 @@ final class SocialiteController extends Controller
             $user->current_workspace_id = $firstMembership->workspace_id;
             $user->save();
         }
+
+        // Sync auth to other domains
+        $this->syncAuthToOtherDomains($user, request());
 
         return redirect()->intended(route('dashboard'));
     }

@@ -73,6 +73,10 @@ final class HandleInertiaRequests extends Middleware
                 'ga4Id' => config('analytics.ga4.'.config('app.current_domain', 'event-city')),
             ],
             'location' => $this->getLocationData($request),
+            'crossDomainAuth' => [
+                'urls' => $request->session()->get('cross_domain_auth_urls', []),
+                'logoutUrls' => $request->session()->get('cross_domain_logout_urls', []),
+            ],
         ];
     }
 

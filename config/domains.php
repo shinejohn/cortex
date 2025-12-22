@@ -18,5 +18,6 @@ return [
     'event-city' => env('GOEVENTCITY_DOMAIN', 'goeventcity.test'),
     'day-news' => env('DAYNEWS_DOMAIN', 'daynews.test'),
     'downtown-guide' => env('DOWNTOWNGUIDE_DOMAIN', 'downtownguide.test'),
+    'local-voices' => env('LOCAL_VOICES_DOMAIN', 'golocalvoices.com'),
 
 ];

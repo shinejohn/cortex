@@ -33,6 +33,7 @@ const navigationTabs = [
     { title: "Classifieds", href: "/classifieds" },
     { title: "Coupons", href: "/coupons" },
     { title: "Photos", href: "/photos" },
+    { title: "Go Local Voices", href: "/local-voices", external: false },
 ];
 
 const actionButtons = [

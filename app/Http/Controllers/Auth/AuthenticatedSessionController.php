@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Notifications\MagicLinkNotification;
+use App\Services\CrossDomainAuthService;
 use App\Services\Workspace\WorkspaceInvitationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,6 +23,9 @@ use MagicLink\MagicLink;
 
 final class AuthenticatedSessionController extends Controller
 {
+    public function __construct(
+        private readonly CrossDomainAuthService $crossDomainAuthService
+    ) {}
     /**
      * Show the login page.
      */
@@ -79,6 +83,9 @@ final class AuthenticatedSessionController extends Controller
             $user->save();
         }
 
+        // Generate cross-domain auth token and sync to other domains
+        $this->syncAuthToOtherDomains($user, $request);
+
         return redirect()->intended(route('home', absolute: false))
             ->with($messageType, $message);
     }
@@ -88,12 +95,71 @@ final class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Sync logout to other domains
+        $this->syncLogoutToOtherDomains($request);
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    /**
+     * Sync authentication to other domains after login
+     */
+    private function syncAuthToOtherDomains(User $user, Request $request): void
+    {
+        try {
+            $sourceDomain = $request->getHost();
+            $result = $this->crossDomainAuthService->generateToken($user, $sourceDomain);
+            
+            $tokenRecord = $result['token_record'];
+            $plainToken = $result['plain_token'];
+            
+            // Generate auth URLs for other domains
+            $authUrls = $this->crossDomainAuthService->getAuthUrls(
+                $plainToken,
+                $sourceDomain,
+                $request->get('return', '/')
+            );
+
+            // Store token and URLs in session for frontend to handle redirects
+            $request->session()->put('cross_domain_auth_token', $plainToken);
+            $request->session()->put('cross_domain_auth_urls', $authUrls);
+        } catch (\Exception $e) {
+            // Log error but don't fail login
+            \Log::error('Failed to sync auth to other domains', [
+                'error' => $e->getMessage(),
+                'user_id' => $user->id,
+            ]);
+        }
+    }
+
+    /**
+     * Sync logout to other domains
+     */
+    private function syncLogoutToOtherDomains(Request $request): void
+    {
+        try {
+            $currentDomain = $request->getHost();
+            $allDomains = $this->crossDomainAuthService->getAllDomains();
+            $targetDomains = array_filter($allDomains, fn($domain) => $domain !== $currentDomain);
+
+            $logoutUrls = [];
+            foreach ($targetDomains as $domain) {
+                $protocol = config('app.env') === 'local' ? 'http' : 'https';
+                $logoutUrls[] = "{$protocol}://{$domain}/cross-domain-auth/logout-sync?return=" . urlencode('/');
+            }
+
+            // Store logout URLs in session for frontend
+            $request->session()->put('cross_domain_logout_urls', $logoutUrls);
+        } catch (\Exception $e) {
+            \Log::error('Failed to sync logout to other domains', [
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     public function generateMagicLink(Request $request)
@@ -165,6 +231,9 @@ final class AuthenticatedSessionController extends Controller
             $user->current_workspace_id = $firstMembership->workspace_id;
             $user->save();
         }
+
+        // Generate cross-domain auth token and sync to other domains
+        $this->syncAuthToOtherDomains($user, $request);
 
         return redirect()->route('home')
             ->with($messageType, $message);

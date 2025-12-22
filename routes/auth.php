@@ -96,3 +96,10 @@ Route::group(['prefix' => 'auth'], function () {
     Route::get('{provider}/callback', [SocialiteController::class, 'callback'])
         ->name('auth.socialite.callback');
 });
+
+// Cross-Domain Authentication Routes
+Route::get('/cross-domain-auth/sync', [\App\Http\Controllers\CrossDomainAuthController::class, 'sync'])
+    ->name('cross-domain-auth.sync');
+
+Route::get('/cross-domain-auth/logout-sync', [\App\Http\Controllers\CrossDomainAuthController::class, 'logoutSync'])
+    ->name('cross-domain-auth.logout-sync');

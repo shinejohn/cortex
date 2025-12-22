@@ -34,6 +34,16 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->middleware('web')
                 ->group(base_path('routes/downtown-guide.php'));
 
+            // Go Local Voices domain routes (standalone)
+            Route::domain(config('domains.local-voices'))
+                ->middleware('web')
+                ->name('localvoices.')
+                ->group(function () {
+                    require base_path('routes/auth.php');
+                    require base_path('routes/settings.php');
+                    require base_path('routes/local-voices.php');
+                });
+
             // AlphaSite domain routes (subdomain and main domain)
             Route::middleware('web')
                 ->group(base_path('routes/alphasite.php'));
