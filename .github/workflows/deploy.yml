@@ -1,0 +1,136 @@
+name: Deploy to AWS ECS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'resources/**'
+      - 'routes/**'
+      - 'config/**'
+      - 'database/**'
+      - 'docker/**'
+      - 'composer.json'
+      - 'package.json'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'Service to deploy (leave empty for all)'
+        required: false
+        type: choice
+        options:
+          - ''
+          - goeventcity
+          - daynews
+          - downtownguide
+          - alphasite
+          - base-app
+          - inertia-ssr
+
+env:
+  AWS_REGION: us-east-1
+  AWS_ACCOUNT_ID: 195430954683
+  ECR_BASE: 195430954683.dkr.ecr.us-east-1.amazonaws.com
+  ENV: dev
+  CLUSTER_NAME: fibonacco-dev
+
+jobs:
+  build-and-push:
+    name: Build and Push Docker Images
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        service:
+          - name: base-app
+            dockerfile: docker/Dockerfile.base-app
+          - name: inertia-ssr
+            dockerfile: docker/Dockerfile.inertia-ssr
+          - name: goeventcity
+            dockerfile: docker/Dockerfile.web
+          - name: daynews
+            dockerfile: docker/Dockerfile.web
+          - name: downtownguide
+            dockerfile: docker/Dockerfile.web
+          - name: alphasite
+            dockerfile: docker/Dockerfile.web
+    
+    # Skip services if specific service is requested
+    continue-on-error: false
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+          SERVICE_NAME: ${{ matrix.service.name }}
+          DOCKERFILE: ${{ matrix.service.dockerfile }}
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            --file $DOCKERFILE \
+            --tag $ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:$IMAGE_TAG \
+            --tag $ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:latest \
+            --push \
+            .
+
+  deploy:
+    name: Deploy to ECS
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        service:
+          - goeventcity
+          - daynews
+          - downtownguide
+          - alphasite
+          - inertia-ssr
+          - horizon
+    
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update ECS service
+        env:
+          SERVICE_NAME: fibonacco-${{ env.ENV }}-${{ matrix.service }}
+        run: |
+          aws ecs update-service \
+            --cluster ${{ env.CLUSTER_NAME }} \
+            --service $SERVICE_NAME \
+            --force-new-deployment \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Wait for deployment
+        env:
+          SERVICE_NAME: fibonacco-${{ env.ENV }}-${{ matrix.service }}
+        run: |
+          aws ecs wait services-stable \
+            --cluster ${{ env.CLUSTER_NAME }} \
+            --services $SERVICE_NAME \
+            --region ${{ env.AWS_REGION }}
+
