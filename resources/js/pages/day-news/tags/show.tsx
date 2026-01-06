@@ -2,7 +2,7 @@ import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import NewsArticleCard from "@/components/day-news/news-article-card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
 import { router } from "@inertiajs/react";

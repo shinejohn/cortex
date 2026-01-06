@@ -11,6 +11,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { route } from "ziggy-js";
+import { toast } from "sonner";
 
 dayjs.extend(relativeTime);
 import { HeartIcon, MapPinIcon, MessageCircleIcon, MoreHorizontalIcon, SendIcon, ShareIcon } from "lucide-react";
@@ -43,8 +44,13 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
                 setLikesCount(response.data.likes_count);
                 // Track like engagement
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error toggling like:", error);
+            const errorMessage = error.response?.data?.message || "Failed to update like. Please try again.";
+            toast.error(errorMessage);
+            // Revert optimistic update
+            setIsLiked(!isLiked);
+            setLikesCount((prev) => (isLiked ? prev + 1 : prev - 1));
         }
     };
 
@@ -58,11 +64,13 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
             });
             if (response.data.comment) {
                 setComments((prev) => [...prev, response.data.comment]);
+                setCommentText("");
+                setShowComments(true);
             }
-            setCommentText("");
-            setShowComments(true);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error posting comment:", error);
+            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to post comment. Please try again.";
+            toast.error(errorMessage);
         } finally {
             setIsSubmittingComment(false);
         }
@@ -74,8 +82,11 @@ export function SocialPostCard({ post, currentUser, onUpdate, onDelete }: Social
         try {
             await axios.delete(route("social.comments.delete", commentId));
             setComments((prev) => prev.filter((comment) => comment.id !== commentId));
-        } catch (error) {
+            toast.success("Comment deleted successfully");
+        } catch (error: any) {
             console.error("Error deleting comment:", error);
+            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to delete comment. Please try again.";
+            toast.error(errorMessage);
         }
     };
 

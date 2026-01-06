@@ -7,12 +7,19 @@ namespace App\Http\Controllers\DayNews;
 use App\Http\Controllers\Controller;
 use App\Models\ArticleComment;
 use App\Models\DayNewsPost;
+use App\Models\Region;
+use App\Services\AdvertisementService;
+use App\Services\LocationService;
 use App\Services\SeoService;
 use Inertia\Inertia;
 use Inertia\Response;
 
 final class PublicPostController extends Controller
 {
+    public function __construct(
+        private readonly AdvertisementService $advertisementService,
+        private readonly LocationService $locationService
+    ) {}
     public function show(string $slug): Response
     {
         $post = DayNewsPost::where('slug', $slug)
@@ -114,6 +121,14 @@ final class PublicPostController extends Controller
             'articleBody' => $plainTextContent,
         ];
 
+        // Get current region for ad targeting
+        $region = $post->regions->first();
+
+        // Get advertisements for different placements
+        $bannerAds = $this->advertisementService->getActiveAds('day_news', $region, 'banner')->take(1);
+        $sidebarAds = $this->advertisementService->getActiveAds('day_news', $region, 'sidebar')->take(3);
+        $inlineAds = $this->advertisementService->getActiveAds('day_news', $region, 'inline')->take(3);
+
         return Inertia::render('day-news/posts/show', [
             'seo' => [
                 'jsonLd' => SeoService::buildJsonLd('article', $seoData, 'day-news'),
@@ -189,6 +204,44 @@ final class PublicPostController extends Controller
                     'name' => $r->name,
                 ]),
             ]),
+            'advertisements' => [
+                'banner' => $bannerAds->map(fn ($ad) => [
+                    'id' => $ad->id,
+                    'placement' => $ad->placement,
+                    'advertable' => [
+                        'id' => $ad->advertable->id,
+                        'title' => $ad->advertable->title,
+                        'excerpt' => $ad->advertable->excerpt,
+                        'featured_image' => $ad->advertable->featured_image,
+                        'slug' => $ad->advertable->slug,
+                    ],
+                    'expires_at' => $ad->expires_at->toISOString(),
+                ]),
+                'sidebar' => $sidebarAds->map(fn ($ad) => [
+                    'id' => $ad->id,
+                    'placement' => $ad->placement,
+                    'advertable' => [
+                        'id' => $ad->advertable->id,
+                        'title' => $ad->advertable->title,
+                        'excerpt' => $ad->advertable->excerpt,
+                        'featured_image' => $ad->advertable->featured_image,
+                        'slug' => $ad->advertable->slug,
+                    ],
+                    'expires_at' => $ad->expires_at->toISOString(),
+                ]),
+                'inline' => $inlineAds->map(fn ($ad) => [
+                    'id' => $ad->id,
+                    'placement' => $ad->placement,
+                    'advertable' => [
+                        'id' => $ad->advertable->id,
+                        'title' => $ad->advertable->title,
+                        'excerpt' => $ad->advertable->excerpt,
+                        'featured_image' => $ad->advertable->featured_image,
+                        'slug' => $ad->advertable->slug,
+                    ],
+                    'expires_at' => $ad->expires_at->toISOString(),
+                ]),
+            ],
         ]);
     }
 }

@@ -18,18 +18,17 @@ final class CommunityThreadReplyFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+                                public function definition(): array
     {
         return [
-            'thread_id' => CommunityThread::factory(),
-            'user_id' => User::factory(),
-            'content' => fake()->paragraphs(fake()->numberBetween(1, 3), true),
-            'images' => null,
-            'likes_count' => fake()->numberBetween(0, 25),
-            'is_solution' => false,
-            'is_pinned' => false,
-            'is_edited' => fake()->boolean(10), // 10% chance of being edited
-            'edited_at' => null,
+            'thread_id' => \App\Models\CommunityThread::factory(),
+            'user_id' => \App\Models\User::factory(),
+            'content' => $this->faker->paragraph(),
+            'images' => $this->faker->optional()->url(),
+            'is_solution' => $this->faker->boolean(),
+            'is_pinned' => $this->faker->boolean(),
+            'is_edited' => $this->faker->boolean(),
+            'edited_at' => $this->faker->dateTime(),
             'reply_to_id' => null,
         ];
     }

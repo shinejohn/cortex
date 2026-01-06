@@ -95,7 +95,7 @@ final class BusinessService
     {
         $cacheKey = "business:{$id}";
         
-        return $this->cacheService->remember($cacheKey, now()->addHours(1), function () use ($id) {
+        return $this->cacheService->remember($cacheKey, 3600, function () use ($id) {
             return Business::with(['regions', 'workspace'])->find($id);
         });
     }
@@ -123,7 +123,7 @@ final class BusinessService
     ): LengthAwarePaginator {
         $cacheKey = 'business:search:'.md5(serialize([$query, $filters, $perPage, $page]));
         
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(5), function () use ($query, $filters, $perPage, $page) {
+        return $this->cacheService->remember($cacheKey, 300, function () use ($query, $filters, $perPage, $page) {
             $searchQuery = Business::query();
 
             // Search query
@@ -203,7 +203,7 @@ final class BusinessService
         $regionId = $region instanceof Region ? $region->id : $region;
         $cacheKey = "businesses:region:{$regionId}:limit:{$limit}";
         
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(10), function () use ($regionId, $limit) {
+        return $this->cacheService->remember($cacheKey, 600, function () use ($regionId, $limit) {
             return Business::whereHas('regions', function ($q) use ($regionId) {
                 $q->where('regions.id', $regionId);
             })
@@ -221,7 +221,7 @@ final class BusinessService
     {
         $cacheKey = "businesses:category:{$category}:limit:{$limit}";
         
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(10), function () use ($category, $limit) {
+        return $this->cacheService->remember($cacheKey, 600, function () use ($category, $limit) {
             return Business::byCategory($category)
                 ->active()
                 ->with(['regions'])
@@ -237,7 +237,7 @@ final class BusinessService
     {
         $cacheKey = "businesses:featured:limit:{$limit}";
         
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(30), function () use ($limit) {
+        return $this->cacheService->remember($cacheKey, 1800, function () use ($limit) {
             return Business::where('featured', true)
                 ->active()
                 ->verified()
@@ -255,7 +255,7 @@ final class BusinessService
     {
         $cacheKey = "businesses:radius:{$latitude}:{$longitude}:{$radiusKm}:limit:{$limit}";
         
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(5), function () use ($latitude, $longitude, $radiusKm, $limit) {
+        return $this->cacheService->remember($cacheKey, 300, function () use ($latitude, $longitude, $radiusKm, $limit) {
             return Business::withinRadius($latitude, $longitude, $radiusKm)
                 ->active()
                 ->with(['regions'])
@@ -310,7 +310,7 @@ final class BusinessService
     {
         $cacheKey = "alphasite:business:{$slugOrSubdomain}";
         
-        return $this->cacheService->remember($cacheKey, now()->addHours(1), function () use ($slugOrSubdomain) {
+        return $this->cacheService->remember($cacheKey, 3600, function () use ($slugOrSubdomain) {
             return Business::with([
                 'industry',
                 'template',

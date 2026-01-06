@@ -4,6 +4,7 @@ import axios from "axios";
 import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { route } from "ziggy-js";
+import { toast } from "sonner";
 
 interface FollowButtonProps {
     followableType: "event" | "performer" | "venue" | "calendar";
@@ -47,8 +48,14 @@ export function FollowButton({
             });
 
             setIsFollowing(response.data.following);
-        } catch (error) {
+            const action = response.data.following ? "saved" : "unsaved";
+            toast.success(`Successfully ${action}`);
+        } catch (error: any) {
             console.error("Failed to toggle follow:", error);
+            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to update follow status. Please try again.";
+            toast.error(errorMessage);
+            // Revert optimistic update
+            setIsFollowing(!isFollowing);
         } finally {
             setIsLoading(false);
         }

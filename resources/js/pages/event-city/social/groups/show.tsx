@@ -3,10 +3,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AppLayout from "@/layouts/app-layout";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import axios from "axios";
 import { ArrowLeftIcon, GlobeIcon, LockIcon, MessageSquareIcon, PlusIcon, SettingsIcon, UserIcon, UserPlusIcon, UsersIcon } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface GroupMember {
     id: string;
@@ -52,7 +53,8 @@ export default function ShowGroup({ group }: Props) {
         setIsJoining(true);
         try {
             await axios.post(`/social/groups/${group.id}/join`);
-            window.location.reload(); // Refresh to show updated membership status
+            toast.success("Successfully joined group");
+            router.reload({ only: ["group"] });
         } catch (error) {
             console.error("Error joining group:", error);
         } finally {
@@ -65,7 +67,8 @@ export default function ShowGroup({ group }: Props) {
             setIsLeaving(true);
             try {
                 await axios.delete(`/social/groups/${group.id}/leave`);
-                window.location.reload(); // Refresh to show updated membership status
+                toast.success("Successfully left group");
+                router.reload({ only: ["group"] });
             } catch (error) {
                 console.error("Error leaving group:", error);
             } finally {

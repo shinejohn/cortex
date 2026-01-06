@@ -1,0 +1,7 @@
+name: fibonacco-infrastructure
+runtime:
+  name: python
+  options:
+    virtualenv: venv
+description: Fibonacco Platform Infrastructure - Multi-site infrastructure for Day.News, GoEventCity, Downtown Guide, and AlphaSite
+

@@ -24,11 +24,11 @@ final class CommunityThreadReplyLikeFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+        public function definition(): array
     {
         return [
-            'reply_id' => fake()->uuid(), // Will be overwritten in seeder
-            'user_id' => fake()->uuid(), // Will be overwritten in seeder
+            'reply_id' => \App\Models\CommunityThreadReply::factory(),
+            'user_id' => \App\Models\User::factory(),
         ];
     }
 }

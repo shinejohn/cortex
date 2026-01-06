@@ -13,6 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('comment_reports')) {
+            return;
+        }
+        
         Schema::create('comment_reports', function (Blueprint $table) {
             $table->id();
             $table->uuid('comment_id')->constrained('article_comments')->cascadeOnDelete();

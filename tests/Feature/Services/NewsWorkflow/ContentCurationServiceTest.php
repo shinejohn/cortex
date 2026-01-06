@@ -8,10 +8,9 @@ use App\Models\Region;
 use App\Services\News\ContentCurationService;
 use App\Services\News\PrismAiService;
 use Illuminate\Support\Facades\Config;
-use Mockery;
 
 beforeEach(function () {
-    $this->prismAiMock = Mockery::mock(PrismAiService::class);
+    $this->prismAiMock = \Mockery::mock(PrismAiService::class);
     $this->service = new ContentCurationService($this->prismAiMock);
 });
 

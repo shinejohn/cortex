@@ -58,7 +58,7 @@ final class CommunityFactory extends Factory
         ];
 
         $communityData = fake()->randomElement($communityTypes);
-        $name = $communityData['name'];
+        $name = $communityData['name'].' '.fake()->unique()->numberBetween(1, 9999);
 
         return [
             'slug' => Str::slug($name),
@@ -69,8 +69,8 @@ final class CommunityFactory extends Factory
             'thread_types' => ['Discussion', 'Question', 'Announcement', 'Resource', 'Event'],
             'popular_tags' => $communityData['tags'],
             'is_active' => fake()->boolean(95), // 95% active
-            'workspace_id' => null, // Will be set in seeder
-            'created_by' => null, // Will be set in seeder
+            'workspace_id' => \App\Models\Workspace::factory(),
+            'created_by' => \App\Models\User::factory(),
         ];
     }
 

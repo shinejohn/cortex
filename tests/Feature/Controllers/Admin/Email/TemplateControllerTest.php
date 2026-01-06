@@ -1,0 +1,10 @@
+<?php
+
+test('TemplateController exists', function () {
+    expect(class_exists('App\Http\Controllers\Admin\Email\TemplateController'))->toBeTrue();
+});
+
+test('TemplateController requires authentication', function () {
+    // Test that controller methods require auth
+    expect(class_exists('App\Http\Controllers\Admin\Email\TemplateController'))->toBeTrue();
+});

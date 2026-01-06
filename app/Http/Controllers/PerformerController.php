@@ -76,9 +76,20 @@ final class PerformerController extends Controller
             ],
         ];
 
+        // Get current region for ad targeting
+        $region = $request->attributes->get('detected_region');
+
+        // Get advertisements
+        $bannerAds = $this->advertisementService->getActiveAds('event_city', $region, 'banner')->take(1);
+        $sidebarAds = $this->advertisementService->getActiveAds('event_city', $region, 'sidebar')->take(3);
+
         return Inertia::render('event-city/performers', [
             'featuredPerformers' => $featuredPerformers,
             'performerCategories' => $performerCategories,
+            'advertisements' => [
+                'banner' => $bannerAds->map(fn ($ad) => $this->formatAd($ad)),
+                'sidebar' => $sidebarAds->map(fn ($ad) => $this->formatAd($ad)),
+            ],
         ]);
     }
 
@@ -146,10 +157,19 @@ final class PerformerController extends Controller
 
         $performers = $query->paginate(12)->withQueryString();
 
+        // Get current region for ad targeting
+        $region = $request->attributes->get('detected_region');
+
+        // Get advertisements
+        $sidebarAds = $this->advertisementService->getActiveAds('event_city', $region, 'sidebar')->take(3);
+
         return Inertia::render('event-city/performers/Index', [
             'performers' => $performers,
             'filters' => $request->only(['status', 'verified', 'available', 'genres', 'search', 'rating_min', 'family_friendly']),
             'sort' => ['sort' => $sortBy, 'direction' => $sortDirection],
+            'advertisements' => [
+                'sidebar' => $sidebarAds->map(fn ($ad) => $this->formatAd($ad)),
+            ],
         ]);
     }
 
@@ -262,6 +282,14 @@ final class PerformerController extends Controller
             'isVerified' => $performer->is_verified,
         ];
 
+        // Get current region for ad targeting
+        $region = $request->attributes->get('detected_region');
+
+        // Get advertisements
+        $bannerAds = $this->advertisementService->getActiveAds('event_city', $region, 'banner')->take(1);
+        $sidebarAds = $this->advertisementService->getActiveAds('event_city', $region, 'sidebar')->take(3);
+        $inlineAds = $this->advertisementService->getActiveAds('event_city', $region, 'inline')->take(2);
+
         return Inertia::render('event-city/performers/show', [
             'seo' => [
                 'jsonLd' => SeoService::buildJsonLd('performer', $seoData, 'event-city'),
@@ -270,6 +298,11 @@ final class PerformerController extends Controller
             'ratingStats' => $ratingStats,
             'reviews' => $reviews,
             'isFollowing' => $isFollowing,
+            'advertisements' => [
+                'banner' => $bannerAds->map(fn ($ad) => $this->formatAd($ad)),
+                'sidebar' => $sidebarAds->map(fn ($ad) => $this->formatAd($ad)),
+                'inline' => $inlineAds->map(fn ($ad) => $this->formatAd($ad)),
+            ],
         ]);
     }
 
@@ -456,5 +489,24 @@ final class PerformerController extends Controller
 
         return redirect()->route('performers.index')
             ->with('success', 'Performer profile deleted successfully!');
+    }
+
+    /**
+     * Format advertisement for frontend
+     */
+    private function formatAd($ad): array
+    {
+        return [
+            'id' => $ad->id,
+            'placement' => $ad->placement,
+            'advertable' => [
+                'id' => $ad->advertable->id,
+                'title' => $ad->advertable->title ?? $ad->advertable->name ?? null,
+                'excerpt' => $ad->advertable->excerpt ?? $ad->advertable->description ?? null,
+                'featured_image' => $ad->advertable->featured_image ?? $ad->advertable->image ?? $ad->advertable->profile_image ?? null,
+                'slug' => $ad->advertable->slug ?? null,
+            ],
+            'expires_at' => $ad->expires_at->toISOString(),
+        ];
     }
 }

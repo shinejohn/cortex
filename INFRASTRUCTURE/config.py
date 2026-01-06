@@ -130,20 +130,35 @@ cdn = {
 
 
 # =============================================================================
-# DOMAINS CONFIGURATION
+# DOMAINS CONFIGURATION - Multisite Applications
 # =============================================================================
+# All 5 applications share the same infrastructure but use different domains
+# Domain-based routing in Laravel handles app selection
 domains = {
     "goeventcity": {
         "domain": "goeventcity.com" if is_production else f"{env}.goeventcity.com",
-        "health_check_path": "/health",
+        "health_check_path": "/healthcheck",  # Laravel health check endpoint
+        "app_name": "event-city",
     },
     "daynews": {
         "domain": "day.news" if is_production else f"{env}.day.news",
-        "health_check_path": "/health",
+        "health_check_path": "/healthcheck",
+        "app_name": "day-news",
     },
     "downtownguide": {
         "domain": "downtownsguide.com" if is_production else f"{env}.downtownsguide.com",
-        "health_check_path": "/health",
+        "health_check_path": "/healthcheck",
+        "app_name": "downtown-guide",
+    },
+    "golocalvoices": {
+        "domain": "golocalvoices.com" if is_production else f"{env}.golocalvoices.com",
+        "health_check_path": "/healthcheck",
+        "app_name": "local-voices",
+    },
+    "alphasite": {
+        "domain": "alphasite.com" if is_production else f"{env}.alphasite.com",
+        "health_check_path": "/healthcheck",
+        "app_name": "alphasite",
     },
 }
 

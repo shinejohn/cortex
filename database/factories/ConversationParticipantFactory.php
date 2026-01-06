@@ -16,12 +16,14 @@ final class ConversationParticipantFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+        public function definition(): array
     {
         return [
-            'joined_at' => fake()->dateTimeBetween('-30 days', 'now'),
-            'last_read_at' => fake()->optional(0.7)->dateTimeBetween('-7 days', 'now'),
-            'is_admin' => fake()->boolean(20), // 20% chance of being admin
+            'conversation_id' => \App\Models\Conversation::factory(),
+            'user_id' => \App\Models\User::factory(),
+            'joined_at' => $this->faker->dateTime(),
+            'last_read_at' => $this->faker->dateTime(),
+            'is_admin' => $this->faker->boolean(),
         ];
     }
 

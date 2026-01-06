@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CalendarEditor } from "@/types/calendars";
+import { router } from "@inertiajs/react";
 import axios from "axios";
 import { Plus, Trash2, UserCog } from "lucide-react";
 import { useState } from "react";
 import { route } from "ziggy-js";
+import { toast } from "sonner";
 
 interface RoleManagementProps {
     calendarId: number;
@@ -47,8 +49,8 @@ export function RoleManagement({ calendarId, editors, ownerId }: RoleManagementP
             });
 
             if (response.status === 200) {
-                // Reload the page to show the new editor
-                window.location.reload();
+                toast.success("Editor added successfully");
+                router.reload({ only: ["calendar"] });
             }
         } catch (err: any) {
             if (err.response?.data?.message) {
@@ -68,8 +70,8 @@ export function RoleManagement({ calendarId, editors, ownerId }: RoleManagementP
 
         try {
             await axios.delete(route("calendars.editors.remove", { calendar: calendarId, user: userId }));
-            // Reload the page to reflect the change
-            window.location.reload();
+            toast.success("Editor removed successfully");
+            router.reload({ only: ["calendar"] });
         } catch (err) {
             alert("Failed to remove editor. Please try again.");
         }

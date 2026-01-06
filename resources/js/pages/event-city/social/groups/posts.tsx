@@ -5,10 +5,11 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
 import AppLayout from "@/layouts/app-layout";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import axios from "axios";
 import { ArrowLeftIcon, EditIcon, MessageSquareIcon, MoreHorizontalIcon, PinIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface User {
     id: string;
@@ -71,7 +72,8 @@ export default function GroupPosts({ group, posts }: Props) {
             });
             setNewPostContent("");
             setShowCreateForm(false);
-            window.location.reload(); // Refresh to show new post
+            toast.success("Post created successfully");
+            router.reload({ only: ["posts"] });
         } catch (error) {
             console.error("Error creating post:", error);
         } finally {
@@ -83,7 +85,8 @@ export default function GroupPosts({ group, posts }: Props) {
         if (confirm("Are you sure you want to delete this post?")) {
             try {
                 await axios.delete(`/social/groups/${group.id}/posts/${postId}`);
-                window.location.reload(); // Refresh to remove deleted post
+                toast.success("Post deleted successfully");
+                router.reload({ only: ["posts"] });
             } catch (error) {
                 console.error("Error deleting post:", error);
             }
@@ -93,7 +96,8 @@ export default function GroupPosts({ group, posts }: Props) {
     const handlePinPost = async (postId: string) => {
         try {
             await axios.patch(`/social/groups/${group.id}/posts/${postId}/pin`);
-            window.location.reload(); // Refresh to show pin status change
+            toast.success("Post pin status updated");
+            router.reload({ only: ["posts"] });
         } catch (error) {
             console.error("Error pinning post:", error);
         }

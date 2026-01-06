@@ -56,7 +56,7 @@ final class StoreFactory extends Factory
             'status' => fake()->randomElement(['pending', 'approved', 'approved', 'approved']), // 75% approved
             'rejection_reason' => null,
             'approved_at' => null,
-            'workspace_id' => null, // Will be set in seeder
+            'workspace_id' => \App\Models\Workspace::factory(),
         ];
     }
 

@@ -286,6 +286,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/tickets/gift/{gift}/cancel', [TicketGiftController::class, 'cancel'])->name('tickets.gift.cancel');
 
     // Dashboard routes
+    Route::get('/dashboard', function (Request $request) {
+        // Redirect to appropriate dashboard based on user role or default to fan dashboard
+        return redirect()->route('dashboard.fan');
+    })->name('dashboard');
+    
     Route::get('/dashboard/fan', function (Request $request) {
         return Inertia::render('event-city/dashboard/fan', [
             'user' => $request->user(),
@@ -506,3 +511,6 @@ Route::post('/stripe/webhook', App\Http\Controllers\StripeWebhookController::cla
 require __DIR__.'/workspace.php';
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
+require __DIR__.'/ads.php';
+require __DIR__.'/email-tracking.php';
+require __DIR__.'/admin.php';

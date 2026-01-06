@@ -2,10 +2,11 @@ import { GridCard } from "@/components/common/grid-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import AppLayout from "@/layouts/app-layout";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import axios from "axios";
 import { ChevronDownIcon, FilterIcon, GlobeIcon, LockIcon, PlusIcon, SearchIcon, UserIcon, UsersIcon } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface Group {
     id: string;
@@ -52,7 +53,8 @@ export default function GroupsIndex({ my_groups, suggested_groups }: Props) {
     const handleJoinGroup = async (groupId: string) => {
         try {
             await axios.post(`/social/groups/${groupId}/join`);
-            window.location.reload(); // Refresh to show updated membership status
+            toast.success("Successfully joined group");
+            router.reload({ only: ["groups"] });
         } catch (error) {
             console.error("Error joining group:", error);
         }
@@ -62,7 +64,8 @@ export default function GroupsIndex({ my_groups, suggested_groups }: Props) {
         if (confirm("Are you sure you want to leave this group?")) {
             try {
                 await axios.delete(`/social/groups/${groupId}/leave`);
-                window.location.reload(); // Refresh to show updated membership status
+                toast.success("Successfully left group");
+                router.reload({ only: ["groups"] });
             } catch (error) {
                 console.error("Error leaving group:", error);
             }

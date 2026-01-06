@@ -29,7 +29,7 @@ describe('WorkspaceSettingsController', function () {
             $response->assertSuccessful()
                 ->assertInertia(
                     fn ($page) => $page
-                        ->component('settings/workspace/overview')
+                        ->component('event-city/settings/workspace/overview')
                         ->has('workspace')
                         ->where('workspace.id', $this->workspace->id)
                         ->where('workspace.name', $this->workspace->name)

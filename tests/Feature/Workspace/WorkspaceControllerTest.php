@@ -183,7 +183,7 @@ describe('WorkspaceController', function () {
             $response->assertSuccessful()
                 ->assertInertia(
                     fn ($page) => $page
-                        ->component('auth/workspace-invitation')
+                        ->component('event-city/auth/workspace-invitation')
                         ->has('invitation')
                         ->where('invitation.token', $invitation->token)
                         ->where('invitation.email', 'test@example.com')
@@ -273,7 +273,7 @@ describe('WorkspaceController', function () {
             $response->assertSuccessful()
                 ->assertInertia(
                     fn ($page) => $page
-                        ->component('auth/workspace-invitation')
+                        ->component('event-city/auth/workspace-invitation')
                         ->where('userExists', true)
                 );
         });

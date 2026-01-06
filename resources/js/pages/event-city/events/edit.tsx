@@ -8,11 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import AppLayout from "@/layouts/app-layout";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import axios from "axios";
 import { ArrowLeftIcon } from "lucide-react";
 import { useState } from "react";
 import { route } from "ziggy-js";
+import { toast } from "sonner";
 
 interface Venue {
     id: string;
@@ -163,13 +164,15 @@ export default function EditEvent({ event, venues, performers, workspace = { can
             });
 
             if (response.status === 200 || response.status === 302) {
-                window.location.href = route("events.show", event.id);
+                router.visit(route("events.show", event.id));
             }
         } catch (error: any) {
             if (error.response?.data?.errors) {
                 setErrors(error.response.data.errors);
             }
             console.error("Error updating event:", error);
+            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to update event. Please check the form for errors.";
+            toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);
         }

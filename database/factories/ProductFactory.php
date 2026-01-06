@@ -17,67 +17,24 @@ final class ProductFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+        public function definition(): array
     {
-        $productNames = [
-            'Wireless Headphones',
-            'Vintage Camera',
-            'Leather Wallet',
-            'Ceramic Mug',
-            'Yoga Mat',
-            'Running Shoes',
-            'Coffee Beans',
-            'Art Print',
-            'Plant Pot',
-            'Desk Lamp',
-            'Notebook Set',
-            'Tote Bag',
-            'Phone Case',
-            'Sunglasses',
-            'Water Bottle',
-            'Scented Candle',
-            'Throw Blanket',
-            'Wall Clock',
-            'Backpack',
-            'Tea Collection',
-        ];
-
-        $images = [
-            'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1572635196237-14b3f281503f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1560769629-975ec94e6a86?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1485955900006-10f4d324d411?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1491553895911-0055eca6402d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1588099768523-f4e6a5679d88?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1611312449408-fcece27cdbb7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1587829741301-dc798b83add3?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-            'https://images.unsplash.com/photo-1602143407151-7111542de6e8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-        ];
-
-        $name = fake()->randomElement($productNames).' - '.fake()->colorName().' '.fake()->randomElement(['Edition', 'Collection', 'Series', 'Style']);
-        $price = fake()->randomFloat(2, 9.99, 299.99);
-        $hasDiscount = fake()->boolean(30);
-        $compareAtPrice = $hasDiscount ? $price * fake()->randomFloat(2, 1.2, 1.8) : null;
-        $trackInventory = fake()->boolean(80);
-
         return [
-            'name' => $name,
-            'slug' => Str::slug($name).'-'.fake()->unique()->numberBetween(1000, 9999),
-            'description' => fake()->paragraph(2),
-            'images' => fake()->randomElements($images, fake()->numberBetween(1, 3)),
-            'price' => $price,
-            'compare_at_price' => $compareAtPrice,
-            'quantity' => $trackInventory ? fake()->numberBetween(0, 100) : 0,
-            'track_inventory' => $trackInventory,
-            'sku' => fake()->optional(0.7)->bothify('SKU-####-????'),
-            'is_active' => fake()->boolean(90), // 90% active
-            'is_featured' => fake()->boolean(20), // 20% featured
-            'stripe_product_id' => null,
-            'stripe_price_id' => null,
-            'store_id' => null, // Will be set in seeder
+            'store_id' => \App\Models\Store::factory(),
+            'name' => $this->faker->sentence(),
+            'slug' => $this->faker->slug(),
+            'description' => $this->faker->paragraph(),
+            'images' => [$this->faker->imageUrl()],
+            'price' => $this->faker->randomFloat(2, 5, 500),
+            'compare_at_price' => $this->faker->optional()->randomFloat(2, 5, 800),
+            'quantity' => $this->faker->numberBetween(0, 100),
+            'track_inventory' => $this->faker->boolean(),
+            'sku' => $this->faker->unique()->bothify('SKU-#####'),
+            'is_active' => $this->faker->boolean(90),
+            'is_featured' => $this->faker->boolean(10),
+            'stripe_price_id' => $this->faker->optional()->uuid(),
+            'stripe_product_id' => $this->faker->optional()->uuid(),
+            'metadata' => [],
         ];
     }
 

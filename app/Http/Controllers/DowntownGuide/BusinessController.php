@@ -6,9 +6,12 @@ namespace App\Http\Controllers\DowntownGuide;
 
 use App\Http\Controllers\Controller;
 use App\Models\Business;
+use App\Models\Region;
+use App\Services\AdvertisementService;
 use App\Services\BusinessService;
 use App\Services\CouponService;
 use App\Services\EventService;
+use App\Services\LocationService;
 use App\Services\NewsService;
 use App\Services\OrganizationService;
 use App\Services\ReviewService;
@@ -24,7 +27,9 @@ final class BusinessController extends Controller
         private readonly CouponService $couponService,
         private readonly EventService $eventService,
         private readonly NewsService $newsService,
-        private readonly OrganizationService $organizationService
+        private readonly OrganizationService $organizationService,
+        private readonly AdvertisementService $advertisementService,
+        private readonly LocationService $locationService
     ) {}
 
     /**
@@ -68,6 +73,14 @@ final class BusinessController extends Controller
             ];
         });
 
+        // Get current region for ad targeting
+        $region = $request->attributes->get('detected_region');
+
+        // Get advertisements
+        $bannerAds = $this->advertisementService->getActiveAds('downtown_guide', $region, 'banner')->take(1);
+        $featuredAds = $this->advertisementService->getActiveAds('downtown_guide', $region, 'featured')->take(1);
+        $sidebarAds = $this->advertisementService->getActiveAds('downtown_guide', $region, 'sidebar')->take(3);
+
         return Inertia::render('downtown-guide/businesses/index', [
             'businesses' => $businesses,
             'featuredBusinesses' => $featuredWithDeals,
@@ -77,6 +90,11 @@ final class BusinessController extends Controller
                 'direction' => $filters['sort_order'],
             ],
             'platform' => 'downtownsguide', // For theme differentiation
+            'advertisements' => [
+                'banner' => $bannerAds->map(fn ($ad) => $this->formatAd($ad)),
+                'featured' => $featuredAds->map(fn ($ad) => $this->formatAd($ad)),
+                'sidebar' => $sidebarAds->map(fn ($ad) => $this->formatAd($ad)),
+            ],
         ]);
     }
 
@@ -121,6 +139,14 @@ final class BusinessController extends Controller
             6
         )->filter(fn ($b) => $b->id !== $business->id);
 
+        // Get current region for ad targeting
+        $region = $request->attributes->get('detected_region') ?? $business->regions->first();
+
+        // Get advertisements
+        $bannerAds = $this->advertisementService->getActiveAds('downtown_guide', $region, 'banner')->take(1);
+        $sidebarAds = $this->advertisementService->getActiveAds('downtown_guide', $region, 'sidebar')->take(3);
+        $inlineAds = $this->advertisementService->getActiveAds('downtown_guide', $region, 'inline')->take(2);
+
         return Inertia::render('downtown-guide/businesses/show', [
             'business' => $business,
             'reviews' => $reviews,
@@ -133,7 +159,31 @@ final class BusinessController extends Controller
             'organizationContent' => $organizationContent,
             'relatedBusinesses' => $relatedBusinesses,
             'platform' => 'downtownsguide', // For theme differentiation
+            'advertisements' => [
+                'banner' => $bannerAds->map(fn ($ad) => $this->formatAd($ad)),
+                'sidebar' => $sidebarAds->map(fn ($ad) => $this->formatAd($ad)),
+                'inline' => $inlineAds->map(fn ($ad) => $this->formatAd($ad)),
+            ],
         ]);
+    }
+
+    /**
+     * Format advertisement for frontend
+     */
+    private function formatAd($ad): array
+    {
+        return [
+            'id' => $ad->id,
+            'placement' => $ad->placement,
+            'advertable' => [
+                'id' => $ad->advertable->id,
+                'title' => $ad->advertable->title ?? $ad->advertable->name ?? null,
+                'excerpt' => $ad->advertable->excerpt ?? $ad->advertable->description ?? null,
+                'featured_image' => $ad->advertable->featured_image ?? $ad->advertable->image ?? $ad->advertable->profile_image ?? null,
+                'slug' => $ad->advertable->slug ?? null,
+            ],
+            'expires_at' => $ad->expires_at->toISOString(),
+        ];
     }
 }
 

@@ -84,18 +84,6 @@ final class Booking extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    protected function casts(): array
-    {
-        return [
-            'event_date' => 'date',
-            'payment_date' => 'datetime',
-            'refund_date' => 'datetime',
-            'confirmed_at' => 'datetime',
-            'cancelled_at' => 'datetime',
-            'metadata' => 'array',
-        ];
-    }
-
     // Computed attributes for frontend compatibility
     public function getContactInfoAttribute(): array
     {

@@ -7,7 +7,10 @@ namespace App\Http\Controllers\DayNews;
 use App\Http\Controllers\Controller;
 use App\Models\Podcast;
 use App\Models\PodcastEpisode;
+use App\Models\Region;
+use App\Services\AdvertisementService;
 use App\Services\DayNews\PodcastService;
+use App\Services\LocationService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -15,7 +18,9 @@ use Inertia\Response;
 final class PodcastController extends Controller
 {
     public function __construct(
-        private readonly PodcastService $podcastService
+        private readonly PodcastService $podcastService,
+        private readonly AdvertisementService $advertisementService,
+        private readonly LocationService $locationService
     ) {}
 
     /**
@@ -56,6 +61,13 @@ final class PodcastController extends Controller
             $q->published()->orderBy('published_at', 'desc');
         }]);
 
+        // Get advertisements
+        $platform = $this->isStandaloneView($request) ? 'local_voices' : 'day_news';
+        $currentRegion = $request->attributes->get('detected_region') ?? $podcast->regions->first();
+        $bannerAds = $this->advertisementService->getActiveAds($platform, $currentRegion, 'banner')->take(1);
+        $sidebarAds = $this->advertisementService->getActiveAds($platform, $currentRegion, 'sidebar')->take(3);
+        $inlineAds = $this->advertisementService->getActiveAds($platform, $currentRegion, 'inline')->take(2);
+
         return Inertia::render($this->getViewPath($request, 'podcast-show'), [
             'podcast' => [
                 'id' => $podcast->id,
@@ -87,6 +99,11 @@ final class PodcastController extends Controller
                 ]),
             ],
             'viewMode' => $this->getViewMode($request),
+            'advertisements' => [
+                'banner' => $bannerAds->map(fn ($ad) => $this->formatAd($ad)),
+                'sidebar' => $sidebarAds->map(fn ($ad) => $this->formatAd($ad)),
+                'inline' => $inlineAds->map(fn ($ad) => $this->formatAd($ad)),
+            ],
         ]);
     }
 
@@ -245,6 +262,25 @@ final class PodcastController extends Controller
         return redirect()
             ->route($routeName, $podcast->slug)
             ->with('success', 'Episode published successfully!');
+    }
+
+    /**
+     * Format advertisement for frontend
+     */
+    private function formatAd($ad): array
+    {
+        return [
+            'id' => $ad->id,
+            'placement' => $ad->placement,
+            'advertable' => [
+                'id' => $ad->advertable->id,
+                'title' => $ad->advertable->title ?? $ad->advertable->name ?? null,
+                'excerpt' => $ad->advertable->excerpt ?? $ad->advertable->description ?? null,
+                'featured_image' => $ad->advertable->featured_image ?? $ad->advertable->image ?? $ad->advertable->cover_image ?? null,
+                'slug' => $ad->advertable->slug ?? null,
+            ],
+            'expires_at' => $ad->expires_at->toISOString(),
+        ];
     }
 }
 

@@ -14,6 +14,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
+            // Check if columns already exist
+            if (Schema::hasColumn('users', 'bio')) {
+                return;
+            }
             $table->text('bio')->nullable()->after('email');
             $table->string('author_slug')->nullable()->unique()->after('bio');
             $table->decimal('trust_score', 5, 2)->default(0.00)->after('author_slug');

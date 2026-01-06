@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\Calendar;
 use App\Models\Event;
 use App\Models\User;
+use App\Models\Workspace;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;

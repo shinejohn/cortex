@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
 final class NewsWorkflowSetting extends Model
 {
+    use HasFactory;
     private const CACHE_KEY = 'news_workflow_settings';
 
     private const CACHE_TTL = 3600; // 1 hour

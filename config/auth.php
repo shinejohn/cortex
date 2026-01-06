@@ -114,4 +114,17 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Cross-Domain Authentication Token Expiration
+    |--------------------------------------------------------------------------
+    |
+    | This option defines the number of minutes that cross-domain authentication
+    | tokens remain valid. Extended for testing purposes. Default is 24 hours
+    | (1440 minutes). For production, consider shorter durations.
+    |
+    */
+
+    'cross_domain_token_expiration' => env('CROSS_DOMAIN_TOKEN_EXPIRATION', 1440), // 24 hours
+
 ];

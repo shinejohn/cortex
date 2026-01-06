@@ -1,0 +1,8 @@
+encryptionsalt: v1:6MUP3dOoOPE=:v1:SuZLDwP4eUfRrLYq:okCAneR9Te90G5CtKdTXhfOV/6EZHA==
+config:
+  aws:region: us-east-1
+  fibonacco-infrastructure:db_password:
+    secure: v1:Mrb1Zyz/C6OL9++j:6LpnA8hBIlo8IV5g9GaF6x+m8iTGstS88uU5Dw==
+  fibonacco-infrastructure:backend:
+    url: cloud://
+  fibonacco-infrastructure:secrets_provider: cloud://

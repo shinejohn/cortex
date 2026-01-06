@@ -37,6 +37,7 @@ final class UpcomingShowFactory extends Factory
         ];
 
         return [
+            'performer_id' => \App\Models\Performer::factory(),
             'date' => fake()->dateTimeBetween('now', '+6 months'),
             'venue' => fake()->randomElement($venues),
             'tickets_available' => fake()->boolean(80),

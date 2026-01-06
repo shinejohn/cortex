@@ -16,15 +16,18 @@ final class DayNewsPostPaymentFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+        public function definition(): array
     {
         return [
             'post_id' => \App\Models\DayNewsPost::factory(),
-            'amount' => $this->faker->numberBetween(500, 5000), // $5 to $50 in cents
-            'stripe_session_id' => 'cs_test_'.$this->faker->uuid(),
-            'stripe_payment_intent_id' => 'pi_'.$this->faker->uuid(),
-            'status' => 'pending',
-            'paid_at' => null,
+            'workspace_id' => \App\Models\Workspace::factory(),
+            'stripe_payment_intent_id' => $this->faker->optional()->uuid(),
+            'stripe_checkout_session_id' => $this->faker->optional()->uuid(),
+            'amount' => $this->faker->numberBetween(100, 10000),
+            'currency' => 'usd',
+            'status' => $this->faker->randomElement(['pending', 'paid', 'failed', 'refunded']),
+            'payment_type' => $this->faker->randomElement(['post', 'ad']),
+            'ad_days' => $this->faker->optional()->numberBetween(1, 30),
         ];
     }
 

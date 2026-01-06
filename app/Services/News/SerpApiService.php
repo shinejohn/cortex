@@ -10,7 +10,7 @@ use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-final class SerpApiService
+class SerpApiService
 {
     private readonly string $apiKey;
 
@@ -18,7 +18,13 @@ final class SerpApiService
 
     public function __construct()
     {
-        $this->apiKey = config('news-workflow.apis.serpapi_key');
+        $apiKey = config('news-workflow.apis.serpapi_key');
+        if (empty($apiKey)) {
+            throw new \RuntimeException(
+                'SERP API key not configured. Please set SERPAPI_KEY in your .env file.'
+            );
+        }
+        $this->apiKey = $apiKey;
         $this->baseUrl = 'https://serpapi.com/search';
     }
 

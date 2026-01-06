@@ -4,10 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import AppLayout from "@/layouts/app-layout";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import axios from "axios";
 import { ArrowLeftIcon, GlobeIcon, LockIcon, UserIcon } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function CreateGroup() {
     const [formData, setFormData] = useState({
@@ -26,10 +27,13 @@ export default function CreateGroup() {
         try {
             const response = await axios.post("/social/groups", formData);
             if (response.status === 200 || response.status === 201) {
-                window.location.href = "/social/groups";
+                toast.success("Group created successfully");
+                router.visit("/social/groups");
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error creating group:", error);
+            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to create group. Please try again.";
+            toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);
         }

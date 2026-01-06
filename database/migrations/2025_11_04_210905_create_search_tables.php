@@ -13,6 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('search_history')) {
+            return;
+        }
+        
         // Search history table
         Schema::create('search_history', function (Blueprint $table) {
             $table->id();

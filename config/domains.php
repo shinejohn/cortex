@@ -19,5 +19,6 @@ return [
     'day-news' => env('DAYNEWS_DOMAIN', 'daynews.test'),
     'downtown-guide' => env('DOWNTOWNGUIDE_DOMAIN', 'downtownguide.test'),
     'local-voices' => env('LOCAL_VOICES_DOMAIN', 'golocalvoices.com'),
+    'alphasite' => env('ALPHASITE_DOMAIN', 'alphasite.com'),
 
 ];

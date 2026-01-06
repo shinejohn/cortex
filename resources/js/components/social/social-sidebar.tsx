@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { SocialUserProfile, User, UserWithSocial } from "@/types/social";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import axios from "axios";
 import { CalendarIcon, LinkIcon, MapPinIcon, UsersIcon } from "lucide-react";
 import { route } from "ziggy-js";
+import { toast } from "sonner";
 
 interface SocialSidebarProps {
     currentUser: User;
@@ -18,10 +19,12 @@ export function SocialSidebar({ currentUser, userProfile, suggestedFriends }: So
     const handleSendFriendRequest = async (userId: number) => {
         try {
             await axios.post(route("social.friend.request", userId));
-            // Refresh the page or update the UI to reflect the sent request
-            window.location.reload();
-        } catch (error) {
+            toast.success("Friend request sent successfully");
+            router.reload({ only: ["suggestedFriends"] });
+        } catch (error: any) {
             console.error("Error sending friend request:", error);
+            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to send friend request. Please try again.";
+            toast.error(errorMessage);
         }
     };
 

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('communities')) {
+            return;
+        }
+        
         Schema::create('communities', function (Blueprint $table) {
             $table->uuid('id')->primary();
             

@@ -19,14 +19,23 @@ use Stripe\StripeClient;
  *
  * @phpstan-ignore-next-line
  */
-final class StripeConnectService
+class StripeConnectService
 {
     private StripeClient $stripe;
 
     public function __construct()
     {
-        Stripe::setApiKey(config('services.stripe.secret'));
-        $this->stripe = new StripeClient(config('services.stripe.secret'));
+        $secret = config('services.stripe.secret');
+        
+        if (empty($secret)) {
+            throw new \RuntimeException(
+                'Stripe API secret not configured. Please set STRIPE_SECRET in your .env file. ' .
+                'For testing, you can use a test key from https://dashboard.stripe.com/test/apikeys'
+            );
+        }
+        
+        Stripe::setApiKey($secret);
+        $this->stripe = new StripeClient($secret);
     }
 
     /**

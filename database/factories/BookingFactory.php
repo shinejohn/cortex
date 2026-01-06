@@ -104,8 +104,8 @@ final class BookingFactory extends Factory
                 'Performer illness',
                 'Payment issues',
             ]),
-            'workspace_id' => null, // Will be set in seeder
-            'created_by' => null, // Will be set in seeder
+            'workspace_id' => \App\Models\Workspace::factory(),
+            'created_by' => \App\Models\User::factory(),
         ];
     }
 

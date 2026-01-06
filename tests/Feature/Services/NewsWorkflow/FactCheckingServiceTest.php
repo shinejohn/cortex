@@ -10,11 +10,10 @@ use App\Services\News\FactCheckingService;
 use App\Services\News\PrismAiService;
 use App\Services\News\ScrapingBeeService;
 use Illuminate\Support\Facades\Config;
-use Mockery;
 
 beforeEach(function () {
-    $this->prismAiMock = Mockery::mock(PrismAiService::class);
-    $this->scrapingBeeMock = Mockery::mock(ScrapingBeeService::class);
+    $this->prismAiMock = \Mockery::mock(PrismAiService::class);
+    $this->scrapingBeeMock = \Mockery::mock(ScrapingBeeService::class);
     $this->service = new FactCheckingService($this->prismAiMock, $this->scrapingBeeMock);
 });
 
@@ -45,7 +44,7 @@ it('processes drafts for fact-checking', function () {
 
     $this->scrapingBeeMock
         ->shouldReceive('searchForClaim')
-        ->with('Test claim 1', Mockery::type('array'))
+        ->with('Test claim 1', \Mockery::type('array'))
         ->once()
         ->andReturn([
             ['url' => 'https://example.com/article', 'claim_found' => true, 'evidence' => 'Evidence text', 'scraped_at' => now()->toIso8601String()],
@@ -55,7 +54,7 @@ it('processes drafts for fact-checking', function () {
 
     $this->scrapingBeeMock
         ->shouldReceive('searchForClaim')
-        ->with('Test claim 2', Mockery::type('array'))
+        ->with('Test claim 2', \Mockery::type('array'))
         ->once()
         ->andReturn([
             ['url' => 'https://example.com/article', 'claim_found' => true, 'evidence' => 'Evidence text', 'scraped_at' => now()->toIso8601String()],
@@ -112,7 +111,7 @@ it('generates outline for draft', function () {
 
     $this->scrapingBeeMock
         ->shouldReceive('searchForClaim')
-        ->with('Test claim', Mockery::type('array'))
+        ->with('Test claim', \Mockery::type('array'))
         ->once()
         ->andReturn([
             ['url' => 'https://example.com/article', 'claim_found' => true, 'evidence' => 'Evidence', 'scraped_at' => now()->toIso8601String()],
@@ -155,7 +154,7 @@ it('creates fact-check records for verified claims', function () {
     $this->scrapingBeeMock
         ->shouldReceive('searchForClaim')
         ->once()
-        ->with('The business opened in 2024', Mockery::type('array'))
+        ->with('The business opened in 2024', \Mockery::type('array'))
         ->andReturn([
             ['url' => 'https://example.com/article', 'claim_found' => true, 'evidence' => 'The business opened in January 2024', 'scraped_at' => now()->toIso8601String()],
             ['url' => 'https://example.com/source2', 'claim_found' => true, 'evidence' => 'Confirmed 2024 opening', 'scraped_at' => now()->toIso8601String()],
@@ -194,7 +193,7 @@ it('marks claims as unverified when no evidence found', function () {
 
     $this->scrapingBeeMock
         ->shouldReceive('searchForClaim')
-        ->with('Unverifiable claim', Mockery::type('array'))
+        ->with('Unverifiable claim', \Mockery::type('array'))
         ->once()
         ->andReturn([
             ['url' => 'https://example.com/article', 'claim_found' => false, 'evidence' => null, 'scraped_at' => now()->toIso8601String()],
@@ -230,7 +229,7 @@ it('calculates average fact-check confidence', function () {
 
     $this->scrapingBeeMock
         ->shouldReceive('searchForClaim')
-        ->with('Claim 1', Mockery::type('array'))
+        ->with('Claim 1', \Mockery::type('array'))
         ->once()
         ->andReturn([
             ['url' => 'https://example.com/article', 'claim_found' => true, 'evidence' => 'Evidence', 'scraped_at' => now()->toIso8601String()],
@@ -240,7 +239,7 @@ it('calculates average fact-check confidence', function () {
 
     $this->scrapingBeeMock
         ->shouldReceive('searchForClaim')
-        ->with('Claim 2', Mockery::type('array'))
+        ->with('Claim 2', \Mockery::type('array'))
         ->once()
         ->andReturn([
             ['url' => 'https://example.com/article', 'claim_found' => false, 'evidence' => null, 'scraped_at' => now()->toIso8601String()],
@@ -278,7 +277,7 @@ it('rejects drafts with low confidence scores', function () {
 
     $this->scrapingBeeMock
         ->shouldReceive('searchForClaim')
-        ->with('Low confidence claim', Mockery::type('array'))
+        ->with('Low confidence claim', \Mockery::type('array'))
         ->once()
         ->andReturn([
             ['url' => 'https://example.com/article', 'claim_found' => false, 'evidence' => null, 'scraped_at' => now()->toIso8601String()],

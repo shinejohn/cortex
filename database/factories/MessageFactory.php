@@ -19,6 +19,8 @@ final class MessageFactory extends Factory
     public function definition(): array
     {
         return [
+            'conversation_id' => \App\Models\Conversation::factory(),
+            'sender_id' => \App\Models\User::factory(),
             'content' => fake()->sentence(fake()->numberBetween(3, 15)),
             'type' => fake()->randomElement(['text', 'image', 'file']),
             'metadata' => fake()->optional(0.3)->randomElements([

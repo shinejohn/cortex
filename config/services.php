@@ -61,4 +61,40 @@ return [
         'api_key' => env('N8N_API_KEY'),
     ],
 
+    'webpush' => [
+        'public_key' => env('VAPID_PUBLIC_KEY'),
+        'private_key' => env('VAPID_PRIVATE_KEY'),
+        'subject' => env('VAPID_SUBJECT', 'mailto:notifications@shine.com'),
+    ],
+
+    'sms' => [
+        'provider' => env('SMS_PROVIDER', 'twilio'),
+        'api_key' => env('SMS_API_KEY'),
+        'api_secret' => env('SMS_API_SECRET'),
+        'from_number' => env('SMS_FROM_NUMBER'),
+    ],
+
+    'emergency' => [
+        'api_key' => env('EMERGENCY_BROADCAST_API_KEY'),
+        'api_url' => env('EMERGENCY_BROADCAST_API_URL'),
+    ],
+
+    'sns' => [
+        'key' => env('AWS_ACCESS_KEY_ID'),
+        'secret' => env('AWS_SECRET_ACCESS_KEY'),
+        'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+        'sms_type' => env('AWS_SNS_SMS_TYPE', 'Transactional'),
+        'topic_prefix' => env('SNS_TOPIC_PREFIX', 'shine-notifications'),
+    ],
+
+    'webpush' => [
+        'public_key' => env('VAPID_PUBLIC_KEY'),
+        'private_key' => env('VAPID_PRIVATE_KEY'),
+        'subject' => env('VAPID_SUBJECT', 'mailto:notifications@shine.com'),
+    ],
+
+    'anthropic' => [
+        'api_key' => env('ANTHROPIC_API_KEY'),
+    ],
+
 ];

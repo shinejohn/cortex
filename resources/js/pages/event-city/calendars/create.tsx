@@ -7,11 +7,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import AppLayout from "@/layouts/app-layout";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import axios from "axios";
 import { ArrowLeftIcon } from "lucide-react";
 import { useState } from "react";
 import { route } from "ziggy-js";
+import { toast } from "sonner";
 
 const CATEGORIES = [
     { value: "jazz", label: "Jazz" },
@@ -87,7 +88,7 @@ export default function CreateCalendar({ workspace }: Props) {
 
             if (response.status === 200 || response.status === 201) {
                 const calendarId = response.data.id || response.data.calendar?.id;
-                window.location.href = route("calendars.show", { calendar: calendarId });
+                router.visit(route("calendars.show", { calendar: calendarId }));
             }
         } catch (error: any) {
             if (error.response?.data?.errors) {

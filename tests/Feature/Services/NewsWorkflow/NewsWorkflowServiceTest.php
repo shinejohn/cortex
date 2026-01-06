@@ -10,7 +10,6 @@ use App\Services\News\FactCheckingService;
 use App\Services\News\NewsCollectionService;
 use App\Services\News\NewsWorkflowService;
 use App\Services\News\PublishingService;
-use Mockery;
 
 beforeEach(function () {
     $this->businessDiscoveryMock = Mockery::mock(BusinessDiscoveryService::class);
