@@ -18,7 +18,48 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // Existing bindings
         $this->app->bind(GeocodingServiceInterface::class, GeocodingService::class);
+        
+        // Register AlphaSite services
+        $this->app->singleton(\App\Services\AlphaSite\CommunityService::class);
+        $this->app->singleton(\App\Services\AlphaSite\LinkingService::class);
+        $this->app->singleton(\App\Services\AlphaSite\PageGeneratorService::class);
+        $this->app->singleton(\App\Services\AlphaSite\SMBCrmService::class);
+        $this->app->singleton(\App\Services\AlphaSite\SubscriptionLifecycleService::class);
+        $this->app->singleton(\App\Services\AlphaSite\TemplateService::class);
+        
+        // Register DayNews services
+        $this->app->singleton(\App\Services\DayNews\AnnouncementService::class);
+        $this->app->singleton(\App\Services\DayNews\ArchiveService::class);
+        $this->app->singleton(\App\Services\DayNews\AuthorService::class);
+        $this->app->singleton(\App\Services\DayNews\ClassifiedService::class);
+        $this->app->singleton(\App\Services\DayNews\PhotoService::class);
+        $this->app->singleton(\App\Services\DayNews\PodcastService::class);
+        $this->app->singleton(\App\Services\DayNews\SearchService::class);
+        $this->app->singleton(\App\Services\DayNews\TagService::class);
+        $this->app->singleton(\App\Services\DayNews\TrendingService::class);
+        
+        // Register News workflow services
+        $this->app->singleton(\App\Services\News\ArticleGenerationService::class);
+        $this->app->singleton(\App\Services\News\BusinessDiscoveryService::class);
+        $this->app->singleton(\App\Services\News\ContentCurationService::class);
+        $this->app->singleton(\App\Services\News\ContentShortlistingService::class);
+        $this->app->singleton(\App\Services\News\EventExtractionService::class);
+        $this->app->singleton(\App\Services\News\EventPublishingService::class);
+        $this->app->singleton(\App\Services\News\FactCheckingService::class);
+        $this->app->singleton(\App\Services\News\FetchFrequencyService::class);
+        $this->app->singleton(\App\Services\News\ImageStorageService::class);
+        $this->app->singleton(\App\Services\News\NewsCollectionService::class);
+        $this->app->singleton(\App\Services\News\NewsWorkflowService::class);
+        $this->app->singleton(\App\Services\News\PerformerMatchingService::class);
+        $this->app->singleton(\App\Services\News\PrismAiService::class);
+        $this->app->singleton(\App\Services\News\PublishingService::class);
+        $this->app->singleton(\App\Services\News\ScrapingBeeService::class);
+        $this->app->singleton(\App\Services\News\SerpApiService::class);
+        $this->app->singleton(\App\Services\News\UnsplashService::class);
+        $this->app->singleton(\App\Services\News\VenueMatchingService::class);
+        $this->app->singleton(\App\Services\News\WorkflowSettingsService::class);
     }
 
     /**

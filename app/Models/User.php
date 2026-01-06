@@ -16,11 +16,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 final class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, HasUuid, Notifiable;
+    use HasApiTokens, HasFactory, HasUuid, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -32,6 +33,7 @@ final class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'current_workspace_id',
+        'tenant_id',
     ];
 
     /**
@@ -66,6 +68,11 @@ final class User extends Authenticatable implements FilamentUser
     public function currentWorkspace(): BelongsTo
     {
         return $this->belongsTo(Workspace::class, 'current_workspace_id');
+    }
+
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
     }
 
     public function workspaceMemberships(): HasMany

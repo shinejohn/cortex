@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import type { CommunityThreadReply } from "@/types/community";
+import { router } from "@inertiajs/react";
 import axios from "axios";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { HeartIcon, MessageCircleIcon, MoreHorizontalIcon, PencilIcon, PinIcon, StarIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 // Initialize dayjs plugins
 dayjs.extend(relativeTime);
@@ -42,9 +44,12 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
             });
             setReplyContent("");
             setIsReplying(false);
-            window.location.reload();
-        } catch (error) {
+            toast.success("Reply posted successfully");
+            router.reload({ only: ["thread"] });
+        } catch (error: any) {
             console.error("Failed to submit reply:", error);
+            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to post reply. Please try again.";
+            toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);
         }
@@ -59,9 +64,12 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
                 content: editContent.trim(),
             });
             setIsEditing(false);
-            window.location.reload();
-        } catch (error) {
+            toast.success("Reply updated successfully");
+            router.reload({ only: ["thread"] });
+        } catch (error: any) {
             console.error("Failed to edit reply:", error);
+            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to update reply. Please try again.";
+            toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);
         }
@@ -71,9 +79,12 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
         if (confirm("Are you sure you want to delete this reply?")) {
             try {
                 await axios.delete(`/community/reply/${reply.id}`);
-                window.location.reload();
-            } catch (error) {
+                toast.success("Reply deleted successfully");
+                router.reload({ only: ["thread"] });
+            } catch (error: any) {
                 console.error("Failed to delete reply:", error);
+                const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to delete reply. Please try again.";
+                toast.error(errorMessage);
             }
         }
     };
@@ -81,9 +92,11 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
     const handleLike = async (): Promise<void> => {
         try {
             await axios.post(`/community/reply/${reply.id}/like`);
-            window.location.reload();
-        } catch (error) {
+            router.reload({ only: ["thread"] });
+        } catch (error: any) {
             console.error("Failed to like reply:", error);
+            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to like reply. Please try again.";
+            toast.error(errorMessage);
         }
     };
 

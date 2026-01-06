@@ -24,6 +24,8 @@ final class AdvertisementForm
                                 'day_news' => 'Day News',
                                 'event_city' => 'Go Event City',
                                 'downtown_guide' => 'Downtown Guide',
+                                'alphasite' => 'AlphaSite',
+                                'local_voices' => 'Go Local Voices',
                             ])
                             ->required()
                             ->default('day_news'),

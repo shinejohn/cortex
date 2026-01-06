@@ -25,7 +25,7 @@ final class EventService
     {
         $cacheKey = 'events:upcoming:'.md5(serialize([$filters, $perPage]));
         
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(5), function () use ($filters, $perPage) {
+        return $this->cacheService->remember($cacheKey, 300, function () use ($filters, $perPage) {
             $query = Event::published()
                 ->upcoming()
                 ->with(['venue', 'performer', 'regions']);
@@ -91,7 +91,7 @@ final class EventService
     {
         $cacheKey = "events:category:{$category}:limit:{$limit}";
         
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(10), function () use ($category, $limit) {
+        return $this->cacheService->remember($cacheKey, 600, function () use ($category, $limit) {
             return Event::published()
                 ->upcoming()
                 ->where('category', $category)
@@ -110,7 +110,7 @@ final class EventService
         $venueId = $venue instanceof Venue ? $venue->id : $venue;
         $cacheKey = "events:venue:{$venueId}:limit:{$limit}";
         
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(10), function () use ($venueId, $limit) {
+        return $this->cacheService->remember($cacheKey, 600, function () use ($venueId, $limit) {
             return Event::published()
                 ->upcoming()
                 ->where('venue_id', $venueId)
@@ -129,7 +129,7 @@ final class EventService
         $performerId = $performer instanceof Performer ? $performer->id : $performer;
         $cacheKey = "events:performer:{$performerId}:limit:{$limit}";
         
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(10), function () use ($performerId, $limit) {
+        return $this->cacheService->remember($cacheKey, 600, function () use ($performerId, $limit) {
             return Event::published()
                 ->upcoming()
                 ->where('performer_id', $performerId)
@@ -147,7 +147,7 @@ final class EventService
     {
         $cacheKey = "events:related:{$event->id}:limit:{$limit}";
         
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(30), function () use ($event, $limit) {
+        return $this->cacheService->remember($cacheKey, 1800, function () use ($event, $limit) {
             $query = Event::published()
                 ->upcoming()
                 ->where('id', '!=', $event->id)
@@ -184,7 +184,7 @@ final class EventService
     {
         $cacheKey = "events:featured:limit:{$limit}";
         
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(30), function () use ($limit) {
+        return $this->cacheService->remember($cacheKey, 1800, function () use ($limit) {
             return Event::published()
                 ->upcoming()
                 ->whereNotNull('image')
@@ -203,7 +203,7 @@ final class EventService
         $regionId = $region instanceof Region ? $region->id : $region;
         $cacheKey = "events:region:{$regionId}:limit:{$limit}";
         
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(10), function () use ($regionId, $limit) {
+        return $this->cacheService->remember($cacheKey, 600, function () use ($regionId, $limit) {
             return Event::published()
                 ->upcoming()
                 ->whereHas('regions', function ($q) use ($regionId) {

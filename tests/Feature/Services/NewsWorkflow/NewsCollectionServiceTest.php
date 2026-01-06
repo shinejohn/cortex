@@ -10,10 +10,9 @@ use App\Services\News\NewsCollectionService;
 use App\Services\News\SerpApiService;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Queue;
-use Mockery;
 
 beforeEach(function () {
-    $this->serpApiMock = Mockery::mock(SerpApiService::class);
+    $this->serpApiMock = \Mockery::mock(SerpApiService::class);
     $this->service = new NewsCollectionService($this->serpApiMock);
 });
 

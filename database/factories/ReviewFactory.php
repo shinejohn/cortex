@@ -45,7 +45,17 @@ final class ReviewFactory extends Factory
             'Excellent facilities and very responsive to our needs.',
         ];
 
+        $reviewableTypes = [
+            \App\Models\Business::class,
+            \App\Models\Event::class,
+            \App\Models\Venue::class,
+            \App\Models\Performer::class,
+        ];
+        $reviewableType = fake()->randomElement($reviewableTypes);
+        
         return [
+            'reviewable_type' => $reviewableType,
+            'reviewable_id' => $reviewableType::factory(),
             'user_id' => User::factory(),
             'title' => fake()->randomElement($titles),
             'content' => fake()->randomElement($positiveReviews),

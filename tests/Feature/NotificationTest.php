@@ -16,7 +16,7 @@ it('can display the notifications index page', function () {
 
     $response->assertSuccessful();
     $response->assertInertia(fn ($page) => $page
-        ->component('notifications/index')
+        ->component('event-city/notifications/index')
         ->has('notifications')
     );
 });

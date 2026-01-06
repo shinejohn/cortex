@@ -10,7 +10,7 @@ use App\Models\Region;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
-final class FactCheckingService
+class FactCheckingService
 {
     public function __construct(
         private readonly PrismAiService $prismAi,

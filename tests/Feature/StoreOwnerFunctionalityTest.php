@@ -45,7 +45,7 @@ it('allows owner to access add product page', function () {
         ->get(route('products.create', $this->store->id));
 
     $response->assertSuccessful();
-    $response->assertInertia(fn ($page) => $page->component('products/create'));
+    $response->assertInertia(fn ($page) => $page->component('event-city/products/create'));
 });
 
 it('allows owner to access edit store page', function () {
@@ -53,7 +53,7 @@ it('allows owner to access edit store page', function () {
         ->get(route('stores.edit', $this->store->id));
 
     $response->assertSuccessful();
-    $response->assertInertia(fn ($page) => $page->component('stores/edit'));
+    $response->assertInertia(fn ($page) => $page->component('event-city/stores/edit'));
 });
 
 it('prevents non-owner from accessing edit store page', function () {

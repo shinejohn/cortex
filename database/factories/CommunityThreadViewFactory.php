@@ -24,13 +24,13 @@ final class CommunityThreadViewFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+        public function definition(): array
     {
         return [
-            'thread_id' => fake()->uuid(), // Will be overwritten in seeder
-            'user_id' => fake()->uuid(), // Will be overwritten in seeder, can be null
-            'session_id' => fake()->uuid(), // Will be overwritten in seeder, can be null
-            'viewed_at' => fake()->dateTimeBetween('-1 year', 'now'),
+            'thread_id' => \App\Models\CommunityThread::factory(),
+            'user_id' => \App\Models\User::factory(),
+            'session_id' => $this->faker->uuid(),
+            'viewed_at' => $this->faker->dateTime(),
         ];
     }
 

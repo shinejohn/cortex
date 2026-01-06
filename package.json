@@ -8,10 +8,17 @@
         "format": "biome format --write resources/",
         "check": "biome check --write resources/",
         "lint": "biome lint --write resources/",
-        "types": "tsc --noEmit"
+        "types": "tsc --noEmit",
+        "test:e2e": "playwright test",
+        "test:e2e:ui": "playwright test --ui",
+        "test:e2e:setup": "playwright test tests/Playwright/auth.setup.ts",
+        "test:e2e:quick": "playwright test tests/Playwright/quick-page-test.spec.ts",
+        "test:e2e:all": "playwright test tests/Playwright/comprehensive-pages.spec.ts",
+        "test:e2e:pages": "playwright test tests/Playwright/all-pages.spec.ts"
     },
     "devDependencies": {
         "@biomejs/biome": "2.3.10",
+        "@playwright/test": "^1.57.0",
         "@types/node": "^25.0.3"
     },
     "dependencies": {
@@ -44,6 +51,7 @@
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "concurrently": "^9.2.1",
+        "date-fns": "^4.1.0",
         "dayjs": "^1.11.19",
         "dompurify": "^3.3.1",
         "globals": "^16.5.0",

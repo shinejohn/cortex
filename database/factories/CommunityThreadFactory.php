@@ -116,8 +116,8 @@ final class CommunityThreadFactory extends Factory
             'tags' => $selectedTags,
             'is_pinned' => fake()->boolean(5), // 5% pinned
             'is_locked' => fake()->boolean(2), // 2% locked
-            'community_id' => null, // Will be set in seeder
-            'author_id' => null, // Will be set in seeder
+            'community_id' => \App\Models\Community::factory(),
+            'author_id' => \App\Models\User::factory(),
         ];
     }
 

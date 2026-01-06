@@ -18,20 +18,25 @@ final class RatingFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+        public function definition(): array
     {
-        $contexts = ['overall', 'service', 'quality', 'value', 'performance', 'professionalism'];
-        $types = ['general', 'booking', 'event_attendance'];
-
-        $type = fake()->randomElement($types);
-
+        $ratableTypes = [
+            \App\Models\Business::class,
+            \App\Models\Event::class,
+            \App\Models\Venue::class,
+            \App\Models\Performer::class,
+        ];
+        $ratableType = $this->faker->randomElement($ratableTypes);
+        
         return [
-            'user_id' => User::factory(),
-            'rating' => fake()->numberBetween(3, 5), // Mostly positive ratings
-            'context' => fake()->randomElement($contexts),
-            'notes' => fake()->optional(0.3)->sentence(),
-            'type' => $type,
-            'booking_id' => $type === 'booking' ? Booking::factory() : null,
+            'ratable_type' => $ratableType,
+            'ratable_id' => $ratableType::factory(),
+            'user_id' => \App\Models\User::factory(),
+            'rating' => $this->faker->numberBetween(1, 5),
+            'context' => $this->faker->randomElement(['overall', 'service', 'quality', 'value']),
+            'notes' => $this->faker->optional()->sentence(),
+            'type' => $this->faker->randomElement(['booking', 'review', 'general']),
+            'booking_id' => $this->faker->optional()->randomElement([\App\Models\Booking::factory(), null]),
         ];
     }
 

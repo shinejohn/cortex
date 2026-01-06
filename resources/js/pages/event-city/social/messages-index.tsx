@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import AppLayout from "@/layouts/app-layout";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import axios from "axios";
 import {
     CheckIcon,
@@ -22,6 +22,7 @@ import {
     VideoIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 interface Participant {
     id: string;
@@ -133,8 +134,8 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                 message: messageText,
             });
             setMessageText("");
-            // Optionally reload the page or fetch new messages
-            window.location.reload();
+            // Reload messages only
+            router.reload({ only: ["conversations", "selectedConversation"] });
         } catch (error) {
             console.error("Failed to send message:", error);
         }

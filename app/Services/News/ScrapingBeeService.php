@@ -16,7 +16,11 @@ final class ScrapingBeeService
 
     public function __construct()
     {
-        $this->apiKey = config('news-workflow.apis.scrapingbee_key');
+        $apiKey = config('news-workflow.apis.scrapingbee_key');
+        if (empty($apiKey)) {
+            throw new \RuntimeException('ScrapingBee API key not configured. Please set SCRAPINGBEE_KEY in your .env file.');
+        }
+        $this->apiKey = $apiKey;
         $this->baseUrl = 'https://app.scrapingbee.com/api/v1';
     }
 

@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { MessageSquare, Send, ThumbsUp, Flag, ChevronDown } from "lucide-react";
 import { useState } from "react";
 
@@ -54,8 +54,8 @@ export function ArticleComments({ articleId, comments: initialComments, total, a
             onSuccess: () => {
                 commentForm.reset();
                 setReplyingTo(null);
-                // Reload comments
-                window.location.reload();
+                // Reload comments section only
+                router.reload({ only: ["comments"] });
             },
         });
     };

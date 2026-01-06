@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import AppLayout from "@/layouts/app-layout";
 import { Head, Link } from "@inertiajs/react";
 import axios from "axios";
+import { toast } from "sonner";
 import {
     BriefcaseIcon,
     CalendarIcon,
@@ -88,9 +89,11 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
                 is_friend: false,
                 has_pending_request: true,
             });
-        } catch (error) {
+            toast.success("Friend request sent successfully");
+        } catch (error: any) {
             console.error("Error sending friend request:", error);
-            alert("Failed to send friend request. Please try again.");
+            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to send friend request. Please try again.";
+            toast.error(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -106,20 +109,34 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
                 is_friend: false,
                 has_pending_request: false,
             });
-        } catch (error) {
+            toast.success("Friend removed successfully");
+        } catch (error: any) {
             console.error("Error removing friend:", error);
-            alert("Failed to remove friend. Please try again.");
+            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to remove friend. Please try again.";
+            toast.error(errorMessage);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleLikePost = (postId: string) => {
-        axios.post(`/social/posts/${postId}/like`);
+    const handleLikePost = async (postId: string) => {
+        try {
+            await axios.post(`/social/posts/${postId}/like`);
+        } catch (error: any) {
+            console.error("Error liking post:", error);
+            const errorMessage = error.response?.data?.message || "Failed to like post. Please try again.";
+            toast.error(errorMessage);
+        }
     };
 
-    const handleUnlikePost = (postId: string) => {
-        axios.delete(`/social/posts/${postId}/like`);
+    const handleUnlikePost = async (postId: string) => {
+        try {
+            await axios.delete(`/social/posts/${postId}/like`);
+        } catch (error: any) {
+            console.error("Error unliking post:", error);
+            const errorMessage = error.response?.data?.message || "Failed to unlike post. Please try again.";
+            toast.error(errorMessage);
+        }
     };
 
     const formatDate = (dateString: string) => {

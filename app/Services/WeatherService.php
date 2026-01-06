@@ -16,13 +16,21 @@ final class WeatherService
 
     public function __construct()
     {
-        $this->apiKey = config('services.openweather.api_key');
+        $apiKey = config('services.openweather.api_key');
+        // Don't throw - allow service to be instantiated even without API key
+        // Methods will return null if API key is missing
+        $this->apiKey = $apiKey ?? '';
         $this->baseUrl = 'https://api.openweathermap.org/data/2.5';
     }
 
     public function getWeatherForEvent(Event $event): ?array
     {
         if (!$event->latitude || !$event->longitude) {
+            return null;
+        }
+
+        // Return null if API key is not configured
+        if (empty($this->apiKey)) {
             return null;
         }
 
@@ -82,6 +90,11 @@ final class WeatherService
 
     public function getWeatherForLocation(float $latitude, float $longitude, ?\Carbon\Carbon $dateTime = null): ?array
     {
+        // Return null if API key is not configured
+        if (empty($this->apiKey)) {
+            return null;
+        }
+
         $cacheKey = "weather:location:{$latitude}:{$longitude}:".($dateTime ? $dateTime->format('Y-m-d-H') : 'current');
 
         return Cache::remember($cacheKey, now()->addHours(1), function () use ($latitude, $longitude, $dateTime) {

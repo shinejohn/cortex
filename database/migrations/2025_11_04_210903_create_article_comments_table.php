@@ -13,6 +13,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('article_comments')) {
+            return;
+        }
+        
         Schema::create('article_comments', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignId('article_id')->constrained('day_news_posts')->cascadeOnDelete();

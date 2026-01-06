@@ -24,14 +24,15 @@ final class CrossDomainAuthService
         // Generate secure token (store plain token temporarily)
         $plainToken = Str::random(64);
 
-        // Create token record (expires in 5 minutes)
+        // Create token record (expires in 24 hours for testing, configurable)
         // Store plain token in token field (we'll hash it when validating)
+        $expirationMinutes = (int) config('auth.cross_domain_token_expiration', 1440); // Default 24 hours
         $tokenRecord = CrossDomainAuthToken::create([
             'user_id' => $user->id,
             'token' => $plainToken, // Store plain token, hash on validation
             'source_domain' => $sourceDomain,
             'target_domains' => array_values($targetDomains),
-            'expires_at' => now()->addMinutes(5),
+            'expires_at' => now()->addMinutes($expirationMinutes),
             'used' => false,
         ]);
 

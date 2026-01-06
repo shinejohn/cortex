@@ -12,6 +12,7 @@ import { Head, Link, router, usePage } from "@inertiajs/react";
 import axios from "axios";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { toast } from "sonner";
 import {
     AlertCircleIcon,
     ArrowLeftIcon,
@@ -107,9 +108,12 @@ export default function ThreadDetail() {
                 content: replyContent.trim(),
             });
             setReplyContent("");
-            window.location.reload();
-        } catch (error) {
+            toast.success("Reply posted successfully");
+            router.reload({ only: ["thread"] });
+        } catch (error: any) {
             console.error("Failed to submit reply:", error);
+            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to post reply. Please try again.";
+            toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);
         }

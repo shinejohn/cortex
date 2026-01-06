@@ -16,20 +16,19 @@ final class OrderItemFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+        public function definition(): array
     {
-        $quantity = fake()->numberBetween(1, 5);
-        $price = fake()->randomFloat(2, 9.99, 199.99);
-        $total = $price * $quantity;
-
+        $price = $this->faker->randomFloat(2, 10, 1000);
+        $quantity = $this->faker->numberBetween(1, 10);
         return [
-            'product_name' => fake()->words(3, true),
-            'product_description' => fake()->optional(0.7)->sentence(),
+            'order_id' => \App\Models\Order::factory(),
+            'product_id' => $this->faker->optional()->randomElement([\App\Models\Product::factory(), null]),
+            'product_name' => $this->faker->sentence(),
+            'product_description' => $this->faker->optional()->paragraph(),
             'price' => $price,
             'quantity' => $quantity,
-            'total' => $total,
-            'order_id' => null, // Will be set in seeder
-            'product_id' => null, // Will be set in seeder
+            'total' => $price * $quantity,
+            'metadata' => $this->faker->optional()->randomElements(['key' => 'value'], 1),
         ];
     }
 

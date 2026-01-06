@@ -107,6 +107,17 @@ return [
             'processors' => [PsrLogMessageProcessor::class],
         ],
 
+        // CloudWatch-compatible logging (for ECS)
+        'cloudwatch' => [
+            'driver' => 'monolog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'handler' => StreamHandler::class,
+            'with' => [
+                'stream' => 'php://stderr', // Send to stderr so CloudWatch captures it
+            ],
+            'processors' => [PsrLogMessageProcessor::class],
+        ],
+
         'syslog' => [
             'driver' => 'syslog',
             'level' => env('LOG_LEVEL', 'debug'),

@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Models\User;
+use App\Models\Workspace;
+
 use App\Models\Booking;
 use App\Models\Event;
 use App\Models\Performer;

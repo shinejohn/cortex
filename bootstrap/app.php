@@ -18,6 +18,11 @@ use Sentry\Laravel\Integration;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         using: function () {
+            // API routes (no domain restriction)
+            Route::prefix('api')->group(function () {
+                require base_path('routes/api.php');
+            });
+
             // DayNews domain routes (shared routes loaded first, then day-news routes with wildcard last)
             Route::domain(config('domains.day-news'))
                 ->middleware('web')
@@ -26,13 +31,21 @@ return Application::configure(basePath: dirname(__DIR__))
                     require base_path('routes/auth.php');
                     require base_path('routes/settings.php');
                     require base_path('routes/workspace.php');
+                    require base_path('routes/ads.php');
+                    require base_path('routes/email-tracking.php');
+                    require base_path('routes/admin.php');
                     require base_path('routes/day-news.php');
                 });
 
             // DowntownGuide domain routes
             Route::domain(config('domains.downtown-guide'))
                 ->middleware('web')
-                ->group(base_path('routes/downtown-guide.php'));
+                ->group(function () {
+                    require base_path('routes/ads.php');
+                    require base_path('routes/email-tracking.php');
+                    require base_path('routes/admin.php');
+                    require base_path('routes/downtown-guide.php');
+                });
 
             // Go Local Voices domain routes (standalone)
             Route::domain(config('domains.local-voices'))
@@ -41,19 +54,32 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(function () {
                     require base_path('routes/auth.php');
                     require base_path('routes/settings.php');
+                    require base_path('routes/ads.php');
+                    require base_path('routes/email-tracking.php');
+                    require base_path('routes/admin.php');
                     require base_path('routes/local-voices.php');
                 });
 
             // AlphaSite domain routes (subdomain and main domain)
             Route::middleware('web')
-                ->group(base_path('routes/alphasite.php'));
+                ->group(function () {
+                    require base_path('routes/ads.php');
+                    require base_path('routes/email-tracking.php');
+                    require base_path('routes/admin.php');
+                    require base_path('routes/alphasite.php');
+                });
 
             // GoEventCity domain routes (fallback - no domain constraint, matches any domain not matched above)
             Route::middleware('web')
                 ->group(function () {
+                    // Health check routes (no domain restriction)
+                    require base_path('routes/health.php');
                     require base_path('routes/auth.php');
                     require base_path('routes/settings.php');
                     require base_path('routes/workspace.php');
+                    require base_path('routes/ads.php');
+                    require base_path('routes/email-tracking.php');
+                    require base_path('routes/admin.php');
                     require base_path('routes/web.php');
                 });
         },

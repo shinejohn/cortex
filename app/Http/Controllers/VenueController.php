@@ -185,6 +185,13 @@ final class VenueController extends Controller
         // Get upcoming events at venues (mock data for now)
         $upcomingEvents = [];
 
+        // Get current region for ad targeting
+        $region = $request->attributes->get('detected_region');
+
+        // Get advertisements
+        $bannerAds = $this->advertisementService->getActiveAds('event_city', $region, 'banner')->take(1);
+        $sidebarAds = $this->advertisementService->getActiveAds('event_city', $region, 'sidebar')->take(3);
+
         return Inertia::render('event-city/venues', [
             'venues' => $venues,
             'trendingVenues' => $trendingVenues,
@@ -197,6 +204,10 @@ final class VenueController extends Controller
             ],
             'filters' => $request->only(['search', 'venue_types', 'min_capacity', 'max_capacity', 'min_price', 'max_price', 'amenities', 'verified', 'date']),
             'sort' => $sortBy,
+            'advertisements' => [
+                'banner' => $bannerAds->map(fn ($ad) => $this->formatAd($ad)),
+                'sidebar' => $sidebarAds->map(fn ($ad) => $this->formatAd($ad)),
+            ],
         ]);
     }
 
@@ -260,10 +271,19 @@ final class VenueController extends Controller
 
         $venues = $query->paginate(12)->withQueryString();
 
+        // Get current region for ad targeting
+        $region = $request->attributes->get('detected_region');
+
+        // Get advertisements
+        $sidebarAds = $this->advertisementService->getActiveAds('event_city', $region, 'sidebar')->take(3);
+
         return Inertia::render('event-city/venues/Index', [
             'venues' => $venues,
             'filters' => $request->only(['status', 'venue_type', 'verified', 'search', 'capacity_min', 'capacity_max', 'rating_min']),
             'sort' => ['sort' => $sortBy, 'direction' => $sortDirection],
+            'advertisements' => [
+                'sidebar' => $sidebarAds->map(fn ($ad) => $this->formatAd($ad)),
+            ],
         ]);
     }
 
@@ -315,6 +335,14 @@ final class VenueController extends Controller
             'reviewCount' => $venue->total_reviews,
         ];
 
+        // Get current region for ad targeting
+        $region = $request->attributes->get('detected_region');
+
+        // Get advertisements
+        $bannerAds = $this->advertisementService->getActiveAds('event_city', $region, 'banner')->take(1);
+        $sidebarAds = $this->advertisementService->getActiveAds('event_city', $region, 'sidebar')->take(3);
+        $inlineAds = $this->advertisementService->getActiveAds('event_city', $region, 'inline')->take(2);
+
         return Inertia::render('event-city/venues/show', [
             'seo' => [
                 'jsonLd' => SeoService::buildJsonLd('venue', $seoData, 'event-city'),
@@ -322,6 +350,11 @@ final class VenueController extends Controller
             'venue' => $venue,
             'ratingStats' => $ratingStats,
             'isFollowing' => $isFollowing,
+            'advertisements' => [
+                'banner' => $bannerAds->map(fn ($ad) => $this->formatAd($ad)),
+                'sidebar' => $sidebarAds->map(fn ($ad) => $this->formatAd($ad)),
+                'inline' => $inlineAds->map(fn ($ad) => $this->formatAd($ad)),
+            ],
         ]);
     }
 
@@ -453,5 +486,24 @@ final class VenueController extends Controller
 
         return redirect()->route('venues')
             ->with('success', 'Venue deleted successfully!');
+    }
+
+    /**
+     * Format advertisement for frontend
+     */
+    private function formatAd($ad): array
+    {
+        return [
+            'id' => $ad->id,
+            'placement' => $ad->placement,
+            'advertable' => [
+                'id' => $ad->advertable->id,
+                'title' => $ad->advertable->title ?? $ad->advertable->name ?? null,
+                'excerpt' => $ad->advertable->excerpt ?? $ad->advertable->description ?? null,
+                'featured_image' => $ad->advertable->featured_image ?? $ad->advertable->image ?? $ad->advertable->profile_image ?? null,
+                'slug' => $ad->advertable->slug ?? null,
+            ],
+            'expires_at' => $ad->expires_at->toISOString(),
+        ];
     }
 }

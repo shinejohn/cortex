@@ -91,8 +91,8 @@ final class PerformerFactory extends Factory
             'genres' => fake()->randomElements($genres, fake()->numberBetween(1, 3)),
             'average_rating' => fake()->randomFloat(1, 3.8, 5.0),
             'total_reviews' => fake()->numberBetween(5, 150),
-            'workspace_id' => null, // Will be set in seeder
-            'created_by' => null, // Will be set in seeder
+            'workspace_id' => \App\Models\Workspace::factory(),
+            'created_by' => \App\Models\User::factory(),
             'follower_count' => fake()->numberBetween(100, 50000),
             'bio' => fake()->paragraph(2),
             'years_active' => $yearsActive,

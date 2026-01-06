@@ -1,0 +1,78 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+docs/
+INFRASTRUCTURE/
+*.md
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+tests/
+phpunit.xml
+.phpunit.result.cache
+playwright.config.ts
+tests/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+.pnpm-debug.log
+
+# Build artifacts (will be built in container)
+public/build/
+public/hot
+public/storage
+bootstrap/ssr/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Storage (will be mounted as volume)
+storage/app/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+!storage/app/.gitkeep
+!storage/framework/cache/.gitkeep
+!storage/framework/sessions/.gitkeep
+!storage/framework/views/.gitkeep
+!storage/logs/.gitkeep
+
+# Cache
+bootstrap/cache/*
+!bootstrap/cache/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Pulumi
+INFRASTRUCTURE/venv/
+INFRASTRUCTURE/__pycache__/
+INFRASTRUCTURE/.pulumi/
+
+# Scripts (not needed in container)
+scripts/
+
+# CI/CD
+.github/
+
+# Misc
+*.log
+*.tmp
+*.bak
+

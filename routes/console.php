@@ -24,3 +24,9 @@ Schedule::command('news:run-daily')->dailyAt('06:00');
 
 // Update MaxMind GeoIP database weekly
 Schedule::command('location:update')->weekly();
+
+// Email system scheduled commands
+Schedule::command('email:generate-digests')->dailyAt('02:00');
+Schedule::command('email:generate-newsletters')->weeklyOn(6, '22:00'); // Saturday at 10 PM
+Schedule::command('email:generate-smb-reports')->weeklyOn(0, '18:00'); // Sunday at 6 PM
+Schedule::command('email:process-queue')->everyMinute();

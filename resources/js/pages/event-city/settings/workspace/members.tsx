@@ -119,7 +119,7 @@ export default function WorkspaceMembers({ members, pendingInvitations, canManag
                 { role: newRole },
             );
             toast.success("Member role updated successfully");
-            window.location.reload();
+            router.reload({ only: ["members", "pendingInvitations"] });
         } catch (error) {
             console.error("Failed to update member role:", error);
             toast.error("Failed to update member role");
@@ -140,7 +140,7 @@ export default function WorkspaceMembers({ members, pendingInvitations, canManag
                 );
                 toast.success("Member removed successfully");
                 setConfirmDialog(null);
-                window.location.reload();
+                router.reload({ only: ["members", "pendingInvitations"] });
             } catch (error) {
                 console.error("Failed to remove member:", error);
                 toast.error("Failed to remove member");
@@ -157,7 +157,7 @@ export default function WorkspaceMembers({ members, pendingInvitations, canManag
                 }),
             );
             toast.success("Invitation cancelled successfully");
-            window.location.reload();
+            router.reload({ only: ["members", "pendingInvitations"] });
         } catch (error) {
             console.error("Failed to cancel invitation:", error);
             toast.error("Failed to cancel invitation");

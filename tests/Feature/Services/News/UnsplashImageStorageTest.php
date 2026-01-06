@@ -10,6 +10,7 @@ use App\Services\News\ArticleGenerationService;
 use App\Services\News\ImageStorageService;
 use App\Services\News\PrismAiService;
 use App\Services\News\UnsplashService;
+use App\Services\WriterAgent\AgentAssignmentService;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -89,7 +90,10 @@ it('stores Unsplash images locally during article generation', function () {
 
     $imageStorage = new ImageStorageService;
     $unsplash = new UnsplashService($imageStorage);
-    $service = new ArticleGenerationService($prismAiMock, $unsplash);
+    $agentAssignmentMock = Mockery::mock(AgentAssignmentService::class);
+    $agentAssignmentMock->shouldReceive('findBestAgent')->andReturn(null);
+    $agentAssignmentMock->shouldReceive('findAnyAgent')->andReturn(null);
+    $service = new ArticleGenerationService($prismAiMock, $unsplash, $agentAssignmentMock);
 
     $service->generateArticles($region);
 
@@ -135,7 +139,10 @@ it('falls back to Picsum and stores it locally when Unsplash fails', function ()
 
     $imageStorage = new ImageStorageService;
     $unsplash = new UnsplashService($imageStorage);
-    $service = new ArticleGenerationService($prismAiMock, $unsplash);
+    $agentAssignmentMock = Mockery::mock(AgentAssignmentService::class);
+    $agentAssignmentMock->shouldReceive('findBestAgent')->andReturn(null);
+    $agentAssignmentMock->shouldReceive('findAnyAgent')->andReturn(null);
+    $service = new ArticleGenerationService($prismAiMock, $unsplash, $agentAssignmentMock);
 
     $service->generateArticles($region);
 
@@ -175,7 +182,10 @@ it('can disable storage via configuration', function () {
 
     $imageStorage = new ImageStorageService;
     $unsplash = new UnsplashService($imageStorage);
-    $service = new ArticleGenerationService($prismAiMock, $unsplash);
+    $agentAssignmentMock = Mockery::mock(AgentAssignmentService::class);
+    $agentAssignmentMock->shouldReceive('findBestAgent')->andReturn(null);
+    $agentAssignmentMock->shouldReceive('findAnyAgent')->andReturn(null);
+    $service = new ArticleGenerationService($prismAiMock, $unsplash, $agentAssignmentMock);
 
     $service->generateArticles($region);
 
@@ -243,7 +253,10 @@ it('preserves attribution metadata when storing images', function () {
 
     $imageStorage = new ImageStorageService;
     $unsplash = new UnsplashService($imageStorage);
-    $service = new ArticleGenerationService($prismAiMock, $unsplash);
+    $agentAssignmentMock = Mockery::mock(AgentAssignmentService::class);
+    $agentAssignmentMock->shouldReceive('findBestAgent')->andReturn(null);
+    $agentAssignmentMock->shouldReceive('findAnyAgent')->andReturn(null);
+    $service = new ArticleGenerationService($prismAiMock, $unsplash, $agentAssignmentMock);
 
     $service->generateArticles($region);
 

@@ -92,7 +92,7 @@ export default function EditCalendar() {
             });
 
             if (response.status === 200 || response.status === 201) {
-                window.location.href = route("calendars.show", calendar.id);
+                router.visit(route("calendars.show", calendar.id));
             }
         } catch (error: any) {
             if (error.response?.data?.errors) {
@@ -113,10 +113,12 @@ export default function EditCalendar() {
 
         try {
             await axios.delete(route("calendars.destroy", calendar.id));
-            window.location.href = route("calendars.index");
-        } catch (error) {
+            toast.success("Calendar deleted successfully");
+            router.visit(route("calendars.index"));
+        } catch (error: any) {
             console.error("Error deleting calendar:", error);
-            alert("Failed to delete calendar. Please try again.");
+            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to delete calendar. Please try again.";
+            toast.error(errorMessage);
         } finally {
             setIsDeleting(false);
         }

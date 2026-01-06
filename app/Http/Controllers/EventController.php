@@ -8,9 +8,12 @@ use App\Http\Requests\StoreEventRequest;
 use App\Models\Event;
 use App\Models\Follow;
 use App\Models\Performer;
+use App\Models\Region;
 use App\Models\Venue;
+use App\Services\AdvertisementService;
 use App\Services\CacheService;
 use App\Services\EventService;
+use App\Services\LocationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
@@ -20,63 +23,84 @@ final class EventController extends Controller
 {
     public function __construct(
         private readonly CacheService $cacheService,
-        private readonly EventService $eventService
+        private readonly EventService $eventService,
+        private readonly AdvertisementService $advertisementService,
+        private readonly LocationService $locationService
     ) {}
     /**
      * Public events page (no authentication required)
      */
     public function publicIndex(Request $request): Response
     {
-        // Get current workspace
-        $currentWorkspace = null;
-        if ($request->user()) {
-            $user = $request->user();
-            $currentWorkspace = $user->currentWorkspace ?? $user->workspaces->first();
-        }
-
-        // Get featured events using EventService
-        $featuredEvents = $this->eventService->getFeatured(6)->map(function ($event) {
-            return [
-                'id' => $event->id,
-                'title' => $event->title,
-                'date' => $event->event_date->format('Y-m-d\TH:i:s.000\Z'),
-                'venue' => $event->venue?->name ?? 'TBA',
-                'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
-                'category' => $event->category,
-                'image' => $event->image,
-            ];
-        })->toArray();
-
-        // Get upcoming events (next 7 days) using EventService
-        $upcomingFilters = [
-            'date_from' => now(),
-            'date_to' => now()->addDays(7),
-            'sort_by' => 'event_date',
-            'sort_order' => 'asc',
-        ];
-        $upcomingEvents = $this->eventService->getUpcoming($upcomingFilters, 50)->items();
-        
-        $upcomingEvents = collect($upcomingEvents)->map(function ($event) {
-            $eventDateTime = $event->event_date->copy();
-            if ($event->time) {
-                $timeParts = explode(':', $event->time);
-                $eventDateTime->setTime((int) $timeParts[0], (int) $timeParts[1]);
+        try {
+            // Get current workspace
+            $currentWorkspace = null;
+            if ($request->user()) {
+                $user = $request->user();
+                $currentWorkspace = $user->currentWorkspace ?? $user->workspaces->first();
             }
 
-            return [
-                'id' => $event->id,
-                'title' => $event->title,
-                'date' => $eventDateTime->format('Y-m-d\TH:i:s.000\Z'),
-                'venue' => $event->venue?->name ?? 'TBA',
-                'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
-                'category' => $event->category,
-                'image' => $event->image ?? 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop',
+            // Get featured events using EventService
+            $featuredEvents = $this->eventService->getFeatured(6)->map(function ($event) {
+                return [
+                    'id' => $event->id,
+                    'title' => $event->title,
+                    'date' => $event->event_date->format('Y-m-d\TH:i:s.000\Z'),
+                    'venue' => $event->venue?->name ?? 'TBA',
+                    'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
+                    'category' => $event->category,
+                    'image' => $event->image,
+                ];
+            })->toArray();
+
+            // Get upcoming events (next 7 days) using EventService
+            $upcomingFilters = [
+                'date_from' => now(),
+                'date_to' => now()->addDays(7),
+                'sort_by' => 'event_date',
+                'sort_order' => 'asc',
             ];
-        })->toArray();
+            $upcomingEvents = $this->eventService->getUpcoming($upcomingFilters, 50)->items();
+            
+            $upcomingEvents = collect($upcomingEvents)->map(function ($event) {
+                $eventDateTime = $event->event_date->copy();
+                if ($event->time) {
+                    $timeParts = explode(':', $event->time);
+                    $eventDateTime->setTime((int) $timeParts[0], (int) $timeParts[1]);
+                }
+
+                return [
+                    'id' => $event->id,
+                    'title' => $event->title,
+                    'date' => $eventDateTime->format('Y-m-d\TH:i:s.000\Z'),
+                    'venue' => $event->venue?->name ?? 'TBA',
+                    'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
+                    'category' => $event->category,
+                    'image' => $event->image ?? 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop',
+                ];
+            })->toArray();
+
+            // Get current region for ad targeting
+            $region = $request->attributes->get('detected_region');
+
+            // Get advertisements for different placements
+            $bannerAds = $this->advertisementService->getActiveAds('event_city', $region, 'banner')->take(1);
+            $sidebarAds = $this->advertisementService->getActiveAds('event_city', $region, 'sidebar')->take(3);
+        } catch (\Exception $e) {
+            // Handle gracefully if there's an error
+            $featuredEvents = [];
+            $upcomingEvents = [];
+            $bannerAds = collect([]);
+            $sidebarAds = collect([]);
+        }
 
         return Inertia::render('event-city/events/index', [
             'featuredEvents' => $featuredEvents,
             'upcomingEvents' => $upcomingEvents,
+            'advertisements' => [
+                'banner' => $bannerAds->map(fn ($ad) => $this->formatAd($ad)),
+                'sidebar' => $sidebarAds->map(fn ($ad) => $this->formatAd($ad)),
+            ],
         ]);
     }
 
@@ -143,10 +167,19 @@ final class EventController extends Controller
 
         $events = $query->paginate(12)->withQueryString();
 
+        // Get current region for ad targeting
+        $region = $request->attributes->get('detected_region');
+
+        // Get advertisements
+        $sidebarAds = $this->advertisementService->getActiveAds('event_city', $region, 'sidebar')->take(3);
+
         return Inertia::render('event-city/events/index', [
             'events' => $events,
             'filters' => $request->only(['status', 'category', 'is_free', 'venue_id', 'performer_id', 'search', 'date_from', 'date_to']),
             'sort' => ['sort' => $sortBy, 'direction' => $sortDirection],
+            'advertisements' => [
+                'sidebar' => $sidebarAds->map(fn ($ad) => $this->formatAd($ad)),
+            ],
         ]);
     }
 
@@ -216,6 +249,14 @@ final class EventController extends Controller
             ->limit(10)
             ->get();
 
+        // Get current region for ad targeting
+        $region = $request->attributes->get('detected_region') ?? $event->regions->first();
+
+        // Get advertisements for different placements
+        $bannerAds = $this->advertisementService->getActiveAds('event_city', $region, 'banner')->take(1);
+        $sidebarAds = $this->advertisementService->getActiveAds('event_city', $region, 'sidebar')->take(3);
+        $inlineAds = $this->advertisementService->getActiveAds('event_city', $region, 'inline')->take(2);
+
         return Inertia::render('event-city/events/event-detail', [
             'event' => array_merge($event->toArray(), [
                 'weather' => $weather,
@@ -225,6 +266,11 @@ final class EventController extends Controller
             'canEdit' => $canEdit,
             'isCheckedIn' => $isCheckedIn,
             'recentCheckIns' => $recentCheckIns,
+            'advertisements' => [
+                'banner' => $bannerAds->map(fn ($ad) => $this->formatAd($ad)),
+                'sidebar' => $sidebarAds->map(fn ($ad) => $this->formatAd($ad)),
+                'inline' => $inlineAds->map(fn ($ad) => $this->formatAd($ad)),
+            ],
         ]);
     }
 
@@ -488,5 +534,24 @@ final class EventController extends Controller
 
         return redirect()->route('events.index')
             ->with('success', 'Event deleted successfully!');
+    }
+
+    /**
+     * Format advertisement for frontend
+     */
+    private function formatAd($ad): array
+    {
+        return [
+            'id' => $ad->id,
+            'placement' => $ad->placement,
+            'advertable' => [
+                'id' => $ad->advertable->id,
+                'title' => $ad->advertable->title ?? $ad->advertable->name ?? null,
+                'excerpt' => $ad->advertable->excerpt ?? $ad->advertable->description ?? null,
+                'featured_image' => $ad->advertable->featured_image ?? $ad->advertable->image ?? $ad->advertable->profile_image ?? null,
+                'slug' => $ad->advertable->slug ?? null,
+            ],
+            'expires_at' => $ad->expires_at->toISOString(),
+        ];
     }
 }

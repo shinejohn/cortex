@@ -1,0 +1,2360 @@
+
+Day.News
+Complete API Reference
+Version 2.0 — Based on Laravel Database Schema
+164+ Tables • 28 Categories • RESTful Architecture
+December 2024
+Fibonacco Publishing Platform
+
+Table of Contents
+
+
+
+1. Introduction
+This document provides complete API reference documentation for the Day.News platform, covering all 164+ database tables organized into 28 functional categories. The API follows RESTful conventions and uses JSON for request/response payloads.
+
+1.1 Base URL
+Production: https://api.day.news/v1
+Staging: https://api-staging.day.news/v1
+
+1.2 Authentication
+All API requests require authentication via Bearer token in the Authorization header:
+Authorization: Bearer {access_token}
+Tokens are obtained through the /auth/login endpoint and expire after 24 hours.
+
+1.3 Response Format
+All responses follow a consistent JSON structure:
+{ "success": true, "data": {...}, "meta": { "page": 1, "per_page": 20, "total": 100 } }
+
+1.4 Error Handling
+Errors return appropriate HTTP status codes with descriptive messages:
+{ "success": false, "error": { "code": "VALIDATION_ERROR", "message": "...", "details": [...] } }
+
+2. Authentication & Users
+User authentication, session management, and social login integration. This section covers 6 core tables: users, password_reset_tokens, sessions, social_accounts, magic_links, and cross_domain_auth_tokens.
+2.1 Users
+Table: users
+Core user accounts with profile information, authentication credentials, and author capabilities.
+Method
+Endpoint
+Description
+GET
+/users
+List all users (admin only)
+GET
+/users/{id}
+Get user by ID
+GET
+/users/me
+Get current authenticated user
+POST
+/users
+Create new user
+PUT
+/users/{id}
+Update user profile
+DELETE
+/users/{id}
+Soft delete user
+GET
+/users/{id}/posts
+Get user's published posts
+GET
+/users/{id}/activity
+Get user activity feed
+
+Table: social_accounts
+OAuth provider connections for social login (Google, Facebook, Apple, etc.).
+Method
+Endpoint
+Description
+GET
+/users/{id}/social-accounts
+List connected social accounts
+POST
+/auth/social/{provider}
+Connect social account
+DELETE
+/social-accounts/{id}
+Disconnect social account
+
+Table: magic_links
+Passwordless authentication via email magic links.
+Method
+Endpoint
+Description
+POST
+/auth/magic-link
+Request magic link email
+POST
+/auth/magic-link/verify
+Verify magic link token
+
+2.2 Sessions & Authentication
+Table: sessions
+Active user sessions across devices.
+Method
+Endpoint
+Description
+POST
+/auth/login
+Authenticate and create session
+POST
+/auth/logout
+End current session
+POST
+/auth/logout-all
+End all user sessions
+GET
+/auth/sessions
+List active sessions
+DELETE
+/auth/sessions/{id}
+Revoke specific session
+
+Table: password_reset_tokens
+Method
+Endpoint
+Description
+POST
+/auth/forgot-password
+Request password reset
+POST
+/auth/reset-password
+Reset password with token
+
+3. Workspaces & Multi-Tenancy
+Multi-tenant workspace management for organizations and teams. Covers 6 tables: workspaces, workspace_memberships, workspace_invitations, roles, tenants, and account_managers.
+3.1 Workspaces
+Table: workspaces
+Organizational containers for teams and content.
+Method
+Endpoint
+Description
+GET
+/workspaces
+List user's workspaces
+GET
+/workspaces/{id}
+Get workspace details
+POST
+/workspaces
+Create new workspace
+PUT
+/workspaces/{id}
+Update workspace settings
+DELETE
+/workspaces/{id}
+Delete workspace
+
+Table: workspace_memberships
+User membership and roles within workspaces.
+Method
+Endpoint
+Description
+GET
+/workspaces/{id}/members
+List workspace members
+POST
+/workspaces/{id}/members
+Add member to workspace
+PUT
+/workspaces/{id}/members/{userId}
+Update member role
+DELETE
+/workspaces/{id}/members/{userId}
+Remove member
+
+Table: workspace_invitations
+Method
+Endpoint
+Description
+GET
+/workspaces/{id}/invitations
+List pending invitations
+POST
+/workspaces/{id}/invitations
+Send invitation
+POST
+/invitations/{token}/accept
+Accept invitation
+DELETE
+/invitations/{id}
+Cancel invitation
+
+3.2 Tenants & Account Management
+Table: tenants
+Top-level tenant isolation for white-label deployments.
+Method
+Endpoint
+Description
+GET
+/tenants
+List tenants (super admin)
+GET
+/tenants/{id}
+Get tenant details
+POST
+/tenants
+Create tenant
+PUT
+/tenants/{id}
+Update tenant settings
+
+Table: account_managers
+Method
+Endpoint
+Description
+GET
+/account-managers
+List account managers
+POST
+/account-managers
+Assign account manager
+GET
+/account-managers/{id}/clients
+Get manager's clients
+
+Table: roles
+Method
+Endpoint
+Description
+GET
+/roles
+List available roles
+POST
+/roles
+Create custom role
+PUT
+/roles/{id}
+Update role permissions
+
+4. Publishing — Articles
+Core article publishing system including posts, payments, tags, and regional distribution. Covers 7 tables: day_news_posts, day_news_post_payments, day_news_post_tag, day_news_post_region, article_comments, article_comment_likes, and tags.
+4.1 Day News Posts
+Table: day_news_posts
+Primary article/post content for the Day.News platform.
+Method
+Endpoint
+Description
+GET
+/posts
+List published posts (paginated)
+GET
+/posts/{id}
+Get post by ID
+GET
+/posts/{slug}
+Get post by slug
+POST
+/posts
+Create new post
+PUT
+/posts/{id}
+Update post
+PATCH
+/posts/{id}/publish
+Publish draft post
+PATCH
+/posts/{id}/unpublish
+Unpublish post
+DELETE
+/posts/{id}
+Delete post
+GET
+/posts/featured
+Get featured posts
+GET
+/posts/trending
+Get trending posts
+
+Query Parameters:
+	•	region_id — Filter by region
+	•	category — Filter by category slug
+	•	author_id — Filter by author
+	•	status — draft, published, scheduled
+	•	sort — latest, popular, trending
+
+Table: day_news_post_region
+Regional distribution mapping for posts.
+Method
+Endpoint
+Description
+GET
+/posts/{id}/regions
+Get post's target regions
+POST
+/posts/{id}/regions
+Add region to post
+DELETE
+/posts/{id}/regions/{regionId}
+Remove region
+
+4.2 Tags & Categorization
+Table: tags
+Method
+Endpoint
+Description
+GET
+/tags
+List all tags
+GET
+/tags/{slug}
+Get tag by slug
+GET
+/tags/{slug}/posts
+Get posts with tag
+POST
+/tags
+Create tag
+
+Table: day_news_post_tag
+Method
+Endpoint
+Description
+GET
+/posts/{id}/tags
+Get post's tags
+POST
+/posts/{id}/tags
+Add tags to post
+DELETE
+/posts/{id}/tags/{tagId}
+Remove tag
+
+4.3 Comments & Engagement
+Table: article_comments
+Method
+Endpoint
+Description
+GET
+/posts/{id}/comments
+Get post comments
+POST
+/posts/{id}/comments
+Add comment
+PUT
+/comments/{id}
+Update comment
+DELETE
+/comments/{id}
+Delete comment
+POST
+/comments/{id}/report
+Report comment
+
+Table: article_comment_likes
+Method
+Endpoint
+Description
+POST
+/comments/{id}/like
+Like a comment
+DELETE
+/comments/{id}/like
+Unlike comment
+
+4.4 Post Payments
+Table: day_news_post_payments
+Sponsored and premium content payments.
+Method
+Endpoint
+Description
+GET
+/posts/{id}/payments
+Get payment history
+POST
+/posts/{id}/sponsor
+Sponsor a post
+GET
+/payments/earnings
+Get author earnings
+
+5. Publishing — News Workflow
+AI-powered news article generation and editorial workflow. Covers 8 tables: news_articles, news_article_drafts, news_fact_checks, news_workflow_runs, news_workflow_settings, news_fetch_frequencies, writer_agents, and writer_agent_region.
+5.1 News Articles
+Table: news_articles
+AI-generated and curated news articles with editorial workflow.
+Method
+Endpoint
+Description
+GET
+/news-articles
+List news articles
+GET
+/news-articles/{id}
+Get article details
+POST
+/news-articles
+Create article
+PUT
+/news-articles/{id}
+Update article
+PATCH
+/news-articles/{id}/approve
+Approve for publication
+PATCH
+/news-articles/{id}/reject
+Reject article
+
+Table: news_article_drafts
+Draft versions and revision history.
+Method
+Endpoint
+Description
+GET
+/news-articles/{id}/drafts
+Get draft history
+POST
+/news-articles/{id}/drafts
+Save new draft
+POST
+/news-articles/{id}/drafts/{draftId}/restore
+Restore draft
+
+Table: news_fact_checks
+Fact-checking records and verification status.
+Method
+Endpoint
+Description
+GET
+/news-articles/{id}/fact-checks
+Get fact-check results
+POST
+/news-articles/{id}/fact-checks
+Submit fact-check
+PUT
+/fact-checks/{id}
+Update fact-check
+
+5.2 Writer Agents (AI)
+Table: writer_agents
+AI virtual journalist configurations and personalities.
+Method
+Endpoint
+Description
+GET
+/writer-agents
+List writer agents
+GET
+/writer-agents/{id}
+Get agent details
+POST
+/writer-agents
+Create writer agent
+PUT
+/writer-agents/{id}
+Update agent config
+GET
+/writer-agents/{id}/articles
+Get agent's articles
+
+Table: writer_agent_region
+Method
+Endpoint
+Description
+GET
+/writer-agents/{id}/regions
+Get assigned regions
+POST
+/writer-agents/{id}/regions
+Assign region
+
+5.3 Workflow Automation
+Table: news_workflow_runs
+Execution logs for automated news generation.
+Method
+Endpoint
+Description
+GET
+/workflow-runs
+List workflow runs
+GET
+/workflow-runs/{id}
+Get run details
+POST
+/workflow-runs/trigger
+Trigger manual run
+
+Table: news_workflow_settings
+Method
+Endpoint
+Description
+GET
+/workflow-settings
+Get workflow settings
+PUT
+/workflow-settings
+Update settings
+
+Table: news_fetch_frequencies
+Method
+Endpoint
+Description
+GET
+/fetch-frequencies
+List fetch schedules
+PUT
+/fetch-frequencies/{id}
+Update schedule
+
+6. Publishing — Content Types
+Additional content types beyond articles: announcements, classifieds, coupons, legal notices, and memorials. Covers 13 tables with regional distribution.
+6.1 Announcements
+Table: announcements
+Community announcements and public notices.
+Method
+Endpoint
+Description
+GET
+/announcements
+List announcements
+GET
+/announcements/{id}
+Get announcement
+POST
+/announcements
+Create announcement
+PUT
+/announcements/{id}
+Update announcement
+DELETE
+/announcements/{id}
+Delete announcement
+
+6.2 Classifieds
+Table: classifieds
+Classified listings with images and payments.
+Method
+Endpoint
+Description
+GET
+/classifieds
+List classifieds
+GET
+/classifieds/{id}
+Get classified
+POST
+/classifieds
+Create listing
+PUT
+/classifieds/{id}
+Update listing
+DELETE
+/classifieds/{id}
+Delete listing
+PATCH
+/classifieds/{id}/renew
+Renew listing
+
+Table: classified_images
+Method
+Endpoint
+Description
+GET
+/classifieds/{id}/images
+Get listing images
+POST
+/classifieds/{id}/images
+Upload image
+DELETE
+/classified-images/{id}
+Delete image
+
+Table: classified_payments
+Method
+Endpoint
+Description
+POST
+/classifieds/{id}/pay
+Process payment
+GET
+/classifieds/{id}/payments
+Get payment history
+
+6.3 Coupons
+Table: coupons
+Business coupons and promotional offers.
+Method
+Endpoint
+Description
+GET
+/coupons
+List active coupons
+GET
+/coupons/{id}
+Get coupon details
+POST
+/coupons
+Create coupon
+PUT
+/coupons/{id}
+Update coupon
+POST
+/coupons/{id}/claim
+Claim coupon
+
+Table: coupon_usages
+Method
+Endpoint
+Description
+GET
+/coupons/{id}/usages
+Get usage stats
+POST
+/coupons/{id}/redeem
+Redeem coupon
+
+6.4 Legal Notices
+Table: legal_notices
+Official legal notices and public announcements.
+Method
+Endpoint
+Description
+GET
+/legal-notices
+List legal notices
+GET
+/legal-notices/{id}
+Get notice details
+POST
+/legal-notices
+Submit legal notice
+PUT
+/legal-notices/{id}
+Update notice
+
+6.5 Memorials
+Table: memorials
+Obituaries and memorial pages.
+Method
+Endpoint
+Description
+GET
+/memorials
+List memorials
+GET
+/memorials/{id}
+Get memorial
+POST
+/memorials
+Create memorial
+PUT
+/memorials/{id}
+Update memorial
+POST
+/memorials/{id}/tributes
+Leave tribute
+
+7. Publishing — Media
+Photo galleries, podcasts, and creator profiles. Covers 8 tables: photos, photo_albums, photo_album_photo, photo_region, podcasts, podcast_episodes, podcast_region, and creator_profiles.
+7.1 Photos & Albums
+Table: photos
+Method
+Endpoint
+Description
+GET
+/photos
+List photos
+GET
+/photos/{id}
+Get photo details
+POST
+/photos
+Upload photo
+PUT
+/photos/{id}
+Update metadata
+DELETE
+/photos/{id}
+Delete photo
+
+Table: photo_albums
+Method
+Endpoint
+Description
+GET
+/photo-albums
+List albums
+GET
+/photo-albums/{id}
+Get album with photos
+POST
+/photo-albums
+Create album
+PUT
+/photo-albums/{id}
+Update album
+POST
+/photo-albums/{id}/photos
+Add photos to album
+
+7.2 Podcasts
+Table: podcasts
+Podcast shows and series.
+Method
+Endpoint
+Description
+GET
+/podcasts
+List podcasts
+GET
+/podcasts/{id}
+Get podcast details
+POST
+/podcasts
+Create podcast
+PUT
+/podcasts/{id}
+Update podcast
+GET
+/podcasts/{id}/episodes
+Get episodes
+
+Table: podcast_episodes
+Method
+Endpoint
+Description
+GET
+/episodes
+List all episodes
+GET
+/episodes/{id}
+Get episode
+POST
+/podcasts/{id}/episodes
+Create episode
+PUT
+/episodes/{id}
+Update episode
+DELETE
+/episodes/{id}
+Delete episode
+POST
+/episodes/{id}/play
+Record play
+
+7.3 Creator Profiles
+Table: creator_profiles
+Content creator profiles for podcasters and contributors.
+Method
+Endpoint
+Description
+GET
+/creators
+List creators
+GET
+/creators/{id}
+Get creator profile
+POST
+/creators
+Create profile
+PUT
+/creators/{id}
+Update profile
+GET
+/creators/{id}/content
+Get creator's content
+POST
+/creators/{id}/follow
+Follow creator
+
+8. Events & Venues
+Event management, venues, performers, and bookings. Covers 8 tables: events, event_region, event_extraction_drafts, venues, performers, bookings, upcoming_shows, and planned_events.
+8.1 Events
+Table: events
+Community events and activities.
+Method
+Endpoint
+Description
+GET
+/events
+List events
+GET
+/events/{id}
+Get event details
+POST
+/events
+Create event
+PUT
+/events/{id}
+Update event
+DELETE
+/events/{id}
+Cancel event
+GET
+/events/upcoming
+Get upcoming events
+GET
+/events/calendar
+Get calendar view
+POST
+/events/{id}/rsvp
+RSVP to event
+
+Query Parameters:
+	•	region_id — Filter by region
+	•	venue_id — Filter by venue
+	•	date_from, date_to — Date range
+	•	category — Event category
+
+Table: event_extraction_drafts
+Scraped event data pending review.
+Method
+Endpoint
+Description
+GET
+/event-drafts
+List extraction drafts
+POST
+/event-drafts/{id}/approve
+Approve and publish
+DELETE
+/event-drafts/{id}
+Reject draft
+
+8.2 Venues
+Table: venues
+Event venue locations and details.
+Method
+Endpoint
+Description
+GET
+/venues
+List venues
+GET
+/venues/{id}
+Get venue details
+POST
+/venues
+Create venue
+PUT
+/venues/{id}
+Update venue
+GET
+/venues/{id}/events
+Get venue events
+GET
+/venues/nearby
+Find nearby venues
+
+8.3 Performers & Shows
+Table: performers
+Method
+Endpoint
+Description
+GET
+/performers
+List performers
+GET
+/performers/{id}
+Get performer
+POST
+/performers
+Create performer
+GET
+/performers/{id}/shows
+Get performer's shows
+
+Table: upcoming_shows
+Method
+Endpoint
+Description
+GET
+/shows
+List upcoming shows
+GET
+/shows/{id}
+Get show details
+POST
+/shows
+Create show
+
+Table: bookings
+Method
+Endpoint
+Description
+GET
+/bookings
+List user's bookings
+POST
+/events/{id}/book
+Book event/venue
+DELETE
+/bookings/{id}
+Cancel booking
+
+9. Ticketing System
+Complete ticketing platform with orders, transfers, gifts, and promo codes. Covers 8 tables: ticket_plans, ticket_orders, ticket_order_items, ticket_listings, ticket_transfers, ticket_gifts, promo_codes, and promo_code_usages.
+9.1 Ticket Plans
+Table: ticket_plans
+Ticket types and pricing tiers for events.
+Method
+Endpoint
+Description
+GET
+/events/{id}/ticket-plans
+Get available plans
+POST
+/events/{id}/ticket-plans
+Create ticket plan
+PUT
+/ticket-plans/{id}
+Update plan
+DELETE
+/ticket-plans/{id}
+Remove plan
+
+9.2 Orders
+Table: ticket_orders
+Method
+Endpoint
+Description
+GET
+/ticket-orders
+List user's orders
+GET
+/ticket-orders/{id}
+Get order details
+POST
+/ticket-orders
+Create order
+POST
+/ticket-orders/{id}/pay
+Process payment
+POST
+/ticket-orders/{id}/refund
+Request refund
+
+Table: ticket_order_items
+Method
+Endpoint
+Description
+GET
+/ticket-orders/{id}/items
+Get order items
+GET
+/ticket-orders/{id}/tickets
+Get actual tickets
+
+9.3 Ticket Marketplace
+Table: ticket_listings
+Secondary market ticket resale listings.
+Method
+Endpoint
+Description
+GET
+/ticket-listings
+Browse listings
+POST
+/ticket-listings
+List ticket for sale
+PUT
+/ticket-listings/{id}
+Update listing
+DELETE
+/ticket-listings/{id}
+Remove listing
+POST
+/ticket-listings/{id}/buy
+Purchase ticket
+
+9.4 Transfers & Gifts
+Table: ticket_transfers
+Method
+Endpoint
+Description
+POST
+/tickets/{id}/transfer
+Transfer ticket
+GET
+/ticket-transfers
+List transfers
+POST
+/ticket-transfers/{id}/accept
+Accept transfer
+
+Table: ticket_gifts
+Method
+Endpoint
+Description
+POST
+/tickets/{id}/gift
+Gift ticket
+GET
+/ticket-gifts
+List gifts
+POST
+/ticket-gifts/{id}/claim
+Claim gift
+
+9.5 Promo Codes
+Table: promo_codes
+Method
+Endpoint
+Description
+GET
+/events/{id}/promo-codes
+List promo codes
+POST
+/events/{id}/promo-codes
+Create promo code
+POST
+/promo-codes/validate
+Validate code
+DELETE
+/promo-codes/{id}
+Deactivate code
+
+Table: promo_code_usages
+Method
+Endpoint
+Description
+GET
+/promo-codes/{id}/usages
+Get usage stats
+
+10. Social Features
+Social networking capabilities including posts, comments, likes, friendships, and groups. Covers 13 tables.
+10.1 Social Posts
+Table: social_posts
+Method
+Endpoint
+Description
+GET
+/social/feed
+Get user's feed
+GET
+/social/posts/{id}
+Get post
+POST
+/social/posts
+Create post
+PUT
+/social/posts/{id}
+Update post
+DELETE
+/social/posts/{id}
+Delete post
+
+Table: social_post_likes
+Method
+Endpoint
+Description
+POST
+/social/posts/{id}/like
+Like post
+DELETE
+/social/posts/{id}/like
+Unlike post
+
+Table: social_post_comments
+Method
+Endpoint
+Description
+GET
+/social/posts/{id}/comments
+Get comments
+POST
+/social/posts/{id}/comments
+Add comment
+DELETE
+/social/comments/{id}
+Delete comment
+
+Table: social_post_shares
+Method
+Endpoint
+Description
+POST
+/social/posts/{id}/share
+Share post
+
+10.2 Friendships & Follows
+Table: social_friendships
+Method
+Endpoint
+Description
+GET
+/social/friends
+List friends
+POST
+/social/friends/request
+Send friend request
+POST
+/social/friends/{id}/accept
+Accept request
+DELETE
+/social/friends/{id}
+Unfriend
+
+Table: social_user_follows
+Method
+Endpoint
+Description
+GET
+/social/following
+List following
+GET
+/social/followers
+List followers
+POST
+/social/users/{id}/follow
+Follow user
+DELETE
+/social/users/{id}/follow
+Unfollow
+
+10.3 Groups
+Table: social_groups
+Method
+Endpoint
+Description
+GET
+/social/groups
+List groups
+GET
+/social/groups/{id}
+Get group
+POST
+/social/groups
+Create group
+PUT
+/social/groups/{id}
+Update group
+DELETE
+/social/groups/{id}
+Delete group
+
+Table: social_group_members
+Method
+Endpoint
+Description
+GET
+/social/groups/{id}/members
+List members
+POST
+/social/groups/{id}/join
+Join group
+DELETE
+/social/groups/{id}/leave
+Leave group
+
+Table: social_group_posts
+Method
+Endpoint
+Description
+GET
+/social/groups/{id}/posts
+Get group posts
+POST
+/social/groups/{id}/posts
+Post to group
+
+Table: social_user_profiles
+Method
+Endpoint
+Description
+GET
+/social/profiles/{id}
+Get social profile
+PUT
+/social/profiles
+Update profile
+
+Table: social_activities
+Method
+Endpoint
+Description
+GET
+/social/activities
+Get activity feed
+
+11. Community Forums
+Discussion forums with threads, replies, and member management. Covers 7 tables.
+11.1 Communities
+Table: communities
+Method
+Endpoint
+Description
+GET
+/communities
+List communities
+GET
+/communities/{id}
+Get community
+POST
+/communities
+Create community
+PUT
+/communities/{id}
+Update community
+
+Table: community_members
+Method
+Endpoint
+Description
+GET
+/communities/{id}/members
+List members
+POST
+/communities/{id}/join
+Join community
+DELETE
+/communities/{id}/leave
+Leave
+
+11.2 Threads
+Table: community_threads
+Method
+Endpoint
+Description
+GET
+/communities/{id}/threads
+List threads
+GET
+/threads/{id}
+Get thread
+POST
+/communities/{id}/threads
+Create thread
+PUT
+/threads/{id}
+Update thread
+DELETE
+/threads/{id}
+Delete thread
+POST
+/threads/{id}/pin
+Pin thread
+
+Table: community_thread_replies
+Method
+Endpoint
+Description
+GET
+/threads/{id}/replies
+Get replies
+POST
+/threads/{id}/replies
+Add reply
+PUT
+/replies/{id}
+Edit reply
+DELETE
+/replies/{id}
+Delete reply
+
+Table: community_thread_reply_likes
+Method
+Endpoint
+Description
+POST
+/replies/{id}/like
+Like reply
+DELETE
+/replies/{id}/like
+Unlike
+
+Table: community_thread_views
+Method
+Endpoint
+Description
+POST
+/threads/{id}/view
+Record view
+GET
+/threads/{id}/stats
+Get view stats
+
+12. Messaging
+Private messaging system with conversations and participants. Covers 3 tables: conversations, conversation_participants, and messages.
+12.1 Conversations
+Table: conversations
+Method
+Endpoint
+Description
+GET
+/conversations
+List conversations
+GET
+/conversations/{id}
+Get conversation
+POST
+/conversations
+Start conversation
+DELETE
+/conversations/{id}
+Delete conversation
+
+Table: conversation_participants
+Method
+Endpoint
+Description
+GET
+/conversations/{id}/participants
+List participants
+POST
+/conversations/{id}/participants
+Add participant
+DELETE
+/conversations/{id}/participants/{userId}
+Remove participant
+
+12.2 Messages
+Table: messages
+Method
+Endpoint
+Description
+GET
+/conversations/{id}/messages
+Get messages
+POST
+/conversations/{id}/messages
+Send message
+PUT
+/messages/{id}
+Edit message
+DELETE
+/messages/{id}
+Delete message
+POST
+/conversations/{id}/read
+Mark as read
+13. Notifications
+Push notifications, email alerts, and subscription management. Covers 4 tables.
+Table: notifications
+Method
+Endpoint
+Description
+GET
+/notifications
+List notifications
+GET
+/notifications/unread-count
+Get unread count
+POST
+/notifications/{id}/read
+Mark as read
+POST
+/notifications/read-all
+Mark all read
+DELETE
+/notifications/{id}
+Delete notification
+
+Table: notification_subscriptions
+Method
+Endpoint
+Description
+GET
+/notification-preferences
+Get preferences
+PUT
+/notification-preferences
+Update preferences
+POST
+/push-tokens
+Register device token
+
+Table: phone_verifications
+Method
+Endpoint
+Description
+POST
+/phone/verify
+Send verification code
+POST
+/phone/confirm
+Confirm code
+
+14. Business Directory
+Local business listings with subscriptions, templates, and surveys. Covers 8 tables.
+14.1 Businesses
+Table: businesses
+Method
+Endpoint
+Description
+GET
+/businesses
+List businesses
+GET
+/businesses/{id}
+Get business
+POST
+/businesses
+Create listing
+PUT
+/businesses/{id}
+Update listing
+DELETE
+/businesses/{id}
+Delete listing
+GET
+/businesses/nearby
+Find nearby
+GET
+/businesses/search
+Search businesses
+
+Table: business_region
+Method
+Endpoint
+Description
+GET
+/businesses/{id}/regions
+Get service areas
+POST
+/businesses/{id}/regions
+Add region
+
+14.2 Subscriptions & Templates
+Table: business_subscriptions
+Method
+Endpoint
+Description
+GET
+/businesses/{id}/subscription
+Get subscription
+POST
+/businesses/{id}/subscribe
+Subscribe to plan
+DELETE
+/businesses/{id}/subscription
+Cancel
+
+Table: business_templates
+Method
+Endpoint
+Description
+GET
+/business-templates
+List templates
+POST
+/businesses/{id}/apply-template
+Apply template
+
+14.3 FAQs & Surveys
+Table: business_faqs
+Method
+Endpoint
+Description
+GET
+/businesses/{id}/faqs
+Get FAQs
+POST
+/businesses/{id}/faqs
+Add FAQ
+PUT
+/faqs/{id}
+Update FAQ
+
+Table: business_surveys
+Method
+Endpoint
+Description
+GET
+/businesses/{id}/surveys
+List surveys
+POST
+/businesses/{id}/surveys
+Create survey
+
+Table: business_survey_responses
+Method
+Endpoint
+Description
+GET
+/surveys/{id}/responses
+Get responses
+POST
+/surveys/{id}/respond
+Submit response
+
+Table: achievements
+Method
+Endpoint
+Description
+GET
+/businesses/{id}/achievements
+Get badges
+GET
+/achievements
+List all achievements
+
+15. CRM System
+Customer relationship management for SMB businesses. Covers 11 tables across core CRM and business details.
+15.1 SMB Businesses
+Table: smb_businesses
+SMB (Small/Medium Business) accounts for CRM features.
+Method
+Endpoint
+Description
+GET
+/crm/businesses
+List CRM businesses
+GET
+/crm/businesses/{id}
+Get business
+POST
+/crm/businesses
+Create SMB account
+PUT
+/crm/businesses/{id}
+Update account
+
+15.2 Customers
+Table: customers
+Method
+Endpoint
+Description
+GET
+/crm/customers
+List customers
+GET
+/crm/customers/{id}
+Get customer
+POST
+/crm/customers
+Add customer
+PUT
+/crm/customers/{id}
+Update customer
+DELETE
+/crm/customers/{id}
+Delete customer
+GET
+/crm/customers/search
+Search customers
+
+15.3 Deals & Pipeline
+Table: deals
+Method
+Endpoint
+Description
+GET
+/crm/deals
+List deals
+GET
+/crm/deals/{id}
+Get deal
+POST
+/crm/deals
+Create deal
+PUT
+/crm/deals/{id}
+Update deal
+PATCH
+/crm/deals/{id}/stage
+Move stage
+GET
+/crm/pipeline
+Get pipeline view
+
+15.4 Campaigns
+Table: campaigns
+Method
+Endpoint
+Description
+GET
+/crm/campaigns
+List campaigns
+POST
+/crm/campaigns
+Create campaign
+PUT
+/crm/campaigns/{id}
+Update campaign
+POST
+/crm/campaigns/{id}/send
+Send campaign
+
+Table: campaign_recipients
+Method
+Endpoint
+Description
+GET
+/crm/campaigns/{id}/recipients
+List recipients
+POST
+/crm/campaigns/{id}/recipients
+Add recipients
+
+15.5 Interactions & Tasks
+Table: interactions
+Method
+Endpoint
+Description
+GET
+/crm/customers/{id}/interactions
+Get interactions
+POST
+/crm/interactions
+Log interaction
+
+Table: tasks
+Method
+Endpoint
+Description
+GET
+/crm/tasks
+List tasks
+POST
+/crm/tasks
+Create task
+PUT
+/crm/tasks/{id}
+Update task
+PATCH
+/crm/tasks/{id}/complete
+Mark complete
+
+15.6 Business Details
+Table: business_hours
+Method
+Endpoint
+Description
+GET
+/crm/businesses/{id}/hours
+Get hours
+PUT
+/crm/businesses/{id}/hours
+Update hours
+
+Table: business_photos
+Method
+Endpoint
+Description
+GET
+/crm/businesses/{id}/photos
+Get photos
+POST
+/crm/businesses/{id}/photos
+Upload photo
+
+Table: business_reviews
+Method
+Endpoint
+Description
+GET
+/crm/businesses/{id}/reviews
+Get reviews
+POST
+/crm/businesses/{id}/reviews
+Add review
+
+Table: business_attributes
+Method
+Endpoint
+Description
+GET
+/crm/businesses/{id}/attributes
+Get attributes
+PUT
+/crm/businesses/{id}/attributes
+Update attributes
+
+16. E-Commerce
+Online store functionality with products, carts, and orders. Covers 6 tables.
+16.1 Stores
+Table: stores
+Method
+Endpoint
+Description
+GET
+/stores
+List stores
+GET
+/stores/{id}
+Get store
+POST
+/stores
+Create store
+PUT
+/stores/{id}
+Update store
+
+16.2 Products
+Table: products
+Method
+Endpoint
+Description
+GET
+/stores/{id}/products
+List products
+GET
+/products/{id}
+Get product
+POST
+/stores/{id}/products
+Create product
+PUT
+/products/{id}
+Update product
+DELETE
+/products/{id}
+Delete product
+
+16.3 Shopping Cart
+Table: carts
+Method
+Endpoint
+Description
+GET
+/cart
+Get current cart
+DELETE
+/cart
+Clear cart
+
+Table: cart_items
+Method
+Endpoint
+Description
+POST
+/cart/items
+Add to cart
+PUT
+/cart/items/{id}
+Update quantity
+DELETE
+/cart/items/{id}
+Remove item
+
+16.4 Orders
+Table: orders
+Method
+Endpoint
+Description
+GET
+/orders
+List orders
+GET
+/orders/{id}
+Get order
+POST
+/orders
+Create order (checkout)
+PATCH
+/orders/{id}/status
+Update status
+
+Table: order_items
+Method
+Endpoint
+Description
+GET
+/orders/{id}/items
+Get order items
+17. Calendars
+Shared calendar system with events and followers. Covers 4 tables.
+Table: calendars
+Method
+Endpoint
+Description
+GET
+/calendars
+List calendars
+GET
+/calendars/{id}
+Get calendar
+POST
+/calendars
+Create calendar
+PUT
+/calendars/{id}
+Update calendar
+
+Table: calendar_events
+Method
+Endpoint
+Description
+GET
+/calendars/{id}/events
+Get events
+POST
+/calendars/{id}/events
+Add event
+PUT
+/calendar-events/{id}
+Update event
+DELETE
+/calendar-events/{id}
+Delete event
+
+Table: calendar_followers
+Method
+Endpoint
+Description
+GET
+/calendars/{id}/followers
+List followers
+POST
+/calendars/{id}/follow
+Follow calendar
+DELETE
+/calendars/{id}/follow
+Unfollow
+
+Table: calendar_roles
+Method
+Endpoint
+Description
+GET
+/calendars/{id}/roles
+Get roles
+POST
+/calendars/{id}/roles
+Assign role
+
+18. Hubs
+Community hubs with sections, members, and analytics. Covers 6 tables.
+Table: hubs
+Method
+Endpoint
+Description
+GET
+/hubs
+List hubs
+GET
+/hubs/{id}
+Get hub
+POST
+/hubs
+Create hub
+PUT
+/hubs/{id}
+Update hub
+
+Table: hub_sections
+Method
+Endpoint
+Description
+GET
+/hubs/{id}/sections
+Get sections
+POST
+/hubs/{id}/sections
+Add section
+PUT
+/hub-sections/{id}
+Update section
+
+Table: hub_members
+Method
+Endpoint
+Description
+GET
+/hubs/{id}/members
+List members
+POST
+/hubs/{id}/join
+Join hub
+DELETE
+/hubs/{id}/leave
+Leave hub
+
+Table: hub_roles
+Method
+Endpoint
+Description
+GET
+/hubs/{id}/roles
+Get roles
+POST
+/hubs/{id}/roles
+Create role
+
+Table: hub_analytics
+Method
+Endpoint
+Description
+GET
+/hubs/{id}/analytics
+Get analytics
+
+Table: check_ins
+Method
+Endpoint
+Description
+GET
+/hubs/{id}/check-ins
+List check-ins
+POST
+/hubs/{id}/check-in
+Check in
+19. Regions & Location
+Geographic regions and ZIP code mapping. Covers 2 tables.
+Table: regions
+Method
+Endpoint
+Description
+GET
+/regions
+List all regions
+GET
+/regions/{id}
+Get region details
+POST
+/regions
+Create region
+PUT
+/regions/{id}
+Update region
+GET
+/regions/search
+Search regions
+GET
+/regions/{id}/content
+Get region content
+
+Table: region_zipcodes
+Method
+Endpoint
+Description
+GET
+/regions/{id}/zipcodes
+Get ZIP codes
+POST
+/regions/{id}/zipcodes
+Add ZIP code
+GET
+/zipcodes/{code}/region
+Find region by ZIP
+
+20. Advertising Platform
+Complete advertising system with campaigns, creatives, placements, and analytics. Covers 7 tables.
+20.1 Advertisements
+Table: advertisements
+Method
+Endpoint
+Description
+GET
+/ads
+List advertisements
+GET
+/ads/{id}
+Get ad details
+POST
+/ads
+Create advertisement
+PUT
+/ads/{id}
+Update ad
+DELETE
+/ads/{id}
+Delete ad
+
+20.2 Campaigns
+Table: ad_campaigns
+Method
+Endpoint
+Description
+GET
+/ad-campaigns
+List campaigns
+GET
+/ad-campaigns/{id}
+Get campaign
+POST
+/ad-campaigns
+Create campaign
+PUT
+/ad-campaigns/{id}
+Update campaign
+PATCH
+/ad-campaigns/{id}/pause
+Pause campaign
+PATCH
+/ad-campaigns/{id}/resume
+Resume campaign
+
+20.3 Creatives
+Table: ad_creatives
+Method
+Endpoint
+Description
+GET
+/ad-campaigns/{id}/creatives
+List creatives
+POST
+/ad-campaigns/{id}/creatives
+Upload creative
+PUT
+/ad-creatives/{id}
+Update creative
+
+20.4 Placements & Inventory
+Table: ad_placements
+Method
+Endpoint
+Description
+GET
+/ad-placements
+List placements
+POST
+/ad-placements
+Create placement
+
+Table: ad_inventory
+Method
+Endpoint
+Description
+GET
+/ad-inventory
+Get available inventory
+GET
+/ad-inventory/forecast
+Forecast availability
+
+20.5 Analytics
+Table: ad_impressions
+Method
+Endpoint
+Description
+POST
+/ads/{id}/impression
+Record impression
+GET
+/ad-campaigns/{id}/impressions
+Get impressions
+
+Table: ad_clicks
+Method
+Endpoint
+Description
+POST
+/ads/{id}/click
+Record click
+GET
+/ad-campaigns/{id}/clicks
+Get clicks
+GET
+/ad-campaigns/{id}/analytics
+Full analytics
+21. Email Marketing
+Email marketing with subscribers, campaigns, and templates. Covers 5 tables.
+Table: email_subscribers
+Method
+Endpoint
+Description
+GET
+/email/subscribers
+List subscribers
+POST
+/email/subscribe
+Subscribe
+DELETE
+/email/unsubscribe
+Unsubscribe
+
+Table: email_campaigns
+Method
+Endpoint
+Description
+GET
+/email/campaigns
+List campaigns
+POST
+/email/campaigns
+Create campaign
+POST
+/email/campaigns/{id}/send
+Send campaign
+POST
+/email/campaigns/{id}/schedule
+Schedule send
+
+Table: email_templates
+Method
+Endpoint
+Description
+GET
+/email/templates
+List templates
+POST
+/email/templates
+Create template
+PUT
+/email/templates/{id}
+Update template
+
+Table: email_sends
+Method
+Endpoint
+Description
+GET
+/email/campaigns/{id}/sends
+Get send log
+GET
+/email/campaigns/{id}/stats
+Get stats
+
+Table: newsletter_subscriptions
+Method
+Endpoint
+Description
+GET
+/newsletters
+List newsletters
+POST
+/newsletters/{id}/subscribe
+Subscribe
+DELETE
+/newsletters/{id}/subscribe
+Unsubscribe
+
+22. Emergency Alerts
+Emergency notification system with municipal partners. Covers 5 tables.
+Table: emergency_alerts
+Method
+Endpoint
+Description
+GET
+/emergency-alerts
+List alerts
+GET
+/emergency-alerts/{id}
+Get alert
+POST
+/emergency-alerts
+Create alert
+PUT
+/emergency-alerts/{id}
+Update alert
+POST
+/emergency-alerts/{id}/send
+Send alert
+
+Table: emergency_subscriptions
+Method
+Endpoint
+Description
+GET
+/emergency/subscriptions
+Get subscriptions
+POST
+/emergency/subscribe
+Subscribe to alerts
+PUT
+/emergency/subscriptions
+Update preferences
+
+Table: emergency_deliveries
+Method
+Endpoint
+Description
+GET
+/emergency-alerts/{id}/deliveries
+Get delivery log
+
+Table: emergency_audit_log
+Method
+Endpoint
+Description
+GET
+/emergency/audit-log
+Get audit log
+
+Table: municipal_partners
+Method
+Endpoint
+Description
+GET
+/municipal-partners
+List partners
+POST
+/municipal-partners
+Add partner
+PUT
+/municipal-partners/{id}
+Update partner
+23. Additional Systems
+Supporting systems including search, RSS, reviews, and follows.
+23.1 Search
+Table: search_history
+Method
+Endpoint
+Description
+GET
+/search
+Perform search
+GET
+/search/history
+Get search history
+DELETE
+/search/history
+Clear history
+
+Table: search_suggestions
+Method
+Endpoint
+Description
+GET
+/search/suggestions
+Get suggestions
+
+23.2 RSS Feeds
+Table: rss_feeds
+Method
+Endpoint
+Description
+GET
+/rss-feeds
+List RSS feeds
+POST
+/rss-feeds
+Add feed
+DELETE
+/rss-feeds/{id}
+Remove feed
+
+Table: rss_feed_items
+Method
+Endpoint
+Description
+GET
+/rss-feeds/{id}/items
+Get feed items
+POST
+/rss-feeds/{id}/refresh
+Refresh feed
+
+23.3 Reviews & Ratings
+Table: reviews
+Method
+Endpoint
+Description
+GET
+/reviews
+List reviews
+POST
+/reviews
+Submit review
+PUT
+/reviews/{id}
+Update review
+
+Table: ratings
+Method
+Endpoint
+Description
+POST
+/ratings
+Submit rating
+GET
+/{type}/{id}/ratings
+Get ratings
+
+23.4 Follows & Engagement
+Table: follows
+Method
+Endpoint
+Description
+POST
+/{type}/{id}/follow
+Follow entity
+DELETE
+/{type}/{id}/follow
+Unfollow
+GET
+/following
+List following
+
+Table: comment_reports
+Method
+Endpoint
+Description
+POST
+/comments/{id}/report
+Report comment
+GET
+/reports
+List reports (admin)
+
+23.5 Organizations
+Table: organization_relationships
+Method
+Endpoint
+Description
+GET
+/organizations/{id}/relationships
+Get relationships
+POST
+/organizations/{id}/relationships
+Create relationship
+
+Table: organization_hierarchies
+Method
+Endpoint
+Description
+GET
+/organizations/{id}/hierarchy
+Get hierarchy
+PUT
+/organizations/{id}/parent
+Set parent
+
+24. System Tables
+Internal system tables for caching, jobs, and credits. These are typically not exposed via public API.
+Table: cache / cache_locks
+Internal caching system (not exposed via API).
+
+Table: jobs / job_batches / failed_jobs
+Background job queue system (admin only).
+Method
+Endpoint
+Description
+GET
+/admin/jobs
+List pending jobs
+GET
+/admin/failed-jobs
+List failed jobs
+POST
+/admin/failed-jobs/{id}/retry
+Retry failed job
+
+Table: credits
+User credit system for premium features.
+Method
+Endpoint
+Description
+GET
+/credits/balance
+Get credit balance
+POST
+/credits/purchase
+Purchase credits
+GET
+/credits/history
+Get transaction history
+
+Appendix A: HTTP Status Codes
+Standard HTTP status codes used by the API:
+	•	200 OK — Successful request
+	•	201 Created — Resource created successfully
+	•	204 No Content — Successful deletion
+	•	400 Bad Request — Invalid request data
+	•	401 Unauthorized — Authentication required
+	•	403 Forbidden — Insufficient permissions
+	•	404 Not Found — Resource not found
+	•	422 Unprocessable Entity — Validation error
+	•	429 Too Many Requests — Rate limit exceeded
+	•	500 Internal Server Error — Server error
+
+Appendix B: Rate Limits
+API rate limits vary by endpoint and authentication level:
+	•	Unauthenticated: 60 requests/minute
+	•	Authenticated: 120 requests/minute
+	•	Premium: 300 requests/minute
+	•	Enterprise: Custom limits
+
+Appendix C: Pagination
+List endpoints support cursor-based pagination:
+GET /posts?page=1&per_page=20&sort=created_at&order=desc
+Response includes pagination metadata in the 'meta' object.
+
+
+— End of Document —
+Day.News API Reference v2.0 • December 2024

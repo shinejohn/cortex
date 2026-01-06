@@ -6,7 +6,10 @@ namespace App\Http\Controllers\DayNews;
 
 use App\Http\Controllers\Controller;
 use App\Models\CreatorProfile;
+use App\Models\Region;
+use App\Services\AdvertisementService;
 use App\Services\DayNews\PodcastService;
+use App\Services\LocationService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -14,7 +17,9 @@ use Inertia\Response;
 final class CreatorController extends Controller
 {
     public function __construct(
-        private readonly PodcastService $podcastService
+        private readonly PodcastService $podcastService,
+        private readonly AdvertisementService $advertisementService,
+        private readonly LocationService $locationService
     ) {}
 
     /**
@@ -89,6 +94,11 @@ final class CreatorController extends Controller
 
         $podcasts = $query->paginate(20)->withQueryString();
 
+        // Get advertisements (use local_voices platform for standalone, day_news for integrated)
+        $platform = $this->isStandaloneView($request) ? 'local_voices' : 'day_news';
+        $bannerAds = $this->advertisementService->getActiveAds($platform, $currentRegion, 'banner')->take(1);
+        $sidebarAds = $this->advertisementService->getActiveAds($platform, $currentRegion, 'sidebar')->take(3);
+
         return Inertia::render($this->getViewPath($request, 'index'), [
             'podcasts' => $podcasts,
             'filters' => [
@@ -98,6 +108,10 @@ final class CreatorController extends Controller
             ],
             'currentRegion' => $currentRegion,
             'viewMode' => $this->getViewMode($request),
+            'advertisements' => [
+                'banner' => $bannerAds->map(fn ($ad) => $this->formatAd($ad)),
+                'sidebar' => $sidebarAds->map(fn ($ad) => $this->formatAd($ad)),
+            ],
         ]);
     }
 
@@ -196,6 +210,25 @@ final class CreatorController extends Controller
             ]),
             'viewMode' => $this->getViewMode(request()),
         ]);
+    }
+
+    /**
+     * Format advertisement for frontend
+     */
+    private function formatAd($ad): array
+    {
+        return [
+            'id' => $ad->id,
+            'placement' => $ad->placement,
+            'advertable' => [
+                'id' => $ad->advertable->id,
+                'title' => $ad->advertable->title ?? $ad->advertable->name ?? null,
+                'excerpt' => $ad->advertable->excerpt ?? $ad->advertable->description ?? null,
+                'featured_image' => $ad->advertable->featured_image ?? $ad->advertable->image ?? $ad->advertable->cover_image ?? null,
+                'slug' => $ad->advertable->slug ?? null,
+            ],
+            'expires_at' => $ad->expires_at->toISOString(),
+        ];
     }
 }
 

@@ -1,0 +1,64 @@
+# Base Laravel Application Dockerfile
+# Used for Horizon (queue worker) and Scheduler
+
+FROM php:8.4-fpm-alpine
+
+# Install system dependencies
+RUN apk add --no-cache \
+    git \
+    curl \
+    libpng-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    postgresql-dev \
+    oniguruma-dev \
+    icu-dev \
+    supervisor \
+    && docker-php-ext-install \
+    pdo \
+    pdo_pgsql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    zip \
+    opcache \
+    intl
+
+# Configure PHP
+RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy composer files
+COPY composer.json composer.lock ./
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+
+# Copy application files
+COPY . .
+
+# Run composer scripts
+RUN composer dump-autoload --optimize
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html/storage && \
+    chmod -R 755 /var/www/html/bootstrap/cache
+
+# Health check for Horizon
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD php artisan horizon:status || exit 1
+
+# Default command (override in ECS task definition)
+# For Horizon: CMD ["php", "artisan", "horizon"]
+# For Scheduler: CMD ["php", "artisan", "schedule:work"]
+CMD ["php", "artisan", "horizon"]
+

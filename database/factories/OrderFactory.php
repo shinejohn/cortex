@@ -47,8 +47,8 @@ final class OrderFactory extends Factory
             'stripe_payment_intent_id' => $paymentStatus === 'paid' ? 'pi_'.fake()->bothify('??##??##??##??##') : null,
             'stripe_charge_id' => $paymentStatus === 'paid' ? 'ch_'.fake()->bothify('??##??##??##??##') : null,
             'paid_at' => $paymentStatus === 'paid' ? fake()->dateTimeBetween('-30 days', 'now') : null,
-            'user_id' => null, // Will be set in seeder
-            'store_id' => null, // Will be set in seeder
+            'user_id' => $this->faker->optional()->randomElement([\App\Models\User::factory(), null]),
+            'store_id' => \App\Models\Store::factory(),
         ];
     }
 

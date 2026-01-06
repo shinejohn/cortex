@@ -30,42 +30,60 @@ final class BusinessController extends Controller
      */
     public function index(Request $request): Response
     {
-        // Use shared BusinessService with EventCity-specific filters
-        $filters = [
-            'category' => $request->input('category'),
-            'status' => 'active',
-            'is_verified' => $request->boolean('verified_only') ? true : null,
-            'sort_by' => $request->get('sort', 'name'),
-            'sort_order' => $request->get('direction', 'asc'),
-        ];
-
-        $businesses = $this->businessService->search(
-            $request->input('search'),
-            $filters,
-            20,
-            (int) $request->input('page', 1)
-        );
-
-        // Get featured businesses with upcoming events
-        $featuredBusinesses = $this->businessService->getFeatured(6);
-        $featuredWithEvents = $featuredBusinesses->map(function ($business) {
-            $upcomingEvents = Event::published()
-                ->upcoming()
-                ->where('venue_id', $business->id)
-                ->orWhereHas('organizationRelationships', function ($q) use ($business) {
-                    $q->where('organization_id', $business->id)
-                      ->where('relatable_type', Event::class);
-                })
-                ->orderBy('event_date', 'asc')
-                ->limit(5)
-                ->get();
-
-            return [
-                'business' => $business,
-                'upcoming_events_count' => $upcomingEvents->count(),
-                'next_event' => $upcomingEvents->first(),
+        try {
+            // Use shared BusinessService with EventCity-specific filters
+            $filters = [
+                'category' => $request->input('category'),
+                'status' => 'active',
+                'is_verified' => $request->boolean('verified_only') ? true : null,
+                'sort_by' => $request->get('sort', 'name'),
+                'sort_order' => $request->get('direction', 'asc'),
             ];
-        });
+
+            $businesses = $this->businessService->search(
+                $request->input('search'),
+                $filters,
+                20,
+                (int) $request->input('page', 1)
+            );
+
+            // Get featured businesses with upcoming events
+            $featuredBusinesses = $this->businessService->getFeatured(6);
+            $featuredWithEvents = $featuredBusinesses->map(function ($business) {
+                try {
+                    $upcomingEvents = Event::published()
+                        ->upcoming()
+                        ->where('venue_id', $business->id)
+                        ->orWhereHas('organizationRelationships', function ($q) use ($business) {
+                            $q->where('organization_id', $business->id)
+                              ->where('relatable_type', Event::class);
+                        })
+                        ->orderBy('event_date', 'asc')
+                        ->limit(5)
+                        ->get();
+
+                    return [
+                        'business' => $business,
+                        'upcoming_events_count' => $upcomingEvents->count(),
+                        'next_event' => $upcomingEvents->first(),
+                    ];
+                } catch (\Exception $e) {
+                    return [
+                        'business' => $business,
+                        'upcoming_events_count' => 0,
+                        'next_event' => null,
+                    ];
+                }
+            });
+        } catch (\Exception $e) {
+            // Handle gracefully if there's an error
+            $businesses = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 20);
+            $featuredWithEvents = collect([]);
+            $filters = [
+                'sort_by' => 'name',
+                'sort_order' => 'asc',
+            ];
+        }
 
         return Inertia::render('event-city/businesses/index', [
             'businesses' => $businesses,

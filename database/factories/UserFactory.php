@@ -32,6 +32,7 @@ final class UserFactory extends Factory
             'password' => self::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'current_workspace_id' => null,
+            'tenant_id' => $this->faker->optional()->passthrough(\App\Models\Tenant::factory()),
         ];
     }
 

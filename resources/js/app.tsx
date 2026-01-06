@@ -23,6 +23,15 @@ createInertiaApp({
             trackPageView(event.detail.page.url);
         });
 
+        // Error handling for React rendering errors
+        const handleError = (error: Error, errorInfo: any) => {
+            console.error("React rendering error:", error, errorInfo);
+            // Log to error tracking service if available
+            if (typeof window !== "undefined" && (window as any).Sentry) {
+                (window as any).Sentry.captureException(error);
+            }
+        };
+
         // Check if SSR rendered content exists - if so, hydrate, otherwise create fresh
         const rootElement = (
             <>
@@ -31,10 +40,16 @@ createInertiaApp({
             </>
         );
 
-        if (el.hasChildNodes()) {
-            hydrateRoot(el, rootElement);
-        } else {
-            createRoot(el).render(rootElement);
+        try {
+            if (el.hasChildNodes()) {
+                hydrateRoot(el, rootElement);
+            } else {
+                createRoot(el).render(rootElement);
+            }
+        } catch (error) {
+            handleError(error as Error, { component: props.initialPage.component });
+            // Re-throw to let Inertia handle it
+            throw error;
         }
     },
     progress: {

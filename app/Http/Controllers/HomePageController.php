@@ -6,13 +6,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Performer;
+use App\Models\Region;
 use App\Models\Venue;
+use App\Services\AdvertisementService;
+use App\Services\LocationService;
 use App\Services\SeoService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 final class HomePageController extends Controller
 {
+    public function __construct(
+        private readonly AdvertisementService $advertisementService,
+        private readonly LocationService $locationService
+    ) {}
+
     public function index(Request $request)
     {
         // Get featured events from the database
@@ -108,6 +116,14 @@ final class HomePageController extends Controller
             })
             ->toArray();
 
+        // Get current region for ad targeting
+        $region = $request->attributes->get('detected_region');
+
+        // Get advertisements for different placements
+        $bannerAds = $this->advertisementService->getActiveAds('event_city', $region, 'banner')->take(1);
+        $featuredAds = $this->advertisementService->getActiveAds('event_city', $region, 'featured')->take(1);
+        $sidebarAds = $this->advertisementService->getActiveAds('event_city', $region, 'sidebar')->take(3);
+
         // Build SEO JSON-LD for homepage
         $seoData = [
             'title' => 'Home',
@@ -123,6 +139,44 @@ final class HomePageController extends Controller
             'featuredVenues' => $featuredVenues,
             'featuredPerformers' => $featuredPerformers,
             'upcomingEvents' => $upcomingEvents,
+            'advertisements' => [
+                'banner' => $bannerAds->map(fn ($ad) => [
+                    'id' => $ad->id,
+                    'placement' => $ad->placement,
+                    'advertable' => [
+                        'id' => $ad->advertable->id,
+                        'title' => $ad->advertable->title,
+                        'excerpt' => $ad->advertable->excerpt ?? null,
+                        'featured_image' => $ad->advertable->featured_image ?? $ad->advertable->image ?? null,
+                        'slug' => $ad->advertable->slug ?? null,
+                    ],
+                    'expires_at' => $ad->expires_at->toISOString(),
+                ]),
+                'featured' => $featuredAds->map(fn ($ad) => [
+                    'id' => $ad->id,
+                    'placement' => $ad->placement,
+                    'advertable' => [
+                        'id' => $ad->advertable->id,
+                        'title' => $ad->advertable->title,
+                        'excerpt' => $ad->advertable->excerpt ?? null,
+                        'featured_image' => $ad->advertable->featured_image ?? $ad->advertable->image ?? null,
+                        'slug' => $ad->advertable->slug ?? null,
+                    ],
+                    'expires_at' => $ad->expires_at->toISOString(),
+                ]),
+                'sidebar' => $sidebarAds->map(fn ($ad) => [
+                    'id' => $ad->id,
+                    'placement' => $ad->placement,
+                    'advertable' => [
+                        'id' => $ad->advertable->id,
+                        'title' => $ad->advertable->title,
+                        'excerpt' => $ad->advertable->excerpt ?? null,
+                        'featured_image' => $ad->advertable->featured_image ?? $ad->advertable->image ?? null,
+                        'slug' => $ad->advertable->slug ?? null,
+                    ],
+                    'expires_at' => $ad->expires_at->toISOString(),
+                ]),
+            ],
         ]);
     }
 }

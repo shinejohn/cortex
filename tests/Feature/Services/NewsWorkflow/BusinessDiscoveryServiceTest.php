@@ -8,10 +8,9 @@ use App\Services\News\BusinessDiscoveryService;
 use App\Services\News\SerpApiService;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Mockery;
 
 beforeEach(function () {
-    $this->serpApiMock = Mockery::mock(SerpApiService::class);
+    $this->serpApiMock = \Mockery::mock(SerpApiService::class);
     $this->service = new BusinessDiscoveryService($this->serpApiMock);
 });
 
@@ -43,7 +42,7 @@ it('discovers businesses for a region', function () {
     $this->serpApiMock
         ->shouldReceive('discoverBusinesses')
         ->once()
-        ->with($region, Mockery::type('array'))
+        ->with($region, \Mockery::type('array'))
         ->andReturn($mockBusinessData);
 
     $count = $this->service->discoverForRegion($region);
