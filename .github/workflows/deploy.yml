@@ -55,6 +55,8 @@ jobs:
             dockerfile: docker/Dockerfile.web
           - name: alphasite
             dockerfile: docker/Dockerfile.web
+          - name: golocalvoices
+            dockerfile: docker/Dockerfile.web
     
     # Skip services if specific service is requested
     continue-on-error: false
@@ -104,6 +106,7 @@ jobs:
           - daynews
           - downtownguide
           - alphasite
+          - golocalvoices
           - inertia-ssr
           - horizon
     
