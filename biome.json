@@ -1,6 +1,9 @@
 {
-    "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+    "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
     "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": false },
+    "files": {
+        "ignore": ["vendor", "node_modules", "public", "bootstrap/ssr", "tailwind.config.js", "resources/js/ziggy.js", "resources/views/mail/*"]
+    },
     "formatter": {
         "enabled": true,
         "useEditorconfig": true,
@@ -10,20 +13,17 @@
         "lineEnding": "lf",
         "lineWidth": 150,
         "attributePosition": "auto",
-        "bracketSpacing": true,
-        "ignore": ["resources/js/ziggy.js", "resources/views/mail/*"]
+        "bracketSpacing": true
     },
-    "organizeImports": { "enabled": true },
     "linter": {
         "enabled": true,
         "rules": {
             "recommended": false,
             "complexity": {
                 "noExtraBooleanCast": "error",
-                "noMultipleSpacesInRegularExpressionLiterals": "error",
+                "noAdjacentSpacesInRegex": "error",
                 "noUselessCatch": "error",
-                "noUselessTypeConstraint": "error",
-                "noWith": "error"
+                "noUselessTypeConstraint": "error"
             },
             "correctness": {
                 "noConstAssign": "error",
@@ -46,15 +46,16 @@
                 "noUnusedLabels": "error",
                 "noUnusedPrivateClassMembers": "error",
                 "noUnusedVariables": "error",
-                "useArrayLiterals": "off",
                 "useExhaustiveDependencies": "warn",
                 "useHookAtTopLevel": "error",
                 "useIsNan": "error",
                 "useValidForDirection": "error",
+                "useValidTypeof": "error",
                 "useYield": "error"
             },
             "style": {
                 "noNamespace": "error",
+                "useArrayLiterals": "off",
                 "useAsConstAssertion": "error",
                 "useBlockStatements": "off"
             },
@@ -84,12 +85,11 @@
                 "noSparseArray": "error",
                 "noUnsafeDeclarationMerging": "error",
                 "noUnsafeNegation": "error",
+                "noWith": "error",
                 "useGetterReturn": "error",
-                "useNamespaceKeyword": "error",
-                "useValidTypeof": "error"
+                "useNamespaceKeyword": "error"
             }
-        },
-        "ignore": ["vendor", "node_modules", "public", "bootstrap/ssr", "tailwind.config.js"]
+        }
     },
     "javascript": {
         "formatter": {
@@ -102,6 +102,9 @@
             "quoteStyle": "double",
             "attributePosition": "auto",
             "bracketSpacing": true
+        },
+        "organizeImports": {
+            "enabled": true
         },
         "globals": [
             "onscrollend",
@@ -232,7 +235,7 @@
     },
     "overrides": [
         {
-            "include": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
+            "includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
             "linter": {
                 "rules": {
                     "correctness": {
@@ -240,16 +243,16 @@
                         "noGlobalObjectCalls": "off",
                         "noInvalidBuiltinInstantiation": "off",
                         "noInvalidConstructorSuper": "off",
-                        "noNewSymbol": "off",
                         "noSetterReturn": "off",
                         "noUndeclaredVariables": "off",
                         "noUnreachable": "off",
                         "noUnreachableSuper": "off"
                     },
                     "style": {
-                        "noArguments": "error",
-                        "noVar": "error",
                         "useConst": "error"
+                    },
+                    "suspicious": {
+                        "noVar": "error"
                     },
                     "suspicious": {
                         "noClassAssign": "off",
@@ -265,6 +268,6 @@
                 }
             }
         },
-        { "include": ["**/*.yml"], "formatter": { "indentWidth": 2 } }
+        { "includes": ["**/*.yml"], "formatter": { "indentWidth": 2 } }
     ]
 }
