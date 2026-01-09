@@ -112,7 +112,18 @@ export default function NotificationSubscribe({ platform, communityId, initialSu
             });
             setStep("verify");
         } catch (error: unknown) {
-            const message = error && typeof error === "object" && "response" in error && error.response && typeof error.response === "object" && "data" in error.response && error.response.data && typeof error.response.data === "object" && "message" in error.response.data ? String(error.response.data.message) : "Failed to send verification code";
+            const message =
+                error &&
+                typeof error === "object" &&
+                "response" in error &&
+                error.response &&
+                typeof error.response === "object" &&
+                "data" in error.response &&
+                error.response.data &&
+                typeof error.response.data === "object" &&
+                "message" in error.response.data
+                    ? String(error.response.data.message)
+                    : "Failed to send verification code";
             alert(message);
         }
         setIsLoading(false);
@@ -130,7 +141,18 @@ export default function NotificationSubscribe({ platform, communityId, initialSu
             });
             setStep("complete");
         } catch (error: unknown) {
-            const message = error && typeof error === "object" && "response" in error && error.response && typeof error.response === "object" && "data" in error.response && error.response.data && typeof error.response.data === "object" && "message" in error.response.data ? String(error.response.data.message) : "Invalid verification code";
+            const message =
+                error &&
+                typeof error === "object" &&
+                "response" in error &&
+                error.response &&
+                typeof error.response === "object" &&
+                "data" in error.response &&
+                error.response.data &&
+                typeof error.response.data === "object" &&
+                "message" in error.response.data
+                    ? String(error.response.data.message)
+                    : "Invalid verification code";
             alert(message);
         }
         setIsLoading(false);
