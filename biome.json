@@ -105,9 +105,7 @@
             "bracketSpacing": true
         },
         "assist": {
-            "imports": {
-                "organizeImports": true
-            }
+            "enabled": true
         },
         "globals": [
             "onscrollend",
