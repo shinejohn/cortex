@@ -2,7 +2,8 @@
     "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
     "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": false },
     "files": {
-        "ignore": ["vendor", "node_modules", "public", "bootstrap/ssr", "tailwind.config.js", "resources/js/ziggy.js", "resources/views/mail/*"]
+        "ignoreUnknown": true,
+        "experimentalScannerIgnores": ["vendor", "node_modules", "public", "bootstrap/ssr", "tailwind.config.js", "resources/js/ziggy.js", "resources/views/mail/*"]
     },
     "formatter": {
         "enabled": true,
@@ -103,8 +104,10 @@
             "attributePosition": "auto",
             "bracketSpacing": true
         },
-        "organizeImports": {
-            "enabled": true
+        "assist": {
+            "imports": {
+                "organizeImports": true
+            }
         },
         "globals": [
             "onscrollend",
