@@ -22,12 +22,7 @@ interface CalendarWeekProps {
     onDateSelect?: (date: Date) => void;
 }
 
-export function CalendarWeek({
-    events,
-    theme = "eventcity",
-    className,
-    onDateSelect,
-}: CalendarWeekProps) {
+export function CalendarWeek({ events, theme = "eventcity", className, onDateSelect }: CalendarWeekProps) {
     const [currentWeek, setCurrentWeek] = useState(new Date());
 
     const themeColors = {
@@ -71,11 +66,7 @@ export function CalendarWeek({
 
     const isToday = (date: Date) => {
         const today = new Date();
-        return (
-            date.getDate() === today.getDate() &&
-            date.getMonth() === today.getMonth() &&
-            date.getFullYear() === today.getFullYear()
-        );
+        return date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
     };
 
     const navigateWeek = (direction: "prev" | "next") => {
@@ -96,11 +87,7 @@ export function CalendarWeek({
         <div className={cn("space-y-4", className)}>
             {/* Week Header */}
             <div className="flex items-center justify-between">
-                <button
-                    onClick={() => navigateWeek("prev")}
-                    className="rounded-md p-2 hover:bg-muted"
-                    aria-label="Previous week"
-                >
+                <button onClick={() => navigateWeek("prev")} className="rounded-md p-2 hover:bg-muted" aria-label="Previous week">
                     <ChevronLeftIcon className="h-5 w-5" />
                 </button>
 
@@ -109,11 +96,7 @@ export function CalendarWeek({
                     {weekEnd.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                 </h2>
 
-                <button
-                    onClick={() => navigateWeek("next")}
-                    className="rounded-md p-2 hover:bg-muted"
-                    aria-label="Next week"
-                >
+                <button onClick={() => navigateWeek("next")} className="rounded-md p-2 hover:bg-muted" aria-label="Next week">
                     <ChevronRightIcon className="h-5 w-5" />
                 </button>
             </div>
@@ -125,17 +108,9 @@ export function CalendarWeek({
                     const today = isToday(date);
 
                     return (
-                        <div
-                            key={date.toISOString()}
-                            className={cn(
-                                "rounded-lg border bg-card p-2",
-                                today && themeColors[theme].today
-                            )}
-                        >
+                        <div key={date.toISOString()} className={cn("rounded-lg border bg-card p-2", today && themeColors[theme].today)}>
                             <div className={cn("mb-2 text-center", today ? "text-white" : "text-foreground")}>
-                                <div className="text-xs font-medium">
-                                    {date.toLocaleDateString("en-US", { weekday: "short" })}
-                                </div>
+                                <div className="text-xs font-medium">{date.toLocaleDateString("en-US", { weekday: "short" })}</div>
                                 <div className="text-lg font-semibold">{date.getDate()}</div>
                             </div>
 
@@ -143,16 +118,11 @@ export function CalendarWeek({
                                 {dayEvents.slice(0, 3).map((event) => (
                                     <div
                                         key={event.id}
-                                        className={cn(
-                                            "rounded px-2 py-1 text-xs",
-                                            today ? "bg-white/20 text-white" : "bg-muted text-foreground"
-                                        )}
+                                        className={cn("rounded px-2 py-1 text-xs", today ? "bg-white/20 text-white" : "bg-muted text-foreground")}
                                         title={event.title}
                                     >
                                         <div className="truncate">{event.title}</div>
-                                        {event.time && (
-                                            <div className="text-xs opacity-75">{event.time}</div>
-                                        )}
+                                        {event.time && <div className="text-xs opacity-75">{event.time}</div>}
                                     </div>
                                 ))}
                                 {dayEvents.length > 3 && (
@@ -168,4 +138,3 @@ export function CalendarWeek({
         </div>
     );
 }
-

@@ -70,15 +70,7 @@ interface DayNewsIndexProps {
     advertisements: Advertisements;
 }
 
-function DayNewsContent({
-    news,
-    hasRegion,
-    advertisements,
-}: {
-    news: NewsArticle[];
-    hasRegion: boolean;
-    advertisements: Advertisements;
-}) {
+function DayNewsContent({ news, hasRegion, advertisements }: { news: NewsArticle[]; hasRegion: boolean; advertisements: Advertisements }) {
     const { currentRegion } = useLocation();
 
     const handleAdImpression = (adId: number) => {

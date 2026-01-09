@@ -101,7 +101,7 @@ export default function EventCityBusinessShow({
     return (
         <>
             <Head title={`${business.name} - GoEventCity`} />
-            
+
             <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
                 {/* Header */}
                 <div className="relative overflow-hidden border-b-4 border-indigo-600 bg-gradient-to-r from-indigo-600 to-purple-600 shadow-xl">
@@ -119,12 +119,8 @@ export default function EventCityBusinessShow({
                                 <CalendarIcon className="h-6 w-6 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-2xl font-bold text-white">
-                                    Venue & Performer Profile
-                                </h1>
-                                <p className="mt-1 text-sm text-indigo-100">
-                                    Event venue information and upcoming shows
-                                </p>
+                                <h1 className="text-2xl font-bold text-white">Venue & Performer Profile</h1>
+                                <p className="mt-1 text-sm text-indigo-100">Event venue information and upcoming shows</p>
                             </div>
                         </div>
                     </div>
@@ -160,9 +156,7 @@ export default function EventCityBusinessShow({
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2">
                                             <SparklesIcon className="h-5 w-5 text-indigo-600" />
-                                            <h2 className="text-xl font-bold text-gray-900">
-                                                Upcoming Events at {business.name}
-                                            </h2>
+                                            <h2 className="text-xl font-bold text-gray-900">Upcoming Events at {business.name}</h2>
                                         </div>
                                         {allEvents.length > 0 ? (
                                             <EventList
@@ -177,9 +171,7 @@ export default function EventCityBusinessShow({
                                             <div className="rounded-xl border-2 border-dashed border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-8 text-center">
                                                 <CalendarIcon className="mx-auto h-12 w-12 text-indigo-400" />
                                                 <p className="mt-4 text-lg font-bold text-gray-900">No upcoming events</p>
-                                                <p className="mt-2 text-sm text-gray-600">
-                                                    Check back later for events at this venue
-                                                </p>
+                                                <p className="mt-2 text-sm text-gray-600">Check back later for events at this venue</p>
                                             </div>
                                         )}
                                     </div>
@@ -188,37 +180,23 @@ export default function EventCityBusinessShow({
                                 <TabsContent value="reviews" className="mt-6">
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
-                                            <h2 className="text-xl font-bold text-gray-900">
-                                                Venue Reviews
-                                            </h2>
+                                            <h2 className="text-xl font-bold text-gray-900">Venue Reviews</h2>
                                             {averageRating > 0 && (
                                                 <div className="flex items-center gap-2">
                                                     <StarIcon className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                                                    <span className="text-lg font-semibold">
-                                                        {averageRating.toFixed(1)} / 5.0
-                                                    </span>
+                                                    <span className="text-lg font-semibold">{averageRating.toFixed(1)} / 5.0</span>
                                                 </div>
                                             )}
                                         </div>
-                                        <ReviewList
-                                            reviews={reviews.data}
-                                            theme="eventcity"
-                                            showHelpful={true}
-                                        />
+                                        <ReviewList reviews={reviews.data} theme="eventcity" showHelpful={true} />
                                     </div>
                                 </TabsContent>
 
                                 <TabsContent value="related" className="mt-6">
                                     <div className="space-y-4">
-                                        <h2 className="text-xl font-bold text-gray-900">
-                                            Related Venues & Performers
-                                        </h2>
+                                        <h2 className="text-xl font-bold text-gray-900">Related Venues & Performers</h2>
                                         {relatedBusinesses.length > 0 ? (
-                                            <BusinessList
-                                                businesses={relatedBusinesses}
-                                                theme="eventcity"
-                                                gridCols={2}
-                                            />
+                                            <BusinessList businesses={relatedBusinesses} theme="eventcity" gridCols={2} />
                                         ) : (
                                             <div className="rounded-xl border-2 border-dashed border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-8 text-center">
                                                 <MapPinIcon className="mx-auto h-12 w-12 text-indigo-400" />
@@ -303,4 +281,3 @@ export default function EventCityBusinessShow({
         </>
     );
 }
-

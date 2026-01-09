@@ -67,16 +67,10 @@ export default function MemorialShow() {
                     <div className="rounded-lg border bg-card p-8">
                         {/* Header */}
                         <div className="mb-6 border-b pb-6">
-                            {memorial.is_featured && (
-                                <Badge className="mb-4">Featured Memorial</Badge>
-                            )}
+                            {memorial.is_featured && <Badge className="mb-4">Featured Memorial</Badge>}
                             {memorial.image && (
                                 <div className="mb-6">
-                                    <img
-                                        src={memorial.image}
-                                        alt={memorial.name}
-                                        className="mx-auto h-64 w-64 rounded-full object-cover"
-                                    />
+                                    <img src={memorial.image} alt={memorial.name} className="mx-auto h-64 w-64 rounded-full object-cover" />
                                 </div>
                             )}
                             <h1 className="mb-2 text-4xl font-bold">{memorial.name}</h1>
@@ -90,7 +84,8 @@ export default function MemorialShow() {
                                 )}
                                 <div className="flex items-center gap-1">
                                     <Calendar className="size-4" />
-                                    Passed away on {new Date(memorial.date_of_passing).toLocaleDateString("en-US", {
+                                    Passed away on{" "}
+                                    {new Date(memorial.date_of_passing).toLocaleDateString("en-US", {
                                         year: "numeric",
                                         month: "long",
                                         day: "numeric",
@@ -127,9 +122,7 @@ export default function MemorialShow() {
                                         <span>{memorial.service_location}</span>
                                     </div>
                                 )}
-                                {memorial.service_details && (
-                                    <div className="mt-4 whitespace-pre-wrap">{memorial.service_details}</div>
-                                )}
+                                {memorial.service_details && <div className="mt-4 whitespace-pre-wrap">{memorial.service_details}</div>}
                             </div>
                         )}
 
@@ -154,4 +147,3 @@ export default function MemorialShow() {
         </LocationProvider>
     );
 }
-

@@ -54,9 +54,7 @@ export default function HowItWorksPage() {
                                 <Search className="h-8 w-8" />
                             </div>
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">1. Discover Events</h3>
-                            <p className="text-gray-600">
-                                Browse events by category, date, location, or search for specific performers or venues.
-                            </p>
+                            <p className="text-gray-600">Browse events by category, date, location, or search for specific performers or venues.</p>
                         </CardContent>
                     </Card>
 
@@ -78,9 +76,7 @@ export default function HowItWorksPage() {
                                 <Calendar className="h-8 w-8" />
                             </div>
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">3. Plan Your Schedule</h3>
-                            <p className="text-gray-600">
-                                Add events to your calendar, set reminders, and see what your friends are attending.
-                            </p>
+                            <p className="text-gray-600">Add events to your calendar, set reminders, and see what your friends are attending.</p>
                         </CardContent>
                     </Card>
 
@@ -90,9 +86,7 @@ export default function HowItWorksPage() {
                                 <Heart className="h-8 w-8" />
                             </div>
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">4. Enjoy & Share</h3>
-                            <p className="text-gray-600">
-                                Check in at events, share your experiences, and help others discover great events.
-                            </p>
+                            <p className="text-gray-600">Check in at events, share your experiences, and help others discover great events.</p>
                         </CardContent>
                     </Card>
                 </div>
@@ -153,9 +147,7 @@ export default function HowItWorksPage() {
                             <CardContent className="p-6">
                                 <MapPin className="h-8 w-8 text-indigo-600 mb-3" />
                                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Location-Based Discovery</h3>
-                                <p className="text-gray-600">
-                                    Find events near you with our smart location features and distance filters.
-                                </p>
+                                <p className="text-gray-600">Find events near you with our smart location features and distance filters.</p>
                             </CardContent>
                         </Card>
 
@@ -173,9 +165,7 @@ export default function HowItWorksPage() {
                             <CardContent className="p-6">
                                 <Users className="h-8 w-8 text-indigo-600 mb-3" />
                                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Social Features</h3>
-                                <p className="text-gray-600">
-                                    Follow performers, see what friends are attending, and share your event experiences.
-                                </p>
+                                <p className="text-gray-600">Follow performers, see what friends are attending, and share your event experiences.</p>
                             </CardContent>
                         </Card>
 
@@ -183,9 +173,7 @@ export default function HowItWorksPage() {
                             <CardContent className="p-6">
                                 <Share2 className="h-8 w-8 text-indigo-600 mb-3" />
                                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Easy Sharing</h3>
-                                <p className="text-gray-600">
-                                    Share events with friends via social media, email, or direct links.
-                                </p>
+                                <p className="text-gray-600">Share events with friends via social media, email, or direct links.</p>
                             </CardContent>
                         </Card>
 
@@ -203,9 +191,7 @@ export default function HowItWorksPage() {
                             <CardContent className="p-6">
                                 <Calendar className="h-8 w-8 text-indigo-600 mb-3" />
                                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Calendar Integration</h3>
-                                <p className="text-gray-600">
-                                    Sync events with your calendar and never miss an event you're planning to attend.
-                                </p>
+                                <p className="text-gray-600">Sync events with your calendar and never miss an event you're planning to attend.</p>
                             </CardContent>
                         </Card>
                     </div>
@@ -214,20 +200,23 @@ export default function HowItWorksPage() {
                 {/* CTA Section */}
                 <div className="bg-indigo-600 rounded-lg p-8 text-center text-white">
                     <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-                    <p className="text-xl text-indigo-100 mb-6">
-                        Join thousands of people discovering and sharing amazing local events.
-                    </p>
+                    <p className="text-xl text-indigo-100 mb-6">Join thousands of people discovering and sharing amazing local events.</p>
                     <div className="flex justify-center space-x-4">
                         {auth.user ? (
-                            <Button size="lg" variant="secondary" onClick={() => window.location.href = "/events/create"}>
+                            <Button size="lg" variant="secondary" onClick={() => (window.location.href = "/events/create")}>
                                 Create Your First Event
                             </Button>
                         ) : (
                             <>
-                                <Button size="lg" variant="secondary" onClick={() => window.location.href = "/register"}>
+                                <Button size="lg" variant="secondary" onClick={() => (window.location.href = "/register")}>
                                     Sign Up Free
                                 </Button>
-                                <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10" onClick={() => window.location.href = "/events"}>
+                                <Button
+                                    size="lg"
+                                    variant="outline"
+                                    className="bg-transparent border-white text-white hover:bg-white/10"
+                                    onClick={() => (window.location.href = "/events")}
+                                >
                                     Browse Events
                                 </Button>
                             </>
@@ -240,4 +229,3 @@ export default function HowItWorksPage() {
         </div>
     );
 }
-

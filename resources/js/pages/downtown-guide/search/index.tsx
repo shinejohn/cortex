@@ -48,33 +48,20 @@ interface DowntownGuideSearchIndexProps {
     type: string;
 }
 
-export default function DowntownGuideSearchIndex({
-    query,
-    results,
-    suggestions = [],
-    filters,
-    type,
-}: DowntownGuideSearchIndexProps) {
+export default function DowntownGuideSearchIndex({ query, results, suggestions = [], filters, type }: DowntownGuideSearchIndexProps) {
     const [searchQuery, setSearchQuery] = useState(query);
 
     const handleSearch = () => {
-        router.get(
-            route("downtown-guide.search.index"),
-            { q: searchQuery, type, ...filters },
-            { preserveState: true }
-        );
+        router.get(route("downtown-guide.search.index"), { q: searchQuery, type, ...filters }, { preserveState: true });
     };
 
     const totalResults =
-        (results.businesses?.length || 0) +
-        (results.events?.length || 0) +
-        (results.articles?.length || 0) +
-        (results.coupons?.length || 0);
+        (results.businesses?.length || 0) + (results.events?.length || 0) + (results.articles?.length || 0) + (results.coupons?.length || 0);
 
     return (
         <>
             <Head title={`Search${query ? `: ${query}` : ""} - DowntownsGuide`} />
-            
+
             <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
                 {/* Header */}
                 <div className="border-b-4 border-purple-600 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600">
@@ -113,10 +100,7 @@ export default function DowntownGuideSearchIndex({
                                             key={index}
                                             onClick={() => {
                                                 setSearchQuery(suggestion);
-                                                router.get(
-                                                    route("downtown-guide.search.index"),
-                                                    { q: suggestion, type, ...filters }
-                                                );
+                                                router.get(route("downtown-guide.search.index"), { q: suggestion, type, ...filters });
                                             }}
                                             className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-700 hover:bg-purple-200"
                                         >
@@ -143,15 +127,9 @@ export default function DowntownGuideSearchIndex({
                                         <section>
                                             <div className="mb-4 flex items-center gap-2">
                                                 <StoreIcon className="h-5 w-5 text-purple-600" />
-                                                <h2 className="text-xl font-bold text-gray-900">
-                                                    Businesses ({results.businesses.length})
-                                                </h2>
+                                                <h2 className="text-xl font-bold text-gray-900">Businesses ({results.businesses.length})</h2>
                                             </div>
-                                            <BusinessList
-                                                businesses={results.businesses}
-                                                theme="downtownsguide"
-                                                gridCols={3}
-                                            />
+                                            <BusinessList businesses={results.businesses} theme="downtownsguide" gridCols={3} />
                                         </section>
                                     )}
 
@@ -160,15 +138,9 @@ export default function DowntownGuideSearchIndex({
                                         <section>
                                             <div className="mb-4 flex items-center gap-2">
                                                 <CalendarIcon className="h-5 w-5 text-purple-600" />
-                                                <h2 className="text-xl font-bold text-gray-900">
-                                                    Events ({results.events.length})
-                                                </h2>
+                                                <h2 className="text-xl font-bold text-gray-900">Events ({results.events.length})</h2>
                                             </div>
-                                            <EventList
-                                                events={results.events}
-                                                theme="downtownsguide"
-                                                gridCols={3}
-                                            />
+                                            <EventList events={results.events} theme="downtownsguide" gridCols={3} />
                                         </section>
                                     )}
 
@@ -177,15 +149,9 @@ export default function DowntownGuideSearchIndex({
                                         <section>
                                             <div className="mb-4 flex items-center gap-2">
                                                 <NewspaperIcon className="h-5 w-5 text-purple-600" />
-                                                <h2 className="text-xl font-bold text-gray-900">
-                                                    Articles ({results.articles.length})
-                                                </h2>
+                                                <h2 className="text-xl font-bold text-gray-900">Articles ({results.articles.length})</h2>
                                             </div>
-                                            <NewsList
-                                                articles={results.articles}
-                                                theme="downtownsguide"
-                                                gridCols={3}
-                                            />
+                                            <NewsList articles={results.articles} theme="downtownsguide" gridCols={3} />
                                         </section>
                                     )}
 
@@ -194,9 +160,7 @@ export default function DowntownGuideSearchIndex({
                                         <section>
                                             <div className="mb-4 flex items-center gap-2">
                                                 <TagIcon className="h-5 w-5 text-purple-600" />
-                                                <h2 className="text-xl font-bold text-gray-900">
-                                                    Coupons ({results.coupons.length})
-                                                </h2>
+                                                <h2 className="text-xl font-bold text-gray-900">Coupons ({results.coupons.length})</h2>
                                             </div>
                                             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                                                 {results.coupons.map((coupon) => (
@@ -216,9 +180,7 @@ export default function DowntownGuideSearchIndex({
                                 <div className="rounded-xl border-2 border-dashed border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
                                     <SearchIcon className="mx-auto h-12 w-12 text-purple-400" />
                                     <p className="mt-4 text-lg font-bold text-gray-900">No results found</p>
-                                    <p className="mt-2 text-sm text-gray-600">
-                                        Try different keywords or browse our categories
-                                    </p>
+                                    <p className="mt-2 text-sm text-gray-600">Try different keywords or browse our categories</p>
                                 </div>
                             )}
                         </>
@@ -226,9 +188,7 @@ export default function DowntownGuideSearchIndex({
                         <div className="rounded-xl border-2 border-dashed border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
                             <SearchIcon className="mx-auto h-12 w-12 text-purple-400" />
                             <p className="mt-4 text-lg font-bold text-gray-900">Start your search</p>
-                            <p className="mt-2 text-sm text-gray-600">
-                                Enter keywords to search businesses, events, articles, and coupons
-                            </p>
+                            <p className="mt-2 text-sm text-gray-600">Enter keywords to search businesses, events, articles, and coupons</p>
                         </div>
                     )}
                 </div>
@@ -236,4 +196,3 @@ export default function DowntownGuideSearchIndex({
         </>
     );
 }
-

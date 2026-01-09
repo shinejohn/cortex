@@ -28,12 +28,7 @@ interface Props {
     activeCategory?: string;
 }
 
-export default function CommunityShow({
-    community,
-    businesses,
-    categories,
-    activeCategory,
-}: Props) {
+export default function CommunityShow({ community, businesses, categories, activeCategory }: Props) {
     return (
         <Layout>
             <Head>
@@ -45,18 +40,12 @@ export default function CommunityShow({
                 {/* Hero Section */}
                 <div className="relative h-64 bg-gradient-to-r from-blue-600 to-purple-600">
                     {community.hero_image_url && (
-                        <img
-                            src={community.hero_image_url}
-                            alt={community.name}
-                            className="w-full h-full object-cover opacity-50"
-                        />
+                        <img src={community.hero_image_url} alt={community.name} className="w-full h-full object-cover opacity-50" />
                     )}
                     <div className="absolute inset-0 flex items-center justify-center text-white">
                         <div className="text-center">
                             <h1 className="text-4xl font-bold mb-2">{community.name}</h1>
-                            {community.description && (
-                                <p className="text-xl text-blue-100">{community.description}</p>
-                            )}
+                            {community.description && <p className="text-xl text-blue-100">{community.description}</p>}
                         </div>
                     </div>
                 </div>
@@ -67,25 +56,19 @@ export default function CommunityShow({
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                             {community.total_businesses !== undefined && (
                                 <div>
-                                    <div className="text-2xl font-bold text-blue-600">
-                                        {community.total_businesses}
-                                    </div>
+                                    <div className="text-2xl font-bold text-blue-600">{community.total_businesses}</div>
                                     <div className="text-gray-600">Total Businesses</div>
                                 </div>
                             )}
                             {community.premium_businesses !== undefined && (
                                 <div>
-                                    <div className="text-2xl font-bold text-blue-600">
-                                        {community.premium_businesses}
-                                    </div>
+                                    <div className="text-2xl font-bold text-blue-600">{community.premium_businesses}</div>
                                     <div className="text-gray-600">Premium Businesses</div>
                                 </div>
                             )}
                             {community.total_categories !== undefined && (
                                 <div>
-                                    <div className="text-2xl font-bold text-blue-600">
-                                        {community.total_categories}
-                                    </div>
+                                    <div className="text-2xl font-bold text-blue-600">{community.total_categories}</div>
                                     <div className="text-gray-600">Categories</div>
                                 </div>
                             )}
@@ -101,9 +84,7 @@ export default function CommunityShow({
                                 <Link
                                     href={`/community/${community.slug}`}
                                     className={`px-4 py-2 rounded whitespace-nowrap ${
-                                        !activeCategory
-                                            ? "bg-blue-600 text-white"
-                                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                        !activeCategory ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                                     }`}
                                 >
                                     All
@@ -137,11 +118,7 @@ export default function CommunityShow({
                             >
                                 <div className="flex items-start space-x-4">
                                     {business.images && business.images.length > 0 && (
-                                        <img
-                                            src={business.images[0]}
-                                            alt={business.name}
-                                            className="w-24 h-24 object-cover rounded"
-                                        />
+                                        <img src={business.images[0]} alt={business.name} className="w-24 h-24 object-cover rounded" />
                                     )}
                                     <div className="flex-1">
                                         <h3 className="text-lg font-semibold mb-1">{business.name}</h3>
@@ -151,16 +128,10 @@ export default function CommunityShow({
                                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                                 </svg>
                                                 <span>{business.rating}</span>
-                                                {business.reviews_count && (
-                                                    <span className="ml-1">({business.reviews_count})</span>
-                                                )}
+                                                {business.reviews_count && <span className="ml-1">({business.reviews_count})</span>}
                                             </div>
                                         )}
-                                        {business.address && (
-                                            <p className="text-sm text-gray-500">
-                                                {business.address}
-                                            </p>
-                                        )}
+                                        {business.address && <p className="text-sm text-gray-500">{business.address}</p>}
                                     </div>
                                 </div>
                             </Link>
@@ -176,9 +147,7 @@ export default function CommunityShow({
                                         key={index}
                                         href={link.url || "#"}
                                         className={`px-4 py-2 rounded ${
-                                            link.active
-                                                ? "bg-blue-600 text-white"
-                                                : "bg-white text-gray-700 hover:bg-gray-50"
+                                            link.active ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
                                         } ${!link.url ? "opacity-50 cursor-not-allowed" : ""}`}
                                         dangerouslySetInnerHTML={{ __html: link.label }}
                                     />
@@ -191,4 +160,3 @@ export default function CommunityShow({
         </Layout>
     );
 }
-

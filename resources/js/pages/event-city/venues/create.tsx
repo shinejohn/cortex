@@ -93,7 +93,8 @@ export default function CreateVenue({ workspace }: Props) {
                 setErrors(error.response.data.errors);
             }
             console.error("Error creating venue:", error);
-            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to create venue. Please check the form for errors.";
+            const errorMessage =
+                error.response?.data?.message || error.response?.data?.error || "Failed to create venue. Please check the form for errors.";
             toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);

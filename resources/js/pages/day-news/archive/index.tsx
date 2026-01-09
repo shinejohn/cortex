@@ -58,10 +58,14 @@ export default function ArchiveIndex() {
 
     const handleDateSelect = (date: string) => {
         setSelectedDate(date);
-        router.get("/archive", { date }, {
-            preserveState: true,
-            preserveScroll: true,
-        });
+        router.get(
+            "/archive",
+            { date },
+            {
+                preserveState: true,
+                preserveScroll: true,
+            },
+        );
     };
 
     return (
@@ -208,4 +212,3 @@ export default function ArchiveIndex() {
         </LocationProvider>
     );
 }
-

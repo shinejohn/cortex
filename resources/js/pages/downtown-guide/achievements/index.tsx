@@ -24,19 +24,11 @@ interface DowntownGuideAchievementsIndexProps {
     };
 }
 
-export default function DowntownGuideAchievementsIndex({
-    achievements,
-    userAchievements,
-    filters,
-}: DowntownGuideAchievementsIndexProps) {
+export default function DowntownGuideAchievementsIndex({ achievements, userAchievements, filters }: DowntownGuideAchievementsIndexProps) {
     const userAchievementIds = new Set(userAchievements.map((ua) => ua.achievement_id));
 
     const handleFilterChange = (key: string, value: string) => {
-        router.get(
-            route("downtown-guide.achievements.index"),
-            { ...filters, [key]: value || undefined },
-            { preserveState: true }
-        );
+        router.get(route("downtown-guide.achievements.index"), { ...filters, [key]: value || undefined }, { preserveState: true });
     };
 
     const rarityColors = {
@@ -49,7 +41,7 @@ export default function DowntownGuideAchievementsIndex({
     return (
         <>
             <Head title="Achievements - DowntownsGuide" />
-            
+
             <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
                 {/* Header */}
                 <div className="border-b-4 border-purple-600 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600">
@@ -60,9 +52,7 @@ export default function DowntownGuideAchievementsIndex({
                             </div>
                             <div>
                                 <h1 className="text-4xl font-bold text-white">Achievements</h1>
-                                <p className="mt-2 text-xl text-purple-100">
-                                    Unlock achievements and earn rewards
-                                </p>
+                                <p className="mt-2 text-xl text-purple-100">Unlock achievements and earn rewards</p>
                             </div>
                         </div>
                     </div>
@@ -76,10 +66,7 @@ export default function DowntownGuideAchievementsIndex({
                                 <FilterIcon className="h-4 w-4 text-gray-600" />
                                 <span className="text-sm font-medium text-gray-700">Filter:</span>
                             </div>
-                            <Select
-                                value={filters.category || "all"}
-                                onValueChange={(value) => handleFilterChange("category", value)}
-                            >
+                            <Select value={filters.category || "all"} onValueChange={(value) => handleFilterChange("category", value)}>
                                 <SelectTrigger className="w-40">
                                     <SelectValue />
                                 </SelectTrigger>
@@ -91,10 +78,7 @@ export default function DowntownGuideAchievementsIndex({
                                     <SelectItem value="social">Social</SelectItem>
                                 </SelectContent>
                             </Select>
-                            <Select
-                                value={filters.rarity || "all"}
-                                onValueChange={(value) => handleFilterChange("rarity", value)}
-                            >
+                            <Select value={filters.rarity || "all"} onValueChange={(value) => handleFilterChange("rarity", value)}>
                                 <SelectTrigger className="w-40">
                                     <SelectValue />
                                 </SelectTrigger>
@@ -114,17 +98,14 @@ export default function DowntownGuideAchievementsIndex({
                         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                             {achievements.map((achievement) => {
                                 const isUnlocked = userAchievementIds.has(achievement.id);
-                                const userAchievement = userAchievements.find(
-                                    (ua) => ua.achievement_id === achievement.id
-                                );
+                                const userAchievement = userAchievements.find((ua) => ua.achievement_id === achievement.id);
 
                                 return (
                                     <div
                                         key={achievement.id}
                                         className={`rounded-xl border-2 p-6 shadow-lg transition-all ${
                                             isUnlocked
-                                                ? rarityColors[achievement.rarity as keyof typeof rarityColors] ||
-                                                  "border-purple-200 bg-purple-50"
+                                                ? rarityColors[achievement.rarity as keyof typeof rarityColors] || "border-purple-200 bg-purple-50"
                                                 : "border-gray-200 bg-white opacity-60"
                                         }`}
                                     >
@@ -136,9 +117,7 @@ export default function DowntownGuideAchievementsIndex({
                                                     <TrophyIcon className="mb-2 h-8 w-8 text-purple-600" />
                                                 )}
                                                 <h3 className="text-lg font-bold text-gray-900">{achievement.name}</h3>
-                                                {achievement.description && (
-                                                    <p className="mt-2 text-sm text-gray-600">{achievement.description}</p>
-                                                )}
+                                                {achievement.description && <p className="mt-2 text-sm text-gray-600">{achievement.description}</p>}
                                             </div>
                                             {isUnlocked && (
                                                 <div className="rounded-full bg-green-100 p-2">
@@ -151,9 +130,7 @@ export default function DowntownGuideAchievementsIndex({
                                             {achievement.points !== undefined && (
                                                 <div className="flex items-center gap-1">
                                                     <StarIcon className="h-4 w-4 text-yellow-400" />
-                                                    <span className="text-sm font-medium text-gray-700">
-                                                        {achievement.points} points
-                                                    </span>
+                                                    <span className="text-sm font-medium text-gray-700">{achievement.points} points</span>
                                                 </div>
                                             )}
                                             {achievement.rarity && (
@@ -184,4 +161,3 @@ export default function DowntownGuideAchievementsIndex({
         </>
     );
 }
-

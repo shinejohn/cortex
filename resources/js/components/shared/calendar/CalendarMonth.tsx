@@ -19,20 +19,6 @@ interface CalendarMonthProps {
     onDateSelect?: (date: Date) => void;
 }
 
-export function CalendarMonth({
-    events,
-    theme = "eventcity",
-    className,
-    onDateSelect,
-}: CalendarMonthProps) {
-    return (
-        <CalendarView
-            events={events}
-            theme={theme}
-            view="month"
-            className={className}
-            onDateSelect={onDateSelect}
-        />
-    );
+export function CalendarMonth({ events, theme = "eventcity", className, onDateSelect }: CalendarMonthProps) {
+    return <CalendarView events={events} theme={theme} view="month" className={className} onDateSelect={onDateSelect} />;
 }
-

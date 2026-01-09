@@ -64,12 +64,9 @@ export default function HubsIndex() {
             <div className="bg-indigo-700 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
                     <div className="max-w-3xl">
-                        <h1 className="text-3xl md:text-4xl font-bold mb-4">
-                            Discover Local Communities
-                        </h1>
+                        <h1 className="text-3xl md:text-4xl font-bold mb-4">Discover Local Communities</h1>
                         <p className="text-lg text-indigo-100 mb-8">
-                            Connect with people who share your interests, join local groups,
-                            and never miss what's happening in your area.
+                            Connect with people who share your interests, join local groups, and never miss what's happening in your area.
                         </p>
                         <form onSubmit={handleSearch} className="bg-white rounded-lg p-2 flex items-center shadow-md">
                             <div className="flex-grow flex items-center">
@@ -100,9 +97,7 @@ export default function HubsIndex() {
             {/* Communities List */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-gray-900">
-                        Popular Communities
-                    </h2>
+                    <h2 className="text-2xl font-bold text-gray-900">Popular Communities</h2>
                     {auth.user && (
                         <Link href="/hubs/create">
                             <Button>
@@ -126,24 +121,12 @@ export default function HubsIndex() {
                                     alt={hub.name}
                                     className="w-full h-full object-cover"
                                 />
-                                {hub.is_featured && (
-                                    <Badge className="absolute top-2 left-2 bg-indigo-600">
-                                        Featured
-                                    </Badge>
-                                )}
-                                {hub.is_verified && (
-                                    <Badge className="absolute top-2 right-2 bg-blue-600">
-                                        Verified
-                                    </Badge>
-                                )}
+                                {hub.is_featured && <Badge className="absolute top-2 left-2 bg-indigo-600">Featured</Badge>}
+                                {hub.is_verified && <Badge className="absolute top-2 right-2 bg-blue-600">Verified</Badge>}
                             </div>
                             <CardContent className="p-4">
-                                <h3 className="text-lg font-bold text-gray-900 mb-1">
-                                    {hub.name}
-                                </h3>
-                                <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                                    {hub.description}
-                                </p>
+                                <h3 className="text-lg font-bold text-gray-900 mb-1">{hub.name}</h3>
+                                <p className="text-sm text-gray-600 mb-3 line-clamp-2">{hub.description}</p>
                                 {hub.location && (
                                     <div className="flex items-center text-sm text-gray-500 mb-3">
                                         <MapPin className="h-4 w-4 mr-1" />
@@ -184,8 +167,8 @@ export default function HubsIndex() {
                                         link.active
                                             ? "bg-indigo-600 text-white"
                                             : link.url
-                                            ? "bg-white text-gray-700 hover:bg-gray-50"
-                                            : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                              ? "bg-white text-gray-700 hover:bg-gray-50"
+                                              : "bg-gray-100 text-gray-400 cursor-not-allowed"
                                     }`}
                                     dangerouslySetInnerHTML={{ __html: link.label }}
                                 />
@@ -199,4 +182,3 @@ export default function HubsIndex() {
         </div>
     );
 }
-

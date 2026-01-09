@@ -53,4 +53,3 @@ export default function CrossDomainAuthSync() {
     // This component doesn't render anything
     return null;
 }
-

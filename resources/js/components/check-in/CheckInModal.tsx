@@ -43,7 +43,7 @@ export function CheckInModal({ isOpen, onClose, eventId, eventName, venueName }:
                     onFinish: () => {
                         setIsSubmitting(false);
                     },
-                }
+                },
             );
         } catch (error) {
             console.error("Check-in error:", error);
@@ -80,7 +80,7 @@ export function CheckInModal({ isOpen, onClose, eventId, eventName, venueName }:
 
                     <div>
                         <Label>Who can see this check-in?</Label>
-                        <RadioGroup value={privacy} onValueChange={(value) => setPrivacy(value as any)} className="mt-2">
+                        <RadioGroup value={privacy} onValueChange={(value) => setPrivacy(value as "public" | "friends" | "private")} className="mt-2">
                             <div className="flex items-center space-x-2">
                                 <RadioGroupItem value="public" id="public" />
                                 <Label htmlFor="public" className="flex items-center cursor-pointer">
@@ -118,4 +118,3 @@ export function CheckInModal({ isOpen, onClose, eventId, eventName, venueName }:
         </Dialog>
     );
 }
-

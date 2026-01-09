@@ -71,11 +71,7 @@ export default function PodcastShow() {
                     {/* Podcast Header */}
                     <div className="mb-8 flex flex-col gap-6 rounded-lg border bg-card p-8 md:flex-row">
                         {podcast.cover_image ? (
-                            <img
-                                src={podcast.cover_image}
-                                alt={podcast.title}
-                                className="h-64 w-64 flex-shrink-0 rounded-lg object-cover"
-                            />
+                            <img src={podcast.cover_image} alt={podcast.title} className="h-64 w-64 flex-shrink-0 rounded-lg object-cover" />
                         ) : (
                             <div className="flex h-64 w-64 flex-shrink-0 items-center justify-center rounded-lg bg-muted">
                                 <Headphones className="size-24 text-muted-foreground" />
@@ -91,13 +87,9 @@ export default function PodcastShow() {
                                 />
                                 <span className="text-muted-foreground">{podcast.creator.display_name}</span>
                             </div>
-                            {podcast.description && (
-                                <p className="mb-4 text-muted-foreground">{podcast.description}</p>
-                            )}
+                            {podcast.description && <p className="mb-4 text-muted-foreground">{podcast.description}</p>}
                             <div className="flex flex-wrap items-center gap-4">
-                                {podcast.category && (
-                                    <Badge variant="outline">{podcast.category}</Badge>
-                                )}
+                                {podcast.category && <Badge variant="outline">{podcast.category}</Badge>}
                                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                                     <Headphones className="size-4" />
                                     {podcast.episodes_count} {podcast.episodes_count === 1 ? "episode" : "episodes"}
@@ -119,9 +111,7 @@ export default function PodcastShow() {
                         <div className="mb-4 flex items-center justify-between">
                             <h2 className="text-2xl font-bold">Episodes</h2>
                             {auth && (
-                                <Button onClick={() => router.visit(`/local-voices/podcasts/${podcast.slug}/episodes/create`)}>
-                                    Add Episode
-                                </Button>
+                                <Button onClick={() => router.visit(`/local-voices/podcasts/${podcast.slug}/episodes/create`)}>Add Episode</Button>
                             )}
                         </div>
                         {podcast.episodes.length === 0 ? (
@@ -140,9 +130,7 @@ export default function PodcastShow() {
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1">
                                                 <div className="mb-2 flex items-center gap-2">
-                                                    {episode.episode_number && (
-                                                        <Badge variant="outline">#{episode.episode_number}</Badge>
-                                                    )}
+                                                    {episode.episode_number && <Badge variant="outline">#{episode.episode_number}</Badge>}
                                                     <h3 className="text-lg font-semibold">{episode.title}</h3>
                                                 </div>
                                                 {episode.description && (
@@ -155,9 +143,7 @@ export default function PodcastShow() {
                                                             {new Date(episode.published_at).toLocaleDateString()}
                                                         </div>
                                                     )}
-                                                    {episode.duration && (
-                                                        <span>{episode.formatted_duration}</span>
-                                                    )}
+                                                    {episode.duration && <span>{episode.formatted_duration}</span>}
                                                     <span>{episode.listens_count.toLocaleString()} listens</span>
                                                 </div>
                                             </div>
@@ -175,4 +161,3 @@ export default function PodcastShow() {
         </LocationProvider>
     );
 }
-

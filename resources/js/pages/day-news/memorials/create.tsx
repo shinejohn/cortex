@@ -78,11 +78,7 @@ export default function MemorialCreate() {
                             <div className="mt-2">
                                 {preview ? (
                                     <div className="relative">
-                                        <img
-                                            src={preview}
-                                            alt="Preview"
-                                            className="h-48 w-48 rounded-full border object-cover"
-                                        />
+                                        <img src={preview} alt="Preview" className="h-48 w-48 rounded-full border object-cover" />
                                         <Button
                                             type="button"
                                             variant="destructive"
@@ -107,13 +103,7 @@ export default function MemorialCreate() {
                                         <Upload className="size-8 text-muted-foreground" />
                                     </div>
                                 )}
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleFileChange}
-                                    className="hidden"
-                                />
+                                <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
                             </div>
                         </div>
 
@@ -127,9 +117,7 @@ export default function MemorialCreate() {
                                 className="mt-2"
                                 required
                             />
-                            {form.errors.name && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.name}</p>
-                            )}
+                            {form.errors.name && <p className="mt-1 text-sm text-destructive">{form.errors.name}</p>}
                         </div>
 
                         {/* Years */}
@@ -143,9 +131,7 @@ export default function MemorialCreate() {
                                 placeholder="e.g., 1932 - 2023"
                                 required
                             />
-                            {form.errors.years && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.years}</p>
-                            )}
+                            {form.errors.years && <p className="mt-1 text-sm text-destructive">{form.errors.years}</p>}
                         </div>
 
                         {/* Date of Passing */}
@@ -159,9 +145,7 @@ export default function MemorialCreate() {
                                 className="mt-2"
                                 required
                             />
-                            {form.errors.date_of_passing && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.date_of_passing}</p>
-                            )}
+                            {form.errors.date_of_passing && <p className="mt-1 text-sm text-destructive">{form.errors.date_of_passing}</p>}
                         </div>
 
                         {/* Location */}
@@ -187,9 +171,7 @@ export default function MemorialCreate() {
                                 rows={8}
                                 required
                             />
-                            {form.errors.obituary && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.obituary}</p>
-                            )}
+                            {form.errors.obituary && <p className="mt-1 text-sm text-destructive">{form.errors.obituary}</p>}
                         </div>
 
                         {/* Service Information */}
@@ -249,12 +231,7 @@ export default function MemorialCreate() {
                                 <Flower className={`mr-2 size-4 ${form.processing ? "animate-spin" : ""}`} />
                                 {form.processing ? "Creating..." : "Create Memorial"}
                             </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => router.visit("/memorials")}
-                                disabled={form.processing}
-                            >
+                            <Button type="button" variant="outline" onClick={() => router.visit("/memorials")} disabled={form.processing}>
                                 Cancel
                             </Button>
                         </div>
@@ -264,4 +241,3 @@ export default function MemorialCreate() {
         </LocationProvider>
     );
 }
-

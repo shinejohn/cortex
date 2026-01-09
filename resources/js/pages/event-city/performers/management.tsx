@@ -7,20 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Auth } from "@/types";
 import { Link, router, usePage } from "@inertiajs/react";
-import {
-    Calendar,
-    DollarSign,
-    BarChart3,
-    Users,
-    Music,
-    Ticket,
-    Edit,
-    Plus,
-    TrendingUp,
-    Star,
-    MapPin,
-    Clock,
-} from "lucide-react";
+import { Calendar, DollarSign, BarChart3, Users, Music, Ticket, Edit, Plus, TrendingUp, Star, MapPin, Clock } from "lucide-react";
 import { useState } from "react";
 
 interface Performer {
@@ -198,7 +185,11 @@ export default function PerformerManagement() {
                                         <Music className="h-5 w-5 mr-2" />
                                         Browse Gigs
                                     </Button>
-                                    <Button variant="outline" className="w-full justify-start" onClick={() => router.visit(`/performers/${performer.id}/edit`)}>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full justify-start"
+                                        onClick={() => router.visit(`/performers/${performer.id}/edit`)}
+                                    >
                                         <Edit className="h-5 w-5 mr-2" />
                                         Edit Profile
                                     </Button>
@@ -249,14 +240,15 @@ export default function PerformerManagement() {
                                                                 {gig.event.venue.name}
                                                             </div>
                                                             <div className="flex items-center">
-                                                                <DollarSign className="h-4 w-4 mr-1" />
-                                                                ${gig.payment_amount.toLocaleString()}
+                                                                <DollarSign className="h-4 w-4 mr-1" />${gig.payment_amount.toLocaleString()}
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div className="ml-4 flex items-center space-x-2">
                                                         <Badge variant={gig.status === "confirmed" ? "default" : "outline"}>{gig.status}</Badge>
-                                                        <Badge variant={gig.payment_status === "paid" ? "default" : "outline"}>{gig.payment_status}</Badge>
+                                                        <Badge variant={gig.payment_status === "paid" ? "default" : "outline"}>
+                                                            {gig.payment_status}
+                                                        </Badge>
                                                     </div>
                                                 </div>
                                             </CardContent>
@@ -283,8 +275,7 @@ export default function PerformerManagement() {
                                                                 {gig.event.venue.name}
                                                             </div>
                                                             <div className="flex items-center">
-                                                                <DollarSign className="h-4 w-4 mr-1" />
-                                                                ${gig.payment_amount.toLocaleString()}
+                                                                <DollarSign className="h-4 w-4 mr-1" />${gig.payment_amount.toLocaleString()}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -359,4 +350,3 @@ export default function PerformerManagement() {
         </div>
     );
 }
-

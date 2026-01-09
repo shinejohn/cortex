@@ -80,11 +80,7 @@ export default function CreatorDashboard() {
                 <div className="mb-8 rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
                     {profile.cover_image && (
                         <div className="mb-6 -mx-8 -mt-8">
-                            <img
-                                src={profile.cover_image}
-                                alt="Cover"
-                                className="h-48 w-full object-cover rounded-t-lg"
-                            />
+                            <img src={profile.cover_image} alt="Cover" className="h-48 w-full object-cover rounded-t-lg" />
                         </div>
                     )}
                     <div className="flex items-start gap-6">
@@ -98,9 +94,7 @@ export default function CreatorDashboard() {
                         <div className="flex-1">
                             <div className="mb-2 flex items-center gap-2">
                                 <h1 className="text-3xl font-bold text-gray-900">{profile.display_name}</h1>
-                                <Badge className={getStatusColor(profile.status)}>
-                                    {profile.status.toUpperCase()}
-                                </Badge>
+                                <Badge className={getStatusColor(profile.status)}>{profile.status.toUpperCase()}</Badge>
                             </div>
                             {profile.bio && <p className="text-gray-600">{profile.bio}</p>}
                         </div>
@@ -132,7 +126,7 @@ export default function CreatorDashboard() {
                     <div className="mb-4 flex items-center justify-between">
                         <h2 className="text-2xl font-bold text-gray-900">Your Podcasts</h2>
                         {profile.status === "approved" && (
-                            <Button 
+                            <Button
                                 onClick={() => router.visit("/podcasts/create")}
                                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                             >
@@ -146,7 +140,7 @@ export default function CreatorDashboard() {
                             <Headphones className="mx-auto mb-4 h-12 w-12 text-gray-400" />
                             <p className="mb-4 text-gray-600">No podcasts yet.</p>
                             {profile.status === "approved" && (
-                                <Button 
+                                <Button
                                     onClick={() => router.visit("/podcasts/create")}
                                     className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                                 >
@@ -168,11 +162,7 @@ export default function CreatorDashboard() {
                                     onClick={() => router.visit(`/podcasts/${podcast.slug}`)}
                                 >
                                     {podcast.cover_image ? (
-                                        <img
-                                            src={podcast.cover_image}
-                                            alt={podcast.title}
-                                            className="h-48 w-full rounded-t-lg object-cover"
-                                        />
+                                        <img src={podcast.cover_image} alt={podcast.title} className="h-48 w-full rounded-t-lg object-cover" />
                                     ) : (
                                         <div className="flex h-48 w-full items-center justify-center rounded-t-lg bg-gradient-to-br from-purple-100 to-pink-100">
                                             <Headphones className="h-12 w-12 text-purple-400" />
@@ -181,19 +171,18 @@ export default function CreatorDashboard() {
                                     <div className="p-4">
                                         <div className="mb-2 flex items-center justify-between">
                                             <h3 className="font-semibold text-gray-900">{podcast.title}</h3>
-                                            <Badge variant={podcast.status === "published" ? "default" : "secondary"} className={
-                                                podcast.status === "published" 
-                                                    ? "bg-green-100 text-green-700 border-green-200"
-                                                    : "bg-gray-100 text-gray-700 border-gray-200"
-                                            }>
+                                            <Badge
+                                                variant={podcast.status === "published" ? "default" : "secondary"}
+                                                className={
+                                                    podcast.status === "published"
+                                                        ? "bg-green-100 text-green-700 border-green-200"
+                                                        : "bg-gray-100 text-gray-700 border-gray-200"
+                                                }
+                                            >
                                                 {podcast.status}
                                             </Badge>
                                         </div>
-                                        {podcast.description && (
-                                            <p className="mb-3 line-clamp-2 text-sm text-gray-600">
-                                                {podcast.description}
-                                            </p>
-                                        )}
+                                        {podcast.description && <p className="mb-3 line-clamp-2 text-sm text-gray-600">{podcast.description}</p>}
                                         <div className="flex items-center justify-between text-xs text-gray-500">
                                             <span>{podcast.episodes_count} episodes</span>
                                             <span>{podcast.total_listens.toLocaleString()} listens</span>
@@ -208,4 +197,3 @@ export default function CreatorDashboard() {
         </GoLocalVoicesLayout>
     );
 }
-

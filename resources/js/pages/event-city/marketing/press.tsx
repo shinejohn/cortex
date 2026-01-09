@@ -48,9 +48,7 @@ export default function Press() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <FileText className="h-16 w-16 mx-auto mb-4" />
                     <h1 className="text-5xl font-bold mb-4">Press & Media</h1>
-                    <p className="text-xl text-indigo-100 max-w-3xl mx-auto">
-                        Latest news, press releases, and media resources
-                    </p>
+                    <p className="text-xl text-indigo-100 max-w-3xl mx-auto">Latest news, press releases, and media resources</p>
                 </div>
             </div>
 
@@ -123,9 +121,7 @@ export default function Press() {
                 <Card>
                     <CardContent className="p-8 text-center">
                         <h2 className="text-3xl font-bold text-gray-900 mb-4">Media Kit</h2>
-                        <p className="text-xl text-gray-600 mb-8">
-                            Download our media kit with logos, brand guidelines, and high-resolution images
-                        </p>
+                        <p className="text-xl text-gray-600 mb-8">Download our media kit with logos, brand guidelines, and high-resolution images</p>
                         <Button size="lg">
                             <Download className="h-5 w-5 mr-2" />
                             Download Media Kit
@@ -138,4 +134,3 @@ export default function Press() {
         </div>
     );
 }
-

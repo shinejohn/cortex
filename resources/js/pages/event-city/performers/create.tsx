@@ -103,7 +103,8 @@ export default function CreatePerformer({ workspace }: Props) {
                 setErrors(error.response.data.errors);
             }
             console.error("Error creating performer:", error);
-            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to create performer. Please check the form for errors.";
+            const errorMessage =
+                error.response?.data?.message || error.response?.data?.error || "Failed to create performer. Please check the form for errors.";
             toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);

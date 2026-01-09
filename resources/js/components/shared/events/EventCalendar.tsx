@@ -27,12 +27,7 @@ interface EventCalendarProps {
     view?: "month" | "week" | "day";
 }
 
-export function EventCalendar({
-    events,
-    theme = "eventcity",
-    className,
-    view = "month",
-}: EventCalendarProps) {
+export function EventCalendar({ events, theme = "eventcity", className, view = "month" }: EventCalendarProps) {
     const [currentDate, setCurrentDate] = useState(new Date());
 
     const themeColors = {
@@ -64,11 +59,7 @@ export function EventCalendar({
 
     const isToday = (date: Date) => {
         const today = new Date();
-        return (
-            date.getDate() === today.getDate() &&
-            date.getMonth() === today.getMonth() &&
-            date.getFullYear() === today.getFullYear()
-        );
+        return date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
     };
 
     const navigateMonth = (direction: "prev" | "next") => {
@@ -90,7 +81,7 @@ export function EventCalendar({
         const startingDayOfWeek = firstDay.getDay();
 
         const days = [];
-        
+
         // Add empty cells for days before the first day of the month
         for (let i = 0; i < startingDayOfWeek; i++) {
             days.push(null);
@@ -112,19 +103,13 @@ export function EventCalendar({
         <div className={cn("space-y-4", className)}>
             {/* Calendar Header */}
             <div className="flex items-center justify-between">
-                <button
-                    onClick={() => navigateMonth("prev")}
-                    className="rounded-md p-2 hover:bg-muted"
-                >
+                <button onClick={() => navigateMonth("prev")} className="rounded-md p-2 hover:bg-muted">
                     <ChevronLeftIcon className="h-5 w-5" />
                 </button>
 
                 <h2 className="text-xl font-semibold text-foreground">{monthName}</h2>
 
-                <button
-                    onClick={() => navigateMonth("next")}
-                    className="rounded-md p-2 hover:bg-muted"
-                >
+                <button onClick={() => navigateMonth("next")} className="rounded-md p-2 hover:bg-muted">
                     <ChevronRightIcon className="h-5 w-5" />
                 </button>
             </div>
@@ -153,38 +138,21 @@ export function EventCalendar({
                         return (
                             <div
                                 key={date.toISOString()}
-                                className={cn(
-                                    "aspect-square bg-background p-1",
-                                    today && themeColors[theme].today,
-                                    !today && "hover:bg-muted"
-                                )}
+                                className={cn("aspect-square bg-background p-1", today && themeColors[theme].today, !today && "hover:bg-muted")}
                             >
-                                <div
-                                    className={cn(
-                                        "flex h-full flex-col",
-                                        today ? "text-white" : "text-foreground"
-                                    )}
-                                >
+                                <div className={cn("flex h-full flex-col", today ? "text-white" : "text-foreground")}>
                                     <span className="text-xs font-medium">{date.getDate()}</span>
                                     {dayEvents.length > 0 && (
                                         <div className="mt-1 flex flex-wrap gap-0.5">
                                             {dayEvents.slice(0, 3).map((event) => (
                                                 <div
                                                     key={event.id}
-                                                    className={cn(
-                                                        "h-1 w-full rounded",
-                                                        today ? "bg-white/50" : themeColors[theme].selected
-                                                    )}
+                                                    className={cn("h-1 w-full rounded", today ? "bg-white/50" : themeColors[theme].selected)}
                                                     title={event.title}
                                                 />
                                             ))}
                                             {dayEvents.length > 3 && (
-                                                <span
-                                                    className={cn(
-                                                        "text-xs",
-                                                        today ? "text-white/80" : "text-muted-foreground"
-                                                    )}
-                                                >
+                                                <span className={cn("text-xs", today ? "text-white/80" : "text-muted-foreground")}>
                                                     +{dayEvents.length - 3}
                                                 </span>
                                             )}
@@ -211,4 +179,3 @@ export function EventCalendar({
         </div>
     );
 }
-

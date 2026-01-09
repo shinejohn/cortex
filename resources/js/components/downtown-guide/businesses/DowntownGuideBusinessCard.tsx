@@ -40,7 +40,7 @@ export function DowntownGuideBusinessCard({
             href={route("downtown-guide.businesses.show", business.slug)}
             className={cn(
                 "group relative overflow-hidden rounded-xl border-2 border-purple-200 bg-white shadow-lg transition-all duration-300 hover:border-purple-400 hover:shadow-xl",
-                className
+                className,
             )}
         >
             {/* Featured Badge */}
@@ -69,12 +69,8 @@ export function DowntownGuideBusinessCard({
                 <div className="mb-3 flex items-start justify-between gap-2">
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
-                            <h3 className="text-lg font-bold text-gray-900 group-hover:text-purple-600">
-                                {business.name}
-                            </h3>
-                            {business.is_verified && (
-                                <CheckCircleIcon className="h-5 w-5 text-purple-600" title="Verified Business" />
-                            )}
+                            <h3 className="text-lg font-bold text-gray-900 group-hover:text-purple-600">{business.name}</h3>
+                            {business.is_verified && <CheckCircleIcon className="h-5 w-5 text-purple-600" title="Verified Business" />}
                         </div>
                         {(business.city || business.state) && (
                             <div className="mt-1 flex items-center gap-1 text-sm text-gray-600">
@@ -97,21 +93,13 @@ export function DowntownGuideBusinessCard({
                                     key={i}
                                     className={cn(
                                         "h-4 w-4",
-                                        i < Math.floor(business.rating ?? 0)
-                                            ? "fill-yellow-400 text-yellow-400"
-                                            : "text-gray-300"
+                                        i < Math.floor(business.rating ?? 0) ? "fill-yellow-400 text-yellow-400" : "text-gray-300",
                                     )}
                                 />
                             ))}
                         </div>
-                        <span className="text-sm font-semibold text-gray-900">
-                            {business.rating?.toFixed(1)}
-                        </span>
-                        {business.reviews_count !== undefined && (
-                            <span className="text-sm text-gray-600">
-                                ({business.reviews_count} reviews)
-                            </span>
-                        )}
+                        <span className="text-sm font-semibold text-gray-900">{business.rating?.toFixed(1)}</span>
+                        {business.reviews_count !== undefined && <span className="text-sm text-gray-600">({business.reviews_count} reviews)</span>}
                     </div>
                 )}
 
@@ -119,10 +107,7 @@ export function DowntownGuideBusinessCard({
                 {business.categories && business.categories.length > 0 && (
                     <div className="mb-3 flex flex-wrap gap-2">
                         {business.categories.slice(0, 2).map((category, index) => (
-                            <span
-                                key={index}
-                                className="rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-800"
-                            >
+                            <span key={index} className="rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-800">
                                 {category}
                             </span>
                         ))}
@@ -136,28 +121,19 @@ export function DowntownGuideBusinessCard({
                             <div className="flex items-center gap-2">
                                 <TagIcon className="h-4 w-4 text-purple-600" />
                                 <span className="text-sm font-semibold text-purple-900">
-                                    {activeDealsCount > 0 && `${activeDealsCount} Active Deal${activeDealsCount > 1 ? 's' : ''}`}
-                                    {activeDealsCount > 0 && activeCouponsCount > 0 && ' • '}
-                                    {activeCouponsCount > 0 && `${activeCouponsCount} Coupon${activeCouponsCount > 1 ? 's' : ''}`}
+                                    {activeDealsCount > 0 && `${activeDealsCount} Active Deal${activeDealsCount > 1 ? "s" : ""}`}
+                                    {activeDealsCount > 0 && activeCouponsCount > 0 && " • "}
+                                    {activeCouponsCount > 0 && `${activeCouponsCount} Coupon${activeCouponsCount > 1 ? "s" : ""}`}
                                 </span>
                             </div>
                         </div>
-                        {latestDeal && (
-                            <p className="mt-1 text-xs text-purple-700">
-                                Latest: {latestDeal.title}
-                            </p>
-                        )}
+                        {latestDeal && <p className="mt-1 text-xs text-purple-700">Latest: {latestDeal.title}</p>}
                     </div>
                 )}
 
                 {/* Description */}
-                {business.description && (
-                    <p className="mt-3 line-clamp-2 text-sm text-gray-600">
-                        {business.description}
-                    </p>
-                )}
+                {business.description && <p className="mt-3 line-clamp-2 text-sm text-gray-600">{business.description}</p>}
             </div>
         </Link>
     );
 }
-

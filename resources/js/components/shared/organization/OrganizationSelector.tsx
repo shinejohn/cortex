@@ -6,12 +6,7 @@ import { SearchIcon, BuildingIcon } from "lucide-react";
 import { router } from "@inertiajs/react";
 
 interface OrganizationSelectorProps {
-    onSelect: (organization: {
-        id: string;
-        name: string;
-        organization_type?: string;
-        organization_level?: string;
-    }) => void;
+    onSelect: (organization: { id: string; name: string; organization_type?: string; organization_level?: string }) => void;
     organizationType?: string;
     organizationLevel?: string;
     allowCreate?: boolean;
@@ -28,12 +23,14 @@ export function OrganizationSelector({
     className,
 }: OrganizationSelectorProps) {
     const [query, setQuery] = useState("");
-    const [organizations, setOrganizations] = useState<Array<{
-        id: string;
-        name: string;
-        organization_type?: string;
-        organization_level?: string;
-    }>>([]);
+    const [organizations, setOrganizations] = useState<
+        Array<{
+            id: string;
+            name: string;
+            organization_type?: string;
+            organization_level?: string;
+        }>
+    >([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -45,7 +42,7 @@ export function OrganizationSelector({
         const timeoutId = setTimeout(() => {
             setLoading(true);
             router.get(
-                '/api/organizations/search',
+                "/api/organizations/search",
                 {
                     q: query,
                     type: organizationType,
@@ -61,7 +58,7 @@ export function OrganizationSelector({
                     onError: () => {
                         setLoading(false);
                     },
-                }
+                },
             );
         }, 300);
 
@@ -72,20 +69,10 @@ export function OrganizationSelector({
         <div className={cn("space-y-2", className)}>
             <div className="relative">
                 <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                    type="text"
-                    placeholder="Search organizations..."
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    className="pl-10"
-                />
+                <Input type="text" placeholder="Search organizations..." value={query} onChange={(e) => setQuery(e.target.value)} className="pl-10" />
             </div>
 
-            {loading && (
-                <div className="rounded-lg border p-4 text-center text-sm text-muted-foreground">
-                    Searching...
-                </div>
-            )}
+            {loading && <div className="rounded-lg border p-4 text-center text-sm text-muted-foreground">Searching...</div>}
 
             {!loading && organizations.length > 0 && (
                 <div className="max-h-60 space-y-1 overflow-y-auto rounded-lg border bg-card p-2">
@@ -115,11 +102,8 @@ export function OrganizationSelector({
             )}
 
             {!loading && query.length >= 2 && organizations.length === 0 && (
-                <div className="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">
-                    No organizations found
-                </div>
+                <div className="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">No organizations found</div>
             )}
         </div>
     );
 }
-

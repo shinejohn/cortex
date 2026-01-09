@@ -64,12 +64,7 @@ interface EventCityBusinessesIndexProps {
     };
 }
 
-export default function EventCityBusinessesIndex({
-    businesses,
-    featuredBusinesses,
-    filters,
-    sort,
-}: EventCityBusinessesIndexProps) {
+export default function EventCityBusinessesIndex({ businesses, featuredBusinesses, filters, sort }: EventCityBusinessesIndexProps) {
     const [search, setSearch] = useState(filters.search || "");
     const [category, setCategory] = useState(filters.category || "");
     const [verifiedOnly, setVerifiedOnly] = useState(filters.verified_only || false);
@@ -84,14 +79,14 @@ export default function EventCityBusinessesIndex({
                 sort: sort.sort,
                 direction: sort.direction,
             },
-            { preserveState: true, preserveScroll: true }
+            { preserveState: true, preserveScroll: true },
         );
     };
 
     return (
         <>
             <Head title="Event Venues & Performer Directory - GoEventCity" />
-            
+
             <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
                 {/* Header */}
                 <div className="relative overflow-hidden border-b-4 border-indigo-600 bg-gradient-to-r from-indigo-600 to-purple-600 shadow-xl">
@@ -102,12 +97,8 @@ export default function EventCityBusinessesIndex({
                                 <CalendarIcon className="h-10 w-10 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-4xl font-bold text-white">
-                                    Event Venues & Performer Directory
-                                </h1>
-                                <p className="mt-2 text-xl text-indigo-100">
-                                    Find venues and performers for your next event
-                                </p>
+                                <h1 className="text-4xl font-bold text-white">Event Venues & Performer Directory</h1>
+                                <p className="mt-2 text-xl text-indigo-100">Find venues and performers for your next event</p>
                             </div>
                         </div>
                     </div>
@@ -119,9 +110,7 @@ export default function EventCityBusinessesIndex({
                         <section className="mb-12">
                             <div className="mb-6 flex items-center gap-2">
                                 <SparklesIcon className="h-6 w-6 text-indigo-600" />
-                                <h2 className="text-3xl font-bold text-gray-900">
-                                    Featured Venues with Upcoming Events
-                                </h2>
+                                <h2 className="text-3xl font-bold text-gray-900">Featured Venues with Upcoming Events</h2>
                             </div>
                             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                                 {featuredBusinesses.map((item) => (
@@ -188,9 +177,7 @@ export default function EventCityBusinessesIndex({
                     {/* Business List */}
                     <section>
                         <div className="mb-4 flex items-center justify-between">
-                            <h2 className="text-2xl font-bold text-gray-900">
-                                All Venues & Performers
-                            </h2>
+                            <h2 className="text-2xl font-bold text-gray-900">All Venues & Performers</h2>
                             <div className="flex items-center gap-2">
                                 <span className="text-sm text-gray-600">Sort by:</span>
                                 <Select
@@ -200,7 +187,7 @@ export default function EventCityBusinessesIndex({
                                         router.get(
                                             route("event-city.businesses.index"),
                                             { ...filters, sort: sortBy, direction },
-                                            { preserveState: true }
+                                            { preserveState: true },
                                         );
                                     }}
                                 >
@@ -227,20 +214,14 @@ export default function EventCityBusinessesIndex({
                             <div className="rounded-xl border-2 border-dashed border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-12 text-center">
                                 <CalendarIcon className="mx-auto h-16 w-16 text-indigo-400" />
                                 <p className="mt-4 text-xl font-bold text-gray-900">No venues found</p>
-                                <p className="mt-2 text-sm text-gray-600">
-                                    Try adjusting your search or filters
-                                </p>
+                                <p className="mt-2 text-sm text-gray-600">Try adjusting your search or filters</p>
                             </div>
                         )}
 
                         {/* Pagination */}
                         {businesses.last_page > 1 && (
                             <div className="mt-8">
-                                <Pagination
-                                    currentPage={businesses.current_page}
-                                    lastPage={businesses.last_page}
-                                    links={businesses.links}
-                                />
+                                <Pagination currentPage={businesses.current_page} lastPage={businesses.last_page} links={businesses.links} />
                             </div>
                         )}
                     </section>
@@ -249,4 +230,3 @@ export default function EventCityBusinessesIndex({
         </>
     );
 }
-

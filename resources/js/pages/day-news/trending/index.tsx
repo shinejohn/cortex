@@ -40,7 +40,8 @@ interface TrendingPageProps {
 }
 
 export default function TrendingIndex() {
-    const { auth, timePeriod, category, trendingStories, trendingTopics, trendingCategories, trendingPeople, communityPulse, activeReaders } = usePage<TrendingPageProps>().props;
+    const { auth, timePeriod, category, trendingStories, trendingTopics, trendingCategories, trendingPeople, communityPulse, activeReaders } =
+        usePage<TrendingPageProps>().props;
 
     const form = useForm({
         period: timePeriod,
@@ -169,11 +170,7 @@ export default function TrendingIndex() {
                                             className="flex cursor-pointer items-center gap-3 rounded-lg p-2 hover:bg-muted"
                                             onClick={() => router.visit(`/authors/${person.id}`)}
                                         >
-                                            <img
-                                                src={person.avatar}
-                                                alt={person.name}
-                                                className="size-10 rounded-full object-cover"
-                                            />
+                                            <img src={person.avatar} alt={person.name} className="size-10 rounded-full object-cover" />
                                             <div className="flex-1">
                                                 <div className="font-medium">{person.name}</div>
                                                 <div className="text-xs text-muted-foreground">{person.posts_count} articles</div>
@@ -211,4 +208,3 @@ export default function TrendingIndex() {
         </LocationProvider>
     );
 }
-

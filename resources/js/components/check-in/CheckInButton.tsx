@@ -12,14 +12,7 @@ interface CheckInButtonProps {
     size?: "sm" | "md" | "lg";
 }
 
-export function CheckInButton({
-    eventId,
-    eventName,
-    venueName,
-    isCheckedIn = false,
-    variant = "default",
-    size = "md",
-}: CheckInButtonProps) {
+export function CheckInButton({ eventId, eventName, venueName, isCheckedIn = false, variant = "default", size = "md" }: CheckInButtonProps) {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleCheckIn = async () => {
@@ -27,18 +20,22 @@ export function CheckInButton({
 
         setIsLoading(true);
         try {
-            await router.post(`/api/events/${eventId}/check-in`, {}, {
-                preserveScroll: true,
-                onSuccess: () => {
-                    router.reload({ only: ["event"] });
+            await router.post(
+                `/api/events/${eventId}/check-in`,
+                {},
+                {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        router.reload({ only: ["event"] });
+                    },
+                    onError: (errors) => {
+                        console.error("Check-in failed:", errors);
+                    },
+                    onFinish: () => {
+                        setIsLoading(false);
+                    },
                 },
-                onError: (errors) => {
-                    console.error("Check-in failed:", errors);
-                },
-                onFinish: () => {
-                    setIsLoading(false);
-                },
-            });
+            );
         } catch (error) {
             console.error("Check-in error:", error);
             setIsLoading(false);
@@ -69,4 +66,3 @@ export function CheckInButton({
         </Button>
     );
 }
-

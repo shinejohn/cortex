@@ -75,7 +75,9 @@ export default function Confirmation() {
                         )}
 
                         <div className="mb-6">
-                            <Badge variant="outline" className="mb-2">Active Regions</Badge>
+                            <Badge variant="outline" className="mb-2">
+                                Active Regions
+                            </Badge>
                             <div className="flex flex-wrap justify-center gap-2">
                                 {classified.regions.map((region) => (
                                     <Badge key={region.id} variant="secondary">
@@ -100,4 +102,3 @@ export default function Confirmation() {
         </LocationProvider>
     );
 }
-

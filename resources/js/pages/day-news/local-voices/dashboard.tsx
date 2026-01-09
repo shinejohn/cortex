@@ -82,27 +82,15 @@ export default function CreatorDashboard() {
                     <div className="mb-8 rounded-lg border bg-card p-8">
                         {profile.cover_image && (
                             <div className="mb-6 -mx-8 -mt-8">
-                                <img
-                                    src={profile.cover_image}
-                                    alt="Cover"
-                                    className="h-48 w-full object-cover"
-                                />
+                                <img src={profile.cover_image} alt="Cover" className="h-48 w-full object-cover" />
                             </div>
                         )}
                         <div className="flex items-start gap-6">
-                            {profile.avatar && (
-                                <img
-                                    src={profile.avatar}
-                                    alt={profile.display_name}
-                                    className="size-24 rounded-full object-cover"
-                                />
-                            )}
+                            {profile.avatar && <img src={profile.avatar} alt={profile.display_name} className="size-24 rounded-full object-cover" />}
                             <div className="flex-1">
                                 <div className="mb-2 flex items-center gap-2">
                                     <h1 className="text-3xl font-bold">{profile.display_name}</h1>
-                                    <Badge className={getStatusColor(profile.status)}>
-                                        {profile.status.toUpperCase()}
-                                    </Badge>
+                                    <Badge className={getStatusColor(profile.status)}>{profile.status.toUpperCase()}</Badge>
                                 </div>
                                 {profile.bio && <p className="text-muted-foreground">{profile.bio}</p>}
                             </div>
@@ -145,9 +133,7 @@ export default function CreatorDashboard() {
                                 <Headphones className="mx-auto mb-4 size-12 text-muted-foreground" />
                                 <p className="mb-4 text-muted-foreground">No podcasts yet.</p>
                                 {profile.status === "approved" && (
-                                    <Button onClick={() => router.visit("/local-voices/podcasts/create")}>
-                                        Create Your First Podcast
-                                    </Button>
+                                    <Button onClick={() => router.visit("/local-voices/podcasts/create")}>Create Your First Podcast</Button>
                                 )}
                                 {profile.status === "pending" && (
                                     <p className="text-sm text-muted-foreground">
@@ -164,11 +150,7 @@ export default function CreatorDashboard() {
                                         onClick={() => router.visit(`/local-voices/podcasts/${podcast.slug}`)}
                                     >
                                         {podcast.cover_image ? (
-                                            <img
-                                                src={podcast.cover_image}
-                                                alt={podcast.title}
-                                                className="h-48 w-full rounded-t-lg object-cover"
-                                            />
+                                            <img src={podcast.cover_image} alt={podcast.title} className="h-48 w-full rounded-t-lg object-cover" />
                                         ) : (
                                             <div className="flex h-48 w-full items-center justify-center rounded-t-lg bg-muted">
                                                 <Headphones className="size-12 text-muted-foreground" />
@@ -177,14 +159,10 @@ export default function CreatorDashboard() {
                                         <div className="p-4">
                                             <div className="mb-2 flex items-center justify-between">
                                                 <h3 className="font-semibold">{podcast.title}</h3>
-                                                <Badge variant={podcast.status === "published" ? "default" : "secondary"}>
-                                                    {podcast.status}
-                                                </Badge>
+                                                <Badge variant={podcast.status === "published" ? "default" : "secondary"}>{podcast.status}</Badge>
                                             </div>
                                             {podcast.description && (
-                                                <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">
-                                                    {podcast.description}
-                                                </p>
+                                                <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">{podcast.description}</p>
                                             )}
                                             <div className="flex items-center justify-between text-xs text-muted-foreground">
                                                 <span>{podcast.episodes_count} episodes</span>
@@ -201,4 +179,3 @@ export default function CreatorDashboard() {
         </LocationProvider>
     );
 }
-

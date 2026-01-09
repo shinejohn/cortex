@@ -43,9 +43,7 @@ export default function Careers() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <Briefcase className="h-16 w-16 mx-auto mb-4" />
                     <h1 className="text-5xl font-bold mb-4">Join Our Team</h1>
-                    <p className="text-xl text-indigo-100 max-w-3xl mx-auto">
-                        Help us build the future of local events and community connections
-                    </p>
+                    <p className="text-xl text-indigo-100 max-w-3xl mx-auto">Help us build the future of local events and community connections</p>
                 </div>
             </div>
 
@@ -59,9 +57,7 @@ export default function Careers() {
                                 <Users className="h-8 w-8 text-indigo-600" />
                             </div>
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">Great Culture</h3>
-                            <p className="text-gray-600">
-                                Work with passionate people who care about building amazing experiences
-                            </p>
+                            <p className="text-gray-600">Work with passionate people who care about building amazing experiences</p>
                         </CardContent>
                     </Card>
                     <Card>
@@ -70,9 +66,7 @@ export default function Careers() {
                                 <Zap className="h-8 w-8 text-purple-600" />
                             </div>
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">Fast Growth</h3>
-                            <p className="text-gray-600">
-                                Join a rapidly growing company with opportunities for career advancement
-                            </p>
+                            <p className="text-gray-600">Join a rapidly growing company with opportunities for career advancement</p>
                         </CardContent>
                     </Card>
                     <Card>
@@ -81,9 +75,7 @@ export default function Careers() {
                                 <Heart className="h-8 w-8 text-green-600" />
                             </div>
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">Impact</h3>
-                            <p className="text-gray-600">
-                                Make a real difference in how communities connect and celebrate
-                            </p>
+                            <p className="text-gray-600">Make a real difference in how communities connect and celebrate</p>
                         </CardContent>
                     </Card>
                 </div>
@@ -109,9 +101,7 @@ export default function Careers() {
                                                 <Clock className="h-4 w-4 mr-1" />
                                                 {job.type}
                                             </div>
-                                            <div className="flex items-center">
-                                                Posted {new Date(job.posted_date).toLocaleDateString()}
-                                            </div>
+                                            <div className="flex items-center">Posted {new Date(job.posted_date).toLocaleDateString()}</div>
                                         </div>
                                         <p className="text-gray-700 mb-4">{job.description}</p>
                                         <div className="flex flex-wrap gap-2">
@@ -150,4 +140,3 @@ export default function Careers() {
         </div>
     );
 }
-

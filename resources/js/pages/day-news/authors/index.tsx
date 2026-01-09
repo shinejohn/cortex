@@ -117,17 +117,11 @@ export default function AuthorsIndex() {
                                     onClick={() => router.visit(`/authors/${author.author_slug || author.id}`)}
                                 >
                                     <div className="mb-4 flex items-center gap-4">
-                                        <img
-                                            src={author.avatar}
-                                            alt={author.name}
-                                            className="size-16 rounded-full object-cover"
-                                        />
+                                        <img src={author.avatar} alt={author.name} className="size-16 rounded-full object-cover" />
                                         <div className="flex-1">
                                             <div className="mb-1 flex items-center gap-2">
                                                 <h3 className="text-lg font-semibold">{author.name}</h3>
-                                                {author.is_verified_author && (
-                                                    <Check className="size-4 text-blue-500" />
-                                                )}
+                                                {author.is_verified_author && <Check className="size-4 text-blue-500" />}
                                             </div>
                                             {author.trust_tier && (
                                                 <Badge className={getTierColor(author.trust_tier)}>
@@ -137,17 +131,13 @@ export default function AuthorsIndex() {
                                             )}
                                         </div>
                                     </div>
-                                    {author.bio && (
-                                        <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{author.bio}</p>
-                                    )}
+                                    {author.bio && <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{author.bio}</p>}
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-1 text-sm">
                                             <Star className="size-4 text-yellow-500" />
                                             <span className="font-medium">{author.trust_score.toFixed(1)}</span>
                                         </div>
-                                        <div className="text-sm text-muted-foreground">
-                                            {author.authored_day_news_posts_count} articles
-                                        </div>
+                                        <div className="text-sm text-muted-foreground">{author.authored_day_news_posts_count} articles</div>
                                     </div>
                                 </div>
                             ))}
@@ -174,4 +164,3 @@ export default function AuthorsIndex() {
         </LocationProvider>
     );
 }
-

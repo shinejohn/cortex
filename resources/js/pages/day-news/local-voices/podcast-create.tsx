@@ -91,11 +91,7 @@ export default function PodcastCreate() {
                             <div className="mt-2">
                                 {coverPreview ? (
                                     <div className="relative">
-                                        <img
-                                            src={coverPreview}
-                                            alt="Cover preview"
-                                            className="h-64 w-64 rounded-lg border object-cover"
-                                        />
+                                        <img src={coverPreview} alt="Cover preview" className="h-64 w-64 rounded-lg border object-cover" />
                                         <Button
                                             type="button"
                                             variant="destructive"
@@ -121,13 +117,7 @@ export default function PodcastCreate() {
                                         <p className="text-sm text-muted-foreground">Upload cover image</p>
                                     </div>
                                 )}
-                                <input
-                                    ref={coverInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleCoverChange}
-                                    className="hidden"
-                                />
+                                <input ref={coverInputRef} type="file" accept="image/*" onChange={handleCoverChange} className="hidden" />
                             </div>
                         </div>
 
@@ -141,9 +131,7 @@ export default function PodcastCreate() {
                                 className="mt-2"
                                 required
                             />
-                            {form.errors.title && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.title}</p>
-                            )}
+                            {form.errors.title && <p className="mt-1 text-sm text-destructive">{form.errors.title}</p>}
                         </div>
 
                         {/* Description */}
@@ -157,18 +145,13 @@ export default function PodcastCreate() {
                                 rows={6}
                                 placeholder="Tell listeners what your podcast is about..."
                             />
-                            {form.errors.description && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.description}</p>
-                            )}
+                            {form.errors.description && <p className="mt-1 text-sm text-destructive">{form.errors.description}</p>}
                         </div>
 
                         {/* Category */}
                         <div>
                             <Label htmlFor="category">Category</Label>
-                            <Select
-                                value={form.data.category}
-                                onValueChange={(value) => form.setData("category", value)}
-                            >
+                            <Select value={form.data.category} onValueChange={(value) => form.setData("category", value)}>
                                 <SelectTrigger className="mt-2">
                                     <SelectValue placeholder="Select category" />
                                 </SelectTrigger>
@@ -202,12 +185,7 @@ export default function PodcastCreate() {
                                 <Headphones className={`mr-2 size-4 ${form.processing ? "animate-spin" : ""}`} />
                                 {form.processing ? "Creating..." : "Create Podcast"}
                             </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => router.visit("/local-voices")}
-                                disabled={form.processing}
-                            >
+                            <Button type="button" variant="outline" onClick={() => router.visit("/local-voices")} disabled={form.processing}>
                                 Cancel
                             </Button>
                         </div>
@@ -217,4 +195,3 @@ export default function PodcastCreate() {
         </LocationProvider>
     );
 }
-

@@ -11,17 +11,7 @@ import { Label } from "@/components/ui/label";
 import AuthLayout from "@/layouts/auth-layout";
 import { Auth } from "@/types";
 
-export default function MagicLink({
-    status,
-    error,
-    auth,
-    invitation,
-}: {
-    status?: string;
-    error?: string;
-    auth: Auth;
-    invitation?: string;
-}) {
+export default function MagicLink({ status, error, auth, invitation }: { status?: string; error?: string; auth: Auth; invitation?: string }) {
     const { data, setData, post, processing, errors, reset } = useForm<Required<{ email: string }>>({
         email: "",
     });

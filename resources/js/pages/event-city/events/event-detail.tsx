@@ -303,15 +303,15 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                         alt={event.weather.description || event.weather.condition}
                                         className="h-6 w-6 mr-1"
                                     />
-                                ) : event.weather.condition === 'Clear' ? (
+                                ) : event.weather.condition === "Clear" ? (
                                     <Sun className="h-4 w-4 text-yellow-500 mr-1" />
-                                ) : event.weather.condition === 'Rain' ? (
+                                ) : event.weather.condition === "Rain" ? (
                                     <CloudRain className="h-4 w-4 text-blue-500 mr-1" />
                                 ) : (
                                     <Cloud className="h-4 w-4 text-gray-500 mr-1" />
                                 )}
                                 <span>
-                                    {event.weather.temperature ? `${Math.round(event.weather.temperature)}°F` : 'Weather info'}
+                                    {event.weather.temperature ? `${Math.round(event.weather.temperature)}°F` : "Weather info"}
                                     {event.weather.description && `, ${event.weather.description}`}
                                 </span>
                             </div>
@@ -435,11 +435,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                 Get Tickets
                             </Button>
                             {auth.user && !isCheckedIn && (
-                                <CheckInButton
-                                    eventId={event.id}
-                                    eventName={event.title}
-                                    venueName={event.venue?.name || "TBA"}
-                                />
+                                <CheckInButton eventId={event.id} eventName={event.title} venueName={event.venue?.name || "TBA"} />
                             )}
                             {auth.user && isCheckedIn && (
                                 <Button variant="outline" disabled>
@@ -461,19 +457,21 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                     <CardTitle>Recent Check-ins</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <CheckInFeed checkIns={recentCheckIns.map((ci) => ({
-                                        id: ci.id,
-                                        user: ci.user,
-                                        event: {
-                                            id: event.id,
-                                            title: event.title,
-                                            venue: {
-                                                name: event.venue?.name || "TBA",
+                                    <CheckInFeed
+                                        checkIns={recentCheckIns.map((ci) => ({
+                                            id: ci.id,
+                                            user: ci.user,
+                                            event: {
+                                                id: event.id,
+                                                title: event.title,
+                                                venue: {
+                                                    name: event.venue?.name || "TBA",
+                                                },
                                             },
-                                        },
-                                        checked_in_at: ci.checked_in_at,
-                                        notes: ci.notes,
-                                    }))} />
+                                            checked_in_at: ci.checked_in_at,
+                                            notes: ci.notes,
+                                        }))}
+                                    />
                                 </CardContent>
                             </Card>
                         )}
@@ -600,12 +598,8 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                                     </div>
                                                     <div className="flex-1">
                                                         <div className="flex items-center mb-2">
-                                                            <h4 className="font-medium text-gray-900 text-lg">
-                                                                {event.performer.name}
-                                                            </h4>
-                                                            {event.performer.verified && (
-                                                                <CheckCircle className="h-5 w-5 text-blue-500 ml-2" />
-                                                            )}
+                                                            <h4 className="font-medium text-gray-900 text-lg">{event.performer.name}</h4>
+                                                            {event.performer.verified && <CheckCircle className="h-5 w-5 text-blue-500 ml-2" />}
                                                         </div>
                                                         <p className="text-gray-700 leading-relaxed">
                                                             {event.performer.bio || "No performer information available."}
@@ -636,9 +630,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                         <div className="text-center py-8">
                                             <Users className="h-12 w-12 text-gray-300 mx-auto mb-3" />
                                             <p className="text-gray-500 mb-4">No reviews yet</p>
-                                            {auth.user && (
-                                                <Button variant="outline">Write a Review</Button>
-                                            )}
+                                            {auth.user && <Button variant="outline">Write a Review</Button>}
                                         </div>
                                     </CardContent>
                                 </Card>

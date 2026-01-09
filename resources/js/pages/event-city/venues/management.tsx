@@ -7,20 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Auth } from "@/types";
 import { Link, router, usePage } from "@inertiajs/react";
-import {
-    Building,
-    Calendar,
-    DollarSign,
-    Users,
-    MapPin,
-    Edit,
-    Plus,
-    TrendingUp,
-    Star,
-    Clock,
-    CheckCircle,
-    XCircle,
-} from "lucide-react";
+import { Building, Calendar, DollarSign, Users, MapPin, Edit, Plus, TrendingUp, Star, Clock, CheckCircle, XCircle } from "lucide-react";
 import { useState } from "react";
 
 interface Venue {
@@ -93,7 +80,11 @@ export default function VenueManagement() {
                             <p className="text-indigo-200 mt-1">Manage your venues, bookings, and revenue</p>
                         </div>
                         <div className="mt-4 md:mt-0 flex space-x-3">
-                            <Button variant="outline" className="bg-white text-indigo-700 hover:bg-indigo-50" onClick={() => router.visit("/venues/submit")}>
+                            <Button
+                                variant="outline"
+                                className="bg-white text-indigo-700 hover:bg-indigo-50"
+                                onClick={() => router.visit("/venues/submit")}
+                            >
                                 <Plus className="h-5 w-5 mr-2" />
                                 Add Venue
                             </Button>
@@ -284,14 +275,17 @@ export default function VenueManagement() {
                                                                 {booking.client.name}
                                                             </div>
                                                             <div className="flex items-center">
-                                                                <DollarSign className="h-4 w-4 mr-1" />
-                                                                ${booking.payment_amount.toLocaleString()}
+                                                                <DollarSign className="h-4 w-4 mr-1" />${booking.payment_amount.toLocaleString()}
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div className="ml-4 flex items-center space-x-2">
-                                                        <Badge variant={booking.status === "confirmed" ? "default" : "outline"}>{booking.status}</Badge>
-                                                        <Badge variant={booking.payment_status === "paid" ? "default" : "outline"}>{booking.payment_status}</Badge>
+                                                        <Badge variant={booking.status === "confirmed" ? "default" : "outline"}>
+                                                            {booking.status}
+                                                        </Badge>
+                                                        <Badge variant={booking.payment_status === "paid" ? "default" : "outline"}>
+                                                            {booking.payment_status}
+                                                        </Badge>
                                                     </div>
                                                 </div>
                                             </CardContent>
@@ -318,8 +312,7 @@ export default function VenueManagement() {
                                                                 {booking.client.name}
                                                             </div>
                                                             <div className="flex items-center">
-                                                                <DollarSign className="h-4 w-4 mr-1" />
-                                                                ${booking.payment_amount.toLocaleString()}
+                                                                <DollarSign className="h-4 w-4 mr-1" />${booking.payment_amount.toLocaleString()}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -352,4 +345,3 @@ export default function VenueManagement() {
         </div>
     );
 }
-

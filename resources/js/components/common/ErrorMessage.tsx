@@ -60,16 +60,10 @@ export function ErrorMessage({ title, message, onDismiss, className, variant = "
             <AlertTitle>{title || "Error"}</AlertTitle>
             <AlertDescription className="mt-2">{renderMessage()}</AlertDescription>
             {onDismiss && (
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-2 top-2"
-                    onClick={handleDismiss}
-                >
+                <Button variant="ghost" size="sm" className="absolute right-2 top-2" onClick={handleDismiss}>
                     <X className="h-4 w-4" />
                 </Button>
             )}
         </Alert>
     );
 }
-

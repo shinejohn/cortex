@@ -20,8 +20,8 @@ export default function GoLocalVoicesFooter() {
                             </div>
                         </Link>
                         <p className="text-sm text-gray-400 mb-4 max-w-md">
-                            Discover and share local podcasts from your community. Connect with creators, 
-                            explore diverse voices, and amplify local stories.
+                            Discover and share local podcasts from your community. Connect with creators, explore diverse voices, and amplify local
+                            stories.
                         </p>
                         <div className="flex space-x-4">
                             <a href="#" className="text-gray-400 hover:text-purple-400 transition-colors">
@@ -95,4 +95,3 @@ export default function GoLocalVoicesFooter() {
         </footer>
     );
 }
-

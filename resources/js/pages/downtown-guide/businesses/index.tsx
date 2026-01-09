@@ -64,12 +64,7 @@ interface DowntownGuideBusinessesIndexProps {
     };
 }
 
-export default function DowntownGuideBusinessesIndex({
-    businesses,
-    featuredBusinesses,
-    filters,
-    sort,
-}: DowntownGuideBusinessesIndexProps) {
+export default function DowntownGuideBusinessesIndex({ businesses, featuredBusinesses, filters, sort }: DowntownGuideBusinessesIndexProps) {
     const [search, setSearch] = useState(filters.search || "");
     const [category, setCategory] = useState(filters.category || "");
     const [verifiedOnly, setVerifiedOnly] = useState(filters.verified_only || false);
@@ -86,14 +81,14 @@ export default function DowntownGuideBusinessesIndex({
                 sort: sort.sort,
                 direction: sort.direction,
             },
-            { preserveState: true, preserveScroll: true }
+            { preserveState: true, preserveScroll: true },
         );
     };
 
     return (
         <>
             <Head title="Business Directory - DowntownsGuide" />
-            
+
             <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
                 {/* Header */}
                 <div className="relative overflow-hidden border-b-4 border-purple-600 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 shadow-xl">
@@ -104,12 +99,8 @@ export default function DowntownGuideBusinessesIndex({
                                 <StoreIcon className="h-10 w-10 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-4xl font-bold text-white">
-                                    Your Complete Guide to Local Businesses
-                                </h1>
-                                <p className="mt-2 text-xl text-purple-100">
-                                    Discover businesses, deals, reviews, and more in your area
-                                </p>
+                                <h1 className="text-4xl font-bold text-white">Your Complete Guide to Local Businesses</h1>
+                                <p className="mt-2 text-xl text-purple-100">Discover businesses, deals, reviews, and more in your area</p>
                             </div>
                         </div>
                     </div>
@@ -121,9 +112,7 @@ export default function DowntownGuideBusinessesIndex({
                         <section className="mb-12">
                             <div className="mb-6 flex items-center gap-2">
                                 <SparklesIcon className="h-6 w-6 text-purple-600" />
-                                <h2 className="text-3xl font-bold text-gray-900">
-                                    Featured Businesses with Active Deals
-                                </h2>
+                                <h2 className="text-3xl font-bold text-gray-900">Featured Businesses with Active Deals</h2>
                             </div>
                             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                                 {featuredBusinesses.map((item) => (
@@ -205,9 +194,7 @@ export default function DowntownGuideBusinessesIndex({
                     {/* Business List */}
                     <section>
                         <div className="mb-4 flex items-center justify-between">
-                            <h2 className="text-2xl font-bold text-gray-900">
-                                All Businesses
-                            </h2>
+                            <h2 className="text-2xl font-bold text-gray-900">All Businesses</h2>
                             <div className="flex items-center gap-2">
                                 <span className="text-sm text-gray-600">Sort by:</span>
                                 <Select
@@ -217,7 +204,7 @@ export default function DowntownGuideBusinessesIndex({
                                         router.get(
                                             route("downtown-guide.businesses.index"),
                                             { ...filters, sort: sortBy, direction },
-                                            { preserveState: true }
+                                            { preserveState: true },
                                         );
                                     }}
                                 >
@@ -244,20 +231,14 @@ export default function DowntownGuideBusinessesIndex({
                             <div className="rounded-xl border-2 border-dashed border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
                                 <StoreIcon className="mx-auto h-16 w-16 text-purple-400" />
                                 <p className="mt-4 text-xl font-bold text-gray-900">No businesses found</p>
-                                <p className="mt-2 text-sm text-gray-600">
-                                    Try adjusting your search or filters
-                                </p>
+                                <p className="mt-2 text-sm text-gray-600">Try adjusting your search or filters</p>
                             </div>
                         )}
 
                         {/* Pagination */}
                         {businesses.last_page > 1 && (
                             <div className="mt-8">
-                                <Pagination
-                                    currentPage={businesses.current_page}
-                                    lastPage={businesses.last_page}
-                                    links={businesses.links}
-                                />
+                                <Pagination currentPage={businesses.current_page} lastPage={businesses.last_page} links={businesses.links} />
                             </div>
                         )}
                     </section>
@@ -266,4 +247,3 @@ export default function DowntownGuideBusinessesIndex({
         </>
     );
 }
-

@@ -90,11 +90,9 @@ export default function LocalVoicesIndex() {
                         <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                             Go Local Voices
                         </h1>
-                        <p className="text-xl text-gray-600 mb-6">
-                            Discover and share local podcasts from your community
-                        </p>
+                        <p className="text-xl text-gray-600 mb-6">Discover and share local podcasts from your community</p>
                         {auth && (
-                            <Button 
+                            <Button
                                 onClick={() => router.visit("/register")}
                                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
                             >
@@ -117,8 +115,8 @@ export default function LocalVoicesIndex() {
                                     className="pl-10 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
                                 />
                             </div>
-                            <Button 
-                                type="submit" 
+                            <Button
+                                type="submit"
                                 disabled={searchForm.processing}
                                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                             >
@@ -133,9 +131,10 @@ export default function LocalVoicesIndex() {
                                     type="button"
                                     variant={searchForm.data.category === cat.value ? "default" : "outline"}
                                     size="sm"
-                                    className={searchForm.data.category === cat.value 
-                                        ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
-                                        : "border-gray-300 hover:border-purple-500"
+                                    className={
+                                        searchForm.data.category === cat.value
+                                            ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
+                                            : "border-gray-300 hover:border-purple-500"
                                     }
                                     onClick={() => {
                                         searchForm.setData("category", cat.value);
@@ -160,7 +159,7 @@ export default function LocalVoicesIndex() {
                         <Mic className="mx-auto mb-4 h-16 w-16 text-gray-400" />
                         <p className="text-gray-600 text-lg mb-2">No podcasts found.</p>
                         {auth && (
-                            <Button 
+                            <Button
                                 className="mt-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                                 onClick={() => router.visit("/register")}
                             >
@@ -177,11 +176,7 @@ export default function LocalVoicesIndex() {
                                 onClick={() => router.visit(`/podcasts/${podcast.slug}`)}
                             >
                                 {podcast.cover_image ? (
-                                    <img
-                                        src={podcast.cover_image}
-                                        alt={podcast.title}
-                                        className="h-48 w-full rounded-t-lg object-cover"
-                                    />
+                                    <img src={podcast.cover_image} alt={podcast.title} className="h-48 w-full rounded-t-lg object-cover" />
                                 ) : (
                                     <div className="flex h-48 w-full items-center justify-center rounded-t-lg bg-gradient-to-br from-purple-100 to-pink-100">
                                         <Headphones className="h-12 w-12 text-purple-400" />
@@ -189,11 +184,7 @@ export default function LocalVoicesIndex() {
                                 )}
                                 <div className="p-5">
                                     <h3 className="mb-2 text-lg font-semibold text-gray-900">{podcast.title}</h3>
-                                    {podcast.description && (
-                                        <p className="mb-3 line-clamp-2 text-sm text-gray-600">
-                                            {podcast.description}
-                                        </p>
-                                    )}
+                                    {podcast.description && <p className="mb-3 line-clamp-2 text-sm text-gray-600">{podcast.description}</p>}
                                     <div className="mb-3 flex items-center gap-2">
                                         <img
                                             src={podcast.creator.avatar || "/default-avatar.png"}
@@ -210,10 +201,7 @@ export default function LocalVoicesIndex() {
                                         <span>{podcast.total_listens.toLocaleString()} listens</span>
                                     </div>
                                     {podcast.category && (
-                                        <Badge 
-                                            variant="outline" 
-                                            className="mt-2 border-purple-200 text-purple-700 bg-purple-50"
-                                        >
+                                        <Badge variant="outline" className="mt-2 border-purple-200 text-purple-700 bg-purple-50">
                                             {podcast.category}
                                         </Badge>
                                     )}
@@ -231,9 +219,10 @@ export default function LocalVoicesIndex() {
                                 key={index}
                                 variant={link.active ? "default" : "outline"}
                                 size="sm"
-                                className={link.active 
-                                    ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
-                                    : "border-gray-300 hover:border-purple-500"
+                                className={
+                                    link.active
+                                        ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
+                                        : "border-gray-300 hover:border-purple-500"
                                 }
                                 onClick={() => link.url && router.visit(link.url)}
                                 disabled={!link.url}
@@ -246,4 +235,3 @@ export default function LocalVoicesIndex() {
         </GoLocalVoicesLayout>
     );
 }
-

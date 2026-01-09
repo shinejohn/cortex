@@ -15,11 +15,11 @@ createServer((page) =>
             // @ts-expect-error
             global.route = (
                 name: RouteName,
-                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                // biome-ignore lint/suspicious/noExplicitAny: ziggy route params are dynamic
                 params?: any,
                 absolute?: boolean,
             ) =>
-                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                // biome-ignore lint/suspicious/noExplicitAny: ziggy route params are dynamic
                 route(name, params as any, absolute, {
                     // @ts-expect-error
                     ...page.props.ziggy,

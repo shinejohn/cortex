@@ -12,10 +12,14 @@ interface PaginationProps {
 export function Pagination({ currentPage, lastPage, links }: PaginationProps) {
     const handlePageClick = (url: string | null) => {
         if (url) {
-            router.get(url, {}, {
-                preserveState: true,
-                preserveScroll: true,
-            });
+            router.get(
+                url,
+                {},
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                },
+            );
         }
     };
 
@@ -27,7 +31,7 @@ export function Pagination({ currentPage, lastPage, links }: PaginationProps) {
                 size="sm"
                 disabled={currentPage === 1}
                 onClick={() => {
-                    const prevLink = links.find(link => link.label === "&laquo; Previous" || link.label === "Previous");
+                    const prevLink = links.find((link) => link.label === "&laquo; Previous" || link.label === "Previous");
                     if (prevLink?.url) {
                         handlePageClick(prevLink.url);
                     }
@@ -39,15 +43,17 @@ export function Pagination({ currentPage, lastPage, links }: PaginationProps) {
 
             {/* Page numbers */}
             {links
-                .filter(link => {
+                .filter((link) => {
                     // Show page numbers, not "Previous" or "Next"
                     const label = link.label.trim();
-                    return label !== "&laquo; Previous" && 
-                           label !== "Previous" && 
-                           label !== "Next" && 
-                           label !== "Next &raquo;" &&
-                           label !== "..." &&
-                           !isNaN(Number(label));
+                    return (
+                        label !== "&laquo; Previous" &&
+                        label !== "Previous" &&
+                        label !== "Next" &&
+                        label !== "Next &raquo;" &&
+                        label !== "..." &&
+                        !isNaN(Number(label))
+                    );
                 })
                 .map((link, index) => (
                     <Button
@@ -56,9 +62,7 @@ export function Pagination({ currentPage, lastPage, links }: PaginationProps) {
                         size="sm"
                         disabled={!link.url}
                         onClick={() => handlePageClick(link.url)}
-                        className={cn(
-                            link.active && "bg-primary text-primary-foreground"
-                        )}
+                        className={cn(link.active && "bg-primary text-primary-foreground")}
                         dangerouslySetInnerHTML={{ __html: link.label }}
                     />
                 ))}
@@ -69,7 +73,7 @@ export function Pagination({ currentPage, lastPage, links }: PaginationProps) {
                 size="sm"
                 disabled={currentPage === lastPage}
                 onClick={() => {
-                    const nextLink = links.find(link => link.label === "Next &raquo;" || link.label === "Next");
+                    const nextLink = links.find((link) => link.label === "Next &raquo;" || link.label === "Next");
                     if (nextLink?.url) {
                         handlePageClick(nextLink.url);
                     }
@@ -81,4 +85,3 @@ export function Pagination({ currentPage, lastPage, links }: PaginationProps) {
         </div>
     );
 }
-

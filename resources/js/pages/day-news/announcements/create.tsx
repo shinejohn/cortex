@@ -166,27 +166,14 @@ export default function CreateAnnouncement({ auth }: CreateAnnouncementProps) {
                         <div>
                             <Label htmlFor="image">Image (optional)</Label>
                             <div className="mt-2 flex items-center gap-4">
-                                <label
-                                    htmlFor="image-upload"
-                                    className="flex cursor-pointer items-center gap-2 rounded-lg border p-4 hover:bg-muted"
-                                >
+                                <label htmlFor="image-upload" className="flex cursor-pointer items-center gap-2 rounded-lg border p-4 hover:bg-muted">
                                     <Upload className="size-5" />
                                     <span>{form.data.image ? form.data.image.name : "Upload Image"}</span>
-                                    <input
-                                        id="image-upload"
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageChange}
-                                        className="hidden"
-                                    />
+                                    <input id="image-upload" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                                 </label>
                                 {form.data.image && (
                                     <div className="relative">
-                                        <img
-                                            src={URL.createObjectURL(form.data.image)}
-                                            alt="Preview"
-                                            className="h-20 w-20 rounded-lg object-cover"
-                                        />
+                                        <img src={URL.createObjectURL(form.data.image)} alt="Preview" className="h-20 w-20 rounded-lg object-cover" />
                                     </div>
                                 )}
                             </div>
@@ -207,4 +194,3 @@ export default function CreateAnnouncement({ auth }: CreateAnnouncementProps) {
         </LocationProvider>
     );
 }
-

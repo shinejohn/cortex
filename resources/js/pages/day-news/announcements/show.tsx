@@ -87,11 +87,7 @@ export default function ShowAnnouncement() {
                     </div>
 
                     {announcement.image && (
-                        <img
-                            src={announcement.image}
-                            alt={announcement.title}
-                            className="mb-8 h-96 w-full rounded-lg object-cover"
-                        />
+                        <img src={announcement.image} alt={announcement.title} className="mb-8 h-96 w-full rounded-lg object-cover" />
                     )}
 
                     <div className="prose prose-lg max-w-none dark:prose-invert">
@@ -121,4 +117,3 @@ export default function ShowAnnouncement() {
         </LocationProvider>
     );
 }
-

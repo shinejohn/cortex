@@ -12,11 +12,8 @@ export default function GoLocalVoicesLayout({ children, auth }: GoLocalVoicesLay
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
             <GoLocalVoicesHeader auth={auth} />
-            <main className="flex-1">
-                {children}
-            </main>
+            <main className="flex-1">{children}</main>
             <GoLocalVoicesFooter />
         </div>
     );
 }
-

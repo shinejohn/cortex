@@ -13,14 +13,7 @@ interface SuccessMessageProps {
     autoDismissDelay?: number;
 }
 
-export function SuccessMessage({
-    title,
-    message,
-    onDismiss,
-    className,
-    autoDismiss = false,
-    autoDismissDelay = 5000,
-}: SuccessMessageProps) {
+export function SuccessMessage({ title, message, onDismiss, className, autoDismiss = false, autoDismissDelay = 5000 }: SuccessMessageProps) {
     const [dismissed, setDismissed] = useState(false);
 
     if (dismissed) {
@@ -44,16 +37,10 @@ export function SuccessMessage({
             <AlertTitle className="text-green-800">{title || "Success"}</AlertTitle>
             <AlertDescription className="mt-2 text-green-700">{message}</AlertDescription>
             {onDismiss && (
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-2 top-2"
-                    onClick={handleDismiss}
-                >
+                <Button variant="ghost" size="sm" className="absolute right-2 top-2" onClick={handleDismiss}>
                     <X className="h-4 w-4" />
                 </Button>
             )}
         </Alert>
     );
 }
-

@@ -14,12 +14,7 @@ interface ReviewFormProps {
     initialRating?: number;
 }
 
-export function ReviewForm({
-    onSubmit,
-    theme = "downtownsguide",
-    className,
-    initialRating = 0,
-}: ReviewFormProps) {
+export function ReviewForm({ onSubmit, theme = "downtownsguide", className, initialRating = 0 }: ReviewFormProps) {
     const [rating, setRating] = useState(initialRating);
     const [hoveredRating, setHoveredRating] = useState(0);
     const { data, setData, processing, errors, reset } = useForm({
@@ -71,12 +66,7 @@ export function ReviewForm({
                     onMouseLeave={() => setHoveredRating(0)}
                     className="focus:outline-none"
                 >
-                    <StarIcon
-                        className={cn(
-                            "h-6 w-6 transition-colors",
-                            isFilled ? themeColors[theme].starFilled : "text-gray-300"
-                        )}
-                    />
+                    <StarIcon className={cn("h-6 w-6 transition-colors", isFilled ? themeColors[theme].starFilled : "text-gray-300")} />
                 </button>
             );
         });
@@ -88,28 +78,15 @@ export function ReviewForm({
                 <Label htmlFor="rating">Rating *</Label>
                 <div className="flex items-center gap-2">
                     {renderStars()}
-                    {rating > 0 && (
-                        <span className="text-sm text-muted-foreground">
-                            {rating} out of 5
-                        </span>
-                    )}
+                    {rating > 0 && <span className="text-sm text-muted-foreground">{rating} out of 5</span>}
                 </div>
-                {errors.rating && (
-                    <p className="text-sm text-red-600">{errors.rating}</p>
-                )}
+                {errors.rating && <p className="text-sm text-red-600">{errors.rating}</p>}
             </div>
 
             <div className="space-y-2">
                 <Label htmlFor="title">Title (Optional)</Label>
-                <Input
-                    id="title"
-                    value={data.title}
-                    onChange={(e) => setData("title", e.target.value)}
-                    placeholder="Give your review a title"
-                />
-                {errors.title && (
-                    <p className="text-sm text-red-600">{errors.title}</p>
-                )}
+                <Input id="title" value={data.title} onChange={(e) => setData("title", e.target.value)} placeholder="Give your review a title" />
+                {errors.title && <p className="text-sm text-red-600">{errors.title}</p>}
             </div>
 
             <div className="space-y-2">
@@ -122,9 +99,7 @@ export function ReviewForm({
                     rows={5}
                     required
                 />
-                {errors.content && (
-                    <p className="text-sm text-red-600">{errors.content}</p>
-                )}
+                {errors.content && <p className="text-sm text-red-600">{errors.content}</p>}
             </div>
 
             <Button type="submit" disabled={processing || !rating || !data.content}>
@@ -133,4 +108,3 @@ export function ReviewForm({
         </form>
     );
 }
-

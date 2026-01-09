@@ -30,9 +30,7 @@ export function CheckInFeed({ checkIns }: CheckInFeedProps) {
     if (checkIns.length === 0) {
         return (
             <Card>
-                <CardContent className="p-6 text-center text-gray-500">
-                    No recent check-ins
-                </CardContent>
+                <CardContent className="p-6 text-center text-gray-500">No recent check-ins</CardContent>
             </Card>
         );
     }
@@ -54,9 +52,7 @@ export function CheckInFeed({ checkIns }: CheckInFeedProps) {
                                     <span className="font-medium">{checkIn.event.venue.name}</span>
                                 </div>
                                 <div className="mt-1 text-sm text-gray-600">{checkIn.event.title}</div>
-                                {checkIn.notes && (
-                                    <div className="mt-2 text-sm text-gray-700">{checkIn.notes}</div>
-                                )}
+                                {checkIn.notes && <div className="mt-2 text-sm text-gray-700">{checkIn.notes}</div>}
                                 <div className="mt-2 flex items-center space-x-4 text-xs text-gray-500">
                                     <div className="flex items-center">
                                         <Clock className="h-3 w-3 mr-1" />
@@ -77,4 +73,3 @@ export function CheckInFeed({ checkIns }: CheckInFeedProps) {
         </div>
     );
 }
-

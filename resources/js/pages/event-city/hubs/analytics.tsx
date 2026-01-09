@@ -83,11 +83,7 @@ export default function HubAnalytics() {
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex items-center mb-4">
-                        <Button
-                            variant="ghost"
-                            onClick={() => router.visit(`/hubs/${hub.slug}`)}
-                            className="text-white/80 hover:text-white"
-                        >
+                        <Button variant="ghost" onClick={() => router.visit(`/hubs/${hub.slug}`)} className="text-white/80 hover:text-white">
                             <ArrowLeft className="h-4 w-4 mr-1" />
                             Back to Hub
                         </Button>
@@ -95,9 +91,7 @@ export default function HubAnalytics() {
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
                         <div>
                             <h1 className="text-3xl font-bold">{hub.name} - Analytics</h1>
-                            <p className="mt-2 text-white/80 max-w-2xl">
-                                Track your hub's performance, engagement, and growth metrics
-                            </p>
+                            <p className="mt-2 text-white/80 max-w-2xl">Track your hub's performance, engagement, and growth metrics</p>
                         </div>
                         <div className="mt-4 md:mt-0 flex items-center space-x-3">
                             <Select value={selectedRange} onValueChange={handleRangeChange}>
@@ -240,9 +234,7 @@ export default function HubAnalytics() {
                             <CardTitle className="text-lg">Revenue</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-gray-900">
-                                ${totals.revenue.toFixed(2)}
-                            </div>
+                            <div className="text-2xl font-bold text-gray-900">${totals.revenue.toFixed(2)}</div>
                             <p className="text-sm text-gray-500 mt-1">Total revenue</p>
                         </CardContent>
                     </Card>
@@ -253,4 +245,3 @@ export default function HubAnalytics() {
         </div>
     );
 }
-

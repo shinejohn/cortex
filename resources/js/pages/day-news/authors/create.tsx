@@ -59,9 +59,7 @@ export default function AuthorCreate() {
                                 rows={6}
                                 placeholder="Tell readers about yourself..."
                             />
-                            {form.errors.bio && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.bio}</p>
-                            )}
+                            {form.errors.bio && <p className="mt-1 text-sm text-destructive">{form.errors.bio}</p>}
                         </div>
 
                         {/* Author Slug */}
@@ -77,9 +75,7 @@ export default function AuthorCreate() {
                             <p className="mt-1 text-sm text-muted-foreground">
                                 Leave blank to auto-generate from your name. Only letters, numbers, dashes, and underscores.
                             </p>
-                            {form.errors.author_slug && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.author_slug}</p>
-                            )}
+                            {form.errors.author_slug && <p className="mt-1 text-sm text-destructive">{form.errors.author_slug}</p>}
                         </div>
 
                         {/* Error Display */}
@@ -102,12 +98,7 @@ export default function AuthorCreate() {
                                 <User className={`mr-2 size-4 ${form.processing ? "animate-spin" : ""}`} />
                                 {form.processing ? "Creating..." : "Create Profile"}
                             </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => router.visit("/authors")}
-                                disabled={form.processing}
-                            >
+                            <Button type="button" variant="outline" onClick={() => router.visit("/authors")} disabled={form.processing}>
                                 Cancel
                             </Button>
                         </div>
@@ -117,4 +108,3 @@ export default function AuthorCreate() {
         </LocationProvider>
     );
 }
-

@@ -7,18 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Auth } from "@/types";
 import { router, usePage } from "@inertiajs/react";
-import {
-    Calendar,
-    DollarSign,
-    Users,
-    TrendingUp,
-    Plus,
-    Edit,
-    Eye,
-    BarChart3,
-    Ticket,
-    MapPin,
-} from "lucide-react";
+import { Calendar, DollarSign, Users, TrendingUp, Plus, Edit, Eye, BarChart3, Ticket, MapPin } from "lucide-react";
 import { useState } from "react";
 
 interface Event {
@@ -70,7 +59,11 @@ export default function OrganizerDashboard() {
                             <p className="text-indigo-200 mt-1">Manage your events and track performance</p>
                         </div>
                         <div className="mt-4 md:mt-0">
-                            <Button variant="outline" className="bg-white text-indigo-700 hover:bg-indigo-50" onClick={() => router.visit("/events/create")}>
+                            <Button
+                                variant="outline"
+                                className="bg-white text-indigo-700 hover:bg-indigo-50"
+                                onClick={() => router.visit("/events/create")}
+                            >
                                 <Plus className="h-5 w-5 mr-2" />
                                 Create Event
                             </Button>
@@ -214,8 +207,7 @@ export default function OrganizerDashboard() {
                                                         {event.ticket_sales} tickets sold
                                                     </div>
                                                     <div className="flex items-center">
-                                                        <DollarSign className="h-4 w-4 mr-1" />
-                                                        ${event.revenue.toLocaleString()}
+                                                        <DollarSign className="h-4 w-4 mr-1" />${event.revenue.toLocaleString()}
                                                     </div>
                                                 </div>
                                             </div>
@@ -266,4 +258,3 @@ export default function OrganizerDashboard() {
         </div>
     );
 }
-

@@ -125,13 +125,7 @@ export default function PodcastCreate() {
                                         <p className="text-sm text-gray-600">Upload cover image</p>
                                     </div>
                                 )}
-                                <input
-                                    ref={coverInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleCoverChange}
-                                    className="hidden"
-                                />
+                                <input ref={coverInputRef} type="file" accept="image/*" onChange={handleCoverChange} className="hidden" />
                             </div>
                         </div>
 
@@ -145,9 +139,7 @@ export default function PodcastCreate() {
                                 className="mt-2 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
                                 required
                             />
-                            {form.errors.title && (
-                                <p className="mt-1 text-sm text-red-600">{form.errors.title}</p>
-                            )}
+                            {form.errors.title && <p className="mt-1 text-sm text-red-600">{form.errors.title}</p>}
                         </div>
 
                         {/* Description */}
@@ -161,18 +153,13 @@ export default function PodcastCreate() {
                                 rows={6}
                                 placeholder="Tell listeners what your podcast is about..."
                             />
-                            {form.errors.description && (
-                                <p className="mt-1 text-sm text-red-600">{form.errors.description}</p>
-                            )}
+                            {form.errors.description && <p className="mt-1 text-sm text-red-600">{form.errors.description}</p>}
                         </div>
 
                         {/* Category */}
                         <div>
                             <Label htmlFor="category">Category</Label>
-                            <Select
-                                value={form.data.category}
-                                onValueChange={(value) => form.setData("category", value)}
-                            >
+                            <Select value={form.data.category} onValueChange={(value) => form.setData("category", value)}>
                                 <SelectTrigger className="mt-2 border-gray-300 focus:border-purple-500 focus:ring-purple-500">
                                     <SelectValue placeholder="Select category" />
                                 </SelectTrigger>
@@ -202,8 +189,8 @@ export default function PodcastCreate() {
 
                         {/* Submit */}
                         <div className="flex gap-4">
-                            <Button 
-                                type="submit" 
+                            <Button
+                                type="submit"
                                 disabled={form.processing}
                                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                             >
@@ -226,4 +213,3 @@ export default function PodcastCreate() {
         </GoLocalVoicesLayout>
     );
 }
-

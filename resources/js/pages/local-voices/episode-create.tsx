@@ -122,18 +122,9 @@ export default function EpisodeCreate() {
                                         <p className="mt-1 text-xs text-gray-500">MP3, WAV, or M4A • Max 100MB</p>
                                     </div>
                                 )}
-                                <input
-                                    ref={audioInputRef}
-                                    type="file"
-                                    accept="audio/*"
-                                    onChange={handleAudioChange}
-                                    className="hidden"
-                                    required
-                                />
+                                <input ref={audioInputRef} type="file" accept="audio/*" onChange={handleAudioChange} className="hidden" required />
                             </div>
-                            {form.errors.audio_file && (
-                                <p className="mt-1 text-sm text-red-600">{form.errors.audio_file}</p>
-                            )}
+                            {form.errors.audio_file && <p className="mt-1 text-sm text-red-600">{form.errors.audio_file}</p>}
                         </div>
 
                         {/* Title */}
@@ -146,9 +137,7 @@ export default function EpisodeCreate() {
                                 className="mt-2 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
                                 required
                             />
-                            {form.errors.title && (
-                                <p className="mt-1 text-sm text-red-600">{form.errors.title}</p>
-                            )}
+                            {form.errors.title && <p className="mt-1 text-sm text-red-600">{form.errors.title}</p>}
                         </div>
 
                         {/* Episode Number */}
@@ -161,9 +150,7 @@ export default function EpisodeCreate() {
                                 className="mt-2 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
                                 placeholder="e.g., 001, S01E01"
                             />
-                            {form.errors.episode_number && (
-                                <p className="mt-1 text-sm text-red-600">{form.errors.episode_number}</p>
-                            )}
+                            {form.errors.episode_number && <p className="mt-1 text-sm text-red-600">{form.errors.episode_number}</p>}
                         </div>
 
                         {/* Description */}
@@ -177,9 +164,7 @@ export default function EpisodeCreate() {
                                 rows={4}
                                 placeholder="Brief description of this episode..."
                             />
-                            {form.errors.description && (
-                                <p className="mt-1 text-sm text-red-600">{form.errors.description}</p>
-                            )}
+                            {form.errors.description && <p className="mt-1 text-sm text-red-600">{form.errors.description}</p>}
                         </div>
 
                         {/* Show Notes */}
@@ -193,9 +178,7 @@ export default function EpisodeCreate() {
                                 rows={8}
                                 placeholder="Detailed show notes, links, timestamps, etc..."
                             />
-                            {form.errors.show_notes && (
-                                <p className="mt-1 text-sm text-red-600">{form.errors.show_notes}</p>
-                            )}
+                            {form.errors.show_notes && <p className="mt-1 text-sm text-red-600">{form.errors.show_notes}</p>}
                         </div>
 
                         {/* Error Display */}
@@ -214,8 +197,8 @@ export default function EpisodeCreate() {
 
                         {/* Submit */}
                         <div className="flex gap-4">
-                            <Button 
-                                type="submit" 
+                            <Button
+                                type="submit"
                                 disabled={form.processing}
                                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                             >
@@ -232,13 +215,10 @@ export default function EpisodeCreate() {
                                 Cancel
                             </Button>
                         </div>
-                        <p className="text-sm text-gray-600">
-                            The episode will be saved as a draft. You can publish it from the podcast page.
-                        </p>
+                        <p className="text-sm text-gray-600">The episode will be saved as a draft. You can publish it from the podcast page.</p>
                     </form>
                 </div>
             </div>
         </GoLocalVoicesLayout>
     );
 }
-

@@ -288,11 +288,7 @@ export default function ShowPost({ auth, post, relatedPosts, comments, commentsC
                                     {(post.author || post.writer_agent) && (
                                         <div className="flex items-center gap-2">
                                             {post.writer_agent?.avatar ? (
-                                                <img
-                                                    src={post.writer_agent.avatar}
-                                                    alt={post.writer_agent.name}
-                                                    className="size-6 rounded-full"
-                                                />
+                                                <img src={post.writer_agent.avatar} alt={post.writer_agent.name} className="size-6 rounded-full" />
                                             ) : (
                                                 <User className="size-4" />
                                             )}

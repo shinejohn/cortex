@@ -224,17 +224,11 @@ export default function EpisodeShow() {
                                 <div
                                     key={relatedEpisode.id}
                                     className="cursor-pointer rounded-lg border border-gray-200 bg-white p-4 transition-all hover:shadow-md hover:border-purple-300"
-                                    onClick={() =>
-                                        router.visit(
-                                            `/podcasts/${episode.podcast.slug}/episodes/${relatedEpisode.slug}`
-                                        )
-                                    }
+                                    onClick={() => router.visit(`/podcasts/${episode.podcast.slug}/episodes/${relatedEpisode.slug}`)}
                                 >
                                     <h3 className="font-semibold text-gray-900">{relatedEpisode.title}</h3>
                                     <div className="mt-1 flex items-center gap-4 text-sm text-gray-600">
-                                        {relatedEpisode.published_at && (
-                                            <span>{new Date(relatedEpisode.published_at).toLocaleDateString()}</span>
-                                        )}
+                                        {relatedEpisode.published_at && <span>{new Date(relatedEpisode.published_at).toLocaleDateString()}</span>}
                                         <span>{relatedEpisode.formatted_duration}</span>
                                     </div>
                                 </div>
@@ -246,4 +240,3 @@ export default function EpisodeShow() {
         </GoLocalVoicesLayout>
     );
 }
-

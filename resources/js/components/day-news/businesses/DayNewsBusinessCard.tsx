@@ -33,16 +33,16 @@ interface DayNewsBusinessCardProps {
  * Unique positioning: Shows business news and community engagement
  * Visual: Newspaper-style, editorial feel, blue theme
  */
-export function DayNewsBusinessCard({
-    business,
-    recentArticlesCount = 0,
-    latestArticle,
-    className,
-}: DayNewsBusinessCardProps) {
+export function DayNewsBusinessCard({ business, recentArticlesCount = 0, latestArticle, className }: DayNewsBusinessCardProps) {
     const href = business.slug ? `/businesses/${business.slug}` : `/businesses/${business.id}`;
 
     return (
-        <div className={cn("group rounded-lg border-2 border-blue-200 bg-white p-4 shadow-sm transition-all hover:border-blue-400 hover:shadow-md", className)}>
+        <div
+            className={cn(
+                "group rounded-lg border-2 border-blue-200 bg-white p-4 shadow-sm transition-all hover:border-blue-400 hover:shadow-md",
+                className,
+            )}
+        >
             <div className="flex gap-4">
                 {/* Business Image */}
                 {business.image && (
@@ -60,9 +60,7 @@ export function DayNewsBusinessCard({
                     <div className="flex items-start justify-between gap-2">
                         <div className="flex-1">
                             <Link href={href} className="group/link">
-                                <h3 className="text-lg font-bold text-blue-900 group-hover/link:text-blue-700">
-                                    {business.name}
-                                </h3>
+                                <h3 className="text-lg font-bold text-blue-900 group-hover/link:text-blue-700">{business.name}</h3>
                             </Link>
                             {business.is_verified && (
                                 <span className="ml-2 text-xs text-blue-600" title="Verified Business">
@@ -73,16 +71,14 @@ export function DayNewsBusinessCard({
                     </div>
 
                     {/* Description */}
-                    {business.description && (
-                        <p className="line-clamp-2 text-sm text-gray-700">{business.description}</p>
-                    )}
+                    {business.description && <p className="line-clamp-2 text-sm text-gray-700">{business.description}</p>}
 
                     {/* News Articles Badge */}
                     {recentArticlesCount > 0 && (
                         <div className="flex items-center gap-2 rounded-md bg-blue-50 px-2 py-1">
                             <NewspaperIcon className="h-4 w-4 text-blue-600" />
                             <span className="text-xs font-medium text-blue-900">
-                                {recentArticlesCount} recent {recentArticlesCount === 1 ? 'article' : 'articles'}
+                                {recentArticlesCount} recent {recentArticlesCount === 1 ? "article" : "articles"}
                             </span>
                         </div>
                     )}
@@ -95,9 +91,7 @@ export function DayNewsBusinessCard({
                         >
                             <div className="flex items-center gap-2">
                                 <NewspaperIcon className="h-3 w-3 text-blue-600" />
-                                <span className="line-clamp-1 text-xs font-medium text-blue-900">
-                                    {latestArticle.title}
-                                </span>
+                                <span className="line-clamp-1 text-xs font-medium text-blue-900">{latestArticle.title}</span>
                             </div>
                             {latestArticle.published_at && (
                                 <div className="mt-1 flex items-center gap-1 text-xs text-blue-700">
@@ -114,7 +108,9 @@ export function DayNewsBusinessCard({
                             {business.address && business.city && (
                                 <div className="flex items-center gap-1">
                                     <MapPinIcon className="h-3 w-3" />
-                                    <span>{business.city}, {business.state}</span>
+                                    <span>
+                                        {business.city}, {business.state}
+                                    </span>
                                 </div>
                             )}
 
@@ -123,9 +119,7 @@ export function DayNewsBusinessCard({
                                     <StarIcon className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                                     <span className="font-medium">{business.rating.toFixed(1)}</span>
                                     {business.reviews_count !== undefined && (
-                                        <span className="text-gray-500">
-                                            ({business.reviews_count.toLocaleString()})
-                                        </span>
+                                        <span className="text-gray-500">({business.reviews_count.toLocaleString()})</span>
                                     )}
                                 </div>
                             )}
@@ -143,4 +137,3 @@ export function DayNewsBusinessCard({
         </div>
     );
 }
-

@@ -40,9 +40,7 @@ export default function Home({ featuredCommunities, featuredBusinesses, stats }:
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
                         <div className="text-center">
                             <h1 className="text-5xl font-bold mb-6">AlphaSite</h1>
-                            <p className="text-2xl text-blue-100 mb-8">
-                                AI-Powered Business Pages for Local Communities
-                            </p>
+                            <p className="text-2xl text-blue-100 mb-8">AI-Powered Business Pages for Local Communities</p>
                             <div className="flex justify-center space-x-4">
                                 <Link
                                     href="/directory"
@@ -67,21 +65,15 @@ export default function Home({ featuredCommunities, featuredBusinesses, stats }:
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                                 <div>
-                                    <div className="text-4xl font-bold text-blue-600 mb-2">
-                                        {stats.total_businesses.toLocaleString()}
-                                    </div>
+                                    <div className="text-4xl font-bold text-blue-600 mb-2">{stats.total_businesses.toLocaleString()}</div>
                                     <div className="text-gray-600">Businesses</div>
                                 </div>
                                 <div>
-                                    <div className="text-4xl font-bold text-blue-600 mb-2">
-                                        {stats.total_communities.toLocaleString()}
-                                    </div>
+                                    <div className="text-4xl font-bold text-blue-600 mb-2">{stats.total_communities.toLocaleString()}</div>
                                     <div className="text-gray-600">Communities</div>
                                 </div>
                                 <div>
-                                    <div className="text-4xl font-bold text-blue-600 mb-2">
-                                        {stats.total_industries.toLocaleString()}
-                                    </div>
+                                    <div className="text-4xl font-bold text-blue-600 mb-2">{stats.total_industries.toLocaleString()}</div>
                                     <div className="text-gray-600">Industries</div>
                                 </div>
                             </div>
@@ -101,19 +93,11 @@ export default function Home({ featuredCommunities, featuredBusinesses, stats }:
                                     className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden"
                                 >
                                     {community.hero_image_url && (
-                                        <img
-                                            src={community.hero_image_url}
-                                            alt={community.name}
-                                            className="w-full h-48 object-cover"
-                                        />
+                                        <img src={community.hero_image_url} alt={community.name} className="w-full h-48 object-cover" />
                                     )}
                                     <div className="p-6">
                                         <h3 className="text-xl font-semibold mb-2">{community.name}</h3>
-                                        {community.total_businesses && (
-                                            <p className="text-gray-600">
-                                                {community.total_businesses} businesses
-                                            </p>
-                                        )}
+                                        {community.total_businesses && <p className="text-gray-600">{community.total_businesses} businesses</p>}
                                     </div>
                                 </Link>
                             ))}
@@ -134,11 +118,7 @@ export default function Home({ featuredCommunities, featuredBusinesses, stats }:
                                         className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden"
                                     >
                                         {business.images && business.images.length > 0 && (
-                                            <img
-                                                src={business.images[0]}
-                                                alt={business.name}
-                                                className="w-full h-48 object-cover"
-                                            />
+                                            <img src={business.images[0]} alt={business.name} className="w-full h-48 object-cover" />
                                         )}
                                         <div className="p-4">
                                             <h3 className="font-semibold mb-1">{business.name}</h3>
@@ -157,9 +137,7 @@ export default function Home({ featuredCommunities, featuredBusinesses, stats }:
                 <div className="bg-blue-600 text-white">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
                         <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-                        <p className="text-xl text-blue-100 mb-8">
-                            Claim your business and get a free AI-powered business page
-                        </p>
+                        <p className="text-xl text-blue-100 mb-8">Claim your business and get a free AI-powered business page</p>
                         <Link
                             href="/get-started"
                             className="px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition inline-block"
@@ -172,4 +150,3 @@ export default function Home({ featuredCommunities, featuredBusinesses, stats }:
         </Layout>
     );
 }
-

@@ -92,11 +92,7 @@ export default function PhotoCreate() {
                             <div className="mt-2">
                                 {preview ? (
                                     <div className="relative">
-                                        <img
-                                            src={preview}
-                                            alt="Preview"
-                                            className="h-64 w-full rounded-lg border object-cover"
-                                        />
+                                        <img src={preview} alt="Preview" className="h-64 w-full rounded-lg border object-cover" />
                                         <Button
                                             type="button"
                                             variant="destructive"
@@ -123,18 +119,9 @@ export default function PhotoCreate() {
                                         <p className="mt-1 text-xs text-muted-foreground">Max 10MB</p>
                                     </div>
                                 )}
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleFileChange}
-                                    className="hidden"
-                                    required
-                                />
+                                <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" required />
                             </div>
-                            {form.errors.image && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.image}</p>
-                            )}
+                            {form.errors.image && <p className="mt-1 text-sm text-destructive">{form.errors.image}</p>}
                         </div>
 
                         {/* Title */}
@@ -147,9 +134,7 @@ export default function PhotoCreate() {
                                 className="mt-2"
                                 required
                             />
-                            {form.errors.title && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.title}</p>
-                            )}
+                            {form.errors.title && <p className="mt-1 text-sm text-destructive">{form.errors.title}</p>}
                         </div>
 
                         {/* Description */}
@@ -162,18 +147,13 @@ export default function PhotoCreate() {
                                 className="mt-2"
                                 rows={4}
                             />
-                            {form.errors.description && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.description}</p>
-                            )}
+                            {form.errors.description && <p className="mt-1 text-sm text-destructive">{form.errors.description}</p>}
                         </div>
 
                         {/* Category */}
                         <div>
                             <Label htmlFor="category">Category</Label>
-                            <Select
-                                value={form.data.category}
-                                onValueChange={(value) => form.setData("category", value)}
-                            >
+                            <Select value={form.data.category} onValueChange={(value) => form.setData("category", value)}>
                                 <SelectTrigger className="mt-2">
                                     <SelectValue placeholder="Select category" />
                                 </SelectTrigger>
@@ -191,10 +171,7 @@ export default function PhotoCreate() {
                         {albums.length > 0 && (
                             <div>
                                 <Label htmlFor="album_id">Album (Optional)</Label>
-                                <Select
-                                    value={form.data.album_id}
-                                    onValueChange={(value) => form.setData("album_id", value)}
-                                >
+                                <Select value={form.data.album_id} onValueChange={(value) => form.setData("album_id", value)}>
                                     <SelectTrigger className="mt-2">
                                         <SelectValue placeholder="Select album" />
                                     </SelectTrigger>
@@ -230,12 +207,7 @@ export default function PhotoCreate() {
                                 <Upload className={`mr-2 size-4 ${form.processing ? "animate-spin" : ""}`} />
                                 {form.processing ? "Uploading..." : "Upload Photo"}
                             </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => router.visit("/photos")}
-                                disabled={form.processing}
-                            >
+                            <Button type="button" variant="outline" onClick={() => router.visit("/photos")} disabled={form.processing}>
                                 Cancel
                             </Button>
                         </div>
@@ -245,4 +217,3 @@ export default function PhotoCreate() {
         </LocationProvider>
     );
 }
-

@@ -171,7 +171,8 @@ export default function EditEvent({ event, venues, performers, workspace = { can
                 setErrors(error.response.data.errors);
             }
             console.error("Error updating event:", error);
-            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to update event. Please check the form for errors.";
+            const errorMessage =
+                error.response?.data?.message || error.response?.data?.error || "Failed to update event. Please check the form for errors.";
             toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);

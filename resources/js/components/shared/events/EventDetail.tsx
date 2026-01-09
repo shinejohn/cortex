@@ -46,13 +46,7 @@ interface EventDetailProps {
     };
 }
 
-export function EventDetail({
-    event,
-    theme = "eventcity",
-    className,
-    showShare = true,
-    weather,
-}: EventDetailProps) {
+export function EventDetail({ event, theme = "eventcity", className, showShare = true, weather }: EventDetailProps) {
     const [shareSuccess, setShareSuccess] = useState(false);
 
     const themeColors = {
@@ -114,43 +108,26 @@ export function EventDetail({
             {/* Header */}
             <header className="space-y-4">
                 {event.category && (
-                    <span
-                        className={cn(
-                            "inline-block rounded-full px-3 py-1 text-sm font-medium",
-                            themeColors[theme].badge
-                        )}
-                    >
-                        {event.category}
-                    </span>
+                    <span className={cn("inline-block rounded-full px-3 py-1 text-sm font-medium", themeColors[theme].badge)}>{event.category}</span>
                 )}
 
                 <div className="flex items-start justify-between gap-4">
                     <h1 className="flex-1 text-3xl font-bold text-foreground md:text-4xl">{event.title}</h1>
 
                     {showShare && (
-                        <button
-                            onClick={handleShare}
-                            className="rounded-md p-2 hover:bg-muted"
-                            title="Share event"
-                        >
+                        <button onClick={handleShare} className="rounded-md p-2 hover:bg-muted" title="Share event">
                             <Share2Icon className="h-5 w-5 text-muted-foreground" />
                         </button>
                     )}
                 </div>
 
-                {event.description && (
-                    <p className="text-lg text-muted-foreground">{event.description}</p>
-                )}
+                {event.description && <p className="text-lg text-muted-foreground">{event.description}</p>}
             </header>
 
             {/* Featured Image */}
             {event.image && (
                 <div className="aspect-video w-full overflow-hidden rounded-lg">
-                    <img
-                        src={event.image}
-                        alt={event.title}
-                        className="h-full w-full object-cover"
-                    />
+                    <img src={event.image} alt={event.title} className="h-full w-full object-cover" />
                 </div>
             )}
 
@@ -182,18 +159,11 @@ export function EventDetail({
                             <MapPinIcon className="mt-1 h-5 w-5 text-muted-foreground" />
                             <div>
                                 <h3 className="font-semibold text-foreground">Venue</h3>
-                                <Link
-                                    href={`/venues/${event.venue.id}`}
-                                    className="text-sm text-muted-foreground hover:text-foreground"
-                                >
+                                <Link href={`/venues/${event.venue.id}`} className="text-sm text-muted-foreground hover:text-foreground">
                                     {event.venue.name}
                                 </Link>
-                                {event.venue.address && (
-                                    <p className="text-sm text-muted-foreground">{event.venue.address}</p>
-                                )}
-                                {event.venue.city && (
-                                    <p className="text-sm text-muted-foreground">{event.venue.city}</p>
-                                )}
+                                {event.venue.address && <p className="text-sm text-muted-foreground">{event.venue.address}</p>}
+                                {event.venue.city && <p className="text-sm text-muted-foreground">{event.venue.city}</p>}
                             </div>
                         </div>
                     </div>
@@ -206,10 +176,7 @@ export function EventDetail({
                             <div className="mt-1 h-5 w-5 rounded-full bg-muted" />
                             <div>
                                 <h3 className="font-semibold text-foreground">Performer</h3>
-                                <Link
-                                    href={`/performers/${event.performer.id}`}
-                                    className="text-sm text-muted-foreground hover:text-foreground"
-                                >
+                                <Link href={`/performers/${event.performer.id}`} className="text-sm text-muted-foreground hover:text-foreground">
                                     {event.performer.name}
                                 </Link>
                             </div>
@@ -238,19 +205,11 @@ export function EventDetail({
                 {weather && (
                     <div className="rounded-lg border bg-card p-4">
                         <div className="flex items-start gap-3">
-                            {weather.icon && (
-                                <img src={weather.icon} alt={weather.condition} className="h-8 w-8" />
-                            )}
+                            {weather.icon && <img src={weather.icon} alt={weather.condition} className="h-8 w-8" />}
                             <div>
                                 <h3 className="font-semibold text-foreground">Weather</h3>
-                                {weather.temperature && (
-                                    <p className="text-sm text-muted-foreground">
-                                        {weather.temperature}°F
-                                    </p>
-                                )}
-                                {weather.condition && (
-                                    <p className="text-sm text-muted-foreground">{weather.condition}</p>
-                                )}
+                                {weather.temperature && <p className="text-sm text-muted-foreground">{weather.temperature}°F</p>}
+                                {weather.condition && <p className="text-sm text-muted-foreground">{weather.condition}</p>}
                             </div>
                         </div>
                     </div>
@@ -258,12 +217,7 @@ export function EventDetail({
             </div>
 
             {/* Content */}
-            {event.content && (
-                <div
-                    className="prose prose-lg max-w-none dark:prose-invert"
-                    dangerouslySetInnerHTML={{ __html: event.content }}
-                />
-            )}
+            {event.content && <div className="prose prose-lg max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: event.content }} />}
 
             {/* Ticket Plans */}
             {event.ticket_plans && event.ticket_plans.length > 0 && (
@@ -271,16 +225,11 @@ export function EventDetail({
                     <h3 className="mb-4 font-semibold text-foreground">Ticket Options</h3>
                     <div className="space-y-2">
                         {event.ticket_plans.map((plan) => (
-                            <div
-                                key={plan.id}
-                                className="flex items-center justify-between rounded-md border p-3"
-                            >
+                            <div key={plan.id} className="flex items-center justify-between rounded-md border p-3">
                                 <div>
                                     <p className="font-medium text-foreground">{plan.name}</p>
                                     {plan.available_quantity !== undefined && (
-                                        <p className="text-sm text-muted-foreground">
-                                            {plan.available_quantity} available
-                                        </p>
+                                        <p className="text-sm text-muted-foreground">{plan.available_quantity} available</p>
                                     )}
                                 </div>
                                 <p className="font-semibold text-foreground">${plan.price}</p>
@@ -292,4 +241,3 @@ export function EventDetail({
         </article>
     );
 }
-

@@ -103,12 +103,7 @@ export default function TicketMarketplace() {
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                    <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => setShowFilters(!showFilters)}
-                                    >
+                                    <Button type="button" variant="ghost" size="sm" onClick={() => setShowFilters(!showFilters)}>
                                         <Filter className="h-5 w-5 text-gray-400" />
                                     </Button>
                                 </div>
@@ -167,29 +162,15 @@ export default function TicketMarketplace() {
                                     <div>
                                         <h4 className="font-medium text-gray-900 mb-2">Price Range</h4>
                                         <div className="flex items-center space-x-2">
-                                            <Input
-                                                type="number"
-                                                placeholder="Min"
-                                                className="w-20"
-                                                defaultValue={filters.price_min}
-                                            />
+                                            <Input type="number" placeholder="Min" className="w-20" defaultValue={filters.price_min} />
                                             <span className="text-gray-500">to</span>
-                                            <Input
-                                                type="number"
-                                                placeholder="Max"
-                                                className="w-20"
-                                                defaultValue={filters.price_max}
-                                            />
+                                            <Input type="number" placeholder="Max" className="w-20" defaultValue={filters.price_max} />
                                         </div>
                                     </div>
                                     {/* Date Filter */}
                                     <div>
                                         <h4 className="font-medium text-gray-900 mb-2">Date</h4>
-                                        <Input
-                                            type="date"
-                                            defaultValue={filters.date}
-                                            className="w-full"
-                                        />
+                                        <Input type="date" defaultValue={filters.date} className="w-full" />
                                     </div>
                                 </CardContent>
                             </Card>
@@ -216,18 +197,10 @@ export default function TicketMarketplace() {
                                     </span>
                                 </div>
                                 <div className="flex border border-gray-300 rounded-md overflow-hidden">
-                                    <Button
-                                        variant={viewMode === "grid" ? "default" : "ghost"}
-                                        size="sm"
-                                        onClick={() => setViewMode("grid")}
-                                    >
+                                    <Button variant={viewMode === "grid" ? "default" : "ghost"} size="sm" onClick={() => setViewMode("grid")}>
                                         <Grid className="h-5 w-5" />
                                     </Button>
-                                    <Button
-                                        variant={viewMode === "list" ? "default" : "ghost"}
-                                        size="sm"
-                                        onClick={() => setViewMode("list")}
-                                    >
+                                    <Button variant={viewMode === "list" ? "default" : "ghost"} size="sm" onClick={() => setViewMode("list")}>
                                         <List className="h-5 w-5" />
                                     </Button>
                                 </div>
@@ -245,7 +218,10 @@ export default function TicketMarketplace() {
                                     >
                                         <div className="relative h-48 overflow-hidden">
                                             <img
-                                                src={listing.event.image || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop"}
+                                                src={
+                                                    listing.event.image ||
+                                                    "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop"
+                                                }
                                                 alt={listing.event.title}
                                                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                                             />
@@ -287,7 +263,10 @@ export default function TicketMarketplace() {
                                                 <div className="sm:w-1/4 mb-4 sm:mb-0 sm:mr-6">
                                                     <div className="h-32 sm:h-full w-full rounded-md overflow-hidden bg-gray-200 relative">
                                                         <img
-                                                            src={listing.event.image || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop"}
+                                                            src={
+                                                                listing.event.image ||
+                                                                "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop"
+                                                            }
                                                             alt={listing.event.title}
                                                             className="h-full w-full object-cover"
                                                         />
@@ -351,4 +330,3 @@ export default function TicketMarketplace() {
         </div>
     );
 }
-

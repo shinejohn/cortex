@@ -50,41 +50,21 @@ export function NewsCard({
     const href = article.slug ? `/posts/${article.slug}` : `/posts/${article.id}`;
 
     return (
-        <Link
-            href={href}
-            className={cn(
-                "block rounded-lg border bg-card p-4 transition-all hover:shadow-md",
-                themeClasses[theme],
-                className
-            )}
-        >
+        <Link href={href} className={cn("block rounded-lg border bg-card p-4 transition-all hover:shadow-md", themeClasses[theme], className)}>
             {article.featured_image && (
                 <div className="mb-4 aspect-video w-full overflow-hidden rounded-md">
-                    <img
-                        src={article.featured_image}
-                        alt={article.title}
-                        className="h-full w-full object-cover"
-                    />
+                    <img src={article.featured_image} alt={article.title} className="h-full w-full object-cover" />
                 </div>
             )}
 
             <div className="space-y-2">
                 {showCategory && article.category && (
-                    <span
-                        className={cn(
-                            "inline-block rounded-full px-2 py-1 text-xs font-medium",
-                            categoryColors[theme]
-                        )}
-                    >
-                        {article.category}
-                    </span>
+                    <span className={cn("inline-block rounded-full px-2 py-1 text-xs font-medium", categoryColors[theme])}>{article.category}</span>
                 )}
 
                 <h3 className="line-clamp-2 text-lg font-semibold text-foreground">{article.title}</h3>
 
-                {showExcerpt && article.excerpt && (
-                    <p className="line-clamp-2 text-sm text-muted-foreground">{article.excerpt}</p>
-                )}
+                {showExcerpt && article.excerpt && <p className="line-clamp-2 text-sm text-muted-foreground">{article.excerpt}</p>}
 
                 <div className="flex items-center gap-4 text-xs text-muted-foreground">
                     {showAuthor && article.author && (
@@ -101,12 +81,9 @@ export function NewsCard({
                         </div>
                     )}
 
-                    {article.view_count !== undefined && (
-                        <span>{article.view_count.toLocaleString()} views</span>
-                    )}
+                    {article.view_count !== undefined && <span>{article.view_count.toLocaleString()} views</span>}
                 </div>
             </div>
         </Link>
     );
 }
-

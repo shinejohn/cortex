@@ -5,13 +5,7 @@ import { ResponsiveDialog } from "../responsive-dialog";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
-export const CreateWorkspaceDialog = ({
-    open,
-    onOpenChange,
-}: {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-}) => {
+export const CreateWorkspaceDialog = ({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) => {
     const { data, setData, post, processing, errors } = useForm({
         name: "",
     });

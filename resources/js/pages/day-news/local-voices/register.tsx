@@ -85,9 +85,7 @@ export default function CreatorRegister() {
                             <p className="mb-4 text-muted-foreground">
                                 Your creator profile "{existingProfile.display_name}" is {existingProfile.status}.
                             </p>
-                            <Button onClick={() => router.visit("/local-voices/dashboard")}>
-                                Go to Dashboard
-                            </Button>
+                            <Button onClick={() => router.visit("/local-voices/dashboard")}>Go to Dashboard</Button>
                         </div>
                     </div>
                 </div>
@@ -120,11 +118,7 @@ export default function CreatorRegister() {
                             <div className="mt-2">
                                 {coverPreview ? (
                                     <div className="relative">
-                                        <img
-                                            src={coverPreview}
-                                            alt="Cover preview"
-                                            className="h-48 w-full rounded-lg border object-cover"
-                                        />
+                                        <img src={coverPreview} alt="Cover preview" className="h-48 w-full rounded-lg border object-cover" />
                                         <Button
                                             type="button"
                                             variant="destructive"
@@ -150,13 +144,7 @@ export default function CreatorRegister() {
                                         <p className="text-sm text-muted-foreground">Upload cover image</p>
                                     </div>
                                 )}
-                                <input
-                                    ref={coverInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleCoverChange}
-                                    className="hidden"
-                                />
+                                <input ref={coverInputRef} type="file" accept="image/*" onChange={handleCoverChange} className="hidden" />
                             </div>
                         </div>
 
@@ -166,11 +154,7 @@ export default function CreatorRegister() {
                             <div className="mt-2">
                                 {avatarPreview ? (
                                     <div className="relative inline-block">
-                                        <img
-                                            src={avatarPreview}
-                                            alt="Avatar preview"
-                                            className="size-32 rounded-full border object-cover"
-                                        />
+                                        <img src={avatarPreview} alt="Avatar preview" className="size-32 rounded-full border object-cover" />
                                         <Button
                                             type="button"
                                             variant="destructive"
@@ -195,13 +179,7 @@ export default function CreatorRegister() {
                                         <Upload className="size-8 text-muted-foreground" />
                                     </div>
                                 )}
-                                <input
-                                    ref={avatarInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleAvatarChange}
-                                    className="hidden"
-                                />
+                                <input ref={avatarInputRef} type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
                             </div>
                         </div>
 
@@ -215,9 +193,7 @@ export default function CreatorRegister() {
                                 className="mt-2"
                                 required
                             />
-                            {form.errors.display_name && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.display_name}</p>
-                            )}
+                            {form.errors.display_name && <p className="mt-1 text-sm text-destructive">{form.errors.display_name}</p>}
                         </div>
 
                         {/* Bio */}
@@ -231,9 +207,7 @@ export default function CreatorRegister() {
                                 rows={6}
                                 placeholder="Tell listeners about yourself and your podcast..."
                             />
-                            {form.errors.bio && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.bio}</p>
-                            )}
+                            {form.errors.bio && <p className="mt-1 text-sm text-destructive">{form.errors.bio}</p>}
                         </div>
 
                         {/* Social Links */}
@@ -327,12 +301,7 @@ export default function CreatorRegister() {
                                 <Mic className={`mr-2 size-4 ${form.processing ? "animate-spin" : ""}`} />
                                 {form.processing ? "Submitting..." : "Submit Application"}
                             </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => router.visit("/local-voices")}
-                                disabled={form.processing}
-                            >
+                            <Button type="button" variant="outline" onClick={() => router.visit("/local-voices")} disabled={form.processing}>
                                 Cancel
                             </Button>
                         </div>
@@ -345,4 +314,3 @@ export default function CreatorRegister() {
         </LocationProvider>
     );
 }
-

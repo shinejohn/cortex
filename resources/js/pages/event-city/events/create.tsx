@@ -153,7 +153,8 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                 setErrors(error.response.data.errors);
             }
             console.error("Error creating event:", error);
-            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to create event. Please check the form for errors.";
+            const errorMessage =
+                error.response?.data?.message || error.response?.data?.error || "Failed to create event. Please check the form for errors.";
             toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);

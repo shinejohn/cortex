@@ -73,10 +73,7 @@ export default function PostForm({ initialData, regions, isEditing = false, onSu
     };
 
     const toggleRegion = (regionId: number) => {
-        setData(
-            "region_ids",
-            data.region_ids.includes(regionId) ? data.region_ids.filter((id) => id !== regionId) : [...data.region_ids, regionId],
-        );
+        setData("region_ids", data.region_ids.includes(regionId) ? data.region_ids.filter((id) => id !== regionId) : [...data.region_ids, regionId]);
     };
 
     return (
@@ -124,12 +121,7 @@ export default function PostForm({ initialData, regions, isEditing = false, onSu
 
                     <div>
                         <Label htmlFor="title">Title</Label>
-                        <Input
-                            id="title"
-                            value={data.title}
-                            onChange={(e) => setData("title", e.target.value)}
-                            placeholder="Enter post title"
-                        />
+                        <Input id="title" value={data.title} onChange={(e) => setData("title", e.target.value)} placeholder="Enter post title" />
                         {errors.title && <p className="mt-1 text-sm text-destructive">{errors.title}</p>}
                     </div>
 

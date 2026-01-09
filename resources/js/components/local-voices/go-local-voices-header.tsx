@@ -49,32 +49,26 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center space-x-6">
-                        <Link 
-                            href="/" 
-                            className="text-sm font-medium text-gray-700 hover:text-purple-600 transition-colors"
-                        >
+                        <Link href="/" className="text-sm font-medium text-gray-700 hover:text-purple-600 transition-colors">
                             Browse
                         </Link>
                         {auth && (
                             <>
-                                <Link 
-                                    href="/dashboard" 
-                                    className="text-sm font-medium text-gray-700 hover:text-purple-600 transition-colors"
-                                >
+                                <Link href="/dashboard" className="text-sm font-medium text-gray-700 hover:text-purple-600 transition-colors">
                                     Dashboard
                                 </Link>
                                 <Link href="/podcasts/create">
-                                    <Button size="sm" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">
+                                    <Button
+                                        size="sm"
+                                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                                    >
                                         <Plus className="mr-2 h-4 w-4" />
                                         Create Podcast
                                     </Button>
                                 </Link>
                             </>
                         )}
-                        <Link 
-                            href="https://day.news" 
-                            className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
-                        >
+                        <Link href="https://day.news" className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
                             Day.News →
                         </Link>
                     </nav>
@@ -128,17 +122,24 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
                                         <Link href="/settings">Settings</Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
-                                        <Link href="/logout" method="post">Sign Out</Link>
+                                        <Link href="/logout" method="post">
+                                            Sign Out
+                                        </Link>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         ) : (
                             <div className="hidden md:flex items-center space-x-3">
                                 <Link href="/login">
-                                    <Button variant="ghost" size="sm">Sign In</Button>
+                                    <Button variant="ghost" size="sm">
+                                        Sign In
+                                    </Button>
                                 </Link>
                                 <Link href="/register">
-                                    <Button size="sm" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">
+                                    <Button
+                                        size="sm"
+                                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                                    >
                                         Get Started
                                     </Button>
                                 </Link>
@@ -178,8 +179,8 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
 
                                     {/* Mobile Navigation */}
                                     <nav className="flex flex-col space-y-2">
-                                        <Link 
-                                            href="/" 
+                                        <Link
+                                            href="/"
                                             className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
                                             onClick={() => setMobileMenuOpen(false)}
                                         >
@@ -187,15 +188,15 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
                                         </Link>
                                         {auth ? (
                                             <>
-                                                <Link 
-                                                    href="/dashboard" 
+                                                <Link
+                                                    href="/dashboard"
                                                     className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
                                                     onClick={() => setMobileMenuOpen(false)}
                                                 >
                                                     Dashboard
                                                 </Link>
-                                                <Link 
-                                                    href="/podcasts/create" 
+                                                <Link
+                                                    href="/podcasts/create"
                                                     className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
                                                     onClick={() => setMobileMenuOpen(false)}
                                                 >
@@ -204,15 +205,15 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
                                             </>
                                         ) : (
                                             <>
-                                                <Link 
-                                                    href="/login" 
+                                                <Link
+                                                    href="/login"
                                                     className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
                                                     onClick={() => setMobileMenuOpen(false)}
                                                 >
                                                     Sign In
                                                 </Link>
-                                                <Link 
-                                                    href="/register" 
+                                                <Link
+                                                    href="/register"
                                                     className="px-3 py-2 rounded-md text-sm font-medium bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
                                                     onClick={() => setMobileMenuOpen(false)}
                                                 >
@@ -220,8 +221,8 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
                                                 </Link>
                                             </>
                                         )}
-                                        <Link 
-                                            href="https://day.news" 
+                                        <Link
+                                            href="https://day.news"
                                             className="px-3 py-2 rounded-md text-sm text-gray-500 hover:bg-gray-100"
                                             onClick={() => setMobileMenuOpen(false)}
                                         >
@@ -237,4 +238,3 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
         </header>
     );
 }
-

@@ -159,11 +159,7 @@ export default function LocalVoicesIndex() {
                                     onClick={() => router.visit(`/local-voices/podcasts/${podcast.slug}`)}
                                 >
                                     {podcast.cover_image ? (
-                                        <img
-                                            src={podcast.cover_image}
-                                            alt={podcast.title}
-                                            className="h-48 w-full rounded-t-lg object-cover"
-                                        />
+                                        <img src={podcast.cover_image} alt={podcast.title} className="h-48 w-full rounded-t-lg object-cover" />
                                     ) : (
                                         <div className="flex h-48 w-full items-center justify-center rounded-t-lg bg-muted">
                                             <Headphones className="size-12 text-muted-foreground" />
@@ -172,9 +168,7 @@ export default function LocalVoicesIndex() {
                                     <div className="p-4">
                                         <h3 className="mb-2 text-lg font-semibold">{podcast.title}</h3>
                                         {podcast.description && (
-                                            <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">
-                                                {podcast.description}
-                                            </p>
+                                            <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">{podcast.description}</p>
                                         )}
                                         <div className="mb-3 flex items-center gap-2">
                                             <img
@@ -222,4 +216,3 @@ export default function LocalVoicesIndex() {
         </LocationProvider>
     );
 }
-

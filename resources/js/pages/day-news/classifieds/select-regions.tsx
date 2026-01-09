@@ -28,18 +28,14 @@ interface SelectRegionsProps {
 
 export default function SelectRegions() {
     const { auth, classified, regions, currentRegion } = usePage<SelectRegionsProps>().props;
-    const [selectedRegions, setSelectedRegions] = useState<string[]>(
-        currentRegion ? [currentRegion.id] : []
-    );
+    const [selectedRegions, setSelectedRegions] = useState<string[]>(currentRegion ? [currentRegion.id] : []);
 
     const form = useForm({
         region_ids: [] as string[],
     });
 
     const handleRegionToggle = (regionId: string) => {
-        setSelectedRegions((prev) =>
-            prev.includes(regionId) ? prev.filter((id) => id !== regionId) : [...prev, regionId]
-        );
+        setSelectedRegions((prev) => (prev.includes(regionId) ? prev.filter((id) => id !== regionId) : [...prev, regionId]));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -80,14 +76,8 @@ export default function SelectRegions() {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="space-y-3 rounded-lg border bg-card p-6">
                             {availableRegions.map((region) => (
-                                <label
-                                    key={region.id}
-                                    className="flex cursor-pointer items-center gap-3 rounded-lg border p-4 hover:bg-muted"
-                                >
-                                    <Checkbox
-                                        checked={selectedRegions.includes(region.id)}
-                                        onCheckedChange={() => handleRegionToggle(region.id)}
-                                    />
+                                <label key={region.id} className="flex cursor-pointer items-center gap-3 rounded-lg border p-4 hover:bg-muted">
+                                    <Checkbox checked={selectedRegions.includes(region.id)} onCheckedChange={() => handleRegionToggle(region.id)} />
                                     <MapPin className="size-5 text-muted-foreground" />
                                     <div className="flex-1">
                                         <div className="font-medium">{region.name}</div>
@@ -112,4 +102,3 @@ export default function SelectRegions() {
         </LocationProvider>
     );
 }
-

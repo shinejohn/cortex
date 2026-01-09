@@ -27,7 +27,7 @@ interface OrganizationContentDisplayProps {
 export function OrganizationContentDisplay({
     organization,
     content,
-    contentTypes = ['articles', 'events', 'coupons'],
+    contentTypes = ["articles", "events", "coupons"],
     relationshipTypes = [],
     includeHierarchy = false,
     showFilters = true,
@@ -37,31 +37,29 @@ export function OrganizationContentDisplay({
     const [selectedType, setSelectedType] = useState<string | null>(null);
 
     const contentMap: Record<string, { label: string; component: React.ComponentType<any> }> = {
-        'App\\Models\\DayNewsPost': {
-            label: 'Articles',
+        "App\\Models\\DayNewsPost": {
+            label: "Articles",
             component: NewsList,
         },
-        'App\\Models\\Event': {
-            label: 'Events',
+        "App\\Models\\Event": {
+            label: "Events",
             component: EventList,
         },
-        'App\\Models\\Coupon': {
-            label: 'Coupons',
+        "App\\Models\\Coupon": {
+            label: "Coupons",
             component: () => <div>Coupons List</div>, // Placeholder
         },
-        'App\\Models\\Business': {
-            label: 'Businesses',
+        "App\\Models\\Business": {
+            label: "Businesses",
             component: BusinessList,
         },
-        'App\\Models\\Review': {
-            label: 'Reviews',
+        "App\\Models\\Review": {
+            label: "Reviews",
             component: ReviewList,
         },
     };
 
-    const availableContent = Object.keys(content).filter(
-        (key) => content[key] && Array.isArray(content[key]) && content[key].length > 0
-    );
+    const availableContent = Object.keys(content).filter((key) => content[key] && Array.isArray(content[key]) && content[key].length > 0);
 
     if (availableContent.length === 0) {
         return (
@@ -74,13 +72,9 @@ export function OrganizationContentDisplay({
     return (
         <div className={cn("space-y-4", className)}>
             <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-foreground">
-                    Content from {organization.name}
-                </h2>
+                <h2 className="text-2xl font-bold text-foreground">Content from {organization.name}</h2>
                 {organization.organization_type && (
-                    <span className="rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground">
-                        {organization.organization_type}
-                    </span>
+                    <span className="rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground">{organization.organization_type}</span>
                 )}
             </div>
 
@@ -91,9 +85,7 @@ export function OrganizationContentDisplay({
                         return (
                             <TabsTrigger key={contentKey} value={contentKey}>
                                 {config?.label || contentKey}
-                                <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-xs">
-                                    {content[contentKey].length}
-                                </span>
+                                <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-xs">{content[contentKey].length}</span>
                             </TabsTrigger>
                         );
                     })}
@@ -105,10 +97,7 @@ export function OrganizationContentDisplay({
 
                     return (
                         <TabsContent key={contentKey} value={contentKey} className="mt-4">
-                            <Component
-                                items={content[contentKey]}
-                                theme={theme}
-                            />
+                            <Component items={content[contentKey]} theme={theme} />
                         </TabsContent>
                     );
                 })}
@@ -116,4 +105,3 @@ export function OrganizationContentDisplay({
         </div>
     );
 }
-

@@ -9,20 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Auth } from "@/types";
 import { router, useForm, usePage } from "@inertiajs/react";
-import {
-    Calendar,
-    CheckCircle,
-    DollarSign,
-    BarChart3,
-    Users,
-    Music,
-    Ticket,
-    ShoppingBag,
-    Globe,
-    CalendarDays,
-    ArrowRight,
-    Star,
-} from "lucide-react";
+import { Calendar, CheckCircle, DollarSign, BarChart3, Users, Music, Ticket, ShoppingBag, Globe, CalendarDays, ArrowRight, Star } from "lucide-react";
 import { useState } from "react";
 
 interface Props {
@@ -78,8 +65,8 @@ export default function PerformerOnboarding() {
                     <div className="text-center">
                         <h1 className="text-4xl font-extrabold sm:text-5xl">Grow Your Performance Career</h1>
                         <p className="mt-6 text-xl max-w-3xl mx-auto">
-                            GoEventCity connects performers with venues, events, and fans to help you book more gigs,
-                            grow your audience, and increase your income.
+                            GoEventCity connects performers with venues, events, and fans to help you book more gigs, grow your audience, and increase
+                            your income.
                         </p>
                     </div>
                 </div>
@@ -155,9 +142,7 @@ export default function PerformerOnboarding() {
                                     </div>
                                     <div className="ml-4">
                                         <h3 className="text-lg font-medium text-gray-900">Grow Your Audience</h3>
-                                        <p className="mt-2 text-gray-600">
-                                            Promote your upcoming shows to our community of local event-goers.
-                                        </p>
+                                        <p className="mt-2 text-gray-600">Promote your upcoming shows to our community of local event-goers.</p>
                                     </div>
                                 </div>
                                 <div className="flex">
@@ -241,7 +226,9 @@ export default function PerformerOnboarding() {
                                                 <span>Basic analytics</span>
                                             </li>
                                         </ul>
-                                        <Button variant="outline" className="w-full">Select Plan</Button>
+                                        <Button variant="outline" className="w-full">
+                                            Select Plan
+                                        </Button>
                                     </CardContent>
                                 </Card>
 
@@ -308,7 +295,9 @@ export default function PerformerOnboarding() {
                                                 <span>Dedicated account manager</span>
                                             </li>
                                         </ul>
-                                        <Button variant="outline" className="w-full">Select Plan</Button>
+                                        <Button variant="outline" className="w-full">
+                                            Select Plan
+                                        </Button>
                                     </CardContent>
                                 </Card>
                             </div>
@@ -334,7 +323,13 @@ export default function PerformerOnboarding() {
                             <CardTitle>Set Up Your Performer Profile</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="space-y-6">
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    handleSubmit();
+                                }}
+                                className="space-y-6"
+                            >
                                 <div>
                                     <Label htmlFor="name">Performer/Band Name *</Label>
                                     <Input
@@ -435,8 +430,8 @@ export default function PerformerOnboarding() {
                                     ))}
                                 </div>
                                 <p className="text-gray-600 mb-4">
-                                    "I've booked 12 gigs in my first month using GoEventCity. The platform connects me
-                                    directly with venues looking for my style of music."
+                                    "I've booked 12 gigs in my first month using GoEventCity. The platform connects me directly with venues looking
+                                    for my style of music."
                                 </p>
                                 <div className="font-medium">
                                     <p className="text-gray-900">Sarah Johnson</p>
@@ -450,8 +445,8 @@ export default function PerformerOnboarding() {
                                     ))}
                                 </div>
                                 <p className="text-gray-600 mb-4">
-                                    "As a DJ, I was struggling to find consistent work. Since joining GoEventCity, I'm now
-                                    booked solid every weekend and have raised my rates."
+                                    "As a DJ, I was struggling to find consistent work. Since joining GoEventCity, I'm now booked solid every weekend
+                                    and have raised my rates."
                                 </p>
                                 <div className="font-medium">
                                     <p className="text-gray-900">DJ Coastal</p>
@@ -465,8 +460,8 @@ export default function PerformerOnboarding() {
                                     ))}
                                 </div>
                                 <p className="text-gray-600 mb-4">
-                                    "Our band has grown our local following by 300% in just 6 months. The exposure
-                                    through GoEventCity has been incredible for us."
+                                    "Our band has grown our local following by 300% in just 6 months. The exposure through GoEventCity has been
+                                    incredible for us."
                                 </p>
                                 <div className="font-medium">
                                     <p className="text-gray-900">The Sunset Vibes</p>
@@ -482,4 +477,3 @@ export default function PerformerOnboarding() {
         </div>
     );
 }
-

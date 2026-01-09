@@ -102,17 +102,11 @@ export default function AuthorShow() {
                     {/* Author Header */}
                     <div className="mb-8 rounded-lg border bg-card p-8">
                         <div className="flex flex-col items-center text-center md:flex-row md:text-left">
-                            <img
-                                src={author.avatar}
-                                alt={author.name}
-                                className="mb-4 size-32 rounded-full object-cover md:mb-0 md:mr-8"
-                            />
+                            <img src={author.avatar} alt={author.name} className="mb-4 size-32 rounded-full object-cover md:mb-0 md:mr-8" />
                             <div className="flex-1">
                                 <div className="mb-2 flex items-center justify-center gap-2 md:justify-start">
                                     <h1 className="text-3xl font-bold">{author.name}</h1>
-                                    {author.is_verified_author && (
-                                        <Check className="size-6 text-blue-500" />
-                                    )}
+                                    {author.is_verified_author && <Check className="size-6 text-blue-500" />}
                                 </div>
                                 {author.trust_tier && (
                                     <Badge className={`mb-2 ${getTierColor(author.trust_tier)}`}>
@@ -129,9 +123,7 @@ export default function AuthorShow() {
                                         {author.posts_count} {author.posts_count === 1 ? "article" : "articles"}
                                     </div>
                                 </div>
-                                {author.bio && (
-                                    <p className="text-muted-foreground">{author.bio}</p>
-                                )}
+                                {author.bio && <p className="text-muted-foreground">{author.bio}</p>}
                             </div>
                         </div>
                     </div>
@@ -226,4 +218,3 @@ export default function AuthorShow() {
         </LocationProvider>
     );
 }
-

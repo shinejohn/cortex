@@ -126,7 +126,9 @@ export default function SelectTimeframe() {
                             <h3 className="mb-4 font-semibold">Pricing Summary</h3>
                             <div className="space-y-2 text-sm">
                                 <div className="flex justify-between">
-                                    <span>Base cost ({days} days × {regionCount} regions)</span>
+                                    <span>
+                                        Base cost ({days} days × {regionCount} regions)
+                                    </span>
                                     <span>${subtotal.toFixed(2)}</span>
                                 </div>
                                 {discount > 0 && (
@@ -160,4 +162,3 @@ export default function SelectTimeframe() {
         </LocationProvider>
     );
 }
-

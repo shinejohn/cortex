@@ -34,10 +34,7 @@ interface DowntownGuideCouponsShowProps {
     }>;
 }
 
-export default function DowntownGuideCouponsShow({
-    coupon,
-    relatedCoupons,
-}: DowntownGuideCouponsShowProps) {
+export default function DowntownGuideCouponsShow({ coupon, relatedCoupons }: DowntownGuideCouponsShowProps) {
     const [copied, setCopied] = useState(false);
     const [applying, setApplying] = useState(false);
 
@@ -65,7 +62,7 @@ export default function DowntownGuideCouponsShow({
     return (
         <>
             <Head title={`${coupon.title} - DowntownsGuide`} />
-            
+
             <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
                 {/* Header */}
                 <div className="border-b-4 border-purple-600 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600">
@@ -79,17 +76,11 @@ export default function DowntownGuideCouponsShow({
                         </Link>
                         <div className="flex items-center gap-4">
                             <div className="rounded-xl bg-white/20 p-2 backdrop-blur-sm">
-                                {isDeal ? (
-                                    <SparklesIcon className="h-6 w-6 text-white" />
-                                ) : (
-                                    <TagIcon className="h-6 w-6 text-white" />
-                                )}
+                                {isDeal ? <SparklesIcon className="h-6 w-6 text-white" /> : <TagIcon className="h-6 w-6 text-white" />}
                             </div>
                             <div>
                                 <h1 className="text-2xl font-bold text-white">{coupon.title}</h1>
-                                {coupon.business_name && (
-                                    <p className="mt-1 text-sm text-purple-100">{coupon.business_name}</p>
-                                )}
+                                {coupon.business_name && <p className="mt-1 text-sm text-purple-100">{coupon.business_name}</p>}
                             </div>
                         </div>
                     </div>
@@ -102,11 +93,7 @@ export default function DowntownGuideCouponsShow({
                             {/* Image */}
                             {coupon.image && (
                                 <div className="overflow-hidden rounded-xl border-2 border-purple-200 bg-white shadow-lg">
-                                    <img
-                                        src={coupon.image}
-                                        alt={coupon.title}
-                                        className="h-full w-full object-cover"
-                                    />
+                                    <img src={coupon.image} alt={coupon.title} className="h-full w-full object-cover" />
                                 </div>
                             )}
 
@@ -116,25 +103,19 @@ export default function DowntownGuideCouponsShow({
                                     {isDeal ? (
                                         <>
                                             <SparklesIcon className="h-5 w-5 text-purple-600" />
-                                            <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-bold text-purple-800">
-                                                DEAL
-                                            </span>
+                                            <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-bold text-purple-800">DEAL</span>
                                         </>
                                     ) : (
                                         <>
                                             <TagIcon className="h-5 w-5 text-purple-600" />
-                                            <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-bold text-purple-800">
-                                                COUPON
-                                            </span>
+                                            <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-bold text-purple-800">COUPON</span>
                                         </>
                                     )}
                                 </div>
 
                                 <h2 className="mb-4 text-2xl font-bold text-gray-900">{coupon.title}</h2>
 
-                                {coupon.description && (
-                                    <p className="mb-6 text-gray-700">{coupon.description}</p>
-                                )}
+                                {coupon.description && <p className="mb-6 text-gray-700">{coupon.description}</p>}
 
                                 {/* Discount Info */}
                                 <div className="mb-6 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 p-4">
@@ -158,17 +139,13 @@ export default function DowntownGuideCouponsShow({
                                     {coupon.start_date && (
                                         <div>
                                             <p className="text-xs font-medium text-gray-500">Valid From</p>
-                                            <p className="text-sm font-semibold text-gray-900">
-                                                {new Date(coupon.start_date).toLocaleDateString()}
-                                            </p>
+                                            <p className="text-sm font-semibold text-gray-900">{new Date(coupon.start_date).toLocaleDateString()}</p>
                                         </div>
                                     )}
                                     {coupon.end_date && (
                                         <div>
                                             <p className="text-xs font-medium text-gray-500">Expires</p>
-                                            <p className="text-sm font-semibold text-gray-900">
-                                                {new Date(coupon.end_date).toLocaleDateString()}
-                                            </p>
+                                            <p className="text-sm font-semibold text-gray-900">{new Date(coupon.end_date).toLocaleDateString()}</p>
                                         </div>
                                     )}
                                 </div>
@@ -210,10 +187,7 @@ export default function DowntownGuideCouponsShow({
                                         <div className="mb-4 rounded-lg bg-purple-100 p-4 text-center">
                                             <p className="font-mono text-2xl font-bold text-purple-900">{coupon.code}</p>
                                         </div>
-                                        <Button
-                                            onClick={handleCopyCode}
-                                            className="w-full bg-purple-600 hover:bg-purple-700"
-                                        >
+                                        <Button onClick={handleCopyCode} className="w-full bg-purple-600 hover:bg-purple-700">
                                             {copied ? (
                                                 <>
                                                     <CheckIcon className="mr-2 h-4 w-4" />
@@ -228,11 +202,7 @@ export default function DowntownGuideCouponsShow({
                                         </Button>
                                     </>
                                 ) : (
-                                    <Button
-                                        onClick={handleApply}
-                                        disabled={applying}
-                                        className="w-full bg-purple-600 hover:bg-purple-700"
-                                    >
+                                    <Button onClick={handleApply} disabled={applying} className="w-full bg-purple-600 hover:bg-purple-700">
                                         {applying ? "Applying..." : "Get Deal"}
                                     </Button>
                                 )}
@@ -242,11 +212,7 @@ export default function DowntownGuideCouponsShow({
                             {coupon.business && (
                                 <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
                                     <h3 className="mb-4 text-lg font-bold text-gray-900">Business</h3>
-                                    <BusinessCard
-                                        business={coupon.business}
-                                        theme="downtownsguide"
-                                        showDescription={false}
-                                    />
+                                    <BusinessCard business={coupon.business} theme="downtownsguide" showDescription={false} />
                                 </div>
                             )}
                         </div>
@@ -256,4 +222,3 @@ export default function DowntownGuideCouponsShow({
         </>
     );
 }
-

@@ -90,13 +90,7 @@ export default function MemorialsIndex() {
                         <div className="mb-8 rounded-lg border bg-card p-6">
                             <Badge className="mb-2">Featured</Badge>
                             <div className="flex gap-6">
-                                {featured.image && (
-                                    <img
-                                        src={featured.image}
-                                        alt={featured.name}
-                                        className="h-48 w-48 rounded-lg object-cover"
-                                    />
-                                )}
+                                {featured.image && <img src={featured.image} alt={featured.name} className="h-48 w-48 rounded-lg object-cover" />}
                                 <div className="flex-1">
                                     <h2 className="mb-2 text-2xl font-bold">{featured.name}</h2>
                                     <p className="mb-2 text-lg text-muted-foreground">{featured.years}</p>
@@ -117,10 +111,7 @@ export default function MemorialsIndex() {
                                             {featured.comments_count}
                                         </div>
                                     </div>
-                                    <Button
-                                        className="mt-4"
-                                        onClick={() => router.visit(`/memorials/${featured.id}`)}
-                                    >
+                                    <Button className="mt-4" onClick={() => router.visit(`/memorials/${featured.id}`)}>
                                         View Memorial
                                     </Button>
                                 </div>
@@ -162,11 +153,7 @@ export default function MemorialsIndex() {
                                     onClick={() => router.visit(`/memorials/${memorial.id}`)}
                                 >
                                     {memorial.image && (
-                                        <img
-                                            src={memorial.image}
-                                            alt={memorial.name}
-                                            className="h-48 w-full rounded-t-lg object-cover"
-                                        />
+                                        <img src={memorial.image} alt={memorial.name} className="h-48 w-full rounded-t-lg object-cover" />
                                     )}
                                     <div className="p-4">
                                         <h3 className="mb-1 text-xl font-semibold">{memorial.name}</h3>
@@ -210,4 +197,3 @@ export default function MemorialsIndex() {
         </LocationProvider>
     );
 }
-

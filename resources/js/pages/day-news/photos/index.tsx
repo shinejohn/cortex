@@ -140,18 +140,10 @@ export default function PhotosIndex() {
                                 ))}
                             </div>
                             <div className="flex gap-2">
-                                <Button
-                                    variant={viewMode === "grid" ? "default" : "outline"}
-                                    size="sm"
-                                    onClick={() => setViewMode("grid")}
-                                >
+                                <Button variant={viewMode === "grid" ? "default" : "outline"} size="sm" onClick={() => setViewMode("grid")}>
                                     <Grid className="size-4" />
                                 </Button>
-                                <Button
-                                    variant={viewMode === "list" ? "default" : "outline"}
-                                    size="sm"
-                                    onClick={() => setViewMode("list")}
-                                >
+                                <Button variant={viewMode === "list" ? "default" : "outline"} size="sm" onClick={() => setViewMode("list")}>
                                     <List className="size-4" />
                                 </Button>
                             </div>
@@ -211,9 +203,7 @@ export default function PhotosIndex() {
                                     />
                                     <div className="flex-1">
                                         <h3 className="mb-2 text-lg font-semibold">{photo.title}</h3>
-                                        {photo.description && (
-                                            <p className="mb-2 line-clamp-2 text-sm text-muted-foreground">{photo.description}</p>
-                                        )}
+                                        {photo.description && <p className="mb-2 line-clamp-2 text-sm text-muted-foreground">{photo.description}</p>}
                                         <div className="flex items-center gap-4 text-xs text-muted-foreground">
                                             <span>{photo.user.name}</span>
                                             {photo.category && (
@@ -249,4 +239,3 @@ export default function PhotosIndex() {
         </LocationProvider>
     );
 }
-

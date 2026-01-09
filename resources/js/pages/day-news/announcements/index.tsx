@@ -159,9 +159,7 @@ export default function AnnouncementsIndex() {
                         <div className="mb-8 rounded-lg border bg-card p-6">
                             <Badge className="mb-2">Featured</Badge>
                             <h2 className="mb-2 text-2xl font-bold">{featured.title}</h2>
-                            {featured.image && (
-                                <img src={featured.image} alt={featured.title} className="mb-4 h-64 w-full rounded-lg object-cover" />
-                            )}
+                            {featured.image && <img src={featured.image} alt={featured.title} className="mb-4 h-64 w-full rounded-lg object-cover" />}
                             <p className="mb-4 text-muted-foreground">{featured.content}</p>
                             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                 {featured.location && (
@@ -185,10 +183,7 @@ export default function AnnouncementsIndex() {
                                     {featured.comments_count}
                                 </div>
                             </div>
-                            <Button
-                                className="mt-4"
-                                onClick={() => router.visit(`/announcements/${featured.id}`)}
-                            >
+                            <Button className="mt-4" onClick={() => router.visit(`/announcements/${featured.id}`)}>
                                 Read More
                             </Button>
                         </div>
@@ -213,11 +208,7 @@ export default function AnnouncementsIndex() {
                                     onClick={() => router.visit(`/announcements/${announcement.id}`)}
                                 >
                                     {announcement.image && (
-                                        <img
-                                            src={announcement.image}
-                                            alt={announcement.title}
-                                            className="mb-4 h-48 w-full rounded-lg object-cover"
-                                        />
+                                        <img src={announcement.image} alt={announcement.title} className="mb-4 h-48 w-full rounded-lg object-cover" />
                                     )}
                                     <Badge variant="outline" className="mb-2 capitalize">
                                         {announcement.type.replace("_", " ")}
@@ -267,4 +258,3 @@ export default function AnnouncementsIndex() {
         </LocationProvider>
     );
 }
-

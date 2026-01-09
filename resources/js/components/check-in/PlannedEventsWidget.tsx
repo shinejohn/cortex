@@ -88,4 +88,3 @@ export function PlannedEventsWidget({ events = [], limit = 5 }: PlannedEventsWid
         </Card>
     );
 }
-

@@ -65,11 +65,7 @@ export default function HubBuilder() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center">
-                            <Button
-                                variant="ghost"
-                                onClick={() => router.visit(`/hubs/${hub.slug}`)}
-                                className="text-gray-500 hover:text-gray-700"
-                            >
+                            <Button variant="ghost" onClick={() => router.visit(`/hubs/${hub.slug}`)} className="text-gray-500 hover:text-gray-700">
                                 <ArrowLeft className="h-5 w-5 mr-1" />
                                 Back to Hub
                             </Button>
@@ -130,7 +126,7 @@ export default function HubBuilder() {
                                                     checked={section.is_visible}
                                                     onChange={(e) => {
                                                         const updatedSections = data.sections.map((s: any) =>
-                                                            s.id === section.id ? { ...s, is_visible: e.target.checked } : s
+                                                            s.id === section.id ? { ...s, is_visible: e.target.checked } : s,
                                                         );
                                                         setData("sections", updatedSections);
                                                     }}
@@ -176,4 +172,3 @@ export default function HubBuilder() {
         </div>
     );
 }
-

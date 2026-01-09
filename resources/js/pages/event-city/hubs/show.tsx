@@ -86,11 +86,7 @@ export default function HubShow() {
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex items-center mb-4">
-                        <Button
-                            variant="ghost"
-                            onClick={() => router.visit("/hubs")}
-                            className="text-white/80 hover:text-white"
-                        >
+                        <Button variant="ghost" onClick={() => router.visit("/hubs")} className="text-white/80 hover:text-white">
                             <ArrowLeft className="h-4 w-4 mr-1" />
                             Back to Hubs
                         </Button>
@@ -99,12 +95,8 @@ export default function HubShow() {
                         <div>
                             <div className="flex items-center gap-2 mb-2">
                                 <h1 className="text-3xl font-bold">{hub.name}</h1>
-                                {hub.is_verified && (
-                                    <Badge className="bg-blue-600">Verified</Badge>
-                                )}
-                                {hub.is_featured && (
-                                    <Badge className="bg-indigo-600">Featured</Badge>
-                                )}
+                                {hub.is_verified && <Badge className="bg-blue-600">Verified</Badge>}
+                                {hub.is_featured && <Badge className="bg-indigo-600">Featured</Badge>}
                             </div>
                             <p className="mt-2 text-white/80 max-w-2xl">{hub.description}</p>
                         </div>
@@ -324,4 +316,3 @@ export default function HubShow() {
         </div>
     );
 }
-
