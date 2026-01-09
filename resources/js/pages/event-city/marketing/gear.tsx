@@ -46,9 +46,7 @@ export default function Gear() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <ShoppingBag className="h-16 w-16 mx-auto mb-4" />
                     <h1 className="text-5xl font-bold mb-4">GoEventCity Gear</h1>
-                    <p className="text-xl text-purple-100 max-w-3xl mx-auto">
-                        Show your support with official GoEventCity merchandise
-                    </p>
+                    <p className="text-xl text-purple-100 max-w-3xl mx-auto">Show your support with official GoEventCity merchandise</p>
                 </div>
             </div>
 
@@ -122,12 +120,7 @@ export default function Gear() {
                                         </div>
                                         <span className="text-lg font-bold text-gray-900">${product.price}</span>
                                     </div>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="w-full"
-                                        onClick={() => router.visit(`/gear/${product.id}`)}
-                                    >
+                                    <Button variant="outline" size="sm" className="w-full" onClick={() => router.visit(`/gear/${product.id}`)}>
                                         View Details
                                     </Button>
                                 </CardContent>
@@ -142,9 +135,7 @@ export default function Gear() {
                 <Card className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
                     <CardContent className="p-8 text-center">
                         <h2 className="text-3xl font-bold mb-4">Custom Gear Available</h2>
-                        <p className="text-xl text-purple-100 mb-8">
-                            Need custom merchandise for your event or organization? We can help!
-                        </p>
+                        <p className="text-xl text-purple-100 mb-8">Need custom merchandise for your event or organization? We can help!</p>
                         <Button size="lg" variant="outline" className="bg-white text-purple-600 hover:bg-purple-50">
                             Contact Sales
                             <ArrowRight className="ml-2 h-5 w-5" />
@@ -157,4 +148,3 @@ export default function Gear() {
         </div>
     );
 }
-

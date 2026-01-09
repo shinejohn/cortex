@@ -36,12 +36,16 @@ interface EditPostProps {
 
 export default function EditPost({ auth, post, regions }: EditPostProps) {
     const handleSubmit = (data: any) => {
-        router.post(`/posts/${post.id}`, {
-            ...data,
-            _method: "PATCH",
-        }, {
-            preserveScroll: true,
-        });
+        router.post(
+            `/posts/${post.id}`,
+            {
+                ...data,
+                _method: "PATCH",
+            },
+            {
+                preserveScroll: true,
+            },
+        );
     };
 
     return (

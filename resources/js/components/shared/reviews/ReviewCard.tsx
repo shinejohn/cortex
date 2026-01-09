@@ -24,13 +24,7 @@ interface ReviewCardProps {
     onHelpful?: (reviewId: string) => void;
 }
 
-export function ReviewCard({
-    review,
-    theme = "downtownsguide",
-    className,
-    showHelpful = true,
-    onHelpful,
-}: ReviewCardProps) {
+export function ReviewCard({ review, theme = "downtownsguide", className, showHelpful = true, onHelpful }: ReviewCardProps) {
     const [helpfulClicked, setHelpfulClicked] = useState(false);
 
     const themeColors = {
@@ -54,24 +48,12 @@ export function ReviewCard({
 
     const renderStars = (rating: number) => {
         return Array.from({ length: 5 }).map((_, index) => (
-            <StarIcon
-                key={index}
-                className={cn(
-                    "h-4 w-4",
-                    index < rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-                )}
-            />
+            <StarIcon key={index} className={cn("h-4 w-4", index < rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300")} />
         ));
     };
 
     return (
-        <div
-            className={cn(
-                "rounded-lg border bg-card p-4",
-                review.is_featured && themeColors[theme].featured,
-                className
-            )}
-        >
+        <div className={cn("rounded-lg border bg-card p-4", review.is_featured && themeColors[theme].featured, className)}>
             <div className="space-y-3">
                 {/* Header */}
                 <div className="flex items-start justify-between gap-4">
@@ -79,11 +61,7 @@ export function ReviewCard({
                         {review.user && (
                             <div className="flex items-center gap-2">
                                 {review.user.avatar ? (
-                                    <img
-                                        src={review.user.avatar}
-                                        alt={review.user.name}
-                                        className="h-10 w-10 rounded-full"
-                                    />
+                                    <img src={review.user.avatar} alt={review.user.name} className="h-10 w-10 rounded-full" />
                                 ) : (
                                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
                                         <UserIcon className="h-5 w-5 text-muted-foreground" />
@@ -112,23 +90,15 @@ export function ReviewCard({
                         {/* Rating */}
                         <div className="mt-2 flex items-center gap-2">
                             <div className="flex">{renderStars(review.rating)}</div>
-                            <span className="text-sm font-medium text-foreground">
-                                {review.rating.toFixed(1)}
-                            </span>
+                            <span className="text-sm font-medium text-foreground">{review.rating.toFixed(1)}</span>
                         </div>
                     </div>
 
-                    {review.is_featured && (
-                        <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
-                            Featured
-                        </span>
-                    )}
+                    {review.is_featured && <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">Featured</span>}
                 </div>
 
                 {/* Title */}
-                {review.title && (
-                    <h4 className="font-semibold text-foreground">{review.title}</h4>
-                )}
+                {review.title && <h4 className="font-semibold text-foreground">{review.title}</h4>}
 
                 {/* Content */}
                 <p className="text-sm text-muted-foreground">{review.content}</p>
@@ -141,16 +111,12 @@ export function ReviewCard({
                             disabled={helpfulClicked}
                             className={cn(
                                 "flex items-center gap-1 rounded-md px-2 py-1 text-xs transition-colors",
-                                helpfulClicked
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                                helpfulClicked ? "bg-green-100 text-green-700" : "bg-muted text-muted-foreground hover:bg-muted/80",
                             )}
                         >
                             <ThumbsUpIcon className="h-3 w-3" />
                             <span>Helpful</span>
-                            {review.helpful_count !== undefined && review.helpful_count > 0 && (
-                                <span>({review.helpful_count})</span>
-                            )}
+                            {review.helpful_count !== undefined && review.helpful_count > 0 && <span>({review.helpful_count})</span>}
                         </button>
                     </div>
                 )}
@@ -158,4 +124,3 @@ export function ReviewCard({
         </div>
     );
 }
-

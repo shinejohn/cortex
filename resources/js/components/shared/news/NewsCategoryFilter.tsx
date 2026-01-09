@@ -44,9 +44,7 @@ export function NewsCategoryFilter({
                 onClick={() => handleCategoryClick("all")}
                 className={cn(
                     "rounded-full px-4 py-2 text-sm font-medium transition-colors",
-                    activeCategory === "all"
-                        ? themeColors[theme].active
-                        : themeColors[theme].inactive
+                    activeCategory === "all" ? themeColors[theme].active : themeColors[theme].inactive,
                 )}
             >
                 All
@@ -58,18 +56,13 @@ export function NewsCategoryFilter({
                     onClick={() => handleCategoryClick(category.slug)}
                     className={cn(
                         "rounded-full px-4 py-2 text-sm font-medium transition-colors",
-                        activeCategory === category.slug
-                            ? themeColors[theme].active
-                            : themeColors[theme].inactive
+                        activeCategory === category.slug ? themeColors[theme].active : themeColors[theme].inactive,
                     )}
                 >
                     {category.name}
-                    {category.count !== undefined && (
-                        <span className="ml-2 opacity-75">({category.count})</span>
-                    )}
+                    {category.count !== undefined && <span className="ml-2 opacity-75">({category.count})</span>}
                 </button>
             ))}
         </div>
     );
 }
-

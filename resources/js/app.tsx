@@ -13,9 +13,10 @@ createInertiaApp({
     setup({ el, App, props }) {
         // Initialize Google Analytics with the measurement ID from shared props
         const pageProps = props.initialPage.props;
-        const ga4Id = "analytics" in pageProps && pageProps.analytics && typeof pageProps.analytics === "object" && "ga4Id" in pageProps.analytics
-            ? (pageProps.analytics.ga4Id as string | null)
-            : null;
+        const ga4Id =
+            "analytics" in pageProps && pageProps.analytics && typeof pageProps.analytics === "object" && "ga4Id" in pageProps.analytics
+                ? (pageProps.analytics.ga4Id as string | null)
+                : null;
         initializeAnalytics(ga4Id);
 
         // Track page views on navigation
@@ -24,11 +25,12 @@ createInertiaApp({
         });
 
         // Error handling for React rendering errors
-        const handleError = (error: Error, errorInfo: any) => {
+        const handleError = (error: Error, errorInfo: React.ErrorInfo) => {
             console.error("React rendering error:", error, errorInfo);
             // Log to error tracking service if available
-            if (typeof window !== "undefined" && (window as any).Sentry) {
-                (window as any).Sentry.captureException(error);
+            // biome-ignore lint/suspicious/noExplicitAny: Sentry is a global that may not exist
+            if (typeof window !== "undefined" && (window as { Sentry?: { captureException: (error: Error) => void } }).Sentry) {
+                (window as { Sentry: { captureException: (error: Error) => void } }).Sentry.captureException(error);
             }
         };
 

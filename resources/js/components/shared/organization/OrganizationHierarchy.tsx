@@ -89,9 +89,7 @@ export function OrganizationHierarchy({
                     </div>
                     <div className="space-y-2">
                         {children.map((child) => {
-                            const href = child.slug
-                                ? `/organizations/${child.slug}`
-                                : `/organizations/${child.id}`;
+                            const href = child.slug ? `/organizations/${child.slug}` : `/organizations/${child.id}`;
 
                             return (
                                 <Link
@@ -102,9 +100,7 @@ export function OrganizationHierarchy({
                                 >
                                     <ChevronRightIcon className="h-4 w-4 text-muted-foreground" />
                                     <BuildingIcon className={cn("h-4 w-4", themeColors[theme])} />
-                                    <span className="text-sm font-medium text-foreground">
-                                        {child.name}
-                                    </span>
+                                    <span className="text-sm font-medium text-foreground">{child.name}</span>
                                 </Link>
                             );
                         })}
@@ -114,4 +110,3 @@ export function OrganizationHierarchy({
         </div>
     );
 }
-

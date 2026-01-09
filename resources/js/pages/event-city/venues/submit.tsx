@@ -264,27 +264,21 @@ export default function SubmitVenue() {
                                 <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-0.5" />
                                 <div>
                                     <h3 className="font-semibold text-gray-900">Easy Booking Management</h3>
-                                    <p className="text-gray-600 mt-1">
-                                        Manage availability, bookings, and payments all in one place.
-                                    </p>
+                                    <p className="text-gray-600 mt-1">Manage availability, bookings, and payments all in one place.</p>
                                 </div>
                             </div>
                             <div className="flex items-start">
                                 <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-0.5" />
                                 <div>
                                     <h3 className="font-semibold text-gray-900">Increase Revenue</h3>
-                                    <p className="text-gray-600 mt-1">
-                                        Fill empty dates and maximize your venue's earning potential.
-                                    </p>
+                                    <p className="text-gray-600 mt-1">Fill empty dates and maximize your venue's earning potential.</p>
                                 </div>
                             </div>
                             <div className="flex items-start">
                                 <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-0.5" />
                                 <div>
                                     <h3 className="font-semibold text-gray-900">Build Your Reputation</h3>
-                                    <p className="text-gray-600 mt-1">
-                                        Collect reviews and ratings to build trust with potential customers.
-                                    </p>
+                                    <p className="text-gray-600 mt-1">Collect reviews and ratings to build trust with potential customers.</p>
                                 </div>
                             </div>
                         </div>
@@ -296,4 +290,3 @@ export default function SubmitVenue() {
         </div>
     );
 }
-

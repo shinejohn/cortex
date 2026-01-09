@@ -21,7 +21,7 @@ interface CreatorRegisterPageProps {
 }
 
 export default function CreatorRegister() {
-    const { auth, existingProfile, viewMode } = usePage<CreatorRegisterPageProps>().props;
+    const { auth, existingProfile } = usePage<CreatorRegisterPageProps>().props;
     const avatarInputRef = useRef<HTMLInputElement>(null);
     const coverInputRef = useRef<HTMLInputElement>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -83,7 +83,7 @@ export default function CreatorRegister() {
                         <p className="mb-4 text-gray-600">
                             Your creator profile "{existingProfile.display_name}" is {existingProfile.status}.
                         </p>
-                        <Button 
+                        <Button
                             onClick={() => router.visit("/dashboard")}
                             className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                         >
@@ -154,13 +154,7 @@ export default function CreatorRegister() {
                                         <p className="text-sm text-gray-600">Upload cover image</p>
                                     </div>
                                 )}
-                                <input
-                                    ref={coverInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleCoverChange}
-                                    className="hidden"
-                                />
+                                <input ref={coverInputRef} type="file" accept="image/*" onChange={handleCoverChange} className="hidden" />
                             </div>
                         </div>
 
@@ -199,13 +193,7 @@ export default function CreatorRegister() {
                                         <Upload className="h-8 w-8 text-gray-400" />
                                     </div>
                                 )}
-                                <input
-                                    ref={avatarInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleAvatarChange}
-                                    className="hidden"
-                                />
+                                <input ref={avatarInputRef} type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
                             </div>
                         </div>
 
@@ -219,9 +207,7 @@ export default function CreatorRegister() {
                                 className="mt-2 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
                                 required
                             />
-                            {form.errors.display_name && (
-                                <p className="mt-1 text-sm text-red-600">{form.errors.display_name}</p>
-                            )}
+                            {form.errors.display_name && <p className="mt-1 text-sm text-red-600">{form.errors.display_name}</p>}
                         </div>
 
                         {/* Bio */}
@@ -235,9 +221,7 @@ export default function CreatorRegister() {
                                 rows={6}
                                 placeholder="Tell listeners about yourself and your podcast..."
                             />
-                            {form.errors.bio && (
-                                <p className="mt-1 text-sm text-red-600">{form.errors.bio}</p>
-                            )}
+                            {form.errors.bio && <p className="mt-1 text-sm text-red-600">{form.errors.bio}</p>}
                         </div>
 
                         {/* Social Links */}
@@ -327,8 +311,8 @@ export default function CreatorRegister() {
 
                         {/* Submit */}
                         <div className="flex gap-4">
-                            <Button 
-                                type="submit" 
+                            <Button
+                                type="submit"
                                 disabled={form.processing}
                                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                             >
@@ -354,4 +338,3 @@ export default function CreatorRegister() {
         </GoLocalVoicesLayout>
     );
 }
-

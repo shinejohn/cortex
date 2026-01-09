@@ -97,12 +97,12 @@ export function ArticleComments({ articleId, comments: initialComments, total, a
                                           likes_count: data.likes_count,
                                           is_liked_by_user: data.liked,
                                       }
-                                    : reply
+                                    : reply,
                             ),
                         };
                     }
                     return comment;
-                })
+                }),
             );
         } catch (error) {
             console.error("Error liking comment:", error);
@@ -231,9 +231,7 @@ function CommentItem({ comment, onLike, onReply, auth }: CommentItemProps) {
                 <div className="flex-1">
                     <div className="mb-2 flex items-center gap-2">
                         <span className="font-semibold">{comment.user.name}</span>
-                        {comment.is_pinned && (
-                            <span className="rounded bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800">PINNED</span>
-                        )}
+                        {comment.is_pinned && <span className="rounded bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800">PINNED</span>}
                         <span className="text-sm text-muted-foreground">•</span>
                         <span className="text-sm text-muted-foreground">{comment.time_ago}</span>
                     </div>
@@ -309,4 +307,3 @@ function CommentItem({ comment, onLike, onReply, auth }: CommentItemProps) {
         </div>
     );
 }
-

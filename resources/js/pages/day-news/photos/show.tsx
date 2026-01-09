@@ -80,11 +80,7 @@ export default function PhotoShow() {
                         {/* Main Photo */}
                         <div className="lg:col-span-2">
                             <div className="mb-4 overflow-hidden rounded-lg border bg-card">
-                                <img
-                                    src={photo.image_url}
-                                    alt={photo.title}
-                                    className="h-auto w-full object-contain"
-                                />
+                                <img src={photo.image_url} alt={photo.title} className="h-auto w-full object-contain" />
                             </div>
 
                             {/* Photo Info */}
@@ -92,17 +88,10 @@ export default function PhotoShow() {
                                 <div className="mb-4 flex items-start justify-between">
                                     <div>
                                         <h1 className="mb-2 text-3xl font-bold">{photo.title}</h1>
-                                        {photo.description && (
-                                            <p className="text-muted-foreground">{photo.description}</p>
-                                        )}
+                                        {photo.description && <p className="text-muted-foreground">{photo.description}</p>}
                                     </div>
                                     {auth && auth.user?.id === photo.user.id && (
-                                        <Button
-                                            variant="destructive"
-                                            size="sm"
-                                            onClick={handleDelete}
-                                            disabled={deleteForm.processing}
-                                        >
+                                        <Button variant="destructive" size="sm" onClick={handleDelete} disabled={deleteForm.processing}>
                                             <Trash2 className="mr-2 size-4" />
                                             Delete
                                         </Button>
@@ -118,9 +107,7 @@ export default function PhotoShow() {
                                         <Calendar className="size-4" />
                                         {new Date(photo.created_at).toLocaleDateString()}
                                     </div>
-                                    {photo.category && (
-                                        <Badge variant="outline">{photo.category}</Badge>
-                                    )}
+                                    {photo.category && <Badge variant="outline">{photo.category}</Badge>}
                                     {photo.regions.length > 0 && (
                                         <div className="flex items-center gap-1">
                                             <MapPin className="size-4" />
@@ -156,11 +143,7 @@ export default function PhotoShow() {
                             {photo.album && (
                                 <div className="rounded-lg border bg-card p-4">
                                     <h3 className="mb-2 font-semibold">Album</h3>
-                                    <Button
-                                        variant="link"
-                                        className="h-auto p-0"
-                                        onClick={() => router.visit(`/photos/albums/${photo.album!.id}`)}
-                                    >
+                                    <Button variant="link" className="h-auto p-0" onClick={() => router.visit(`/photos/albums/${photo.album!.id}`)}>
                                         {photo.album.title}
                                     </Button>
                                 </div>
@@ -194,4 +177,3 @@ export default function PhotoShow() {
         </LocationProvider>
     );
 }
-

@@ -85,18 +85,14 @@ export default function LegalNoticeShow() {
                         {/* Header */}
                         <div className="mb-6 border-b pb-4">
                             <div className="mb-4 flex items-start justify-between">
-                                <Badge className={getTypeColor(notice.type)}>
-                                    {typeLabels[notice.type] || notice.type}
-                                </Badge>
+                                <Badge className={getTypeColor(notice.type)}>{typeLabels[notice.type] || notice.type}</Badge>
                                 <Badge variant={notice.status === "active" ? "default" : "secondary"}>
                                     {notice.status.replace("_", " ").toUpperCase()}
                                 </Badge>
                             </div>
                             <h1 className="mb-4 text-3xl font-bold">{notice.title}</h1>
                             {notice.case_number && (
-                                <p className="mb-2 text-lg font-semibold text-muted-foreground">
-                                    Case Number: {notice.case_number}
-                                </p>
+                                <p className="mb-2 text-lg font-semibold text-muted-foreground">Case Number: {notice.case_number}</p>
                             )}
                         </div>
 
@@ -116,7 +112,8 @@ export default function LegalNoticeShow() {
                             <div className="flex items-center gap-2">
                                 <Calendar className="size-4" />
                                 <span>
-                                    Published: {new Date(notice.publish_date).toLocaleDateString("en-US", {
+                                    Published:{" "}
+                                    {new Date(notice.publish_date).toLocaleDateString("en-US", {
                                         year: "numeric",
                                         month: "long",
                                         day: "numeric",
@@ -127,7 +124,8 @@ export default function LegalNoticeShow() {
                                 <div className="flex items-center gap-2">
                                     <Calendar className="size-4" />
                                     <span>
-                                        Expires: {new Date(notice.expiry_date).toLocaleDateString("en-US", {
+                                        Expires:{" "}
+                                        {new Date(notice.expiry_date).toLocaleDateString("en-US", {
                                             year: "numeric",
                                             month: "long",
                                             day: "numeric",
@@ -153,4 +151,3 @@ export default function LegalNoticeShow() {
         </LocationProvider>
     );
 }
-

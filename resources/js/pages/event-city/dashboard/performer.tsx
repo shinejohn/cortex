@@ -7,18 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Auth } from "@/types";
 import { router, usePage } from "@inertiajs/react";
-import {
-    Music,
-    Calendar,
-    DollarSign,
-    Users,
-    TrendingUp,
-    Star,
-    Plus,
-    Edit,
-    BarChart3,
-    MapPin,
-} from "lucide-react";
+import { Music, Calendar, DollarSign, Users, TrendingUp, Star, Plus, Edit, BarChart3, MapPin } from "lucide-react";
 import { useState } from "react";
 
 interface Gig {
@@ -89,7 +78,11 @@ export default function PerformerDashboard() {
                             </div>
                         </div>
                         <div className="mt-4 md:mt-0 flex space-x-3">
-                            <Button variant="outline" className="bg-white text-purple-700 hover:bg-purple-50" onClick={() => router.visit(`/performers/${performer.id}/edit`)}>
+                            <Button
+                                variant="outline"
+                                className="bg-white text-purple-700 hover:bg-purple-50"
+                                onClick={() => router.visit(`/performers/${performer.id}/edit`)}
+                            >
                                 <Edit className="h-5 w-5 mr-2" />
                                 Edit Profile
                             </Button>
@@ -178,11 +171,19 @@ export default function PerformerDashboard() {
                                         <Music className="h-5 w-5 mr-2" />
                                         Browse Gigs
                                     </Button>
-                                    <Button variant="outline" className="w-full justify-start" onClick={() => router.visit(`/performers/${performer.id}/edit`)}>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full justify-start"
+                                        onClick={() => router.visit(`/performers/${performer.id}/edit`)}
+                                    >
                                         <Edit className="h-5 w-5 mr-2" />
                                         Edit Profile
                                     </Button>
-                                    <Button variant="outline" className="w-full justify-start" onClick={() => router.visit("/performers/market-report")}>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full justify-start"
+                                        onClick={() => router.visit("/performers/market-report")}
+                                    >
                                         <BarChart3 className="h-5 w-5 mr-2" />
                                         View Market Report
                                     </Button>
@@ -233,14 +234,15 @@ export default function PerformerDashboard() {
                                                                 {gig.event.venue.name}
                                                             </div>
                                                             <div className="flex items-center">
-                                                                <DollarSign className="h-4 w-4 mr-1" />
-                                                                ${gig.payment_amount.toLocaleString()}
+                                                                <DollarSign className="h-4 w-4 mr-1" />${gig.payment_amount.toLocaleString()}
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div className="ml-4 flex items-center space-x-2">
                                                         <Badge variant={gig.status === "confirmed" ? "default" : "outline"}>{gig.status}</Badge>
-                                                        <Badge variant={gig.payment_status === "paid" ? "default" : "outline"}>{gig.payment_status}</Badge>
+                                                        <Badge variant={gig.payment_status === "paid" ? "default" : "outline"}>
+                                                            {gig.payment_status}
+                                                        </Badge>
                                                     </div>
                                                 </div>
                                             </CardContent>
@@ -267,8 +269,7 @@ export default function PerformerDashboard() {
                                                                 {gig.event.venue.name}
                                                             </div>
                                                             <div className="flex items-center">
-                                                                <DollarSign className="h-4 w-4 mr-1" />
-                                                                ${gig.payment_amount.toLocaleString()}
+                                                                <DollarSign className="h-4 w-4 mr-1" />${gig.payment_amount.toLocaleString()}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -312,4 +313,3 @@ export default function PerformerDashboard() {
         </div>
     );
 }
-

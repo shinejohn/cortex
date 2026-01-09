@@ -107,13 +107,7 @@ export default function ShowCoupon() {
 
                 <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
                     <div className="mb-8 rounded-lg border bg-card p-8">
-                        {coupon.image && (
-                            <img
-                                src={coupon.image}
-                                alt={coupon.title}
-                                className="mb-6 h-64 w-full rounded-lg object-cover"
-                            />
-                        )}
+                        {coupon.image && <img src={coupon.image} alt={coupon.title} className="mb-6 h-64 w-full rounded-lg object-cover" />}
 
                         <div className="mb-6 flex items-center justify-between">
                             <Badge variant="destructive" className="flex items-center gap-2 px-4 py-2 text-lg">
@@ -198,4 +192,3 @@ export default function ShowCoupon() {
         </LocationProvider>
     );
 }
-

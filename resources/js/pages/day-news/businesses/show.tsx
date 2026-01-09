@@ -103,27 +103,20 @@ export default function DayNewsBusinessShow({
     return (
         <>
             <Head title={`${business.name} - Day News`} />
-            
+
             <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
                 {/* Header */}
                 <div className="border-b-4 border-blue-600 bg-white shadow-sm">
                     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        <Link
-                            href={route("businesses.index")}
-                            className="mb-4 inline-flex items-center gap-2 text-blue-600 hover:text-blue-700"
-                        >
+                        <Link href={route("businesses.index")} className="mb-4 inline-flex items-center gap-2 text-blue-600 hover:text-blue-700">
                             <ArrowLeftIcon className="h-4 w-4" />
                             <span>Back to Business Directory</span>
                         </Link>
                         <div className="flex items-center gap-3">
                             <NewspaperIcon className="h-8 w-8 text-blue-600" />
                             <div>
-                                <h1 className="text-2xl font-bold text-gray-900">
-                                    Business Profile
-                                </h1>
-                                <p className="mt-1 text-sm text-gray-600">
-                                    Local business information and community news
-                                </p>
+                                <h1 className="text-2xl font-bold text-gray-900">Business Profile</h1>
+                                <p className="mt-1 text-sm text-gray-600">Local business information and community news</p>
                             </div>
                         </div>
                     </div>
@@ -157,9 +150,7 @@ export default function DayNewsBusinessShow({
 
                                 <TabsContent value="news" className="mt-6">
                                     <div className="space-y-4">
-                                        <h2 className="text-xl font-bold text-gray-900">
-                                            News & Articles About {business.name}
-                                        </h2>
+                                        <h2 className="text-xl font-bold text-gray-900">News & Articles About {business.name}</h2>
                                         {relatedArticles.length > 0 || (organizationContent?.articles && organizationContent.articles.length > 0) ? (
                                             <NewsList
                                                 articles={[...relatedArticles, ...(organizationContent?.articles || [])]}
@@ -173,9 +164,7 @@ export default function DayNewsBusinessShow({
                                             <div className="rounded-lg border-2 border-dashed border-blue-200 bg-blue-50 p-8 text-center">
                                                 <NewspaperIcon className="mx-auto h-12 w-12 text-blue-400" />
                                                 <p className="mt-4 text-lg font-medium text-gray-900">No articles found</p>
-                                                <p className="mt-2 text-sm text-gray-600">
-                                                    Check back later for news about this business
-                                                </p>
+                                                <p className="mt-2 text-sm text-gray-600">Check back later for news about this business</p>
                                             </div>
                                         )}
                                     </div>
@@ -184,37 +173,23 @@ export default function DayNewsBusinessShow({
                                 <TabsContent value="reviews" className="mt-6">
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
-                                            <h2 className="text-xl font-bold text-gray-900">
-                                                Customer Reviews
-                                            </h2>
+                                            <h2 className="text-xl font-bold text-gray-900">Customer Reviews</h2>
                                             {averageRating > 0 && (
                                                 <div className="flex items-center gap-2">
                                                     <StarIcon className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                                                    <span className="text-lg font-semibold">
-                                                        {averageRating.toFixed(1)} / 5.0
-                                                    </span>
+                                                    <span className="text-lg font-semibold">{averageRating.toFixed(1)} / 5.0</span>
                                                 </div>
                                             )}
                                         </div>
-                                        <ReviewList
-                                            reviews={reviews.data}
-                                            theme="daynews"
-                                            showHelpful={true}
-                                        />
+                                        <ReviewList reviews={reviews.data} theme="daynews" showHelpful={true} />
                                     </div>
                                 </TabsContent>
 
                                 <TabsContent value="related" className="mt-6">
                                     <div className="space-y-4">
-                                        <h2 className="text-xl font-bold text-gray-900">
-                                            Related Businesses
-                                        </h2>
+                                        <h2 className="text-xl font-bold text-gray-900">Related Businesses</h2>
                                         {relatedBusinesses.length > 0 ? (
-                                            <BusinessList
-                                                businesses={relatedBusinesses}
-                                                theme="daynews"
-                                                gridCols={2}
-                                            />
+                                            <BusinessList businesses={relatedBusinesses} theme="daynews" gridCols={2} />
                                         ) : (
                                             <div className="rounded-lg border-2 border-dashed border-blue-200 bg-blue-50 p-8 text-center">
                                                 <MapPinIcon className="mx-auto h-12 w-12 text-blue-400" />
@@ -299,4 +274,3 @@ export default function DayNewsBusinessShow({
         </>
     );
 }
-

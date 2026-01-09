@@ -10,10 +10,7 @@ export default function Layout({ children, title }: LayoutProps) {
     return (
         <>
             <Head title={title} />
-            <div className="min-h-screen bg-background">
-                {children}
-            </div>
+            <div className="min-h-screen bg-background">{children}</div>
         </>
     );
 }
-

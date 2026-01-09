@@ -44,14 +44,14 @@ export function CartDropdown({ initialItemCount = 0 }: CartDropdownProps) {
         if (isOpen && cartItems.length === 0) {
             fetchCart();
         }
-    }, [isOpen]);
+    }, [isOpen, cartItems.length, fetchCart]);
 
     // Poll for cart count updates
     useEffect(() => {
         fetchCartCount();
         const interval = setInterval(fetchCartCount, 30000); // Every 30 seconds
         return () => clearInterval(interval);
-    }, []);
+    }, [fetchCartCount]);
 
     const fetchCartCount = async () => {
         try {

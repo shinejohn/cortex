@@ -64,7 +64,9 @@ export default function SuccessStories() {
                             <Card key={story.id} className="overflow-hidden">
                                 <div className="h-64 overflow-hidden">
                                     <img
-                                        src={story.author_image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&h=400&fit=crop"}
+                                        src={
+                                            story.author_image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&h=400&fit=crop"
+                                        }
                                         alt={story.title}
                                         className="w-full h-full object-cover"
                                     />
@@ -77,7 +79,10 @@ export default function SuccessStories() {
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className="flex items-center">
                                             <img
-                                                src={story.author_image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop"}
+                                                src={
+                                                    story.author_image ||
+                                                    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop"
+                                                }
                                                 alt={story.author}
                                                 className="h-10 w-10 rounded-full mr-2"
                                             />
@@ -126,17 +131,24 @@ export default function SuccessStories() {
                             <Card key={story.id} className="hover:shadow-lg transition-shadow">
                                 <div className="h-48 overflow-hidden">
                                     <img
-                                        src={story.author_image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=300&fit=crop"}
+                                        src={
+                                            story.author_image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=300&fit=crop"
+                                        }
                                         alt={story.title}
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
                                 <CardContent className="p-6">
-                                    <Badge variant="outline" className="mb-2">{story.category}</Badge>
+                                    <Badge variant="outline" className="mb-2">
+                                        {story.category}
+                                    </Badge>
                                     <h3 className="text-xl font-bold text-gray-900 mb-2">{story.title}</h3>
                                     <div className="flex items-center gap-2 mb-3">
                                         <img
-                                            src={story.author_image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop"}
+                                            src={
+                                                story.author_image ||
+                                                "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop"
+                                            }
                                             alt={story.author}
                                             className="h-8 w-8 rounded-full"
                                         />
@@ -157,9 +169,7 @@ export default function SuccessStories() {
             <div className="bg-purple-700 text-white py-16">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-3xl font-bold mb-4">Share Your Success Story</h2>
-                    <p className="text-xl text-purple-100 mb-8">
-                        Have a success story to share? We'd love to hear from you!
-                    </p>
+                    <p className="text-xl text-purple-100 mb-8">Have a success story to share? We'd love to hear from you!</p>
                     <Button size="lg" variant="outline" className="bg-white text-purple-700 hover:bg-purple-50">
                         Submit Your Story
                     </Button>
@@ -170,4 +180,3 @@ export default function SuccessStories() {
         </div>
     );
 }
-

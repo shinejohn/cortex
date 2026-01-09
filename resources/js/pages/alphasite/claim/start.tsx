@@ -41,9 +41,7 @@ export default function ClaimStart({ business }: Props) {
 
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Verification Method
-                                </label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Verification Method</label>
                                 <div className="space-y-2">
                                     <label className="flex items-center">
                                         <input
@@ -68,9 +66,7 @@ export default function ClaimStart({ business }: Props) {
                                         <span>Email: {business.email || "Not available"}</span>
                                     </label>
                                 </div>
-                                {errors.verification_method && (
-                                    <p className="mt-1 text-sm text-red-600">{errors.verification_method}</p>
-                                )}
+                                {errors.verification_method && <p className="mt-1 text-sm text-red-600">{errors.verification_method}</p>}
                             </div>
 
                             <div>
@@ -85,9 +81,7 @@ export default function ClaimStart({ business }: Props) {
                                     className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="Enter verification code"
                                 />
-                                {errors.verification_code && (
-                                    <p className="mt-1 text-sm text-red-600">{errors.verification_code}</p>
-                                )}
+                                {errors.verification_code && <p className="mt-1 text-sm text-red-600">{errors.verification_code}</p>}
                             </div>
 
                             <div className="flex space-x-4">
@@ -106,4 +100,3 @@ export default function ClaimStart({ business }: Props) {
         </Layout>
     );
 }
-

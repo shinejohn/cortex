@@ -23,13 +23,7 @@ interface CalendarDayProps {
     onDateChange?: (date: Date) => void;
 }
 
-export function CalendarDay({
-    events,
-    theme = "eventcity",
-    className,
-    initialDate,
-    onDateChange,
-}: CalendarDayProps) {
+export function CalendarDay({ events, theme = "eventcity", className, initialDate, onDateChange }: CalendarDayProps) {
     const [currentDate, setCurrentDate] = useState(initialDate || new Date());
 
     const themeColors = {
@@ -64,11 +58,7 @@ export function CalendarDay({
 
     const isToday = (date: Date) => {
         const today = new Date();
-        return (
-            date.getDate() === today.getDate() &&
-            date.getMonth() === today.getMonth() &&
-            date.getFullYear() === today.getFullYear()
-        );
+        return date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
     };
 
     const navigateDay = (direction: "prev" | "next") => {
@@ -89,11 +79,7 @@ export function CalendarDay({
         <div className={cn("space-y-4", className)}>
             {/* Day Header */}
             <div className="flex items-center justify-between rounded-lg border bg-card p-4">
-                <button
-                    onClick={() => navigateDay("prev")}
-                    className="rounded-md p-2 hover:bg-muted"
-                    aria-label="Previous day"
-                >
+                <button onClick={() => navigateDay("prev")} className="rounded-md p-2 hover:bg-muted" aria-label="Previous day">
                     <ChevronLeftIcon className="h-5 w-5" />
                 </button>
 
@@ -108,17 +94,11 @@ export function CalendarDay({
                                 year: "numeric",
                             })}
                         </h2>
-                        {today && (
-                            <span className="text-sm text-muted-foreground">Today</span>
-                        )}
+                        {today && <span className="text-sm text-muted-foreground">Today</span>}
                     </div>
                 </div>
 
-                <button
-                    onClick={() => navigateDay("next")}
-                    className="rounded-md p-2 hover:bg-muted"
-                    aria-label="Next day"
-                >
+                <button onClick={() => navigateDay("next")} className="rounded-md p-2 hover:bg-muted" aria-label="Next day">
                     <ChevronRightIcon className="h-5 w-5" />
                 </button>
             </div>
@@ -139,4 +119,3 @@ export function CalendarDay({
         </div>
     );
 }
-

@@ -46,7 +46,10 @@ export default function CreateCampaign({ advertisers, platforms }: CreateCampaig
     const togglePlatform = (platform: string) => {
         const currentPlatforms = data.platforms || [];
         if (currentPlatforms.includes(platform)) {
-            setData("platforms", currentPlatforms.filter((p) => p !== platform));
+            setData(
+                "platforms",
+                currentPlatforms.filter((p) => p !== platform),
+            );
         } else {
             setData("platforms", [...currentPlatforms, platform]);
         }
@@ -94,12 +97,7 @@ export default function CreateCampaign({ advertisers, platforms }: CreateCampaig
 
                             <div>
                                 <Label htmlFor="name">Campaign Name *</Label>
-                                <Input
-                                    id="name"
-                                    value={data.name}
-                                    onChange={(e) => setData("name", e.target.value)}
-                                    placeholder="Summer Sale 2025"
-                                />
+                                <Input id="name" value={data.name} onChange={(e) => setData("name", e.target.value)} placeholder="Summer Sale 2025" />
                                 {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
                             </div>
 
@@ -197,12 +195,7 @@ export default function CreateCampaign({ advertisers, platforms }: CreateCampaig
 
                                 <div>
                                     <Label htmlFor="end_date">End Date *</Label>
-                                    <Input
-                                        id="end_date"
-                                        type="date"
-                                        value={data.end_date}
-                                        onChange={(e) => setData("end_date", e.target.value)}
-                                    />
+                                    <Input id="end_date" type="date" value={data.end_date} onChange={(e) => setData("end_date", e.target.value)} />
                                     {errors.end_date && <p className="text-sm text-destructive mt-1">{errors.end_date}</p>}
                                 </div>
                             </div>
@@ -235,7 +228,9 @@ export default function CreateCampaign({ advertisers, platforms }: CreateCampaig
 
                     <div className="flex justify-end gap-4">
                         <Link href={route("admin.advertising.campaigns.index")}>
-                            <Button type="button" variant="outline">Cancel</Button>
+                            <Button type="button" variant="outline">
+                                Cancel
+                            </Button>
                         </Link>
                         <Button type="submit" disabled={processing}>
                             {processing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -247,4 +242,3 @@ export default function CreateCampaign({ advertisers, platforms }: CreateCampaig
         </AppLayout>
     );
 }
-

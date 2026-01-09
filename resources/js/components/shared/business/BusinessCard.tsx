@@ -45,14 +45,7 @@ export function BusinessCard({
     const href = business.slug ? `/businesses/${business.slug}` : `/businesses/${business.id}`;
 
     return (
-        <Link
-            href={href}
-            className={cn(
-                "group block rounded-lg border bg-card p-4 transition-all hover:shadow-md",
-                themeClasses[theme],
-                className
-            )}
-        >
+        <Link href={href} className={cn("group block rounded-lg border bg-card p-4 transition-all hover:shadow-md", themeClasses[theme], className)}>
             <div className="flex gap-4">
                 {business.image && (
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md">
@@ -70,37 +63,30 @@ export function BusinessCard({
                             <div className="flex items-center gap-2">
                                 <h3 className="text-lg font-semibold text-foreground">{business.name}</h3>
                                 {business.is_verified && (
-                                    <span className="text-xs text-blue-600" title="Verified">✓</span>
+                                    <span className="text-xs text-blue-600" title="Verified">
+                                        ✓
+                                    </span>
                                 )}
                             </div>
 
                             {showRating && business.rating !== undefined && (
                                 <div className="flex items-center gap-1">
                                     <StarIcon className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                                    <span className="text-sm font-medium text-foreground">
-                                        {business.rating.toFixed(1)}
-                                    </span>
+                                    <span className="text-sm font-medium text-foreground">{business.rating.toFixed(1)}</span>
                                     {business.reviews_count !== undefined && (
-                                        <span className="text-sm text-muted-foreground">
-                                            ({business.reviews_count.toLocaleString()})
-                                        </span>
+                                        <span className="text-sm text-muted-foreground">({business.reviews_count.toLocaleString()})</span>
                                     )}
                                 </div>
                             )}
                         </div>
                     </div>
 
-                    {showDescription && business.description && (
-                        <p className="line-clamp-2 text-sm text-muted-foreground">{business.description}</p>
-                    )}
+                    {showDescription && business.description && <p className="line-clamp-2 text-sm text-muted-foreground">{business.description}</p>}
 
                     {business.categories && business.categories.length > 0 && (
                         <div className="flex flex-wrap gap-1">
                             {business.categories.slice(0, 3).map((category, index) => (
-                                <span
-                                    key={index}
-                                    className="rounded-full bg-muted px-2 py-1 text-xs text-muted-foreground"
-                                >
+                                <span key={index} className="rounded-full bg-muted px-2 py-1 text-xs text-muted-foreground">
                                     {category}
                                 </span>
                             ))}
@@ -148,4 +134,3 @@ export function BusinessCard({
         </Link>
     );
 }
-

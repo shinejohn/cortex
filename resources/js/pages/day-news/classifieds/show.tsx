@@ -75,11 +75,7 @@ export default function ShowClassified() {
                     {classified.images.length > 0 && (
                         <div className="mb-6">
                             {classified.images.length === 1 ? (
-                                <img
-                                    src={classified.images[0].image_url}
-                                    alt={classified.title}
-                                    className="h-96 w-full rounded-lg object-cover"
-                                />
+                                <img src={classified.images[0].image_url} alt={classified.title} className="h-96 w-full rounded-lg object-cover" />
                             ) : (
                                 <div className="grid grid-cols-2 gap-4">
                                     <img
@@ -175,9 +171,7 @@ export default function ShowClassified() {
                                             />
                                         )}
                                         <h3 className="mb-1 font-semibold">{item.title}</h3>
-                                        <div className="text-sm font-bold text-primary">
-                                            {formatPrice(item.price, item.price_type)}
-                                        </div>
+                                        <div className="text-sm font-bold text-primary">{formatPrice(item.price, item.price_type)}</div>
                                     </div>
                                 ))}
                             </div>
@@ -188,4 +182,3 @@ export default function ShowClassified() {
         </LocationProvider>
     );
 }
-

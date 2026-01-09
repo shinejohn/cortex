@@ -201,18 +201,12 @@ function LocationSelector() {
 
     return (
         <div className="relative" ref={dropdownRef}>
-            <Button
-                variant="ghost"
-                className="flex w-full items-center justify-between gap-2 text-sm"
-                onClick={() => setIsOpen(!isOpen)}
-            >
+            <Button variant="ghost" className="flex w-full items-center justify-between gap-2 text-sm" onClick={() => setIsOpen(!isOpen)}>
                 <div className="flex items-center gap-2">
                     <MapPin className="size-4" />
                     <div className="text-left">
                         <div className="font-medium">{currentRegion?.name || "Select Location"}</div>
-                        {currentRegion?.type && (
-                            <div className="text-xs capitalize text-muted-foreground">{currentRegion.type}</div>
-                        )}
+                        {currentRegion?.type && <div className="text-xs capitalize text-muted-foreground">{currentRegion.type}</div>}
                     </div>
                 </div>
                 <ChevronDown className="size-4" />
@@ -241,11 +235,7 @@ function LocationSelector() {
                             disabled={isDetecting || isLoading}
                             className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-700"
                         >
-                            {isDetecting ? (
-                                <Loader2 className="size-4 animate-spin text-primary" />
-                            ) : (
-                                <MapPin className="size-4 text-primary" />
-                            )}
+                            {isDetecting ? <Loader2 className="size-4 animate-spin text-primary" /> : <MapPin className="size-4 text-primary" />}
                             <span className="font-medium">{isDetecting ? "Detecting..." : "Use my current location"}</span>
                         </button>
                     </div>

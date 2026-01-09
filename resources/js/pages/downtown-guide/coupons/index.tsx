@@ -39,25 +39,17 @@ interface DowntownGuideCouponsIndexProps {
     };
 }
 
-export default function DowntownGuideCouponsIndex({
-    coupons,
-    deals,
-    filters,
-}: DowntownGuideCouponsIndexProps) {
+export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: DowntownGuideCouponsIndexProps) {
     const [search, setSearch] = useState("");
 
     const handleSearch = () => {
-        router.get(
-            route("downtown-guide.coupons.index"),
-            { search: search || undefined, ...filters },
-            { preserveState: true }
-        );
+        router.get(route("downtown-guide.coupons.index"), { search: search || undefined, ...filters }, { preserveState: true });
     };
 
     return (
         <>
             <Head title="Deals & Coupons - DowntownsGuide" />
-            
+
             <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
                 {/* Header */}
                 <div className="relative overflow-hidden border-b-4 border-purple-600 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 shadow-xl">
@@ -68,12 +60,8 @@ export default function DowntownGuideCouponsIndex({
                                 <TagIcon className="h-10 w-10 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-4xl font-bold text-white">
-                                    Deals & Coupons
-                                </h1>
-                                <p className="mt-2 text-xl text-purple-100">
-                                    Save money with exclusive deals from local businesses
-                                </p>
+                                <h1 className="text-4xl font-bold text-white">Deals & Coupons</h1>
+                                <p className="mt-2 text-xl text-purple-100">Save money with exclusive deals from local businesses</p>
                             </div>
                         </div>
                     </div>
@@ -140,12 +128,8 @@ export default function DowntownGuideCouponsIndex({
                                             <span className="text-xs font-bold text-purple-600">DEAL</span>
                                         </div>
                                         <h3 className="mb-2 text-lg font-bold text-gray-900">{deal.title}</h3>
-                                        {deal.description && (
-                                            <p className="mb-4 line-clamp-2 text-sm text-gray-600">{deal.description}</p>
-                                        )}
-                                        {deal.business_name && (
-                                            <p className="text-sm font-medium text-purple-600">{deal.business_name}</p>
-                                        )}
+                                        {deal.description && <p className="mb-4 line-clamp-2 text-sm text-gray-600">{deal.description}</p>}
+                                        {deal.business_name && <p className="text-sm font-medium text-purple-600">{deal.business_name}</p>}
                                     </Link>
                                 ))}
 
@@ -170,17 +154,13 @@ export default function DowntownGuideCouponsIndex({
                                             <span className="text-xs font-bold text-purple-600">COUPON</span>
                                         </div>
                                         <h3 className="mb-2 text-lg font-bold text-gray-900">{coupon.title}</h3>
-                                        {coupon.description && (
-                                            <p className="mb-4 line-clamp-2 text-sm text-gray-600">{coupon.description}</p>
-                                        )}
+                                        {coupon.description && <p className="mb-4 line-clamp-2 text-sm text-gray-600">{coupon.description}</p>}
                                         {coupon.code && (
                                             <div className="mb-2 rounded-lg bg-purple-100 p-2 text-center">
                                                 <p className="font-mono text-lg font-bold text-purple-900">{coupon.code}</p>
                                             </div>
                                         )}
-                                        {coupon.business_name && (
-                                            <p className="text-sm font-medium text-purple-600">{coupon.business_name}</p>
-                                        )}
+                                        {coupon.business_name && <p className="text-sm font-medium text-purple-600">{coupon.business_name}</p>}
                                     </Link>
                                 ))}
                             </div>
@@ -209,12 +189,8 @@ export default function DowntownGuideCouponsIndex({
                                                 <span className="text-xs font-bold text-purple-600">DEAL</span>
                                             </div>
                                             <h3 className="mb-2 text-lg font-bold text-gray-900">{deal.title}</h3>
-                                            {deal.description && (
-                                                <p className="mb-4 line-clamp-2 text-sm text-gray-600">{deal.description}</p>
-                                            )}
-                                            {deal.business_name && (
-                                                <p className="text-sm font-medium text-purple-600">{deal.business_name}</p>
-                                            )}
+                                            {deal.description && <p className="mb-4 line-clamp-2 text-sm text-gray-600">{deal.description}</p>}
+                                            {deal.business_name && <p className="text-sm font-medium text-purple-600">{deal.business_name}</p>}
                                         </Link>
                                     ))
                                 ) : (
@@ -249,17 +225,13 @@ export default function DowntownGuideCouponsIndex({
                                                 <span className="text-xs font-bold text-purple-600">COUPON</span>
                                             </div>
                                             <h3 className="mb-2 text-lg font-bold text-gray-900">{coupon.title}</h3>
-                                            {coupon.description && (
-                                                <p className="mb-4 line-clamp-2 text-sm text-gray-600">{coupon.description}</p>
-                                            )}
+                                            {coupon.description && <p className="mb-4 line-clamp-2 text-sm text-gray-600">{coupon.description}</p>}
                                             {coupon.code && (
                                                 <div className="mb-2 rounded-lg bg-purple-100 p-2 text-center">
                                                     <p className="font-mono text-lg font-bold text-purple-900">{coupon.code}</p>
                                                 </div>
                                             )}
-                                            {coupon.business_name && (
-                                                <p className="text-sm font-medium text-purple-600">{coupon.business_name}</p>
-                                            )}
+                                            {coupon.business_name && <p className="text-sm font-medium text-purple-600">{coupon.business_name}</p>}
                                         </Link>
                                     ))
                                 ) : (
@@ -276,4 +248,3 @@ export default function DowntownGuideCouponsIndex({
         </>
     );
 }
-

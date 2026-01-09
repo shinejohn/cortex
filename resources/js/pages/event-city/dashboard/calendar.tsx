@@ -7,15 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Auth } from "@/types";
 import { router, usePage } from "@inertiajs/react";
-import {
-    Calendar as CalendarIcon,
-    ChevronLeft,
-    ChevronRight,
-    Plus,
-    MapPin,
-    Clock,
-    Users,
-} from "lucide-react";
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, MapPin, Clock, Users } from "lucide-react";
 import { useState } from "react";
 
 interface CalendarEvent {
@@ -91,7 +83,11 @@ export default function CalendarDashboard() {
                             <p className="text-indigo-200 mt-1">View and manage all your events in one place</p>
                         </div>
                         <div className="mt-4 md:mt-0">
-                            <Button variant="outline" className="bg-white text-indigo-700 hover:bg-indigo-50" onClick={() => router.visit("/events/create")}>
+                            <Button
+                                variant="outline"
+                                className="bg-white text-indigo-700 hover:bg-indigo-50"
+                                onClick={() => router.visit("/events/create")}
+                            >
                                 <Plus className="h-5 w-5 mr-2" />
                                 Create Event
                             </Button>
@@ -109,9 +105,7 @@ export default function CalendarDashboard() {
                                 <Button variant="outline" size="sm" onClick={() => navigateMonth("prev")}>
                                     <ChevronLeft className="h-4 w-4" />
                                 </Button>
-                                <CardTitle>
-                                    {selectedDate.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
-                                </CardTitle>
+                                <CardTitle>{selectedDate.toLocaleDateString("en-US", { month: "long", year: "numeric" })}</CardTitle>
                                 <Button variant="outline" size="sm" onClick={() => navigateMonth("next")}>
                                     <ChevronRight className="h-4 w-4" />
                                 </Button>
@@ -197,7 +191,11 @@ export default function CalendarDashboard() {
                     <CardContent>
                         <div className="space-y-4">
                             {events.slice(0, 10).map((event) => (
-                                <div key={event.id} className="flex items-start gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer" onClick={() => router.visit(`/events/${event.id}`)}>
+                                <div
+                                    key={event.id}
+                                    className="flex items-start gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer"
+                                    onClick={() => router.visit(`/events/${event.id}`)}
+                                >
                                     <div className="flex-shrink-0">
                                         <div className="h-12 w-12 rounded-lg bg-indigo-100 flex items-center justify-center">
                                             <CalendarIcon className="h-6 w-6 text-indigo-600" />
@@ -228,4 +226,3 @@ export default function CalendarDashboard() {
         </div>
     );
 }
-

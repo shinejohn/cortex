@@ -1,146 +1,109 @@
-# Deployment Status
+# Deployment Status - Fixing All Multisite Applications
 
-**Date:** December 22, 2025  
-**Status:** Ready to Deploy
+## Current Status
 
-## Prerequisites Check
+**Date:** January 9, 2026  
+**Issue:** All 5 multisite applications failing with 500/503 errors due to missing phpredis extension in Docker images.
 
-Run the prerequisites check:
+## Root Cause
+
+- ECR images are from **December 23, 2025** (before Redis fix was added)
+- Dockerfile **DOES** include `pecl install redis` (verified ✓)
+- Running containers are using old images without phpredis
+- `golocalvoices` has no image in ECR (503 error)
+
+## Solution Options
+
+### Option A: GitHub Actions (RECOMMENDED - Fastest)
+
+1. Go to: https://github.com/shinejohn/Community-Platform/actions/workflows/deploy.yml
+2. Click **"Run workflow"** button
+3. Select branch: **main**
+4. Leave service field **empty** (builds all services)
+5. Click **"Run workflow"**
+
+**Time:** ~15-20 minutes for all 5 services (builds in parallel)
+
+**What it does:**
+- Builds all 5 Docker images with phpredis
+- Pushes to ECR automatically
+- Deploys to ECS automatically
+
+### Option B: Local Docker Builds (In Progress)
+
+**Status:** Builds are running in background
+
+**Monitor progress:**
 ```bash
-./scripts/check-prerequisites.sh
+# Check if builds are running
+ps aux | grep "docker build" | grep -v grep
+
+# Check build logs
+tail -f /tmp/goeventcity_build.log
+
+# Check ECR for new images
+aws ecr describe-images --repository-name fibonacco/dev/goeventcity --region us-east-1
 ```
 
-## Deployment Steps
+**Time:** ~10-15 minutes per image (5 images = 50-75 minutes total)
 
-### Option 1: Automated Deployment (Recommended)
-
-Run the complete deployment script:
+**After builds complete, run:**
 ```bash
-./scripts/deploy-all.sh
+/tmp/force_ecs_redeploy.sh
 ```
 
-This script will:
-1. ✅ Test Docker builds locally
-2. ✅ Set up environment template
-3. ✅ Check AWS credentials
-4. ✅ Login to ECR
-5. ✅ Build and push all images
-6. ✅ Run database migrations (if .env configured)
-7. ✅ Update ECS services
-8. ✅ Display deployment information
+## Verification Steps
 
-### Option 2: Manual Step-by-Step
+After images are built and deployed:
 
-#### Step 1: Test Docker Builds
-```bash
-./scripts/test-docker-build.sh
-```
-
-#### Step 2: Set Up Environment
-```bash
-./scripts/setup-env.sh
-# Review .env.aws.template
-# Copy to .env and update with actual values
-```
-
-#### Step 3: Create AWS Secrets (Optional but Recommended)
-```bash
-./scripts/create-secrets.sh
-```
-
-#### Step 4: Build and Push Images
-```bash
-# Login to ECR
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 195430954683.dkr.ecr.us-east-1.amazonaws.com
-
-# Build and push
-./scripts/build-and-push-images.sh
-```
-
-#### Step 5: Run Database Migrations
-```bash
-# Ensure .env has database credentials
-./scripts/migrate-database.sh
-```
-
-#### Step 6: Update ECS Services
-```bash
-./scripts/update-ecs-services.sh
-```
-
-## Infrastructure Information
-
-Get infrastructure outputs:
-```bash
-cd INFRASTRUCTURE
-export PULUMI_CONFIG_PASSPHRASE="fibonacco-infra-2025"
-source venv/bin/activate
-export PATH="$HOME/.pulumi/bin:$PATH"
-pulumi stack output
-```
-
-Key outputs:
-- `alb_dns_name` - ALB DNS for DNS configuration
-- `database_endpoint` - RDS endpoint for database connection
-- `app_bucket_name` - S3 bucket for app storage
-- `archive_bucket_name` - S3 bucket for archives
-
-## DNS Configuration
-
-After deployment, configure DNS CNAME records:
-
-1. Get ALB DNS:
+1. **Check ECR image timestamps:**
    ```bash
-   cd INFRASTRUCTURE && pulumi stack output alb_dns_name
+   for svc in goeventcity daynews downtownguide alphasite golocalvoices; do
+     echo "$svc:"
+     aws ecr describe-images --repository-name "fibonacco/dev/$svc" \
+       --region us-east-1 --query 'sort_by(imageDetails,&imagePushedAt)[-1].imagePushedAt' --output text
+   done
    ```
+   Should show today's date (January 9, 2026)
 
-2. Configure CNAME records:
-   - `dev.goeventcity.com` → ALB_DNS
-   - `dev.day.news` → ALB_DNS
-   - `dev.downtownsguide.com` → ALB_DNS
-   - `dev.alphasite.com` → ALB_DNS
-   - `golocalvoices.com` → ALB_DNS
+2. **Check ECS service status:**
+   ```bash
+   for svc in goeventcity daynews downtownguide alphasite golocalvoices; do
+     aws ecs describe-services --cluster fibonacco-dev \
+       --services "fibonacco-dev-$svc" --region us-east-1 \
+       --query 'services[0].{Running:runningCount,Desired:desiredCount}' --output json
+   done
+   ```
+   All should show `Running: 1, Desired: 1`
 
-## GitHub Secrets (For CI/CD)
+3. **Test domains:**
+   - http://dev.goeventcity.com - Should return 200 (not 500)
+   - http://dev.day.news - Should return 200 (not 500)
+   - http://dev.downtownsguide.com - Should return 200 (not 500)
+   - http://dev.golocalvoices.com - Should return 200 (not 503)
+   - http://dev.alphasite.com - Should return 200
 
-Add these secrets to your GitHub repository:
+4. **Check CloudWatch logs for Redis errors:**
+   ```bash
+   for svc in goeventcity daynews downtownguide alphasite golocalvoices; do
+     echo "=== $svc ==="
+     aws logs filter-log-events --log-group-name "/ecs/fibonacco/dev/$svc" \
+       --region us-east-1 --start-time $(($(date +%s) - 300))000 \
+       --filter-pattern "Redis" --max-items 5
+   done
+   ```
+   Should return no results (no Redis errors)
 
-1. Go to: Settings → Secrets and variables → Actions
-2. Add:
-   - `AWS_ACCESS_KEY_ID`
-   - `AWS_SECRET_ACCESS_KEY`
-   - `PULUMI_CONFIG_PASSPHRASE`
+## Files Modified
 
-## Monitoring
+- `docker/Dockerfile.web` - Already includes Redis installation ✓
+- `.github/workflows/deploy.yml` - Already includes all 5 services ✓
+- No code changes needed - only rebuild/redeploy required
 
-After deployment, monitor:
-- ECS Services: AWS Console → ECS → Clusters → fibonacco-dev
-- CloudWatch Logs: `/ecs/fibonacco/dev/{service-name}`
-- CloudWatch Dashboard: `fibonacco-dev`
+## Next Steps
 
-## Troubleshooting
-
-### Docker Build Fails
-- Check Docker is running: `docker ps`
-- Check disk space: `df -h`
-- Check Dockerfile syntax
-
-### ECR Push Fails
-- Verify AWS credentials: `aws sts get-caller-identity`
-- Check ECR repository exists: `aws ecr describe-repositories`
-
-### Database Connection Fails
-- Verify .env has correct database credentials
-- Check security groups allow ECS → RDS traffic
-- Test connection: `php artisan db:show`
-
-### ECS Service Won't Start
-- Check CloudWatch logs
-- Verify task definition is correct
-- Check security groups
-- Verify environment variables are set
-
----
-
-**Ready to deploy!** 🚀
-
+1. **Choose deployment method** (GitHub Actions recommended)
+2. **Wait for builds to complete** (~15-20 min for GitHub Actions, ~50-75 min for local)
+3. **Verify ECR images** have today's timestamp
+4. **Test all domains** return 200
+5. **Monitor CloudWatch logs** for 10 minutes to ensure stability

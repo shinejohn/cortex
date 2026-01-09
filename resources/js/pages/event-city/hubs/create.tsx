@@ -180,9 +180,7 @@ export default function HubCreate() {
                             <CardTitle>Hub Preview</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-gray-600 mb-6">
-                                Review your hub before publishing. You can go back to any section to make changes.
-                            </p>
+                            <p className="text-gray-600 mb-6">Review your hub before publishing. You can go back to any section to make changes.</p>
                             <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden border border-gray-200 p-8">
                                 <div className="text-center">
                                     <h3 className="text-2xl font-bold mb-2">{data.name || "Hub Name"}</h3>
@@ -190,16 +188,10 @@ export default function HubCreate() {
                                 </div>
                             </div>
                             <div className="mt-8">
-                                <Button
-                                    onClick={handleSubmit}
-                                    disabled={processing}
-                                    className="w-full"
-                                >
+                                <Button onClick={handleSubmit} disabled={processing} className="w-full">
                                     {processing ? "Publishing..." : "Publish Hub"}
                                 </Button>
-                                <p className="mt-2 text-sm text-gray-500 text-center">
-                                    Publishing will make your hub visible to the public.
-                                </p>
+                                <p className="mt-2 text-sm text-gray-500 text-center">Publishing will make your hub visible to the public.</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -234,21 +226,14 @@ export default function HubCreate() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center">
-                            <Button
-                                variant="ghost"
-                                onClick={() => router.visit("/hubs")}
-                                className="text-gray-500 hover:text-gray-700"
-                            >
+                            <Button variant="ghost" onClick={() => router.visit("/hubs")} className="text-gray-500 hover:text-gray-700">
                                 <ChevronLeft className="h-5 w-5 mr-1" />
                                 Back to Hubs
                             </Button>
                             <h1 className="ml-6 text-xl font-bold text-gray-900">Create New Hub</h1>
                         </div>
                         <div className="flex items-center space-x-3">
-                            <Button
-                                variant="outline"
-                                onClick={() => setShowPreview(!showPreview)}
-                            >
+                            <Button variant="outline" onClick={() => setShowPreview(!showPreview)}>
                                 <Eye className="h-4 w-4 mr-1" />
                                 {showPreview ? "Hide Preview" : "Show Preview"}
                             </Button>
@@ -270,9 +255,7 @@ export default function HubCreate() {
                                             key={step}
                                             onClick={() => setActiveStep(step)}
                                             className={`w-full text-left px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                                                activeStep === step
-                                                    ? "bg-indigo-100 text-indigo-700"
-                                                    : "text-gray-600 hover:bg-gray-100"
+                                                activeStep === step ? "bg-indigo-100 text-indigo-700" : "text-gray-600 hover:bg-gray-100"
                                             }`}
                                         >
                                             {index + 1}. {step.charAt(0).toUpperCase() + step.slice(1)}
@@ -344,4 +327,3 @@ export default function HubCreate() {
         </div>
     );
 }
-

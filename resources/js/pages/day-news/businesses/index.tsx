@@ -65,13 +65,7 @@ interface DayNewsBusinessesIndexProps {
     };
 }
 
-export default function DayNewsBusinessesIndex({
-    businesses,
-    featuredBusinesses,
-    filters,
-    sort,
-    currentRegion,
-}: DayNewsBusinessesIndexProps) {
+export default function DayNewsBusinessesIndex({ businesses, featuredBusinesses, filters, sort, currentRegion }: DayNewsBusinessesIndexProps) {
     const [search, setSearch] = useState(filters.search || "");
     const [category, setCategory] = useState(filters.category || "");
     const [verifiedOnly, setVerifiedOnly] = useState(filters.verified_only || false);
@@ -86,14 +80,14 @@ export default function DayNewsBusinessesIndex({
                 sort: sort.sort,
                 direction: sort.direction,
             },
-            { preserveState: true, preserveScroll: true }
+            { preserveState: true, preserveScroll: true },
         );
     };
 
     return (
         <>
             <Head title="Local Business Directory - Day News" />
-            
+
             <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
                 {/* Header */}
                 <div className="border-b-4 border-blue-600 bg-white shadow-sm">
@@ -101,12 +95,8 @@ export default function DayNewsBusinessesIndex({
                         <div className="flex items-center gap-3">
                             <NewspaperIcon className="h-10 w-10 text-blue-600" />
                             <div>
-                                <h1 className="text-3xl font-bold text-gray-900">
-                                    Local Business Directory
-                                </h1>
-                                <p className="mt-1 text-lg text-gray-600">
-                                    Discover local businesses and see what's happening in your community
-                                </p>
+                                <h1 className="text-3xl font-bold text-gray-900">Local Business Directory</h1>
+                                <p className="mt-1 text-lg text-gray-600">Discover local businesses and see what's happening in your community</p>
                             </div>
                         </div>
                     </div>
@@ -116,9 +106,7 @@ export default function DayNewsBusinessesIndex({
                     {/* Featured Businesses */}
                     {featuredBusinesses.length > 0 && (
                         <section className="mb-12">
-                            <h2 className="mb-4 text-2xl font-bold text-gray-900">
-                                Featured Businesses with Recent News
-                            </h2>
+                            <h2 className="mb-4 text-2xl font-bold text-gray-900">Featured Businesses with Recent News</h2>
                             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                                 {featuredBusinesses.map((item) => (
                                     <DayNewsBusinessCard
@@ -192,11 +180,7 @@ export default function DayNewsBusinessesIndex({
                                     value={`${sort.sort}-${sort.direction}`}
                                     onValueChange={(value) => {
                                         const [sortBy, direction] = value.split("-");
-                                        router.get(
-                                            route("businesses.index"),
-                                            { ...filters, sort: sortBy, direction },
-                                            { preserveState: true }
-                                        );
+                                        router.get(route("businesses.index"), { ...filters, sort: sortBy, direction }, { preserveState: true });
                                     }}
                                 >
                                     <SelectTrigger className="w-40">
@@ -222,20 +206,14 @@ export default function DayNewsBusinessesIndex({
                             <div className="rounded-lg border-2 border-dashed border-blue-200 bg-blue-50 p-12 text-center">
                                 <NewspaperIcon className="mx-auto h-12 w-12 text-blue-400" />
                                 <p className="mt-4 text-lg font-medium text-gray-900">No businesses found</p>
-                                <p className="mt-2 text-sm text-gray-600">
-                                    Try adjusting your search or filters
-                                </p>
+                                <p className="mt-2 text-sm text-gray-600">Try adjusting your search or filters</p>
                             </div>
                         )}
 
                         {/* Pagination */}
                         {businesses.last_page > 1 && (
                             <div className="mt-8">
-                                <Pagination
-                                    currentPage={businesses.current_page}
-                                    lastPage={businesses.last_page}
-                                    links={businesses.links}
-                                />
+                                <Pagination currentPage={businesses.current_page} lastPage={businesses.last_page} links={businesses.links} />
                             </div>
                         )}
                     </section>
@@ -244,4 +222,3 @@ export default function DayNewsBusinessesIndex({
         </>
     );
 }
-

@@ -95,9 +95,7 @@ export default function CalendarPage() {
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900">Event Calendar</h1>
-                        <p className="mt-1 text-gray-600">
-                            {events.length} events found
-                        </p>
+                        <p className="mt-1 text-gray-600">{events.length} events found</p>
                     </div>
                     <div className="mt-4 md:mt-0 flex items-center space-x-2">
                         {viewMode === "month" && (
@@ -117,10 +115,13 @@ export default function CalendarPage() {
                 </div>
 
                 {/* View Toggle */}
-                <Tabs value={viewMode} onValueChange={(value) => {
-                    setViewMode(value as any);
-                    router.get("/calendar", { view: value }, { preserveState: true });
-                }}>
+                <Tabs
+                    value={viewMode}
+                    onValueChange={(value) => {
+                        setViewMode(value as any);
+                        router.get("/calendar", { view: value }, { preserveState: true });
+                    }}
+                >
                     <TabsList>
                         <TabsTrigger value="month">Month</TabsTrigger>
                         <TabsTrigger value="today">Today</TabsTrigger>
@@ -140,7 +141,10 @@ export default function CalendarPage() {
                                         <div className="flex items-start space-x-4">
                                             <div className="flex-shrink-0 h-24 w-24 rounded-lg overflow-hidden">
                                                 <img
-                                                    src={event.image || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop"}
+                                                    src={
+                                                        event.image ||
+                                                        "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop"
+                                                    }
                                                     alt={event.title}
                                                     className="h-full w-full object-cover"
                                                 />
@@ -161,15 +165,9 @@ export default function CalendarPage() {
                                                         {event.venue.name}
                                                     </div>
                                                     {event.distance && (
-                                                        <div className="text-gray-500">
-                                                            {event.distance.miles.toFixed(1)} miles away
-                                                        </div>
+                                                        <div className="text-gray-500">{event.distance.miles.toFixed(1)} miles away</div>
                                                     )}
-                                                    {event.weather && (
-                                                        <div className="flex items-center">
-                                                            {getWeatherIcon(event.weather)}
-                                                        </div>
-                                                    )}
+                                                    {event.weather && <div className="flex items-center">{getWeatherIcon(event.weather)}</div>}
                                                 </div>
                                                 <div className="mt-2 flex items-center justify-between">
                                                     <span className="text-sm font-medium text-indigo-600">
@@ -190,9 +188,7 @@ export default function CalendarPage() {
                     <TabsContent value="month" className="mt-6">
                         <Card>
                             <CardContent className="p-6">
-                                <div className="text-center text-gray-500">
-                                    Calendar grid view will be implemented here
-                                </div>
+                                <div className="text-center text-gray-500">Calendar grid view will be implemented here</div>
                             </CardContent>
                         </Card>
                     </TabsContent>
@@ -219,7 +215,10 @@ export default function CalendarPage() {
                                             <div className="flex items-start space-x-4">
                                                 <div className="flex-shrink-0 h-24 w-24 rounded-lg overflow-hidden">
                                                     <img
-                                                        src={event.image || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop"}
+                                                        src={
+                                                            event.image ||
+                                                            "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop"
+                                                        }
                                                         alt={event.title}
                                                         className="h-full w-full object-cover"
                                                     />
@@ -269,7 +268,10 @@ export default function CalendarPage() {
                                             <div className="flex items-start space-x-4">
                                                 <div className="flex-shrink-0 h-24 w-24 rounded-lg overflow-hidden">
                                                     <img
-                                                        src={event.image || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop"}
+                                                        src={
+                                                            event.image ||
+                                                            "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop"
+                                                        }
                                                         alt={event.title}
                                                         className="h-full w-full object-cover"
                                                     />
@@ -309,4 +311,3 @@ export default function CalendarPage() {
         </div>
     );
 }
-

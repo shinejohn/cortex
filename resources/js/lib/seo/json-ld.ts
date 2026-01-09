@@ -1,12 +1,4 @@
-import type {
-    ArticleSEOData,
-    BusinessSEOData,
-    EventSEOData,
-    PerformerSEOData,
-    SiteKey,
-    VenueSEOData,
-    WebsiteSEOData,
-} from "@/types/seo";
+import type { ArticleSEOData, BusinessSEOData, EventSEOData, PerformerSEOData, SiteKey, VenueSEOData, WebsiteSEOData } from "@/types/seo";
 import { buildCanonicalUrl, getImageUrl, getSiteConfig } from "./config";
 
 /**
@@ -254,7 +246,7 @@ export function buildWebsiteSchema(data: WebsiteSEOData, site: SiteKey): object 
 export function buildJsonLd(
     type: "article" | "event" | "venue" | "performer" | "business" | "website",
     data: ArticleSEOData | EventSEOData | VenueSEOData | PerformerSEOData | BusinessSEOData | WebsiteSEOData,
-    site: SiteKey
+    site: SiteKey,
 ): object {
     switch (type) {
         case "article":

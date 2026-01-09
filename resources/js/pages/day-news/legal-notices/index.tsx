@@ -161,14 +161,8 @@ export default function LegalNoticesIndex() {
                                 >
                                     <div className="mb-2 flex items-start justify-between">
                                         <div className="flex items-center gap-2">
-                                            <Badge className={getTypeColor(notice.type)}>
-                                                {typeLabels[notice.type] || notice.type}
-                                            </Badge>
-                                            {notice.case_number && (
-                                                <span className="text-sm text-muted-foreground">
-                                                    Case: {notice.case_number}
-                                                </span>
-                                            )}
+                                            <Badge className={getTypeColor(notice.type)}>{typeLabels[notice.type] || notice.type}</Badge>
+                                            {notice.case_number && <span className="text-sm text-muted-foreground">Case: {notice.case_number}</span>}
                                         </div>
                                         <Badge variant={notice.status === "active" ? "default" : "secondary"}>
                                             {notice.status.replace("_", " ").toUpperCase()}
@@ -187,11 +181,7 @@ export default function LegalNoticesIndex() {
                                             <Calendar className="size-4" />
                                             Published: {new Date(notice.publish_date).toLocaleDateString()}
                                         </div>
-                                        {notice.expiry_date && (
-                                            <div>
-                                                Expires: {new Date(notice.expiry_date).toLocaleDateString()}
-                                            </div>
-                                        )}
+                                        {notice.expiry_date && <div>Expires: {new Date(notice.expiry_date).toLocaleDateString()}</div>}
                                     </div>
                                 </div>
                             ))}
@@ -218,4 +208,3 @@ export default function LegalNoticesIndex() {
         </LocationProvider>
     );
 }
-

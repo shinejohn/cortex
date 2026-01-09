@@ -90,7 +90,7 @@ export interface SocialGroup {
     creator_id: number;
     privacy: "public" | "private" | "secret";
     is_active: boolean;
-    settings?: Record<string, any>;
+    settings?: Record<string, unknown>;
     created_at: string;
     updated_at: string;
     creator: User;
@@ -170,7 +170,7 @@ export interface SocialActivity {
         | "profile_follow";
     subject_type: string;
     subject_id: string;
-    data?: Record<string, any>;
+    data?: Record<string, unknown>;
     is_read: boolean;
     created_at: string;
     updated_at: string;

@@ -30,9 +30,7 @@ export default function DirectoryIndex({ businesses, featured, industries }: Pro
                 <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <h1 className="text-4xl font-bold mb-4">Business Directory</h1>
-                        <p className="text-xl text-blue-100">
-                            Discover and connect with local businesses in your community
-                        </p>
+                        <p className="text-xl text-blue-100">Discover and connect with local businesses in your community</p>
                     </div>
                 </div>
 
@@ -48,9 +46,7 @@ export default function DirectoryIndex({ businesses, featured, industries }: Pro
                                         href={`/industry/${industry.slug}`}
                                         className="flex flex-col items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
                                     >
-                                        {industry.icon && (
-                                            <div className="text-3xl mb-2">{industry.icon}</div>
-                                        )}
+                                        {industry.icon && <div className="text-3xl mb-2">{industry.icon}</div>}
                                         <span className="text-sm font-medium text-center">{industry.name}</span>
                                     </Link>
                                 ))}
@@ -71,21 +67,15 @@ export default function DirectoryIndex({ businesses, featured, industries }: Pro
                                     className="bg-white rounded-lg shadow hover:shadow-lg transition p-6"
                                 >
                                     {business.images && business.images.length > 0 && (
-                                        <img
-                                            src={business.images[0]}
-                                            alt={business.name}
-                                            className="w-full h-48 object-cover rounded mb-4"
-                                        />
+                                        <img src={business.images[0]} alt={business.name} className="w-full h-48 object-cover rounded mb-4" />
                                     )}
                                     <h3 className="text-xl font-semibold mb-2">{business.name}</h3>
-                                    {business.description && (
-                                        <p className="text-gray-600 text-sm mb-2 line-clamp-2">
-                                            {business.description}
-                                        </p>
-                                    )}
+                                    {business.description && <p className="text-gray-600 text-sm mb-2 line-clamp-2">{business.description}</p>}
                                     <div className="flex items-center text-sm text-gray-500">
                                         {business.address && (
-                                            <span>{business.city}, {business.state}</span>
+                                            <span>
+                                                {business.city}, {business.state}
+                                            </span>
                                         )}
                                     </div>
                                 </Link>
@@ -106,11 +96,7 @@ export default function DirectoryIndex({ businesses, featured, industries }: Pro
                             >
                                 <div className="flex items-start space-x-4">
                                     {business.images && business.images.length > 0 && (
-                                        <img
-                                            src={business.images[0]}
-                                            alt={business.name}
-                                            className="w-24 h-24 object-cover rounded"
-                                        />
+                                        <img src={business.images[0]} alt={business.name} className="w-24 h-24 object-cover rounded" />
                                     )}
                                     <div className="flex-1">
                                         <h3 className="text-lg font-semibold mb-1">{business.name}</h3>
@@ -120,9 +106,7 @@ export default function DirectoryIndex({ businesses, featured, industries }: Pro
                                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                                 </svg>
                                                 <span>{business.rating}</span>
-                                                {business.reviews_count && (
-                                                    <span className="ml-1">({business.reviews_count})</span>
-                                                )}
+                                                {business.reviews_count && <span className="ml-1">({business.reviews_count})</span>}
                                             </div>
                                         )}
                                         {business.address && (
@@ -145,9 +129,7 @@ export default function DirectoryIndex({ businesses, featured, industries }: Pro
                                         key={index}
                                         href={link.url || "#"}
                                         className={`px-4 py-2 rounded ${
-                                            link.active
-                                                ? "bg-blue-600 text-white"
-                                                : "bg-white text-gray-700 hover:bg-gray-50"
+                                            link.active ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
                                         } ${!link.url ? "opacity-50 cursor-not-allowed" : ""}`}
                                         dangerouslySetInnerHTML={{ __html: link.label }}
                                     />
@@ -160,4 +142,3 @@ export default function DirectoryIndex({ businesses, featured, industries }: Pro
         </Layout>
     );
 }
-

@@ -54,19 +54,28 @@ export default function CampaignIndex({ campaigns, filters, advertisers, statuse
     const [advertiserFilter, setAdvertiserFilter] = useState(filters.advertiser_id?.toString() || "");
 
     const handleFilter = () => {
-        router.get(route("admin.advertising.campaigns.index"), {
-            status: statusFilter || undefined,
-            advertiser_id: advertiserFilter || undefined,
-        }, { preserveState: true });
+        router.get(
+            route("admin.advertising.campaigns.index"),
+            {
+                status: statusFilter || undefined,
+                advertiser_id: advertiserFilter || undefined,
+            },
+            { preserveState: true },
+        );
     };
 
     const getStatusBadgeVariant = (status: string) => {
         switch (status) {
-            case "active": return "default";
-            case "paused": return "secondary";
-            case "completed": return "outline";
-            case "cancelled": return "destructive";
-            default: return "outline";
+            case "active":
+                return "default";
+            case "paused":
+                return "secondary";
+            case "completed":
+                return "outline";
+            case "cancelled":
+                return "destructive";
+            default:
+                return "outline";
         }
     };
 
@@ -150,21 +159,18 @@ export default function CampaignIndex({ campaigns, filters, advertisers, statuse
                                                 <div className="flex-1">
                                                     <div className="flex items-center gap-2">
                                                         <h3 className="font-semibold">{campaign.name}</h3>
-                                                        <Badge variant={getStatusBadgeVariant(campaign.status)}>
-                                                            {campaign.status}
-                                                        </Badge>
+                                                        <Badge variant={getStatusBadgeVariant(campaign.status)}>{campaign.status}</Badge>
                                                         <Badge variant="outline">{campaign.type}</Badge>
                                                     </div>
-                                                    <p className="text-sm text-muted-foreground mt-1">
-                                                        {campaign.advertiser.name}
-                                                    </p>
+                                                    <p className="text-sm text-muted-foreground mt-1">{campaign.advertiser.name}</p>
                                                     <div className="flex gap-4 mt-2 text-sm text-muted-foreground">
                                                         <span>Budget: ${campaign.budget.toLocaleString()}</span>
                                                         <span>Spent: ${campaign.spent.toLocaleString()}</span>
                                                         <span>Remaining: ${(campaign.budget - campaign.spent).toLocaleString()}</span>
                                                     </div>
                                                     <div className="text-xs text-muted-foreground mt-1">
-                                                        {new Date(campaign.start_date).toLocaleDateString()} - {new Date(campaign.end_date).toLocaleDateString()}
+                                                        {new Date(campaign.start_date).toLocaleDateString()} -{" "}
+                                                        {new Date(campaign.end_date).toLocaleDateString()}
                                                     </div>
                                                 </div>
                                             </div>
@@ -201,4 +207,3 @@ export default function CampaignIndex({ campaigns, filters, advertisers, statuse
         </AppLayout>
     );
 }
-

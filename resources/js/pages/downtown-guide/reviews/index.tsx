@@ -47,17 +47,13 @@ export default function DowntownGuideReviewsIndex({
     filters,
 }: DowntownGuideReviewsIndexProps) {
     const handleFilterChange = (key: string, value: string) => {
-        router.get(
-            route("downtown-guide.reviews.index", business.slug),
-            { ...filters, [key]: value || undefined },
-            { preserveState: true }
-        );
+        router.get(route("downtown-guide.reviews.index", business.slug), { ...filters, [key]: value || undefined }, { preserveState: true });
     };
 
     return (
         <>
             <Head title={`Reviews for ${business.name} - DowntownsGuide`} />
-            
+
             <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
                 {/* Header */}
                 <div className="border-b-4 border-purple-600 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600">
@@ -69,9 +65,7 @@ export default function DowntownGuideReviewsIndex({
                             <ArrowLeftIcon className="h-4 w-4" />
                             <span>Back to Business</span>
                         </Link>
-                        <h1 className="text-2xl font-bold text-white">
-                            Reviews for {business.name}
-                        </h1>
+                        <h1 className="text-2xl font-bold text-white">Reviews for {business.name}</h1>
                     </div>
                 </div>
 
@@ -102,10 +96,7 @@ export default function DowntownGuideReviewsIndex({
                                             <SelectItem value="1">1 Star</SelectItem>
                                         </SelectContent>
                                     </Select>
-                                    <Select
-                                        value={filters.sort || "newest"}
-                                        onValueChange={(value) => handleFilterChange("sort", value)}
-                                    >
+                                    <Select value={filters.sort || "newest"} onValueChange={(value) => handleFilterChange("sort", value)}>
                                         <SelectTrigger className="w-40">
                                             <SelectValue />
                                         </SelectTrigger>
@@ -121,11 +112,7 @@ export default function DowntownGuideReviewsIndex({
                             </div>
 
                             {/* Reviews */}
-                            <ReviewList
-                                reviews={reviews.data}
-                                theme="downtownsguide"
-                                showHelpful={true}
-                            />
+                            <ReviewList reviews={reviews.data} theme="downtownsguide" showHelpful={true} />
 
                             {/* Pagination */}
                             {reviews.last_page > 1 && (
@@ -144,8 +131,8 @@ export default function DowntownGuideReviewsIndex({
                                                     link.active
                                                         ? "bg-purple-600 text-white"
                                                         : link.url
-                                                        ? "bg-white text-gray-700 hover:bg-purple-50"
-                                                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                                          ? "bg-white text-gray-700 hover:bg-purple-50"
+                                                          : "bg-gray-100 text-gray-400 cursor-not-allowed"
                                                 }`}
                                                 dangerouslySetInnerHTML={{ __html: link.label }}
                                             />
@@ -161,17 +148,13 @@ export default function DowntownGuideReviewsIndex({
                             <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
                                 <h3 className="mb-4 text-lg font-bold text-gray-900">Rating Summary</h3>
                                 <div className="text-center">
-                                    <div className="mb-2 text-4xl font-bold text-purple-600">
-                                        {averageRating.toFixed(1)}
-                                    </div>
+                                    <div className="mb-2 text-4xl font-bold text-purple-600">{averageRating.toFixed(1)}</div>
                                     <div className="mb-4 flex items-center justify-center gap-1">
                                         {[...Array(5)].map((_, i) => (
                                             <StarIcon
                                                 key={i}
                                                 className={`h-5 w-5 ${
-                                                    i < Math.floor(averageRating)
-                                                        ? "fill-yellow-400 text-yellow-400"
-                                                        : "text-gray-300"
+                                                    i < Math.floor(averageRating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
                                                 }`}
                                             />
                                         ))}
@@ -194,10 +177,7 @@ export default function DowntownGuideReviewsIndex({
                                                 </div>
                                                 <div className="flex-1">
                                                     <div className="h-2 overflow-hidden rounded-full bg-gray-200">
-                                                        <div
-                                                            className="h-full bg-purple-600 transition-all"
-                                                            style={{ width: `${percentage}%` }}
-                                                        />
+                                                        <div className="h-full bg-purple-600 transition-all" style={{ width: `${percentage}%` }} />
                                                     </div>
                                                 </div>
                                                 <span className="text-xs text-gray-600">{count}</span>
@@ -209,9 +189,7 @@ export default function DowntownGuideReviewsIndex({
 
                             {/* Write Review CTA */}
                             <Link href={route("downtown-guide.reviews.create", business.slug)}>
-                                <Button className="w-full bg-purple-600 hover:bg-purple-700">
-                                    Write a Review
-                                </Button>
+                                <Button className="w-full bg-purple-600 hover:bg-purple-700">Write a Review</Button>
                             </Link>
                         </div>
                     </div>
@@ -220,4 +198,3 @@ export default function DowntownGuideReviewsIndex({
         </>
     );
 }
-

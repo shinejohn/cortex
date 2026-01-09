@@ -21,7 +21,8 @@ export default function AboutPage() {
                 site="event-city"
                 data={{
                     title: "About GoEventCity - Connecting Communities Through Events",
-                    description: "Learn about GoEventCity's mission to connect communities, support local businesses, and celebrate the vibrant culture of our cities.",
+                    description:
+                        "Learn about GoEventCity's mission to connect communities, support local businesses, and celebrate the vibrant culture of our cities.",
                 }}
             />
             <Header auth={auth} />
@@ -43,9 +44,8 @@ export default function AboutPage() {
                 <div className="text-center mb-12">
                     <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Mission</h2>
                     <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-                        GoEventCity is dedicated to making it easier for people to discover, share, and attend local events.
-                        We believe that vibrant communities are built on connection, and events are the perfect way to bring
-                        people together.
+                        GoEventCity is dedicated to making it easier for people to discover, share, and attend local events. We believe that vibrant
+                        communities are built on connection, and events are the perfect way to bring people together.
                     </p>
                 </div>
 
@@ -66,8 +66,7 @@ export default function AboutPage() {
                             <Calendar className="h-12 w-12 text-indigo-600 mx-auto mb-4" />
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">Event Discovery</h3>
                             <p className="text-gray-600">
-                                Making it easy to find events that match your interests, whether you're looking for music,
-                                food, sports, or culture.
+                                Making it easy to find events that match your interests, whether you're looking for music, food, sports, or culture.
                             </p>
                         </CardContent>
                     </Card>
@@ -77,8 +76,8 @@ export default function AboutPage() {
                             <Heart className="h-12 w-12 text-indigo-600 mx-auto mb-4" />
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">Support Local</h3>
                             <p className="text-gray-600">
-                                We're committed to supporting local businesses, venues, performers, and event organizers
-                                who make our communities special.
+                                We're committed to supporting local businesses, venues, performers, and event organizers who make our communities
+                                special.
                             </p>
                         </CardContent>
                     </Card>
@@ -160,20 +159,20 @@ export default function AboutPage() {
                 <div className="text-center">
                     <h2 className="text-3xl font-bold text-gray-900 mb-4">Join Us</h2>
                     <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-                        Whether you're looking to discover amazing events or share your own, we'd love to have you
-                        as part of the GoEventCity community.
+                        Whether you're looking to discover amazing events or share your own, we'd love to have you as part of the GoEventCity
+                        community.
                     </p>
                     <div className="flex justify-center space-x-4">
                         {auth.user ? (
-                            <Button size="lg" onClick={() => window.location.href = "/events/create"}>
+                            <Button size="lg" onClick={() => (window.location.href = "/events/create")}>
                                 Create Your First Event
                             </Button>
                         ) : (
                             <>
-                                <Button size="lg" onClick={() => window.location.href = "/register"}>
+                                <Button size="lg" onClick={() => (window.location.href = "/register")}>
                                     Sign Up Free
                                 </Button>
-                                <Button size="lg" variant="outline" onClick={() => window.location.href = "/events"}>
+                                <Button size="lg" variant="outline" onClick={() => (window.location.href = "/events")}>
                                     Browse Events
                                 </Button>
                             </>
@@ -186,4 +185,3 @@ export default function AboutPage() {
         </div>
     );
 }
-

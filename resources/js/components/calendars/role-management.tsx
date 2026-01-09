@@ -52,9 +52,9 @@ export function RoleManagement({ calendarId, editors, ownerId }: RoleManagementP
                 toast.success("Editor added successfully");
                 router.reload({ only: ["calendar"] });
             }
-        } catch (err: any) {
-            if (err.response?.data?.message) {
-                setError(err.response.data.message);
+        } catch (err: unknown) {
+            if (err && typeof err === "object" && "response" in err && err.response && typeof err.response === "object" && "data" in err.response && err.response.data && typeof err.response.data === "object" && "message" in err.response.data) {
+                setError(String(err.response.data.message));
             } else {
                 setError("Failed to add editor. Please try again.");
             }
@@ -72,7 +72,7 @@ export function RoleManagement({ calendarId, editors, ownerId }: RoleManagementP
             await axios.delete(route("calendars.editors.remove", { calendar: calendarId, user: userId }));
             toast.success("Editor removed successfully");
             router.reload({ only: ["calendar"] });
-        } catch (err) {
+        } catch (_err) {
             alert("Failed to remove editor. Please try again.");
         }
     };

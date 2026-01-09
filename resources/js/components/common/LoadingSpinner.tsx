@@ -21,4 +21,3 @@ export function LoadingSpinner({ size = "md", className, text }: LoadingSpinnerP
         </div>
     );
 }
-

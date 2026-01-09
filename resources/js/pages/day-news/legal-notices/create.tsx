@@ -69,11 +69,7 @@ export default function LegalNoticeCreate() {
                         {/* Notice Type */}
                         <div>
                             <Label htmlFor="type">Notice Type *</Label>
-                            <Select
-                                value={form.data.type}
-                                onValueChange={(value) => form.setData("type", value)}
-                                required
-                            >
+                            <Select value={form.data.type} onValueChange={(value) => form.setData("type", value)} required>
                                 <SelectTrigger className="mt-2">
                                     <SelectValue placeholder="Select notice type" />
                                 </SelectTrigger>
@@ -85,9 +81,7 @@ export default function LegalNoticeCreate() {
                                     ))}
                                 </SelectContent>
                             </Select>
-                            {form.errors.type && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.type}</p>
-                            )}
+                            {form.errors.type && <p className="mt-1 text-sm text-destructive">{form.errors.type}</p>}
                         </div>
 
                         {/* Case Number */}
@@ -100,9 +94,7 @@ export default function LegalNoticeCreate() {
                                 className="mt-2"
                                 placeholder="e.g., 2024-CA-12345"
                             />
-                            {form.errors.case_number && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.case_number}</p>
-                            )}
+                            {form.errors.case_number && <p className="mt-1 text-sm text-destructive">{form.errors.case_number}</p>}
                         </div>
 
                         {/* Title */}
@@ -115,9 +107,7 @@ export default function LegalNoticeCreate() {
                                 className="mt-2"
                                 required
                             />
-                            {form.errors.title && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.title}</p>
-                            )}
+                            {form.errors.title && <p className="mt-1 text-sm text-destructive">{form.errors.title}</p>}
                         </div>
 
                         {/* Content */}
@@ -131,9 +121,7 @@ export default function LegalNoticeCreate() {
                                 rows={12}
                                 required
                             />
-                            {form.errors.content && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.content}</p>
-                            )}
+                            {form.errors.content && <p className="mt-1 text-sm text-destructive">{form.errors.content}</p>}
                         </div>
 
                         {/* Court */}
@@ -146,9 +134,7 @@ export default function LegalNoticeCreate() {
                                 className="mt-2"
                                 placeholder="e.g., Circuit Court, Pinellas County, Florida"
                             />
-                            {form.errors.court && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.court}</p>
-                            )}
+                            {form.errors.court && <p className="mt-1 text-sm text-destructive">{form.errors.court}</p>}
                         </div>
 
                         {/* Dates */}
@@ -163,9 +149,7 @@ export default function LegalNoticeCreate() {
                                     className="mt-2"
                                     required
                                 />
-                                {form.errors.publish_date && (
-                                    <p className="mt-1 text-sm text-destructive">{form.errors.publish_date}</p>
-                                )}
+                                {form.errors.publish_date && <p className="mt-1 text-sm text-destructive">{form.errors.publish_date}</p>}
                             </div>
                             <div>
                                 <Label htmlFor="expiry_date">Expiry Date (Optional)</Label>
@@ -177,9 +161,7 @@ export default function LegalNoticeCreate() {
                                     className="mt-2"
                                     min={form.data.publish_date}
                                 />
-                                {form.errors.expiry_date && (
-                                    <p className="mt-1 text-sm text-destructive">{form.errors.expiry_date}</p>
-                                )}
+                                {form.errors.expiry_date && <p className="mt-1 text-sm text-destructive">{form.errors.expiry_date}</p>}
                             </div>
                         </div>
 
@@ -203,12 +185,7 @@ export default function LegalNoticeCreate() {
                                 <Gavel className={`mr-2 size-4 ${form.processing ? "animate-spin" : ""}`} />
                                 {form.processing ? "Submitting..." : "Submit Notice"}
                             </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => router.visit("/legal-notices")}
-                                disabled={form.processing}
-                            >
+                            <Button type="button" variant="outline" onClick={() => router.visit("/legal-notices")} disabled={form.processing}>
                                 Cancel
                             </Button>
                         </div>
@@ -218,4 +195,3 @@ export default function LegalNoticeCreate() {
         </LocationProvider>
     );
 }
-

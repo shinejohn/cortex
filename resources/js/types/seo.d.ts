@@ -128,13 +128,7 @@ export type SEOWebsiteProps = {
     noIndex?: boolean;
 };
 
-export type SEOProps =
-    | SEOArticleProps
-    | SEOEventProps
-    | SEOVenueProps
-    | SEOPerformerProps
-    | SEOBusinessProps
-    | SEOWebsiteProps;
+export type SEOProps = SEOArticleProps | SEOEventProps | SEOVenueProps | SEOPerformerProps | SEOBusinessProps | SEOWebsiteProps;
 
 // Site configuration type
 export interface SiteConfig {

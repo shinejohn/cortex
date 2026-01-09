@@ -68,10 +68,7 @@ export default function EpisodeCreate() {
 
                 <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
                     <div className="mb-4">
-                        <Button
-                            variant="ghost"
-                            onClick={() => router.visit(`/local-voices/podcasts/${podcast.slug}`)}
-                        >
+                        <Button variant="ghost" onClick={() => router.visit(`/local-voices/podcasts/${podcast.slug}`)}>
                             ← Back to {podcast.title}
                         </Button>
                     </div>
@@ -117,18 +114,9 @@ export default function EpisodeCreate() {
                                         <p className="mt-1 text-xs text-muted-foreground">MP3, WAV, or M4A • Max 100MB</p>
                                     </div>
                                 )}
-                                <input
-                                    ref={audioInputRef}
-                                    type="file"
-                                    accept="audio/*"
-                                    onChange={handleAudioChange}
-                                    className="hidden"
-                                    required
-                                />
+                                <input ref={audioInputRef} type="file" accept="audio/*" onChange={handleAudioChange} className="hidden" required />
                             </div>
-                            {form.errors.audio_file && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.audio_file}</p>
-                            )}
+                            {form.errors.audio_file && <p className="mt-1 text-sm text-destructive">{form.errors.audio_file}</p>}
                         </div>
 
                         {/* Title */}
@@ -141,9 +129,7 @@ export default function EpisodeCreate() {
                                 className="mt-2"
                                 required
                             />
-                            {form.errors.title && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.title}</p>
-                            )}
+                            {form.errors.title && <p className="mt-1 text-sm text-destructive">{form.errors.title}</p>}
                         </div>
 
                         {/* Episode Number */}
@@ -156,9 +142,7 @@ export default function EpisodeCreate() {
                                 className="mt-2"
                                 placeholder="e.g., 001, S01E01"
                             />
-                            {form.errors.episode_number && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.episode_number}</p>
-                            )}
+                            {form.errors.episode_number && <p className="mt-1 text-sm text-destructive">{form.errors.episode_number}</p>}
                         </div>
 
                         {/* Description */}
@@ -172,9 +156,7 @@ export default function EpisodeCreate() {
                                 rows={4}
                                 placeholder="Brief description of this episode..."
                             />
-                            {form.errors.description && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.description}</p>
-                            )}
+                            {form.errors.description && <p className="mt-1 text-sm text-destructive">{form.errors.description}</p>}
                         </div>
 
                         {/* Show Notes */}
@@ -188,9 +170,7 @@ export default function EpisodeCreate() {
                                 rows={8}
                                 placeholder="Detailed show notes, links, timestamps, etc..."
                             />
-                            {form.errors.show_notes && (
-                                <p className="mt-1 text-sm text-destructive">{form.errors.show_notes}</p>
-                            )}
+                            {form.errors.show_notes && <p className="mt-1 text-sm text-destructive">{form.errors.show_notes}</p>}
                         </div>
 
                         {/* Error Display */}
@@ -231,4 +211,3 @@ export default function EpisodeCreate() {
         </LocationProvider>
     );
 }
-

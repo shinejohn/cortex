@@ -31,12 +31,7 @@ interface BusinessDetailProps {
     showMap?: boolean;
 }
 
-export function BusinessDetail({
-    business,
-    theme = "downtownsguide",
-    className,
-    showMap = false,
-}: BusinessDetailProps) {
+export function BusinessDetail({ business, theme = "downtownsguide", className, showMap = false }: BusinessDetailProps) {
     const [imageError, setImageError] = useState(false);
 
     const themeColors = {
@@ -70,27 +65,16 @@ export function BusinessDetail({
                 <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
-                            <h1 className="text-3xl font-bold text-foreground md:text-4xl">
-                                {business.name}
-                            </h1>
+                            <h1 className="text-3xl font-bold text-foreground md:text-4xl">{business.name}</h1>
                             {business.is_verified && (
-                                <CheckCircleIcon
-                                    className={cn("h-6 w-6", themeColors[theme].verified)}
-                                    title="Verified Business"
-                                />
+                                <CheckCircleIcon className={cn("h-6 w-6", themeColors[theme].verified)} title="Verified Business" />
                             )}
                         </div>
 
                         {business.categories && business.categories.length > 0 && (
                             <div className="mt-2 flex flex-wrap gap-2">
                                 {business.categories.map((category, index) => (
-                                    <span
-                                        key={index}
-                                        className={cn(
-                                            "rounded-full px-3 py-1 text-sm font-medium",
-                                            themeColors[theme].badge
-                                        )}
-                                    >
+                                    <span key={index} className={cn("rounded-full px-3 py-1 text-sm font-medium", themeColors[theme].badge)}>
                                         {category}
                                     </span>
                                 ))}
@@ -115,12 +99,7 @@ export function BusinessDetail({
 
                 {business.image && !imageError && (
                     <div className="aspect-video w-full overflow-hidden rounded-lg">
-                        <img
-                            src={business.image}
-                            alt={business.name}
-                            className="h-full w-full object-cover"
-                            onError={() => setImageError(true)}
-                        />
+                        <img src={business.image} alt={business.name} className="h-full w-full object-cover" onError={() => setImageError(true)} />
                     </div>
                 )}
             </header>
@@ -136,8 +115,7 @@ export function BusinessDetail({
                                 <h3 className="font-semibold text-foreground">Rating</h3>
                                 <p className="text-sm text-muted-foreground">
                                     {business.rating.toFixed(1)} out of 5
-                                    {business.reviews_count !== undefined &&
-                                        ` (${business.reviews_count.toLocaleString()} reviews)`}
+                                    {business.reviews_count !== undefined && ` (${business.reviews_count.toLocaleString()} reviews)`}
                                 </p>
                             </div>
                         </div>
@@ -183,12 +161,7 @@ export function BusinessDetail({
                             {business.website && (
                                 <div className="flex items-center gap-2">
                                     <GlobeIcon className="h-4 w-4" />
-                                    <a
-                                        href={business.website}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="hover:text-foreground"
-                                    >
+                                    <a href={business.website} target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
                                         Visit Website
                                     </a>
                                 </div>
@@ -228,12 +201,8 @@ export function BusinessDetail({
 
             {/* Content */}
             {business.content && (
-                <div
-                    className="prose prose-lg max-w-none dark:prose-invert"
-                    dangerouslySetInnerHTML={{ __html: business.content }}
-                />
+                <div className="prose prose-lg max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: business.content }} />
             )}
         </article>
     );
 }
-

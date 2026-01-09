@@ -23,13 +23,7 @@ interface ReviewListProps {
     onHelpful?: (reviewId: string) => void;
 }
 
-export function ReviewList({
-    reviews,
-    theme = "downtownsguide",
-    className,
-    showHelpful = true,
-    onHelpful,
-}: ReviewListProps) {
+export function ReviewList({ reviews, theme = "downtownsguide", className, showHelpful = true, onHelpful }: ReviewListProps) {
     if (reviews.length === 0) {
         return (
             <div className="rounded-lg border border-dashed p-8 text-center">
@@ -41,15 +35,8 @@ export function ReviewList({
     return (
         <div className={cn("space-y-4", className)}>
             {reviews.map((review) => (
-                <ReviewCard
-                    key={review.id}
-                    review={review}
-                    theme={theme}
-                    showHelpful={showHelpful}
-                    onHelpful={onHelpful}
-                />
+                <ReviewCard key={review.id} review={review} theme={theme} showHelpful={showHelpful} onHelpful={onHelpful} />
             ))}
         </div>
     );
 }
-

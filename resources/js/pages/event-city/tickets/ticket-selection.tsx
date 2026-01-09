@@ -351,9 +351,7 @@ export default function TicketSelection() {
                                     </Button>
                                 </div>
                                 {promoApplied && (
-                                    <p className="mt-2 text-sm text-green-600">
-                                        Promo code applied! ${promoDiscount.toFixed(2)} discount added.
-                                    </p>
+                                    <p className="mt-2 text-sm text-green-600">Promo code applied! ${promoDiscount.toFixed(2)} discount added.</p>
                                 )}
                                 {promoError && (
                                     <p className="mt-2 text-sm text-red-600">{promoErrorMessage || "Invalid promo code. Please try again."}</p>

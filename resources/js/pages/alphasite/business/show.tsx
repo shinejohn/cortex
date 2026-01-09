@@ -70,13 +70,8 @@ export default function BusinessShow({
             <Head>
                 <title>{seo.title}</title>
                 <meta name="description" content={seo.description} />
-                {seo.keywords && seo.keywords.length > 0 && (
-                    <meta name="keywords" content={seo.keywords.join(", ")} />
-                )}
-                <script
-                    type="application/ld+json"
-                    dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-                />
+                {seo.keywords && seo.keywords.length > 0 && <meta name="keywords" content={seo.keywords.join(", ")} />}
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
             </Head>
 
             <div className="min-h-screen bg-gray-50">
@@ -86,15 +81,23 @@ export default function BusinessShow({
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div className="md:col-span-2">
                                 <h1 className="text-4xl font-bold mb-4">{business.name}</h1>
-                                {business.description && (
-                                    <p className="text-xl text-blue-100 mb-4">{business.description}</p>
-                                )}
+                                {business.description && <p className="text-xl text-blue-100 mb-4">{business.description}</p>}
                                 <div className="flex flex-wrap gap-4 text-sm">
                                     {business.address && (
                                         <div className="flex items-center">
                                             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                                />
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                                />
                                             </svg>
                                             {business.address}, {business.city}, {business.state}
                                         </div>
@@ -102,7 +105,12 @@ export default function BusinessShow({
                                     {business.phone && (
                                         <div className="flex items-center">
                                             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                                                />
                                             </svg>
                                             {business.phone}
                                         </div>
@@ -113,20 +121,14 @@ export default function BusinessShow({
                                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                             </svg>
                                             <span className="font-semibold">{business.rating}</span>
-                                            {business.reviews_count && (
-                                                <span className="ml-1">({business.reviews_count} reviews)</span>
-                                            )}
+                                            {business.reviews_count && <span className="ml-1">({business.reviews_count} reviews)</span>}
                                         </div>
                                     )}
                                 </div>
                             </div>
                             <div className="md:col-span-1">
                                 {business.images && business.images.length > 0 && (
-                                    <img
-                                        src={business.images[0]}
-                                        alt={business.name}
-                                        className="w-full h-64 object-cover rounded-lg shadow-lg"
-                                    />
+                                    <img src={business.images[0]} alt={business.name} className="w-full h-64 object-cover rounded-lg shadow-lg" />
                                 )}
                             </div>
                         </div>
@@ -162,9 +164,7 @@ export default function BusinessShow({
                             {activeTab === "overview" && (
                                 <div className="bg-white rounded-lg shadow p-6">
                                     <h2 className="text-2xl font-bold mb-4">About {business.name}</h2>
-                                    {business.description && (
-                                        <p className="text-gray-700 mb-4">{business.description}</p>
-                                    )}
+                                    {business.description && <p className="text-gray-700 mb-4">{business.description}</p>}
                                     {crossPlatformContent?.articles && crossPlatformContent.articles.length > 0 && (
                                         <div className="mt-6">
                                             <h3 className="text-xl font-semibold mb-3">Related Articles</h3>
@@ -321,10 +321,7 @@ export default function BusinessShow({
                             <div className="fixed bottom-20 right-4 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
                                 <div className="bg-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
                                     <h3 className="font-semibold">Chat with {business.name}</h3>
-                                    <button
-                                        onClick={() => setChatOpen(false)}
-                                        className="text-white hover:text-gray-200"
-                                    >
+                                    <button onClick={() => setChatOpen(false)} className="text-white hover:text-gray-200">
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                         </svg>
@@ -332,15 +329,10 @@ export default function BusinessShow({
                                 </div>
                                 <div className="h-96 overflow-y-auto p-4 space-y-3">
                                     {chatMessages.map((msg, idx) => (
-                                        <div
-                                            key={idx}
-                                            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-                                        >
+                                        <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                                             <div
                                                 className={`max-w-xs p-3 rounded-lg ${
-                                                    msg.role === "user"
-                                                        ? "bg-blue-600 text-white"
-                                                        : "bg-gray-100 text-gray-800"
+                                                    msg.role === "user" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-800"
                                                 }`}
                                             >
                                                 {msg.content}
@@ -374,7 +366,12 @@ export default function BusinessShow({
                             className="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 z-50"
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                />
                             </svg>
                         </button>
                     </>
@@ -383,4 +380,3 @@ export default function BusinessShow({
         </Layout>
     );
 }
-

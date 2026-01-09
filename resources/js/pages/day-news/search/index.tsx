@@ -53,7 +53,17 @@ interface SearchPageProps {
 }
 
 export default function SearchPage() {
-    const { auth, query: initialQuery, filter, sort, timeFilter, results, totalResults, trendingSearches, suggestions: initialSuggestions } = usePage<SearchPageProps>().props;
+    const {
+        auth,
+        query: initialQuery,
+        filter,
+        sort,
+        timeFilter,
+        results,
+        totalResults,
+        trendingSearches,
+        suggestions: initialSuggestions,
+    } = usePage<SearchPageProps>().props;
     const [searchQuery, setSearchQuery] = useState(initialQuery);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [suggestions, setSuggestions] = useState<string[]>(initialSuggestions);
@@ -314,7 +324,9 @@ export default function SearchPage() {
                                                 {results.events.map((event) => (
                                                     <div key={event.id} className="rounded-lg border p-4">
                                                         <h3 className="mb-2 font-semibold">{event.title}</h3>
-                                                        {event.description && <p className="mb-2 text-sm text-muted-foreground">{event.description}</p>}
+                                                        {event.description && (
+                                                            <p className="mb-2 text-sm text-muted-foreground">{event.description}</p>
+                                                        )}
                                                         <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                                                             {event.date && <span>{new Date(event.date).toLocaleDateString()}</span>}
                                                             {event.venue && <span>• {event.venue}</span>}
@@ -337,7 +349,9 @@ export default function SearchPage() {
                                                 {results.businesses.map((business) => (
                                                     <div key={business.id} className="rounded-lg border p-4">
                                                         <h3 className="mb-2 font-semibold">{business.title}</h3>
-                                                        {business.description && <p className="mb-2 text-sm text-muted-foreground">{business.description}</p>}
+                                                        {business.description && (
+                                                            <p className="mb-2 text-sm text-muted-foreground">{business.description}</p>
+                                                        )}
                                                         <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                                                             {business.address && <span>{business.address}</span>}
                                                             {business.rating && <span>• Rating: {business.rating}/5</span>}
@@ -384,12 +398,7 @@ export default function SearchPage() {
                                     <p className="mb-2 text-sm font-medium text-muted-foreground">Trending Searches:</p>
                                     <div className="flex flex-wrap justify-center gap-2">
                                         {trendingSearches.map((trending, index) => (
-                                            <Button
-                                                key={index}
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => handleSuggestionClick(trending)}
-                                            >
+                                            <Button key={index} variant="outline" size="sm" onClick={() => handleSuggestionClick(trending)}>
                                                 {trending}
                                             </Button>
                                         ))}
@@ -403,4 +412,3 @@ export default function SearchPage() {
         </LocationProvider>
     );
 }
-

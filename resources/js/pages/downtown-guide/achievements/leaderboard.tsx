@@ -18,17 +18,9 @@ interface DowntownGuideLeaderboardProps {
     type: string;
 }
 
-export default function DowntownGuideLeaderboard({
-    leaderboard,
-    period,
-    type,
-}: DowntownGuideLeaderboardProps) {
+export default function DowntownGuideLeaderboard({ leaderboard, period, type }: DowntownGuideLeaderboardProps) {
     const handleFilterChange = (key: string, value: string) => {
-        router.get(
-            route("downtown-guide.leaderboard"),
-            { [key]: value },
-            { preserveState: true }
-        );
+        router.get(route("downtown-guide.leaderboard"), { [key]: value }, { preserveState: true });
     };
 
     const getRankIcon = (rank: number) => {
@@ -40,11 +32,7 @@ export default function DowntownGuideLeaderboard({
 
     const getRankBadge = (rank: number) => {
         if (rank <= 3) return null;
-        return (
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-purple-900">
-                {rank}
-            </div>
-        );
+        return <div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-purple-900">{rank}</div>;
     };
 
     const getDisplayValue = (user: (typeof leaderboard)[0]) => {
@@ -76,7 +64,7 @@ export default function DowntownGuideLeaderboard({
     return (
         <>
             <Head title="Leaderboard - DowntownsGuide" />
-            
+
             <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
                 {/* Header */}
                 <div className="border-b-4 border-purple-600 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600">
@@ -87,9 +75,7 @@ export default function DowntownGuideLeaderboard({
                             </div>
                             <div>
                                 <h1 className="text-4xl font-bold text-white">Leaderboard</h1>
-                                <p className="mt-2 text-xl text-purple-100">
-                                    Top performers in the community
-                                </p>
+                                <p className="mt-2 text-xl text-purple-100">Top performers in the community</p>
                             </div>
                         </div>
                     </div>
@@ -103,10 +89,7 @@ export default function DowntownGuideLeaderboard({
                                 <FilterIcon className="h-4 w-4 text-gray-600" />
                                 <span className="text-sm font-medium text-gray-700">Filter:</span>
                             </div>
-                            <Select
-                                value={type}
-                                onValueChange={(value) => handleFilterChange("type", value)}
-                            >
+                            <Select value={type} onValueChange={(value) => handleFilterChange("type", value)}>
                                 <SelectTrigger className="w-40">
                                     <SelectValue />
                                 </SelectTrigger>
@@ -118,10 +101,7 @@ export default function DowntownGuideLeaderboard({
                                     <SelectItem value="referrals">Referrals</SelectItem>
                                 </SelectContent>
                             </Select>
-                            <Select
-                                value={period}
-                                onValueChange={(value) => handleFilterChange("period", value)}
-                            >
+                            <Select value={period} onValueChange={(value) => handleFilterChange("period", value)}>
                                 <SelectTrigger className="w-40">
                                     <SelectValue />
                                 </SelectTrigger>
@@ -146,15 +126,11 @@ export default function DowntownGuideLeaderboard({
                                     <div
                                         key={user.id}
                                         className={`flex items-center gap-4 rounded-xl border-2 p-4 shadow-lg transition-all ${
-                                            rank <= 3
-                                                ? "border-purple-300 bg-gradient-to-r from-purple-50 to-pink-50"
-                                                : "border-purple-200 bg-white"
+                                            rank <= 3 ? "border-purple-300 bg-gradient-to-r from-purple-50 to-pink-50" : "border-purple-200 bg-white"
                                         }`}
                                     >
                                         {/* Rank */}
-                                        <div className="flex w-12 items-center justify-center">
-                                            {getRankIcon(rank) || getRankBadge(rank)}
-                                        </div>
+                                        <div className="flex w-12 items-center justify-center">{getRankIcon(rank) || getRankBadge(rank)}</div>
 
                                         {/* Avatar */}
                                         <div className="flex-shrink-0">
@@ -166,9 +142,7 @@ export default function DowntownGuideLeaderboard({
                                                 />
                                             ) : (
                                                 <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-purple-200 bg-purple-100">
-                                                    <span className="text-lg font-bold text-purple-600">
-                                                        {user.name.charAt(0).toUpperCase()}
-                                                    </span>
+                                                    <span className="text-lg font-bold text-purple-600">{user.name.charAt(0).toUpperCase()}</span>
                                                 </div>
                                             )}
                                         </div>
@@ -181,18 +155,14 @@ export default function DowntownGuideLeaderboard({
                                             >
                                                 {user.name}
                                             </Link>
-                                            {user.level && (
-                                                <p className="text-sm text-gray-600">Level {user.level}</p>
-                                            )}
+                                            {user.level && <p className="text-sm text-gray-600">Level {user.level}</p>}
                                         </div>
 
                                         {/* Value */}
                                         <div className="text-right">
                                             <div className="flex items-center gap-2">
                                                 <TrendingUpIcon className="h-5 w-5 text-purple-600" />
-                                                <span className="text-2xl font-bold text-purple-600">
-                                                    {displayValue.toLocaleString()}
-                                                </span>
+                                                <span className="text-2xl font-bold text-purple-600">{displayValue.toLocaleString()}</span>
                                             </div>
                                             <p className="text-xs text-gray-600">{getDisplayLabel()}</p>
                                         </div>
@@ -212,4 +182,3 @@ export default function DowntownGuideLeaderboard({
         </>
     );
 }
-

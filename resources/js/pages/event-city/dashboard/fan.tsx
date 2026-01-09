@@ -170,9 +170,7 @@ export default function FanDashboard() {
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                         <div>
                             <h1 className="text-3xl font-bold">My Fan Dashboard</h1>
-                            <p className="mt-1 text-indigo-200">
-                                Keep track of your favorite artists, upcoming shows, and exclusive content
-                            </p>
+                            <p className="mt-1 text-indigo-200">Keep track of your favorite artists, upcoming shows, and exclusive content</p>
                         </div>
                         <div className="mt-4 md:mt-0 flex space-x-3">
                             <Button variant="outline" className="bg-white text-indigo-700 hover:bg-indigo-50">
@@ -308,11 +306,7 @@ export default function FanDashboard() {
                                     <h2 className="text-2xl font-bold text-gray-900">Upcoming Shows</h2>
                                     <div className="mt-3 md:mt-0 flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
                                         <div className="flex border border-gray-300 rounded-md overflow-hidden">
-                                            <Button
-                                                variant={showView === "list" ? "default" : "ghost"}
-                                                size="sm"
-                                                onClick={() => setShowView("list")}
-                                            >
+                                            <Button variant={showView === "list" ? "default" : "ghost"} size="sm" onClick={() => setShowView("list")}>
                                                 List
                                             </Button>
                                             <Button
@@ -352,10 +346,16 @@ export default function FanDashboard() {
                                                             <div className="flex items-center justify-between">
                                                                 <div className="flex items-center">
                                                                     <div className="flex-shrink-0 h-12 w-12 rounded-md overflow-hidden">
-                                                                        <img src={show.artist_image} alt={show.artist_name} className="h-full w-full object-cover" />
+                                                                        <img
+                                                                            src={show.artist_image}
+                                                                            alt={show.artist_name}
+                                                                            className="h-full w-full object-cover"
+                                                                        />
                                                                     </div>
                                                                     <div className="ml-4">
-                                                                        <div className="text-sm font-medium text-indigo-600">{formatDate(show.date)}</div>
+                                                                        <div className="text-sm font-medium text-indigo-600">
+                                                                            {formatDate(show.date)}
+                                                                        </div>
                                                                         <div className="text-sm text-gray-500">{formatTime(show.date)}</div>
                                                                     </div>
                                                                 </div>
@@ -443,9 +443,7 @@ export default function FanDashboard() {
                                         <Card key={content.id} className="overflow-hidden hover:shadow-md transition-shadow">
                                             <div className="relative h-48">
                                                 <img src={content.image} alt={content.title} className="w-full h-full object-cover" />
-                                                {content.is_new && (
-                                                    <Badge className="absolute top-3 right-3 bg-green-500">NEW</Badge>
-                                                )}
+                                                {content.is_new && <Badge className="absolute top-3 right-3 bg-green-500">NEW</Badge>}
                                                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
                                                     <div className="text-xs font-medium text-white uppercase">
                                                         {content.type === "release" && "New Release"}
@@ -546,7 +544,11 @@ export default function FanDashboard() {
                                                 {userActivity.photos.map((photo) => (
                                                     <div key={photo.id} className="relative group">
                                                         <div className="aspect-w-4 aspect-h-3 rounded-lg overflow-hidden">
-                                                            <img src={photo.image} alt={`Photo from ${photo.event_name}`} className="w-full h-full object-cover" />
+                                                            <img
+                                                                src={photo.image}
+                                                                alt={`Photo from ${photo.event_name}`}
+                                                                className="w-full h-full object-cover"
+                                                            />
                                                         </div>
                                                         <div className="absolute inset-0 flex items-end p-2 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <div className="w-full">
@@ -589,4 +591,3 @@ export default function FanDashboard() {
         </div>
     );
 }
-

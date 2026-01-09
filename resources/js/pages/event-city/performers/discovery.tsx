@@ -7,20 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Auth } from "@/types";
 import { Link, router, usePage } from "@inertiajs/react";
-import {
-    Search,
-    Filter,
-    Grid3x3,
-    List,
-    Calendar,
-    MapPin,
-    Music,
-    Star,
-    TrendingUp,
-    Users,
-    Clock,
-    X,
-} from "lucide-react";
+import { Search, Filter, Grid3x3, List, Calendar, MapPin, Music, Star, TrendingUp, Users, Clock, X } from "lucide-react";
 import { useState } from "react";
 
 interface Performer {
@@ -251,7 +238,10 @@ export default function PerformerDiscovery() {
                                     <div className="flex items-start gap-6">
                                         <div className="h-24 w-24 rounded-lg overflow-hidden flex-shrink-0">
                                             <img
-                                                src={performer.image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=96&h=96&fit=crop"}
+                                                src={
+                                                    performer.image ||
+                                                    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=96&h=96&fit=crop"
+                                                }
                                                 alt={performer.name}
                                                 className="w-full h-full object-cover"
                                             />
@@ -307,4 +297,3 @@ export default function PerformerDiscovery() {
         </div>
     );
 }
-

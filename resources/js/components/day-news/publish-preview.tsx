@@ -71,8 +71,7 @@ export default function PublishPreview({ post, pricing }: PublishPreviewProps) {
                     <DollarSign className="size-4" />
                     <AlertTitle>Payment Required</AlertTitle>
                     <AlertDescription>
-                        This post requires a payment of ${pricing.cost.toFixed(2)} to publish. You will be redirected to our secure payment
-                        page.
+                        This post requires a payment of ${pricing.cost.toFixed(2)} to publish. You will be redirected to our secure payment page.
                     </AlertDescription>
                 </Alert>
             )}
@@ -103,10 +102,7 @@ export default function PublishPreview({ post, pricing }: PublishPreviewProps) {
 
                     <Separator />
 
-                    <div
-                        className="prose prose-sm max-w-none dark:prose-invert"
-                        dangerouslySetInnerHTML={{ __html: sanitizedContent }}
-                    />
+                    <div className="prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
 
                     <Separator />
 
@@ -167,9 +163,7 @@ export default function PublishPreview({ post, pricing }: PublishPreviewProps) {
             <Alert>
                 <AlertCircle className="size-4" />
                 <AlertTitle>Important</AlertTitle>
-                <AlertDescription>
-                    Once published, you cannot edit your post. Please review carefully before proceeding.
-                </AlertDescription>
+                <AlertDescription>Once published, you cannot edit your post. Please review carefully before proceeding.</AlertDescription>
             </Alert>
 
             <div className="flex justify-end gap-2">

@@ -9,11 +9,7 @@ import { route } from "ziggy-js";
 import { toast } from "sonner";
 import { CreateWorkspaceDialog } from "./workspace/create-workspace-dialog";
 
-export function WorkspaceSelector({
-    workspaces,
-}: {
-    workspaces: SharedData["workspaces"];
-}) {
+export function WorkspaceSelector({ workspaces }: { workspaces: SharedData["workspaces"] }) {
     const { state } = useSidebar();
     const [isLoading, setIsLoading] = useState(false);
     const [open, setOpen] = useState(false);

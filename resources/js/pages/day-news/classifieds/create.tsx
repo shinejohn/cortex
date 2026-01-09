@@ -34,7 +34,10 @@ export default function CreateClassified({ auth }: CreateClassifiedProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        form.setData("images", images.map((img) => img.file));
+        form.setData(
+            "images",
+            images.map((img) => img.file),
+        );
         form.post("/classifieds", {
             forceFormData: true,
             onSuccess: (page) => {
@@ -270,4 +273,3 @@ export default function CreateClassified({ auth }: CreateClassifiedProps) {
         </LocationProvider>
     );
 }
-

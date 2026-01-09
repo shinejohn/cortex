@@ -48,9 +48,7 @@ export default function Partner() {
                             <CardTitle>Venue Partners</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-gray-600 mb-4">
-                                Connect your venue with our platform and reach more event organizers
-                            </p>
+                            <p className="text-gray-600 mb-4">Connect your venue with our platform and reach more event organizers</p>
                             <ul className="space-y-2 mb-6">
                                 <li className="flex items-start">
                                     <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
@@ -76,9 +74,7 @@ export default function Partner() {
                             <CardTitle>Technology Partners</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-gray-600 mb-4">
-                                Integrate your services with our platform and expand your reach
-                            </p>
+                            <p className="text-gray-600 mb-4">Integrate your services with our platform and expand your reach</p>
                             <ul className="space-y-2 mb-6">
                                 <li className="flex items-start">
                                     <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
@@ -104,9 +100,7 @@ export default function Partner() {
                             <CardTitle>Media Partners</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-gray-600 mb-4">
-                                Collaborate on content and reach new audiences together
-                            </p>
+                            <p className="text-gray-600 mb-4">Collaborate on content and reach new audiences together</p>
                             <ul className="space-y-2 mb-6">
                                 <li className="flex items-start">
                                     <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
@@ -164,9 +158,7 @@ export default function Partner() {
                 {/* CTA */}
                 <div className="text-center">
                     <h2 className="text-3xl font-bold text-gray-900 mb-4">Ready to Partner With Us?</h2>
-                    <p className="text-xl text-gray-600 mb-8">
-                        Let's work together to create amazing experiences for your community
-                    </p>
+                    <p className="text-xl text-gray-600 mb-8">Let's work together to create amazing experiences for your community</p>
                     <Button size="lg">
                         Contact Partnership Team
                         <ArrowRight className="ml-2 h-5 w-5" />
@@ -178,4 +170,3 @@ export default function Partner() {
         </div>
     );
 }
-

@@ -147,13 +147,7 @@ export default function CouponsIndex() {
                                     className="cursor-pointer rounded-lg border bg-card transition-shadow hover:shadow-md"
                                     onClick={() => router.visit(`/coupons/${coupon.id}`)}
                                 >
-                                    {coupon.image && (
-                                        <img
-                                            src={coupon.image}
-                                            alt={coupon.title}
-                                            className="h-48 w-full rounded-t-lg object-cover"
-                                        />
-                                    )}
+                                    {coupon.image && <img src={coupon.image} alt={coupon.title} className="h-48 w-full rounded-t-lg object-cover" />}
                                     <div className="p-4">
                                         <div className="mb-2 flex items-center justify-between">
                                             <Badge variant="destructive" className="flex items-center gap-1">
@@ -211,4 +205,3 @@ export default function CouponsIndex() {
         </LocationProvider>
     );
 }
-

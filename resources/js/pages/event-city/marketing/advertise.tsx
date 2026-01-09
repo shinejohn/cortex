@@ -68,9 +68,7 @@ export default function Advertise() {
                                 <Users className="h-8 w-8 text-indigo-600" />
                             </div>
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">Targeted Audience</h3>
-                            <p className="text-gray-600">
-                                Reach people actively looking for events, venues, and performers in your area
-                            </p>
+                            <p className="text-gray-600">Reach people actively looking for events, venues, and performers in your area</p>
                         </CardContent>
                     </Card>
                     <Card>
@@ -79,9 +77,7 @@ export default function Advertise() {
                                 <TrendingUp className="h-8 w-8 text-purple-600" />
                             </div>
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">High Engagement</h3>
-                            <p className="text-gray-600">
-                                Our users are highly engaged and actively planning events, making them ideal customers
-                            </p>
+                            <p className="text-gray-600">Our users are highly engaged and actively planning events, making them ideal customers</p>
                         </CardContent>
                     </Card>
                     <Card>
@@ -90,9 +86,7 @@ export default function Advertise() {
                                 <Target className="h-8 w-8 text-green-600" />
                             </div>
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">Local Focus</h3>
-                            <p className="text-gray-600">
-                                Target specific cities, neighborhoods, and event categories for maximum relevance
-                            </p>
+                            <p className="text-gray-600">Target specific cities, neighborhoods, and event categories for maximum relevance</p>
                         </CardContent>
                     </Card>
                 </div>
@@ -183,20 +177,11 @@ export default function Advertise() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <Label htmlFor="company">Company</Label>
-                                    <Input
-                                        id="company"
-                                        value={data.company}
-                                        onChange={(e) => setData("company", e.target.value)}
-                                    />
+                                    <Input id="company" value={data.company} onChange={(e) => setData("company", e.target.value)} />
                                 </div>
                                 <div>
                                     <Label htmlFor="phone">Phone</Label>
-                                    <Input
-                                        id="phone"
-                                        type="tel"
-                                        value={data.phone}
-                                        onChange={(e) => setData("phone", e.target.value)}
-                                    />
+                                    <Input id="phone" type="tel" value={data.phone} onChange={(e) => setData("phone", e.target.value)} />
                                 </div>
                             </div>
                             <div>
@@ -252,4 +237,3 @@ export default function Advertise() {
         </div>
     );
 }
-

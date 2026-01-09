@@ -25,12 +25,7 @@ interface NewsDetailProps {
     showShare?: boolean;
 }
 
-export function NewsDetail({
-    article,
-    theme = "daynews",
-    className,
-    showShare = true,
-}: NewsDetailProps) {
+export function NewsDetail({ article, theme = "daynews", className, showShare = true }: NewsDetailProps) {
     const [shareSuccess, setShareSuccess] = useState(false);
 
     const themeColors = {
@@ -74,12 +69,7 @@ export function NewsDetail({
             {/* Header */}
             <header className="space-y-4">
                 {article.category && (
-                    <span
-                        className={cn(
-                            "inline-block rounded-full px-3 py-1 text-sm font-medium",
-                            themeColors[theme].badge
-                        )}
-                    >
+                    <span className={cn("inline-block rounded-full px-3 py-1 text-sm font-medium", themeColors[theme].badge)}>
                         {article.category}
                     </span>
                 )}
@@ -90,18 +80,11 @@ export function NewsDetail({
                     {article.author && (
                         <div className="flex items-center gap-2">
                             {article.author.avatar ? (
-                                <img
-                                    src={article.author.avatar}
-                                    alt={article.author.name}
-                                    className="h-8 w-8 rounded-full"
-                                />
+                                <img src={article.author.avatar} alt={article.author.name} className="h-8 w-8 rounded-full" />
                             ) : (
                                 <UserIcon className="h-5 w-5" />
                             )}
-                            <Link
-                                href={`/authors/${article.author.id}`}
-                                className="hover:text-foreground"
-                            >
+                            <Link href={`/authors/${article.author.id}`} className="hover:text-foreground">
                                 {article.author.name}
                             </Link>
                         </div>
@@ -143,30 +126,19 @@ export function NewsDetail({
             {/* Featured Image */}
             {article.featured_image && (
                 <div className="aspect-video w-full overflow-hidden rounded-lg">
-                    <img
-                        src={article.featured_image}
-                        alt={article.title}
-                        className="h-full w-full object-cover"
-                    />
+                    <img src={article.featured_image} alt={article.title} className="h-full w-full object-cover" />
                 </div>
             )}
 
             {/* Content */}
-            <div
-                className="prose prose-lg max-w-none dark:prose-invert"
-                dangerouslySetInnerHTML={{ __html: article.content }}
-            />
+            <div className="prose prose-lg max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: article.content }} />
 
             {/* Tags */}
             {article.tags && article.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2 pt-4">
                     <span className="text-sm font-medium text-muted-foreground">Tags:</span>
                     {article.tags.map((tag) => (
-                        <Link
-                            key={tag.id}
-                            href={`/tags/${tag.slug}`}
-                            className="rounded-full bg-muted px-3 py-1 text-sm hover:bg-muted/80"
-                        >
+                        <Link key={tag.id} href={`/tags/${tag.slug}`} className="rounded-full bg-muted px-3 py-1 text-sm hover:bg-muted/80">
                             #{tag.name}
                         </Link>
                     ))}
@@ -175,4 +147,3 @@ export function NewsDetail({
         </article>
     );
 }
-

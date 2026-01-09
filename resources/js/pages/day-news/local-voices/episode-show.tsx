@@ -99,10 +99,7 @@ export default function EpisodeShow() {
 
                 <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
                     <div className="mb-4">
-                        <Button
-                            variant="ghost"
-                            onClick={() => router.visit(`/local-voices/podcasts/${episode.podcast.slug}`)}
-                        >
+                        <Button variant="ghost" onClick={() => router.visit(`/local-voices/podcasts/${episode.podcast.slug}`)}>
                             ← Back to {episode.podcast.title}
                         </Button>
                     </div>
@@ -123,9 +120,7 @@ export default function EpisodeShow() {
                             )}
                             <div className="flex-1">
                                 <div className="mb-2 flex items-center gap-2">
-                                    {episode.episode_number && (
-                                        <Badge variant="outline">#{episode.episode_number}</Badge>
-                                    )}
+                                    {episode.episode_number && <Badge variant="outline">#{episode.episode_number}</Badge>}
                                     <span className="text-sm text-muted-foreground">{episode.podcast.title}</span>
                                 </div>
                                 <h1 className="mb-2 text-3xl font-bold">{episode.title}</h1>
@@ -159,11 +154,7 @@ export default function EpisodeShow() {
                                 onEnded={() => setIsPlaying(false)}
                             />
                             <div className="mb-4 flex items-center gap-4">
-                                <Button
-                                    size="lg"
-                                    onClick={handlePlayPause}
-                                    className="size-16 rounded-full"
-                                >
+                                <Button size="lg" onClick={handlePlayPause} className="size-16 rounded-full">
                                     {isPlaying ? "⏸" : <Play className="size-6" />}
                                 </Button>
                                 <div className="flex-1">
@@ -223,17 +214,11 @@ export default function EpisodeShow() {
                                     <div
                                         key={relatedEpisode.id}
                                         className="cursor-pointer rounded-lg border bg-card p-4 transition-shadow hover:shadow-md"
-                                        onClick={() =>
-                                            router.visit(
-                                                `/local-voices/podcasts/${episode.podcast.slug}/episodes/${relatedEpisode.slug}`
-                                            )
-                                        }
+                                        onClick={() => router.visit(`/local-voices/podcasts/${episode.podcast.slug}/episodes/${relatedEpisode.slug}`)}
                                     >
                                         <h3 className="font-semibold">{relatedEpisode.title}</h3>
                                         <div className="mt-1 flex items-center gap-4 text-sm text-muted-foreground">
-                                            {relatedEpisode.published_at && (
-                                                <span>{new Date(relatedEpisode.published_at).toLocaleDateString()}</span>
-                                            )}
+                                            {relatedEpisode.published_at && <span>{new Date(relatedEpisode.published_at).toLocaleDateString()}</span>}
                                             <span>{relatedEpisode.formatted_duration}</span>
                                         </div>
                                     </div>
@@ -246,4 +231,3 @@ export default function EpisodeShow() {
         </LocationProvider>
     );
 }
-

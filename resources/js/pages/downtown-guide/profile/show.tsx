@@ -67,18 +67,14 @@ export default function DowntownGuideProfileShow({
     return (
         <>
             <Head title={`${user.name}'s Profile - DowntownsGuide`} />
-            
+
             <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
                 {/* Header */}
                 <div className="border-b-4 border-purple-600 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600">
                     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
                         <div className="flex items-center gap-6">
                             {user.avatar ? (
-                                <img
-                                    src={user.avatar}
-                                    alt={user.name}
-                                    className="h-24 w-24 rounded-full border-4 border-white shadow-lg"
-                                />
+                                <img src={user.avatar} alt={user.name} className="h-24 w-24 rounded-full border-4 border-white shadow-lg" />
                             ) : (
                                 <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-white/20 shadow-lg">
                                     <UserIcon className="h-12 w-12 text-white" />
@@ -86,9 +82,7 @@ export default function DowntownGuideProfileShow({
                             )}
                             <div>
                                 <h1 className="text-3xl font-bold text-white">{user.name}</h1>
-                                {user.bio && (
-                                    <p className="mt-2 text-purple-100">{user.bio}</p>
-                                )}
+                                {user.bio && <p className="mt-2 text-purple-100">{user.bio}</p>}
                                 <div className="mt-4 flex items-center gap-4">
                                     <div className="flex items-center gap-2">
                                         <TrophyIcon className="h-5 w-5 text-yellow-300" />
@@ -182,17 +176,12 @@ export default function DowntownGuideProfileShow({
                                 {activity.length > 0 ? (
                                     <div className="space-y-4">
                                         {activity.map((item) => (
-                                            <div
-                                                key={item.id}
-                                                className="flex items-start gap-4 border-b border-gray-200 pb-4 last:border-0"
-                                            >
+                                            <div key={item.id} className="flex items-start gap-4 border-b border-gray-200 pb-4 last:border-0">
                                                 <TrendingUpIcon className="h-5 w-5 text-purple-600" />
                                                 <div className="flex-1">
                                                     <p className="text-sm text-gray-900">{item.description}</p>
                                                     {item.created_at && (
-                                                        <p className="mt-1 text-xs text-gray-500">
-                                                            {new Date(item.created_at).toLocaleDateString()}
-                                                        </p>
+                                                        <p className="mt-1 text-xs text-gray-500">{new Date(item.created_at).toLocaleDateString()}</p>
                                                     )}
                                                 </div>
                                             </div>
@@ -216,13 +205,9 @@ export default function DowntownGuideProfileShow({
                                                 key={achievement.id}
                                                 className="rounded-lg border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50 p-4"
                                             >
-                                                {achievement.icon && (
-                                                    <div className="mb-2 text-3xl">{achievement.icon}</div>
-                                                )}
+                                                {achievement.icon && <div className="mb-2 text-3xl">{achievement.icon}</div>}
                                                 <h3 className="font-bold text-gray-900">{achievement.name}</h3>
-                                                {achievement.description && (
-                                                    <p className="mt-1 text-sm text-gray-600">{achievement.description}</p>
-                                                )}
+                                                {achievement.description && <p className="mt-1 text-sm text-gray-600">{achievement.description}</p>}
                                                 {achievement.unlocked_at && (
                                                     <p className="mt-2 text-xs text-gray-500">
                                                         Unlocked {new Date(achievement.unlocked_at).toLocaleDateString()}
@@ -310,4 +295,3 @@ export default function DowntownGuideProfileShow({
         </>
     );
 }
-

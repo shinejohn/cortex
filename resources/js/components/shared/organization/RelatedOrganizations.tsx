@@ -49,20 +49,16 @@ export function RelatedOrganizations({
             <div className="space-y-2">
                 {displayedOrgs.map((org) => {
                     const href = org.slug ? `/organizations/${org.slug}` : `/organizations/${org.id}`;
-                    
+
                     return (
-                        <Link
-                            key={org.id}
-                            href={href}
-                            className="flex items-center gap-2 rounded-md p-2 hover:bg-muted"
-                        >
+                        <Link key={org.id} href={href} className="flex items-center gap-2 rounded-md p-2 hover:bg-muted">
                             <BuildingIcon className={cn("h-4 w-4", themeColors[theme])} />
                             <div className="flex-1">
                                 <p className="text-sm font-medium text-foreground">{org.name}</p>
                                 {showRelationshipType && org.relationship_type && (
                                     <p className="text-xs text-muted-foreground capitalize">
-                                        {org.relationship_type.replace('_', ' ')}
-                                        {org.is_primary && ' • Primary'}
+                                        {org.relationship_type.replace("_", " ")}
+                                        {org.is_primary && " • Primary"}
                                     </p>
                                 )}
                             </div>
@@ -72,10 +68,9 @@ export function RelatedOrganizations({
             </div>
             {remainingCount > 0 && (
                 <p className="text-xs text-muted-foreground">
-                    +{remainingCount} more organization{remainingCount !== 1 ? 's' : ''}
+                    +{remainingCount} more organization{remainingCount !== 1 ? "s" : ""}
                 </p>
             )}
         </div>
     );
 }
-

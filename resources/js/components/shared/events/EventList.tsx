@@ -70,4 +70,3 @@ export function EventList({
         </div>
     );
 }
-

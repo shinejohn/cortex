@@ -6,17 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Auth } from "@/types";
 import { usePage } from "@inertiajs/react";
-import {
-    TrendingUp,
-    MapPin,
-    Music,
-    DollarSign,
-    Calendar,
-    Download,
-    Info,
-    ArrowRight,
-    BarChart3,
-} from "lucide-react";
+import { TrendingUp, MapPin, Music, DollarSign, Calendar, Download, Info, ArrowRight, BarChart3 } from "lucide-react";
 import { useState } from "react";
 
 interface MarketData {
@@ -149,7 +139,11 @@ export default function MarketReport() {
                                 <div>
                                     <p className="text-sm font-medium text-gray-600">Avg Pay</p>
                                     <p className="text-3xl font-bold text-gray-900 mt-1">
-                                        ${Math.round(marketData.avg_pay_by_genre.reduce((sum, item) => sum + item.value, 0) / marketData.avg_pay_by_genre.length)}
+                                        $
+                                        {Math.round(
+                                            marketData.avg_pay_by_genre.reduce((sum, item) => sum + item.value, 0) /
+                                                marketData.avg_pay_by_genre.length,
+                                        )}
                                     </p>
                                 </div>
                                 <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
@@ -163,9 +157,7 @@ export default function MarketReport() {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm font-medium text-gray-600">Top Genre</p>
-                                    <p className="text-3xl font-bold text-gray-900 mt-1">
-                                        {marketData.gigs_by_genre[0]?.name || "N/A"}
-                                    </p>
+                                    <p className="text-3xl font-bold text-gray-900 mt-1">{marketData.gigs_by_genre[0]?.name || "N/A"}</p>
                                 </div>
                                 <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
                                     <Music className="h-6 w-6 text-blue-600" />
@@ -257,4 +249,3 @@ export default function MarketReport() {
         </div>
     );
 }
-
