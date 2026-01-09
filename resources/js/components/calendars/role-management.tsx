@@ -53,7 +53,17 @@ export function RoleManagement({ calendarId, editors, ownerId }: RoleManagementP
                 router.reload({ only: ["calendar"] });
             }
         } catch (err: unknown) {
-            if (err && typeof err === "object" && "response" in err && err.response && typeof err.response === "object" && "data" in err.response && err.response.data && typeof err.response.data === "object" && "message" in err.response.data) {
+            if (
+                err &&
+                typeof err === "object" &&
+                "response" in err &&
+                err.response &&
+                typeof err.response === "object" &&
+                "data" in err.response &&
+                err.response.data &&
+                typeof err.response.data === "object" &&
+                "message" in err.response.data
+            ) {
                 setError(String(err.response.data.message));
             } else {
                 setError("Failed to add editor. Please try again.");
