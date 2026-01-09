@@ -3,7 +3,20 @@
     "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": false },
     "files": {
         "ignoreUnknown": true,
-        "includes": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.json"]
+        "includes": [
+            "**/*.js",
+            "**/*.jsx",
+            "**/*.ts",
+            "**/*.tsx",
+            "**/*.json",
+            "!!**/vendor",
+            "!!**/node_modules",
+            "!!**/public",
+            "!!**/bootstrap/ssr",
+            "!!**/tailwind.config.js",
+            "!!**/resources/js/ziggy.js",
+            "!!**/resources/views/mail/*"
+        ]
     },
     "formatter": {
         "enabled": true,
