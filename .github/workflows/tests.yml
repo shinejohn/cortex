@@ -13,7 +13,7 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -25,10 +25,13 @@ jobs:
           php-version: '8.4'
           tools: composer:v2
           coverage: xdebug
-          extensions: sqlite, pdo_sqlite, mbstring, xml, ctype, json, fileinfo, openssl, tokenizer
+          extensions: sqlite, pdo_sqlite, mbstring, xml, ctype, json, fileinfo, openssl, tokenizer, pdo, curl, gd, intl, zip
 
       - name: Install Composer Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Run Package Discovery
+        run: php artisan package:discover --ansi || true
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -41,6 +44,7 @@ jobs:
 
       - name: Build Assets
         run: npm run build
+        continue-on-error: false
 
       - name: Copy Environment File
         run: |
@@ -57,8 +61,12 @@ jobs:
       - name: Generate Application Key
         run: php artisan key:generate
 
-      - name: Clear Configuration Cache
-        run: php artisan config:clear
+      - name: Clear All Caches
+        run: |
+          php artisan config:clear || true
+          php artisan cache:clear || true
+          php artisan route:clear || true
+          php artisan view:clear || true
 
       - name: Create Storage Link
         run: php artisan storage:link || true
@@ -66,7 +74,15 @@ jobs:
       - name: Run Tests
         env:
           APP_ENV: testing
+          APP_MAINTENANCE_DRIVER: file
+          BCRYPT_ROUNDS: 4
+          CACHE_STORE: array
           DB_CONNECTION: sqlite
           DB_DATABASE: ":memory:"
-          STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
-        run: php artisan config:clear && ./vendor/bin/pest
+          MAIL_MAILER: array
+          PULSE_ENABLED: false
+          QUEUE_CONNECTION: sync
+          SESSION_DRIVER: array
+          TELESCOPE_ENABLED: false
+          STRIPE_SECRET: ${{ secrets.STRIPE_SECRET || 'sk_test_placeholder' }}
+        run: php artisan config:clear && ./vendor/bin/pest --colors=always
