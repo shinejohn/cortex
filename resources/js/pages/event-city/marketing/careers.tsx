@@ -1,12 +1,12 @@
-import { Header } from "@/components/common/header";
-import { Footer } from "@/components/common/footer";
-import { SEO } from "@/components/common/seo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Auth } from "@/types";
 import { router, usePage } from "@inertiajs/react";
-import { Briefcase, MapPin, Clock, ArrowRight, Users, Heart, Zap } from "lucide-react";
+import { ArrowRight, Briefcase, Clock, Heart, MapPin, Users, Zap } from "lucide-react";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { SEO } from "@/components/common/seo";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Auth } from "@/types";
 
 interface Job {
     id: string;

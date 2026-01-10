@@ -1,12 +1,12 @@
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
-import { SharedData } from "@/types";
 import { router } from "@inertiajs/react";
 import axios from "axios";
 import { CheckIcon, ChevronsUpDown, Loader2, PlusIcon, Users } from "lucide-react";
 import { useState } from "react";
-import { route } from "ziggy-js";
 import { toast } from "sonner";
+import { route } from "ziggy-js";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
+import { SharedData } from "@/types";
 import { CreateWorkspaceDialog } from "./workspace/create-workspace-dialog";
 
 export function WorkspaceSelector({ workspaces }: { workspaces: SharedData["workspaces"] }) {

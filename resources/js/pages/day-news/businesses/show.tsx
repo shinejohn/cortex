@@ -1,9 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
+import { ArrowLeftIcon, MapPinIcon, NewspaperIcon, StarIcon } from "lucide-react";
 import { BusinessDetail } from "@/components/shared/business/BusinessDetail";
-import { ReviewList } from "@/components/shared/reviews/ReviewList";
-import { NewsList } from "@/components/shared/news/NewsList";
 import { BusinessList } from "@/components/shared/business/BusinessList";
-import { NewspaperIcon, MapPinIcon, StarIcon, ArrowLeftIcon } from "lucide-react";
+import { NewsList } from "@/components/shared/news/NewsList";
+import { ReviewList } from "@/components/shared/reviews/ReviewList";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 

@@ -1,11 +1,10 @@
+import { Head, router, usePage } from "@inertiajs/react";
+import { Calendar, Heart, MapPin, MessageSquare } from "lucide-react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import { Badge } from "@/components/ui/badge";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { router } from "@inertiajs/react";
-import { Head, usePage } from "@inertiajs/react";
-import { Calendar, Heart, MapPin, MessageSquare } from "lucide-react";
 
 interface Announcement {
     id: string;

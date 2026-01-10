@@ -1,10 +1,10 @@
 import { Head, Link } from "@inertiajs/react";
+import { ArrowLeftIcon, CalendarIcon, NewspaperIcon, StarIcon, StoreIcon, TagIcon } from "lucide-react";
 import { BusinessDetail } from "@/components/shared/business/BusinessDetail";
-import { ReviewList } from "@/components/shared/reviews/ReviewList";
+import { BusinessList } from "@/components/shared/business/BusinessList";
 import { EventList } from "@/components/shared/events/EventList";
 import { NewsList } from "@/components/shared/news/NewsList";
-import { BusinessList } from "@/components/shared/business/BusinessList";
-import { StoreIcon, StarIcon, ArrowLeftIcon, TagIcon, CalendarIcon, NewspaperIcon } from "lucide-react";
+import { ReviewList } from "@/components/shared/reviews/ReviewList";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 

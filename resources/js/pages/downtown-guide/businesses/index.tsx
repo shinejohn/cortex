@@ -1,11 +1,11 @@
 import { Head, router } from "@inertiajs/react";
-import { DowntownGuideBusinessCard } from "@/components/downtown-guide/businesses/DowntownGuideBusinessCard";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { SearchIcon, FilterIcon, StoreIcon, SparklesIcon } from "lucide-react";
+import { FilterIcon, SearchIcon, SparklesIcon, StoreIcon } from "lucide-react";
 import { useState } from "react";
+import { DowntownGuideBusinessCard } from "@/components/downtown-guide/businesses/DowntownGuideBusinessCard";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Pagination } from "@/components/ui/pagination";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface DowntownGuideBusinessesIndexProps {
     businesses: {

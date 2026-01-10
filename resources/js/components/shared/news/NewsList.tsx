@@ -1,5 +1,5 @@
-import { NewsCard } from "./NewsCard";
 import { cn } from "@/lib/utils";
+import { NewsCard } from "./NewsCard";
 
 interface NewsListProps {
     articles: Array<{

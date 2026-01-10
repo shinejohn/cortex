@@ -1,3 +1,6 @@
+import { Head, router, useForm, usePage } from "@inertiajs/react";
+import { ArrowLeft, ArrowRight, Calendar, DollarSign } from "lucide-react";
+import { useState } from "react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import { Badge } from "@/components/ui/badge";
@@ -6,10 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { router, useForm } from "@inertiajs/react";
-import { Head, usePage } from "@inertiajs/react";
-import { ArrowLeft, ArrowRight, Calendar, DollarSign } from "lucide-react";
-import { useState } from "react";
 
 interface SelectTimeframeProps {
     auth?: Auth;

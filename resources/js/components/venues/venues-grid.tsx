@@ -1,13 +1,13 @@
+import { usePage } from "@inertiajs/react";
+import { Building2Icon, MapPinIcon, StarIcon } from "lucide-react";
 import { GridCard } from "@/components/common/grid-card";
 import { GridSection } from "@/components/common/grid-section";
 import type { FullVenue, Venue, VenuesGridProps } from "@/types/home";
-import { usePage } from "@inertiajs/react";
-import { Building2Icon, MapPinIcon, StarIcon } from "lucide-react";
 
 const VenuesGrid = () => {
     const { featuredVenues } = usePage<VenuesGridProps>().props;
 
-    const formatDate = (dateString: string): string => {
+    const _formatDate = (dateString: string): string => {
         const date = new Date(dateString);
         return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1).toString().padStart(2, "0")}`;
     };

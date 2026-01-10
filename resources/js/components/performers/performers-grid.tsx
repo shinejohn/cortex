@@ -1,9 +1,9 @@
+import { usePage } from "@inertiajs/react";
+import { CalendarIcon, MicIcon, StarIcon } from "lucide-react";
 import { GridCard } from "@/components/common/grid-card";
 import { GridSection } from "@/components/common/grid-section";
 import { Badge } from "@/components/ui/badge";
 import type { Performer, PerformersGridProps } from "@/types/home";
-import { usePage } from "@inertiajs/react";
-import { CalendarIcon, MicIcon, StarIcon } from "lucide-react";
 
 const PerformersGrid = () => {
     const { featuredPerformers } = usePage<PerformersGridProps>().props;

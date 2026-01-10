@@ -1,3 +1,9 @@
+import { Head, Link, router } from "@inertiajs/react";
+import axios from "axios";
+import { ArrowLeftIcon } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { route } from "ziggy-js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -7,12 +13,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import AppLayout from "@/layouts/app-layout";
-import { Head, Link, router } from "@inertiajs/react";
-import axios from "axios";
-import { ArrowLeftIcon } from "lucide-react";
-import { useState } from "react";
-import { route } from "ziggy-js";
-import { toast } from "sonner";
 
 const CATEGORIES = [
     { value: "jazz", label: "Jazz" },

@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 export const CTASection = () => (
     <div className="bg-muted py-16">

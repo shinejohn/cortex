@@ -1,6 +1,6 @@
+import { useEffect, useState } from "react";
 import { SocialPostCard } from "@/components/social/social-post-card";
 import type { SocialPost, User } from "@/types/social";
-import { useEffect, useState } from "react";
 
 interface SocialFeedProps {
     posts: SocialPost[];

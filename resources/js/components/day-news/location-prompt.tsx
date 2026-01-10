@@ -1,7 +1,7 @@
-import { useLocation } from "@/contexts/location-context";
 import { Check, MapPin, X } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useLocation } from "@/contexts/location-context";
 import { cn } from "@/lib/utils";
 
 interface LocationPromptProps {
@@ -42,12 +42,7 @@ export default function LocationPrompt({ onDismiss }: LocationPromptProps) {
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <Button
-                            type="button"
-                            onClick={handleConfirm}
-                            disabled={isLoading}
-                            size="sm"
-                        >
+                        <Button type="button" onClick={handleConfirm} disabled={isLoading} size="sm">
                             <Check className="size-4" />
                             <span>Yes, that's correct</span>
                         </Button>

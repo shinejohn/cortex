@@ -1,6 +1,6 @@
 import { router, usePage } from "@inertiajs/react";
 import axios from "axios";
-import React, { createContext, useContext, useState, type ReactNode } from "react";
+import React, { createContext, type ReactNode, useContext, useState } from "react";
 
 // Location API endpoints - using relative URLs to work across all domains
 const LOCATION_API = {

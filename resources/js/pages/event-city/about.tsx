@@ -1,11 +1,11 @@
-import { Header } from "@/components/common/header";
-import { Footer } from "@/components/common/footer";
-import { SEO } from "@/components/common/seo";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Auth } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
-import { Users, Calendar, MapPin, Heart, TrendingUp, Award } from "lucide-react";
+import { Award, Calendar, Heart, MapPin, TrendingUp, Users } from "lucide-react";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { SEO } from "@/components/common/seo";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Auth } from "@/types";
 
 interface Props {
     auth: Auth;

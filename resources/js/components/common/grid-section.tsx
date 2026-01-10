@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { Link } from "@inertiajs/react";
 import { ArrowRightIcon, TagIcon } from "lucide-react";
 import type { ReactNode } from "react";
+import { Button } from "@/components/ui/button";
 
 interface GridSectionProps {
     readonly title: string;

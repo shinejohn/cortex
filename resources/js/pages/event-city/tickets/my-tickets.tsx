@@ -1,7 +1,7 @@
-import Header from "@/components/common/header";
-import { Button } from "@/components/ui/button";
 import { Head, Link, usePage } from "@inertiajs/react";
 import { CalendarIcon, ClockIcon, DownloadIcon, MapPinIcon, TicketIcon } from "lucide-react";
+import Header from "@/components/common/header";
+import { Button } from "@/components/ui/button";
 
 interface TicketOrder {
     id: string;

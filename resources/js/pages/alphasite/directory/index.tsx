@@ -70,7 +70,9 @@ export default function DirectoryIndex({ businesses, featured, industries }: Pro
                                         <img src={business.images[0]} alt={business.name} className="w-full h-48 object-cover rounded mb-4" />
                                     )}
                                     <h3 className="text-xl font-semibold mb-2">{business.name}</h3>
-                                    {business.description && <p className="text-muted-foreground text-sm mb-2 line-clamp-2">{business.description}</p>}
+                                    {business.description && (
+                                        <p className="text-muted-foreground text-sm mb-2 line-clamp-2">{business.description}</p>
+                                    )}
                                     <div className="flex items-center text-sm text-muted-foreground">
                                         {business.address && (
                                             <span>

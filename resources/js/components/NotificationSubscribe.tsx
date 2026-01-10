@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
 import { router } from "@inertiajs/react";
+import { Bell, CheckCircle2, Smartphone } from "lucide-react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Bell, Smartphone, CheckCircle2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface NotificationSubscribeProps {
     platform: "daynews" | "goeventcity" | "downtownguide" | "alphasite";

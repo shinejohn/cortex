@@ -1,7 +1,7 @@
 import { Link } from "@inertiajs/react";
 import { CalendarIcon, UserIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface NewsCardProps {
     article: {

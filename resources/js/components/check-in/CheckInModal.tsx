@@ -1,11 +1,11 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { router } from "@inertiajs/react";
+import { Globe, Lock, MapPin, Users } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { MapPin, Globe, Users, Lock } from "lucide-react";
-import { router } from "@inertiajs/react";
-import { useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
 
 interface CheckInModalProps {
     isOpen: boolean;

@@ -1,5 +1,5 @@
-import { EventCard } from "./EventCard";
 import { cn } from "@/lib/utils";
+import { EventCard } from "./EventCard";
 
 interface EventListProps {
     events: Array<{

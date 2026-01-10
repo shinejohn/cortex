@@ -1,3 +1,5 @@
+import { usePage } from "@inertiajs/react";
+import type { PropsWithChildren } from "react";
 import { AppContent } from "@/components/app-content";
 import { AppHeader } from "@/components/app-header";
 import { AppShell } from "@/components/app-shell";
@@ -8,8 +10,6 @@ import EventCityLocationPrompt from "@/components/event-city/location-prompt";
 import { Toaster } from "@/components/ui/sonner";
 import { LocationProvider } from "@/contexts/location-context";
 import { Auth, type BreadcrumbItem, SharedData } from "@/types";
-import { usePage } from "@inertiajs/react";
-import type { PropsWithChildren } from "react";
 
 export default function AppHeaderLayout({ children, breadcrumbs, auth }: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[]; auth: Auth }>) {
     const { appDomain } = usePage<SharedData>().props;

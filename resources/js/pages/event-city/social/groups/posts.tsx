@@ -1,3 +1,8 @@
+import { Head, Link, router } from "@inertiajs/react";
+import axios from "axios";
+import { ArrowLeftIcon, EditIcon, MessageSquareIcon, MoreHorizontalIcon, PinIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -5,11 +10,6 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
 import AppLayout from "@/layouts/app-layout";
-import { Head, Link, router } from "@inertiajs/react";
-import axios from "axios";
-import { ArrowLeftIcon, EditIcon, MessageSquareIcon, MoreHorizontalIcon, PinIcon, PlusIcon, TrashIcon } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
 
 interface User {
     id: string;
@@ -51,8 +51,20 @@ interface Props {
     group: Group;
     posts: {
         data: GroupPost[];
-        links: any;
-        meta: any;
+        links: {
+            first: string | null;
+            last: string | null;
+            prev: string | null;
+            next: string | null;
+        };
+        meta: {
+            current_page: number;
+            from: number | null;
+            last_page: number;
+            per_page: number;
+            to: number | null;
+            total: number;
+        };
     };
 }
 

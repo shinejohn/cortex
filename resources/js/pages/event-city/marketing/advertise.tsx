@@ -1,14 +1,14 @@
-import { Header } from "@/components/common/header";
+import { router, useForm, usePage } from "@inertiajs/react";
+import { ArrowRight, CheckCircle, Megaphone, Target, TrendingUp, Users } from "lucide-react";
 import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
 import { SEO } from "@/components/common/seo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Auth } from "@/types";
-import { router, useForm, usePage } from "@inertiajs/react";
-import { Megaphone, Target, TrendingUp, Users, CheckCircle, ArrowRight } from "lucide-react";
 
 interface Props {
     auth: Auth;
@@ -77,7 +77,9 @@ export default function Advertise() {
                                 <TrendingUp className="h-8 w-8 text-primary" />
                             </div>
                             <h3 className="text-xl font-semibold text-foreground mb-2">High Engagement</h3>
-                            <p className="text-muted-foreground">Our users are highly engaged and actively planning events, making them ideal customers</p>
+                            <p className="text-muted-foreground">
+                                Our users are highly engaged and actively planning events, making them ideal customers
+                            </p>
                         </CardContent>
                     </Card>
                     <Card>

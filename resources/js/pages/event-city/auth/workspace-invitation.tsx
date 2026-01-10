@@ -1,8 +1,8 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Head, Link } from "@inertiajs/react";
 import { Calendar, Crown, Mail, Shield, User, Users } from "lucide-react";
 import React from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface Invitation {
     token: string;

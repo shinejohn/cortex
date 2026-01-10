@@ -1,8 +1,8 @@
+import { XIcon } from "lucide-react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { FilterSidebar } from "@/components/venues/filter-sidebar";
 import { VenueFilters } from "@/types/venues";
-import { XIcon } from "lucide-react";
-import React from "react";
 
 interface MobileFilterSidebarProps {
     filters: VenueFilters;

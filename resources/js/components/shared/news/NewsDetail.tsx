@@ -1,9 +1,9 @@
 import { Link } from "@inertiajs/react";
-import { CalendarIcon, EyeIcon, UserIcon, Share2Icon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { CalendarIcon, EyeIcon, Share2Icon, UserIcon } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface NewsDetailProps {
     article: {
@@ -42,7 +42,7 @@ export function NewsDetail({ article, theme = "daynews", className, showShare = 
                 });
                 setShareSuccess(true);
                 setTimeout(() => setShareSuccess(false), 2000);
-            } catch (error) {
+            } catch (_error) {
                 // User cancelled or error
             }
         } else {
@@ -57,9 +57,7 @@ export function NewsDetail({ article, theme = "daynews", className, showShare = 
         <article className={cn("space-y-6", className)}>
             {/* Header */}
             <header className="space-y-4">
-                {article.category && (
-                    <Badge variant="secondary">{article.category}</Badge>
-                )}
+                {article.category && <Badge variant="secondary">{article.category}</Badge>}
 
                 <h1 className="text-3xl font-bold text-foreground md:text-4xl">{article.title}</h1>
 
@@ -98,13 +96,7 @@ export function NewsDetail({ article, theme = "daynews", className, showShare = 
                     )}
 
                     {showShare && (
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={handleShare}
-                            className="ml-auto"
-                            title="Share article"
-                        >
+                        <Button variant="ghost" size="sm" onClick={handleShare} className="ml-auto" title="Share article">
                             <Share2Icon className="h-4 w-4" />
                             {shareSuccess ? "Copied!" : "Share"}
                         </Button>

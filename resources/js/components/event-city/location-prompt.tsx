@@ -1,6 +1,6 @@
-import { useLocation } from "@/contexts/location-context";
 import { Check, MapPin, X } from "lucide-react";
 import { useState } from "react";
+import { useLocation } from "@/contexts/location-context";
 
 interface LocationPromptProps {
     onDismiss?: () => void;

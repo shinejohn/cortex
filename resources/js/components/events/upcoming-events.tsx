@@ -1,10 +1,10 @@
+import { Link, usePage } from "@inertiajs/react";
+import { ArrowRightIcon, CalendarIcon, CheckIcon, MapPinIcon, ShareIcon } from "lucide-react";
+import { useState } from "react";
 import { GridCard } from "@/components/common/grid-card";
 import { GridSection } from "@/components/common/grid-section";
 import { Button } from "@/components/ui/button";
 import type { DayEvents, Event, UpcomingEventsProps } from "@/types/events";
-import { Link, usePage } from "@inertiajs/react";
-import { ArrowRightIcon, CalendarIcon, CheckIcon, MapPinIcon, ShareIcon } from "lucide-react";
-import { useState } from "react";
 
 const UpcomingEvents = () => {
     const { upcomingEvents = [] } = usePage<UpcomingEventsProps>().props;

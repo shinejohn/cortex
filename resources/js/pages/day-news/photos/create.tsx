@@ -1,3 +1,6 @@
+import { Head, router, useForm, usePage } from "@inertiajs/react";
+import { Camera, Upload, X } from "lucide-react";
+import { useRef, useState } from "react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import { Button } from "@/components/ui/button";
@@ -7,10 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { router, useForm } from "@inertiajs/react";
-import { Head, usePage } from "@inertiajs/react";
-import { Camera, Upload, X } from "lucide-react";
-import { useRef, useState } from "react";
 
 interface Album {
     id: string;

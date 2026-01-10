@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { CheckCircle, MapPin } from "lucide-react";
 import { router } from "@inertiajs/react";
+import { CheckCircle, MapPin } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface CheckInButtonProps {
     eventId: string;

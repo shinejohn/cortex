@@ -1,8 +1,8 @@
+import { ChevronDownIcon, ClockIcon, MapPinIcon, TagIcon, UsersIcon, XIcon } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CalendarFilters as CalendarFiltersType } from "@/types/calendars";
-import { ChevronDownIcon, ClockIcon, MapPinIcon, TagIcon, UsersIcon, XIcon } from "lucide-react";
-import { useState } from "react";
 
 type CalendarFiltersProps = {
     filters: CalendarFiltersType;

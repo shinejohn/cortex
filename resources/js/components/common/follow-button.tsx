@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
 import { router, usePage } from "@inertiajs/react";
 import axios from "axios";
 import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";
-import { route } from "ziggy-js";
 import { toast } from "sonner";
+import { route } from "ziggy-js";
+import { Button } from "@/components/ui/button";
 
 interface FollowButtonProps {
     followableType: "event" | "performer" | "venue" | "calendar";
@@ -52,9 +52,10 @@ export function FollowButton({
             toast.success(`Successfully ${action}`);
         } catch (error: unknown) {
             console.error("Failed to toggle follow:", error);
-            const errorMessage = (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message || 
-                                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error || 
-                                "Failed to update follow status. Please try again.";
+            const errorMessage =
+                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message ||
+                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error ||
+                "Failed to update follow status. Please try again.";
             toast.error(errorMessage);
             // Revert optimistic update
             setIsFollowing(!isFollowing);

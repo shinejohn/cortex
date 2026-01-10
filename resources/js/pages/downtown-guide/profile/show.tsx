@@ -1,8 +1,8 @@
 import { Head, Link } from "@inertiajs/react";
-import { UserIcon, StarIcon, TrophyIcon, GiftIcon, UsersIcon, TrendingUpIcon } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { GiftIcon, StarIcon, TrendingUpIcon, TrophyIcon, UserIcon, UsersIcon } from "lucide-react";
 import { BusinessList } from "@/components/shared/business/BusinessList";
 import { ReviewList } from "@/components/shared/reviews/ReviewList";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface DowntownGuideProfileShowProps {
     user: {
@@ -181,7 +181,9 @@ export default function DowntownGuideProfileShow({
                                                 <div className="flex-1">
                                                     <p className="text-sm text-foreground">{item.description}</p>
                                                     {item.created_at && (
-                                                        <p className="mt-1 text-xs text-muted-foreground">{new Date(item.created_at).toLocaleDateString()}</p>
+                                                        <p className="mt-1 text-xs text-muted-foreground">
+                                                            {new Date(item.created_at).toLocaleDateString()}
+                                                        </p>
                                                     )}
                                                 </div>
                                             </div>
@@ -207,7 +209,9 @@ export default function DowntownGuideProfileShow({
                                             >
                                                 {achievement.icon && <div className="mb-2 text-3xl">{achievement.icon}</div>}
                                                 <h3 className="font-bold text-foreground">{achievement.name}</h3>
-                                                {achievement.description && <p className="mt-1 text-sm text-muted-foreground">{achievement.description}</p>}
+                                                {achievement.description && (
+                                                    <p className="mt-1 text-sm text-muted-foreground">{achievement.description}</p>
+                                                )}
                                                 {achievement.unlocked_at && (
                                                     <p className="mt-2 text-xs text-muted-foreground">
                                                         Unlocked {new Date(achievement.unlocked_at).toLocaleDateString()}

@@ -1,12 +1,11 @@
+import { Head, router, useForm, usePage } from "@inertiajs/react";
+import { Calendar, Camera, Heart, MapPin, MessageSquare, Share2, Trash2, User } from "lucide-react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { router, useForm } from "@inertiajs/react";
-import { Head, usePage } from "@inertiajs/react";
-import { Calendar, Camera, Heart, MapPin, MessageSquare, Share2, Trash2, User } from "lucide-react";
 
 interface Photo {
     id: string;

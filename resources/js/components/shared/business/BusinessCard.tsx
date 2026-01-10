@@ -1,7 +1,7 @@
 import { Link } from "@inertiajs/react";
-import { MapPinIcon, StarIcon, PhoneIcon, GlobeIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { GlobeIcon, MapPinIcon, PhoneIcon, StarIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface BusinessCardProps {
     business: {
@@ -42,7 +42,10 @@ export function BusinessCard({
     const href = business.slug ? `/businesses/${business.slug}` : `/businesses/${business.id}`;
 
     return (
-        <Link href={href} className={cn("group block rounded-lg border bg-card p-4 transition-all hover:shadow-md hover:border-primary/50", className)}>
+        <Link
+            href={href}
+            className={cn("group block rounded-lg border bg-card p-4 transition-all hover:shadow-md hover:border-primary/50", className)}
+        >
             <div className="flex gap-4">
                 {business.image && (
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md">

@@ -1,3 +1,7 @@
+import { Head, Link, useForm } from "@inertiajs/react";
+import { ImagePlus, Loader2, Package, X } from "lucide-react";
+import { useState } from "react";
+import { route } from "ziggy-js";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
 import { Button } from "@/components/ui/button";
@@ -7,10 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Auth } from "@/types";
-import { Head, Link, useForm } from "@inertiajs/react";
-import { ImagePlus, Loader2, Package, X } from "lucide-react";
-import { useState } from "react";
-import { route } from "ziggy-js";
 
 interface Product {
     id: string;

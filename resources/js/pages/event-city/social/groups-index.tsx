@@ -1,12 +1,12 @@
-import { GridCard } from "@/components/common/grid-card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import AppLayout from "@/layouts/app-layout";
 import { Head, Link, router } from "@inertiajs/react";
 import axios from "axios";
 import { ChevronDownIcon, FilterIcon, GlobeIcon, LockIcon, PlusIcon, SearchIcon, UserIcon, UsersIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { GridCard } from "@/components/common/grid-card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import AppLayout from "@/layouts/app-layout";
 
 interface Group {
     id: string;

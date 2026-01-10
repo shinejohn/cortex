@@ -1,14 +1,13 @@
+import { Head, router, useForm, usePage } from "@inertiajs/react";
+import { Mic, Upload, X } from "lucide-react";
+import { useRef, useState } from "react";
 import { SEO } from "@/components/common/seo";
-import GoLocalVoicesLayout from "@/layouts/go-local-voices-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import GoLocalVoicesLayout from "@/layouts/go-local-voices-layout";
 import type { Auth } from "@/types";
-import { router, useForm } from "@inertiajs/react";
-import { Head, usePage } from "@inertiajs/react";
-import { Mic, Upload, X } from "lucide-react";
-import { useRef, useState } from "react";
 
 interface CreatorRegisterPageProps {
     auth?: Auth;
@@ -124,11 +123,7 @@ export default function CreatorRegister() {
                             <div className="mt-2">
                                 {coverPreview ? (
                                     <div className="relative">
-                                        <img
-                                            src={coverPreview}
-                                            alt="Cover preview"
-                                            className="h-48 w-full rounded-lg border border object-cover"
-                                        />
+                                        <img src={coverPreview} alt="Cover preview" className="h-48 w-full rounded-lg border border object-cover" />
                                         <Button
                                             type="button"
                                             variant="destructive"
@@ -319,13 +314,7 @@ export default function CreatorRegister() {
                                 <Mic className={`mr-2 h-4 w-4 ${form.processing ? "animate-spin" : ""}`} />
                                 {form.processing ? "Submitting..." : "Submit Application"}
                             </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => router.visit("/")}
-                                disabled={form.processing}
-                                className="border"
-                            >
+                            <Button type="button" variant="outline" onClick={() => router.visit("/")} disabled={form.processing} className="border">
                                 Cancel
                             </Button>
                         </div>

@@ -1,3 +1,7 @@
+import axios from "axios";
+import { GlobeIcon, ImageIcon, LockIcon, MapPinIcon, PlusIcon, UsersIcon, X } from "lucide-react";
+import { useState } from "react";
+import { route } from "ziggy-js";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,10 +10,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import type { User } from "@/types";
 import type { CreatePostForm, SocialPost } from "@/types/social";
-import axios from "axios";
-import { GlobeIcon, ImageIcon, LockIcon, MapPinIcon, PlusIcon, UsersIcon, X } from "lucide-react";
-import { useState } from "react";
-import { route } from "ziggy-js";
 
 interface InlinePostCreatorProps {
     currentUser: User;

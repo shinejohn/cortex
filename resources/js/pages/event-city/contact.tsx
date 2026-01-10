@@ -1,15 +1,15 @@
-import { Header } from "@/components/common/header";
+import { router, useForm, usePage } from "@inertiajs/react";
+import { Mail, MapPin, MessageSquare, Phone, Send } from "lucide-react";
 import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
 import { SEO } from "@/components/common/seo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { Auth } from "@/types";
-import { router, useForm, usePage } from "@inertiajs/react";
-import { Mail, Phone, MapPin, Send, MessageSquare } from "lucide-react";
 
 interface Props {
     auth: Auth;

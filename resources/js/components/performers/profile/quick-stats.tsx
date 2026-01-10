@@ -1,6 +1,6 @@
+import { Bell, MessageCircle, MoreHorizontal, Music, Star, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { PerformerProfile } from "@/types/performer-profile";
-import { Bell, MessageCircle, MoreHorizontal, Music, Star, Users } from "lucide-react";
 
 interface PerformerQuickStatsProps {
     performer: PerformerProfile;
@@ -16,7 +16,7 @@ export function PerformerQuickStats({ performer }: PerformerQuickStatsProps) {
         };
     };
 
-    const formatDate = (dateString: string) => {
+    const _formatDate = (dateString: string) => {
         const date = new Date(dateString);
         const today = new Date();
         const tomorrow = new Date(today);

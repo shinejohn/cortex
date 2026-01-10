@@ -1,3 +1,6 @@
+import { Head, Link, router } from "@inertiajs/react";
+import { AlertCircle, CheckCircle, Clock, CreditCard, Edit, Package, Plus, ShoppingCart, Store as StoreIcon, XCircle } from "lucide-react";
+import { route } from "ziggy-js";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
 import { Badge } from "@/components/ui/badge";
@@ -5,9 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Auth } from "@/types";
-import { Head, Link, router } from "@inertiajs/react";
-import { AlertCircle, CheckCircle, Clock, CreditCard, Edit, Package, Plus, ShoppingCart, Store as StoreIcon, XCircle } from "lucide-react";
-import { route } from "ziggy-js";
 
 interface Store {
     id: string;

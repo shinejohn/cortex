@@ -1,6 +1,6 @@
+import { route } from "ziggy-js";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { route } from "ziggy-js";
 import ProviderIcon from "./provider-icon";
 
 interface SocialButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

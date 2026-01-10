@@ -1,14 +1,14 @@
-import { Header } from "@/components/common/header";
-import { Footer } from "@/components/common/footer";
-import { SEO } from "@/components/common/seo";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Auth } from "@/types";
 import { Link, router, usePage } from "@inertiajs/react";
-import { Search, Filter, Calendar, MapPin, Clock, Star, Grid, List, Home, ChevronRight } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Calendar, ChevronRight, Clock, Filter, Grid, Home, List, MapPin, Search, Star } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { SEO } from "@/components/common/seo";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Auth } from "@/types";
 
 interface TicketListing {
     id: string;
@@ -38,8 +38,20 @@ interface Props {
     auth: Auth;
     listings: {
         data: TicketListing[];
-        links: any;
-        meta: any;
+        links: {
+            first: string | null;
+            last: string | null;
+            prev: string | null;
+            next: string | null;
+        };
+        meta: {
+            current_page: number;
+            from: number | null;
+            last_page: number;
+            per_page: number;
+            to: number | null;
+            total: number;
+        };
     };
     filters: {
         search?: string;
@@ -225,9 +237,7 @@ export default function TicketMarketplace() {
                                                 alt={listing.event.title}
                                                 className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                                             />
-                                            {listing.status === "available" && (
-                                                <Badge className="absolute top-2 left-2 bg-primary">Available</Badge>
-                                            )}
+                                            {listing.status === "available" && <Badge className="absolute top-2 left-2 bg-primary">Available</Badge>}
                                         </div>
                                         <CardContent className="p-4">
                                             <h3 className="font-bold text-lg text-foreground mb-2">{listing.event.title}</h3>
@@ -310,7 +320,7 @@ export default function TicketMarketplace() {
                         {listings.links && listings.links.length > 3 && (
                             <div className="mt-8 flex justify-center">
                                 <div className="flex space-x-2">
-                                    {listings.links.map((link: any, index: number) => (
+                                    {listings.links.map((link: { url: string | null; label: string; active: boolean }, index: number) => (
                                         <Button
                                             key={index}
                                             variant={link.active ? "default" : "outline"}

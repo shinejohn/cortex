@@ -1,8 +1,8 @@
-import { EventList } from "../events/EventList";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { EventList } from "../events/EventList";
 
 interface CalendarWeekProps {
     events: Array<{

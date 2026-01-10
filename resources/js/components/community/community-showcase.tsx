@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { ArrowRightIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface ShowcaseItem {
     readonly id: number;

@@ -1,13 +1,3 @@
-import { FollowButton } from "@/components/common/follow-button";
-import { Footer } from "@/components/common/footer";
-import { Header } from "@/components/common/header";
-import { SEO } from "@/components/common/seo";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SharedData } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
 import {
     ArrowLeft,
@@ -29,6 +19,16 @@ import {
     X,
 } from "lucide-react";
 import { useState } from "react";
+import { FollowButton } from "@/components/common/follow-button";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { SEO } from "@/components/common/seo";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SharedData } from "@/types";
 
 interface VenueShowProps extends SharedData {
     venue: {

@@ -1,7 +1,7 @@
-import AppLayoutTemplate from "@/layouts/app/app-header-layout";
-import { Auth, type BreadcrumbItem, SharedData } from "@/types";
 import { usePage } from "@inertiajs/react";
 import { type ReactNode } from "react";
+import AppLayoutTemplate from "@/layouts/app/app-header-layout";
+import { Auth, type BreadcrumbItem, SharedData } from "@/types";
 
 interface AppLayoutProps {
     children: ReactNode;

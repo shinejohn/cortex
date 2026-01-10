@@ -1,10 +1,10 @@
-import { NewsList } from "../news/NewsList";
-import { EventList } from "../events/EventList";
-import { BusinessList } from "../business/BusinessList";
-import { ReviewList } from "../reviews/ReviewList";
-import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
+import { BusinessList } from "../business/BusinessList";
+import { EventList } from "../events/EventList";
+import { NewsList } from "../news/NewsList";
+import { ReviewList } from "../reviews/ReviewList";
 
 interface OrganizationContentDisplayProps {
     organization: {
@@ -34,7 +34,7 @@ export function OrganizationContentDisplay({
     theme = "downtownsguide",
     className,
 }: OrganizationContentDisplayProps) {
-    const [selectedType, setSelectedType] = useState<string | null>(null);
+    const [_selectedType, _setSelectedType] = useState<string | null>(null);
 
     const contentMap: Record<string, { label: string; component: React.ComponentType<any> }> = {
         "App\\Models\\DayNewsPost": {

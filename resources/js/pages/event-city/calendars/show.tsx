@@ -1,13 +1,3 @@
-import { RoleManagement } from "@/components/calendars/role-management";
-import { FollowButton } from "@/components/common/follow-button";
-import { Footer } from "@/components/common/footer";
-import { Header } from "@/components/common/header";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SharedData } from "@/types";
 import { Head, Link, usePage } from "@inertiajs/react";
 import {
     ArrowLeft,
@@ -26,6 +16,16 @@ import {
     X,
 } from "lucide-react";
 import { useState } from "react";
+import { RoleManagement } from "@/components/calendars/role-management";
+import { FollowButton } from "@/components/common/follow-button";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SharedData } from "@/types";
 
 interface CalendarShowProps extends SharedData {
     calendar: {
@@ -111,7 +111,7 @@ export default function CalendarShow() {
     };
 
     // Handle contact
-    const handleContact = () => {
+    const _handleContact = () => {
         setShowContactForm(true);
     };
 
@@ -335,7 +335,9 @@ export default function CalendarShow() {
                                         <div className="space-y-4">
                                             <div>
                                                 <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
-                                                <p className="text-foreground leading-relaxed">{calendar.description || "No description available."}</p>
+                                                <p className="text-foreground leading-relaxed">
+                                                    {calendar.description || "No description available."}
+                                                </p>
                                             </div>
 
                                             {calendar.about && (

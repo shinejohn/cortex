@@ -1,3 +1,6 @@
+import { Head, Link, router } from "@inertiajs/react";
+import { Filter, Package, ShoppingBag } from "lucide-react";
+import { route } from "ziggy-js";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
 import { Badge } from "@/components/ui/badge";
@@ -13,9 +16,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Auth } from "@/types";
-import { Head, Link, router } from "@inertiajs/react";
-import { Filter, Package, ShoppingBag } from "lucide-react";
-import { route } from "ziggy-js";
 
 interface Order {
     id: string;

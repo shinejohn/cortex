@@ -1,3 +1,6 @@
+import { Head, Link } from "@inertiajs/react";
+import { Package, ShoppingBag, ShoppingCart, Store as StoreIcon, TrendingUp } from "lucide-react";
+import { route } from "ziggy-js";
 import { Footer } from "@/components/common/footer";
 import { GridCard } from "@/components/common/grid-card";
 import Header from "@/components/common/header";
@@ -6,9 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Auth } from "@/types";
-import { Head, Link } from "@inertiajs/react";
-import { Package, ShoppingBag, ShoppingCart, Store as StoreIcon, TrendingUp } from "lucide-react";
-import { route } from "ziggy-js";
 
 interface Product {
     id: string;

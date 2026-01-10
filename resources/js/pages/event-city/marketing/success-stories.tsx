@@ -1,12 +1,12 @@
-import { Header } from "@/components/common/header";
-import { Footer } from "@/components/common/footer";
-import { SEO } from "@/components/common/seo";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Auth } from "@/types";
 import { usePage } from "@inertiajs/react";
-import { Quote, Star, Users, Calendar, DollarSign } from "lucide-react";
+import { Calendar, DollarSign, Quote, Star, Users } from "lucide-react";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { SEO } from "@/components/common/seo";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Auth } from "@/types";
 
 interface SuccessStory {
     id: string;

@@ -1,11 +1,11 @@
+import { FilterIcon, SearchIcon, XIcon } from "lucide-react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
-import { FilterIcon, SearchIcon, XIcon } from "lucide-react";
-import React from "react";
 
 export interface TicketFilters {
     search?: string;

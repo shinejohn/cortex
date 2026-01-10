@@ -1,9 +1,9 @@
+import { ArrowRightIcon, MapPinIcon, StarIcon } from "lucide-react";
+import React from "react";
 import { GridCard } from "@/components/common/grid-card";
 import { GridSection } from "@/components/common/grid-section";
 import { Button } from "@/components/ui/button";
 import { NewVenue, TrendingVenue } from "@/types/venues";
-import { ArrowRightIcon, MapPinIcon, StarIcon } from "lucide-react";
-import React from "react";
 
 interface DiscoverySectionsProps {
     trendingVenues: readonly TrendingVenue[];

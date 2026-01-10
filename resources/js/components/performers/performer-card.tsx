@@ -1,10 +1,10 @@
+import { Link } from "@inertiajs/react";
+import { CalendarIcon, HeartIcon, MicIcon, ShareIcon, StarIcon } from "lucide-react";
+import { useState } from "react";
 import { GridCard } from "@/components/common/grid-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Performer } from "@/types/performers";
-import { Link } from "@inertiajs/react";
-import { CalendarIcon, HeartIcon, MicIcon, ShareIcon, StarIcon } from "lucide-react";
-import { useState } from "react";
 
 interface PerformerCardProps {
     performer: Performer;

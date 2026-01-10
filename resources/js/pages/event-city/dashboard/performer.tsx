@@ -1,14 +1,14 @@
-import { Header } from "@/components/common/header";
-import { Footer } from "@/components/common/footer";
-import { SEO } from "@/components/common/seo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Auth } from "@/types";
 import { router, usePage } from "@inertiajs/react";
-import { Music, Calendar, DollarSign, Users, TrendingUp, Star, Plus, Edit, BarChart3, MapPin } from "lucide-react";
+import { BarChart3, Calendar, DollarSign, Edit, MapPin, Music, Plus, Star, TrendingUp, Users } from "lucide-react";
 import { useState } from "react";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { SEO } from "@/components/common/seo";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Auth } from "@/types";
 
 interface Gig {
     id: string;

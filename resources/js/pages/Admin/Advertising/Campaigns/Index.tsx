@@ -1,14 +1,14 @@
-import AppLayout from "@/layouts/app-layout";
-import { type BreadcrumbItem } from "@/types";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Head, Link, router } from "@inertiajs/react";
-import { PlusIcon, SearchIcon, FilterIcon } from "lucide-react";
+import { FilterIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";
 import { route } from "ziggy-js";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import AppLayout from "@/layouts/app-layout";
+import { type BreadcrumbItem } from "@/types";
 
 interface AdCampaign {
     id: number;
@@ -49,7 +49,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function CampaignIndex({ campaigns, filters, advertisers, statuses }: CampaignIndexProps) {
-    const [searchTerm, setSearchTerm] = useState("");
+    const [_searchTerm, _setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState(filters.status || "");
     const [advertiserFilter, setAdvertiserFilter] = useState(filters.advertiser_id?.toString() || "");
 

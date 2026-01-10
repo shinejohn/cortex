@@ -1,3 +1,6 @@
+import { Head, usePage } from "@inertiajs/react";
+import { CalendarIcon, CheckIcon, MapPinIcon, ShareIcon } from "lucide-react";
+import { useState } from "react";
 import CategoryFilter from "@/components/common/category-filter";
 import CTASection from "@/components/common/cta-section";
 import { Footer } from "@/components/common/footer";
@@ -5,9 +8,6 @@ import { GridCard } from "@/components/common/grid-card";
 import Header from "@/components/common/header";
 import { Button } from "@/components/ui/button";
 import { type DayEvents, type Event, type EventsPageProps } from "@/types/events";
-import { Head, usePage } from "@inertiajs/react";
-import { CalendarIcon, CheckIcon, MapPinIcon, ShareIcon } from "lucide-react";
-import { useState } from "react";
 
 export default function Events() {
     const { auth, featuredEvents = [], upcomingEvents = [] } = usePage<EventsPageProps>().props;

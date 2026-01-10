@@ -1,13 +1,13 @@
-import { Header } from "@/components/common/header";
+import { usePage } from "@inertiajs/react";
+import { ArrowRight, BarChart3, Calendar, DollarSign, Download, Info, MapPin, Music, TrendingUp } from "lucide-react";
+import { useState } from "react";
 import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
 import { SEO } from "@/components/common/seo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Auth } from "@/types";
-import { usePage } from "@inertiajs/react";
-import { TrendingUp, MapPin, Music, DollarSign, Calendar, Download, Info, ArrowRight, BarChart3 } from "lucide-react";
-import { useState } from "react";
 
 interface MarketData {
     gigs_by_genre: Array<{ name: string; value: number }>;

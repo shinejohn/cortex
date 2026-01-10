@@ -1,12 +1,11 @@
+import { Head, router, usePage } from "@inertiajs/react";
+import { CheckCircle, Eye } from "lucide-react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { router } from "@inertiajs/react";
-import { Head, usePage } from "@inertiajs/react";
-import { CheckCircle, Eye } from "lucide-react";
 
 interface ConfirmationProps {
     auth?: Auth;

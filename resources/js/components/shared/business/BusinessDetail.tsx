@@ -1,8 +1,8 @@
 import { Link } from "@inertiajs/react";
-import { MapPinIcon, StarIcon, PhoneIcon, GlobeIcon, ClockIcon, CheckCircleIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { CheckCircleIcon, ClockIcon, GlobeIcon, MapPinIcon, PhoneIcon, StarIcon } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface BusinessDetailProps {
     business: {
@@ -54,9 +54,7 @@ export function BusinessDetail({ business, theme = "downtownsguide", className, 
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
                             <h1 className="text-3xl font-bold text-foreground md:text-4xl">{business.name}</h1>
-                            {business.is_verified && (
-                                <CheckCircleIcon className="h-6 w-6 text-primary" title="Verified Business" />
-                            )}
+                            {business.is_verified && <CheckCircleIcon className="h-6 w-6 text-primary" title="Verified Business" />}
                         </div>
 
                         {business.categories && business.categories.length > 0 && (

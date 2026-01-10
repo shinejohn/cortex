@@ -1,14 +1,14 @@
-import { Header } from "@/components/common/header";
+import { Link, router, usePage } from "@inertiajs/react";
+import { MapPin, Plus, Search, Users } from "lucide-react";
+import { useState } from "react";
 import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
 import { SEO } from "@/components/common/seo";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Auth } from "@/types";
-import { Link, router, usePage } from "@inertiajs/react";
-import { Search, MapPin, Users, Plus } from "lucide-react";
-import { useState } from "react";
 
 interface Hub {
     id: string;
@@ -83,10 +83,7 @@ export default function HubsIndex() {
                                 <MapPin className="h-5 w-5 text-muted-foreground mr-2" />
                                 <span className="text-gray-800">Clearwater, FL</span>
                             </div>
-                            <button
-                                type="submit"
-                                className="ml-4 bg-primary text-white px-4 py-2 rounded-md hover:bg-primary transition-colors"
-                            >
+                            <button type="submit" className="ml-4 bg-primary text-white px-4 py-2 rounded-md hover:bg-primary transition-colors">
                                 Search
                             </button>
                         </form>

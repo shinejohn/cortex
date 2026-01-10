@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { Link } from "@inertiajs/react";
 import { CalendarIcon, MicIcon, StarIcon, TrendingUpIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface JoinCtaProps {
     className?: string;

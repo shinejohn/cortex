@@ -1,11 +1,11 @@
-import { Header } from "@/components/common/header";
-import { Footer } from "@/components/common/footer";
-import { SEO } from "@/components/common/seo";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Auth } from "@/types";
 import { Link, usePage } from "@inertiajs/react";
-import { Search, Calendar, Ticket, Users, MapPin, Bell, Share2, Heart } from "lucide-react";
+import { Bell, Calendar, Heart, MapPin, Search, Share2, Ticket, Users } from "lucide-react";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { SEO } from "@/components/common/seo";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Auth } from "@/types";
 
 interface Props {
     auth: Auth;
@@ -54,7 +54,9 @@ export default function HowItWorksPage() {
                                 <Search className="h-8 w-8" />
                             </div>
                             <h3 className="text-xl font-semibold text-foreground mb-2">1. Discover Events</h3>
-                            <p className="text-muted-foreground">Browse events by category, date, location, or search for specific performers or venues.</p>
+                            <p className="text-muted-foreground">
+                                Browse events by category, date, location, or search for specific performers or venues.
+                            </p>
                         </CardContent>
                     </Card>
 
@@ -76,7 +78,9 @@ export default function HowItWorksPage() {
                                 <Calendar className="h-8 w-8" />
                             </div>
                             <h3 className="text-xl font-semibold text-foreground mb-2">3. Plan Your Schedule</h3>
-                            <p className="text-muted-foreground">Add events to your calendar, set reminders, and see what your friends are attending.</p>
+                            <p className="text-muted-foreground">
+                                Add events to your calendar, set reminders, and see what your friends are attending.
+                            </p>
                         </CardContent>
                     </Card>
 
@@ -86,7 +90,9 @@ export default function HowItWorksPage() {
                                 <Heart className="h-8 w-8" />
                             </div>
                             <h3 className="text-xl font-semibold text-foreground mb-2">4. Enjoy & Share</h3>
-                            <p className="text-muted-foreground">Check in at events, share your experiences, and help others discover great events.</p>
+                            <p className="text-muted-foreground">
+                                Check in at events, share your experiences, and help others discover great events.
+                            </p>
                         </CardContent>
                     </Card>
                 </div>
@@ -165,7 +171,9 @@ export default function HowItWorksPage() {
                             <CardContent className="p-6">
                                 <Users className="h-8 w-8 text-primary mb-3" />
                                 <h3 className="text-lg font-semibold text-foreground mb-2">Social Features</h3>
-                                <p className="text-muted-foreground">Follow performers, see what friends are attending, and share your event experiences.</p>
+                                <p className="text-muted-foreground">
+                                    Follow performers, see what friends are attending, and share your event experiences.
+                                </p>
                             </CardContent>
                         </Card>
 
@@ -191,7 +199,9 @@ export default function HowItWorksPage() {
                             <CardContent className="p-6">
                                 <Calendar className="h-8 w-8 text-primary mb-3" />
                                 <h3 className="text-lg font-semibold text-foreground mb-2">Calendar Integration</h3>
-                                <p className="text-muted-foreground">Sync events with your calendar and never miss an event you're planning to attend.</p>
+                                <p className="text-muted-foreground">
+                                    Sync events with your calendar and never miss an event you're planning to attend.
+                                </p>
                             </CardContent>
                         </Card>
                     </div>

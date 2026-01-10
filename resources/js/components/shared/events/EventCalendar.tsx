@@ -1,7 +1,7 @@
-import { EventCard } from "./EventCard";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { EventCard } from "./EventCard";
 
 interface EventCalendarProps {
     events: Array<{

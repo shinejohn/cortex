@@ -1,10 +1,9 @@
-import { Head, Link } from "@inertiajs/react";
-import { TagIcon, SearchIcon, FilterIcon, SparklesIcon } from "lucide-react";
+import { Head, Link, router } from "@inertiajs/react";
+import { FilterIcon, SearchIcon, SparklesIcon, TagIcon } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { router } from "@inertiajs/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface DowntownGuideCouponsIndexProps {
@@ -154,7 +153,9 @@ export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: D
                                             <span className="text-xs font-bold text-primary">COUPON</span>
                                         </div>
                                         <h3 className="mb-2 text-lg font-bold text-foreground">{coupon.title}</h3>
-                                        {coupon.description && <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{coupon.description}</p>}
+                                        {coupon.description && (
+                                            <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{coupon.description}</p>
+                                        )}
                                         {coupon.code && (
                                             <div className="mb-2 rounded-lg bg-accent p-2 text-center">
                                                 <p className="font-mono text-lg font-bold text-purple-900">{coupon.code}</p>
@@ -189,7 +190,9 @@ export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: D
                                                 <span className="text-xs font-bold text-primary">DEAL</span>
                                             </div>
                                             <h3 className="mb-2 text-lg font-bold text-foreground">{deal.title}</h3>
-                                            {deal.description && <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{deal.description}</p>}
+                                            {deal.description && (
+                                                <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{deal.description}</p>
+                                            )}
                                             {deal.business_name && <p className="text-sm font-medium text-primary">{deal.business_name}</p>}
                                         </Link>
                                     ))
@@ -225,7 +228,9 @@ export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: D
                                                 <span className="text-xs font-bold text-primary">COUPON</span>
                                             </div>
                                             <h3 className="mb-2 text-lg font-bold text-foreground">{coupon.title}</h3>
-                                            {coupon.description && <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{coupon.description}</p>}
+                                            {coupon.description && (
+                                                <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{coupon.description}</p>
+                                            )}
                                             {coupon.code && (
                                                 <div className="mb-2 rounded-lg bg-accent p-2 text-center">
                                                     <p className="font-mono text-lg font-bold text-purple-900">{coupon.code}</p>

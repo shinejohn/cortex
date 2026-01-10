@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import GoLocalVoicesHeader from "@/components/local-voices/go-local-voices-header";
 import GoLocalVoicesFooter from "@/components/local-voices/go-local-voices-footer";
+import GoLocalVoicesHeader from "@/components/local-voices/go-local-voices-header";
 import type { Auth } from "@/types";
 
 interface GoLocalVoicesLayoutProps {

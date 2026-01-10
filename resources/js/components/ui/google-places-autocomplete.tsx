@@ -1,5 +1,5 @@
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Input } from "./input";
 import { Label } from "./label";
 
@@ -40,41 +40,8 @@ export function GooglePlacesAutocomplete({
     const inputRef = useRef<HTMLInputElement>(null);
     const [inputValue, setInputValue] = useState(defaultValue);
     const placesLibrary = useMapsLibrary("places");
-    const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
 
-    useEffect(() => {
-        if (!placesLibrary || !inputRef.current) {
-            return;
-        }
-
-        const autocompleteInstance = new placesLibrary.Autocomplete(inputRef.current, {
-            fields: ["address_components", "geometry", "formatted_address", "place_id", "name"],
-            types: ["address"],
-        });
-
-        autocompleteInstance.addListener("place_changed", () => {
-            const place = autocompleteInstance.getPlace();
-
-            if (!place.geometry?.location) {
-                console.error("No geometry found for the selected place");
-                return;
-            }
-
-            const result = parsePlaceResult(place);
-            setInputValue(result.formattedAddress);
-            onPlaceSelected(result);
-        });
-
-        setAutocomplete(autocompleteInstance);
-
-        return () => {
-            if (autocompleteInstance) {
-                google.maps.event.clearInstanceListeners(autocompleteInstance);
-            }
-        };
-    }, [placesLibrary, onPlaceSelected]);
-
-    const parsePlaceResult = (place: google.maps.places.PlaceResult): PlaceResult => {
+    const parsePlaceResult = useCallback((place: google.maps.places.PlaceResult): PlaceResult => {
         let streetNumber = "";
         let route = "";
         let neighborhood = "";
@@ -134,7 +101,39 @@ export function GooglePlacesAutocomplete({
             placeId: place.place_id || "",
             formattedAddress: place.formatted_address || "",
         };
-    };
+    }, []);
+
+    useEffect(() => {
+        if (!placesLibrary || !inputRef.current) {
+            return;
+        }
+
+        const autocompleteInstance = new placesLibrary.Autocomplete(inputRef.current, {
+            fields: ["address_components", "geometry", "formatted_address", "place_id", "name"],
+            types: ["address"],
+        });
+
+        autocompleteInstance.addListener("place_changed", () => {
+            const place = autocompleteInstance.getPlace();
+
+            if (!place.geometry?.location) {
+                console.error("No geometry found for the selected place");
+                return;
+            }
+
+            const result = parsePlaceResult(place);
+            setInputValue(result.formattedAddress);
+            onPlaceSelected(result);
+        });
+
+        setAutocomplete(autocompleteInstance);
+
+        return () => {
+            if (autocompleteInstance) {
+                google.maps.event.clearInstanceListeners(autocompleteInstance);
+            }
+        };
+    }, [placesLibrary, onPlaceSelected, parsePlaceResult]);
 
     return (
         <div className={className}>

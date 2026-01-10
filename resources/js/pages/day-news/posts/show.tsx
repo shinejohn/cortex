@@ -1,6 +1,10 @@
-import { ArticleComments } from "@/components/day-news/article-comments";
+import { router } from "@inertiajs/react";
+import DOMPurify from "dompurify";
+import { Calendar, ChevronLeft, ChevronRight, Eye, MapPin, User } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
 import { SEO } from "@/components/common/seo";
 import Advertisement from "@/components/day-news/advertisement";
+import { ArticleComments } from "@/components/day-news/article-comments";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import NewsArticleCard from "@/components/day-news/news-article-card";
 import { TrustMetrics } from "@/components/day-news/trust-metrics";
@@ -9,10 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { router } from "@inertiajs/react";
-import DOMPurify from "dompurify";
-import { Calendar, ChevronLeft, ChevronRight, Eye, MapPin, User } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
 
 interface Region {
     id: number;

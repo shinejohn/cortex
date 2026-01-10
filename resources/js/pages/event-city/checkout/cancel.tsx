@@ -1,11 +1,11 @@
+import { Head, Link } from "@inertiajs/react";
+import { AlertCircle, ArrowLeft, ShoppingCart, X } from "lucide-react";
+import { route } from "ziggy-js";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Auth } from "@/types";
-import { Head, Link } from "@inertiajs/react";
-import { AlertCircle, ArrowLeft, ShoppingCart, X } from "lucide-react";
-import { route } from "ziggy-js";
 
 interface Order {
     id: string;

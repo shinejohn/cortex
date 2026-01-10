@@ -1,13 +1,12 @@
+import { Head, router, useForm, usePage } from "@inertiajs/react";
+import { ArrowLeft, ArrowRight, MapPin } from "lucide-react";
+import { useState } from "react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { router, useForm } from "@inertiajs/react";
-import { Head, usePage } from "@inertiajs/react";
-import { ArrowLeft, ArrowRight, MapPin } from "lucide-react";
-import { useState } from "react";
 
 interface Region {
     id: string;

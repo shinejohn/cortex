@@ -1,13 +1,13 @@
-import { Footer } from "@/components/common/footer";
-import { Header } from "@/components/common/header";
-import { Button } from "@/components/ui/button";
-import { LoadingButton } from "@/components/common/LoadingButton";
-import { ErrorMessage } from "@/components/common/ErrorMessage";
-import { SuccessMessage } from "@/components/common/SuccessMessage";
-import { Auth } from "@/types";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import { CalendarIcon, ClockIcon, InfoIcon, MapPinIcon, MinusIcon, PlusIcon, TagIcon, TicketIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { ErrorMessage } from "@/components/common/ErrorMessage";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { LoadingButton } from "@/components/common/LoadingButton";
+import { SuccessMessage } from "@/components/common/SuccessMessage";
+import { Button } from "@/components/ui/button";
+import { Auth } from "@/types";
 
 interface TicketPlan {
     id: string;
@@ -62,7 +62,7 @@ export default function TicketSelection() {
                 })),
             );
         }
-    }, [ticketPlans]);
+    }, [ticketPlans, selectedTickets.length]);
 
     // Update ticket quantity
     const updateTicketQuantity = (id: string, change: number) => {
@@ -116,7 +116,7 @@ export default function TicketSelection() {
                 setPromoDiscount(0);
                 setPromoErrorMessage(data.message || "Invalid promo code. Please try again.");
             }
-        } catch (error) {
+        } catch (_error) {
             setPromoApplied(false);
             setPromoError(true);
             setPromoDiscount(0);

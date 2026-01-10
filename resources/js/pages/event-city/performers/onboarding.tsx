@@ -1,16 +1,16 @@
-import { Header } from "@/components/common/header";
+import { router, useForm, usePage } from "@inertiajs/react";
+import { ArrowRight, BarChart3, Calendar, CalendarDays, CheckCircle, DollarSign, Globe, Music, ShoppingBag, Star, Ticket, Users } from "lucide-react";
+import { useState } from "react";
 import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
 import { SEO } from "@/components/common/seo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { Auth } from "@/types";
-import { router, useForm, usePage } from "@inertiajs/react";
-import { Calendar, CheckCircle, DollarSign, BarChart3, Users, Music, Ticket, ShoppingBag, Globe, CalendarDays, ArrowRight, Star } from "lucide-react";
-import { useState } from "react";
 
 interface Props {
     auth: Auth;
@@ -142,7 +142,9 @@ export default function PerformerOnboarding() {
                                     </div>
                                     <div className="ml-4">
                                         <h3 className="text-lg font-medium text-foreground">Grow Your Audience</h3>
-                                        <p className="mt-2 text-muted-foreground">Promote your upcoming shows to our community of local event-goers.</p>
+                                        <p className="mt-2 text-muted-foreground">
+                                            Promote your upcoming shows to our community of local event-goers.
+                                        </p>
                                     </div>
                                 </div>
                                 <div className="flex">

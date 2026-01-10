@@ -1,5 +1,5 @@
 import { Link } from "@inertiajs/react";
-import { Mic, Twitter, Facebook, Instagram, Youtube } from "lucide-react";
+import { Facebook, Instagram, Mic, Twitter, Youtube } from "lucide-react";
 
 export default function GoLocalVoicesFooter() {
     return (

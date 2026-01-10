@@ -1,12 +1,12 @@
+import { useForm } from "@inertiajs/react";
+import DOMPurify from "dompurify";
+import { AlertCircle, CheckCircle2, DollarSign, MapPin } from "lucide-react";
+import React, { useMemo } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useForm } from "@inertiajs/react";
-import DOMPurify from "dompurify";
-import { AlertCircle, CheckCircle2, DollarSign, MapPin } from "lucide-react";
-import React, { useMemo } from "react";
 
 interface Region {
     id: number;

@@ -1,7 +1,6 @@
-import { Head } from "@inertiajs/react";
-import { TrophyIcon, FilterIcon, StarIcon } from "lucide-react";
+import { Head, router } from "@inertiajs/react";
+import { FilterIcon, StarIcon, TrophyIcon } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { router } from "@inertiajs/react";
 
 interface DowntownGuideAchievementsIndexProps {
     achievements: Array<{
@@ -117,7 +116,9 @@ export default function DowntownGuideAchievementsIndex({ achievements, userAchie
                                                     <TrophyIcon className="mb-2 h-8 w-8 text-primary" />
                                                 )}
                                                 <h3 className="text-lg font-bold text-foreground">{achievement.name}</h3>
-                                                {achievement.description && <p className="mt-2 text-sm text-muted-foreground">{achievement.description}</p>}
+                                                {achievement.description && (
+                                                    <p className="mt-2 text-sm text-muted-foreground">{achievement.description}</p>
+                                                )}
                                             </div>
                                             {isUnlocked && (
                                                 <div className="rounded-full bg-green-100 p-2">

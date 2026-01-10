@@ -1,8 +1,8 @@
 import { Link } from "@inertiajs/react";
-import { MapPinIcon, StarIcon, TagIcon, CheckCircleIcon, SparklesIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Card } from "@/components/ui/card";
+import { CheckCircleIcon, MapPinIcon, SparklesIcon, StarIcon, TagIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface DowntownGuideBusinessCardProps {
     business: {
@@ -38,10 +38,7 @@ export function DowntownGuideBusinessCard({
     className,
 }: DowntownGuideBusinessCardProps) {
     return (
-        <Link
-            href={route("downtown-guide.businesses.show", business.slug)}
-            className={cn("group relative block", className)}
-        >
+        <Link href={route("downtown-guide.businesses.show", business.slug)} className={cn("group relative block", className)}>
             <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl">
                 {/* Featured Badge */}
                 {business.featured && (
@@ -99,7 +96,9 @@ export function DowntownGuideBusinessCard({
                                 ))}
                             </div>
                             <span className="text-sm font-semibold">{business.rating?.toFixed(1)}</span>
-                            {business.reviews_count !== undefined && <span className="text-sm text-muted-foreground">({business.reviews_count} reviews)</span>}
+                            {business.reviews_count !== undefined && (
+                                <span className="text-sm text-muted-foreground">({business.reviews_count} reviews)</span>
+                            )}
                         </div>
                     )}
 

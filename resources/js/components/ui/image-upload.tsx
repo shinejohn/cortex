@@ -1,8 +1,8 @@
+import { ImageIcon, Upload, X } from "lucide-react";
+import React, { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { ImageIcon, Upload, X } from "lucide-react";
-import React, { useCallback, useState } from "react";
 
 interface ImageUploadProps {
     value?: File[];

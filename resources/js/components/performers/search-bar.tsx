@@ -1,8 +1,8 @@
+import { SearchIcon, XIcon } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { SearchIcon, XIcon } from "lucide-react";
-import { useState } from "react";
 
 interface SearchBarProps {
     placeholder?: string;

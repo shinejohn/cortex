@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import AppLayout from "@/layouts/app-layout";
 import { Head, Link, router } from "@inertiajs/react";
 import axios from "axios";
 import { ArrowLeftIcon, MessageCircleIcon, SearchIcon, UserPlusIcon } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import AppLayout from "@/layouts/app-layout";
 
 interface Friend {
     id: string;
@@ -62,7 +62,10 @@ export default function MessagesNew({ friends }: Props) {
                         {/* Header */}
                         <div className="p-4 border-b border flex items-center justify-between">
                             <div className="flex items-center">
-                                <Link href="/social/messages" className="mr-4 p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-accent">
+                                <Link
+                                    href="/social/messages"
+                                    className="mr-4 p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-accent"
+                                >
                                     <ArrowLeftIcon className="h-5 w-5" />
                                 </Link>
                                 <h1 className="text-xl font-bold text-foreground">New Message</h1>
@@ -133,7 +136,9 @@ export default function MessagesNew({ friends }: Props) {
                                                 <img src={friend.avatar} alt={friend.name} className="h-12 w-12 rounded-full object-cover" />
                                                 <div className="ml-4 flex-1">
                                                     <h3 className="text-sm font-medium text-foreground">{friend.name}</h3>
-                                                    <p className="text-sm text-muted-foreground">{friend.username ? `@${friend.username}` : friend.email}</p>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {friend.username ? `@${friend.username}` : friend.email}
+                                                    </p>
                                                 </div>
                                                 {selectedFriends.includes(friend.id) && (
                                                     <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">

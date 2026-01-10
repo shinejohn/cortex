@@ -1,9 +1,5 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import AppLayout from "@/layouts/app-layout";
 import { Head, Link } from "@inertiajs/react";
 import axios from "axios";
-import { toast } from "sonner";
 import {
     BriefcaseIcon,
     CalendarIcon,
@@ -22,6 +18,10 @@ import {
     UsersIcon,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import AppLayout from "@/layouts/app-layout";
 
 interface User {
     id: string;
@@ -84,15 +84,17 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
         setLoading(true);
 
         try {
-            const response = await axios.post(`/social/users/${profile_user.id}/friend-request`);
+            await axios.post(`/social/users/${profile_user.id}/friend-request`);
             setFriendshipStatus({
                 is_friend: false,
                 has_pending_request: true,
             });
             toast.success("Friend request sent successfully");
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error sending friend request:", error);
-            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to send friend request. Please try again.";
+            const axiosError = error as { response?: { data?: { message?: string; error?: string } } };
+            const errorMessage =
+                axiosError.response?.data?.message || axiosError.response?.data?.error || "Failed to send friend request. Please try again.";
             toast.error(errorMessage);
         } finally {
             setLoading(false);
@@ -110,9 +112,11 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
                 has_pending_request: false,
             });
             toast.success("Friend removed successfully");
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error removing friend:", error);
-            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to remove friend. Please try again.";
+            const axiosError = error as { response?: { data?: { message?: string; error?: string } } };
+            const errorMessage =
+                axiosError.response?.data?.message || axiosError.response?.data?.error || "Failed to remove friend. Please try again.";
             toast.error(errorMessage);
         } finally {
             setLoading(false);
@@ -122,9 +126,10 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
     const handleLikePost = async (postId: string) => {
         try {
             await axios.post(`/social/posts/${postId}/like`);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error liking post:", error);
-            const errorMessage = error.response?.data?.message || "Failed to like post. Please try again.";
+            const axiosError = error as { response?: { data?: { message?: string } } };
+            const errorMessage = axiosError.response?.data?.message || "Failed to like post. Please try again.";
             toast.error(errorMessage);
         }
     };
@@ -132,9 +137,10 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
     const handleUnlikePost = async (postId: string) => {
         try {
             await axios.delete(`/social/posts/${postId}/like`);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error unliking post:", error);
-            const errorMessage = error.response?.data?.message || "Failed to unlike post. Please try again.";
+            const axiosError = error as { response?: { data?: { message?: string } } };
+            const errorMessage = axiosError.response?.data?.message || "Failed to unlike post. Please try again.";
             toast.error(errorMessage);
         }
     };

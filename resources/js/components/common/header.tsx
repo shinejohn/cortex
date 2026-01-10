@@ -1,11 +1,27 @@
-import LocationPrompt from "@/components/event-city/location-prompt";
-import { LocationProvider, useLocation } from "@/contexts/location-context";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
+// Re-import navigation items for mobile menu
+import {
+    Bell,
+    BookOpen,
+    Calendar,
+    CalendarDays,
+    ChevronDown,
+    Loader2,
+    LogOut,
+    MapPin,
+    Megaphone,
+    Menu,
+    MessageSquare,
+    Music,
+    Plus,
+    Search,
+    ShoppingBag,
+    Ticket,
+    Users,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { route } from "ziggy-js";
-
-import { Bell, CalendarDays, ChevronDown, Loader2, LogOut, MapPin, Menu, MessageSquare, Plus, Search, Users } from "lucide-react";
-
+import LocationPrompt from "@/components/event-city/location-prompt";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,18 +35,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { LocationProvider, useLocation } from "@/contexts/location-context";
 import { cn } from "@/lib/utils";
 import { type Auth, BreadcrumbItem, SharedData } from "@/types";
-import { usePage } from "@inertiajs/react";
-import { CartDropdown } from "../CartDropdown";
-import { NotificationDropdown } from "../NotificationDropdown";
 import AppLogo from "../app-logo";
 import AppLogoIcon from "../app-logo-icon";
+import { CartDropdown } from "../CartDropdown";
+import { NotificationDropdown } from "../NotificationDropdown";
 import { UserMenuContent } from "../user-menu-content";
 import BottomNavigation from "./bottom-navigation";
-
-// Re-import navigation items for mobile menu
-import { BookOpen, Calendar, Megaphone, Music, ShoppingBag, Ticket } from "lucide-react";
 
 type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
 
@@ -260,9 +273,7 @@ function LocationSelector() {
                     )}
 
                     {query.length >= 2 && results.length === 0 && (
-                        <div className="border-t p-4 text-center text-sm text-muted-foreground">
-                            No locations found for "{query}"
-                        </div>
+                        <div className="border-t p-4 text-center text-sm text-muted-foreground">No locations found for "{query}"</div>
                     )}
                 </div>
             )}

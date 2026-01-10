@@ -1,8 +1,8 @@
+import { usePage } from "@inertiajs/react";
+import { CheckCircle, Clock, MapPin, Plus, Share2, Star, Users } from "lucide-react";
 import { FollowButton } from "@/components/common/follow-button";
 import { Button } from "@/components/ui/button";
 import type { PerformerProfile } from "@/types/performer-profile";
-import { usePage } from "@inertiajs/react";
-import { CheckCircle, Clock, MapPin, Plus, Share2, Star, Users } from "lucide-react";
 
 interface PerformerHeroProps {
     performer: PerformerProfile;
@@ -10,8 +10,6 @@ interface PerformerHeroProps {
 }
 
 export function PerformerHero({ performer, isFollowing }: PerformerHeroProps) {
-    const { auth } = usePage().props as { auth?: { user?: { id: string } } };
-
     const getYearsActiveString = () => {
         const currentYear = new Date().getFullYear();
         const startYear = currentYear - performer.yearsActive;

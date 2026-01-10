@@ -1,6 +1,6 @@
+import { Star } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PerformerReview, RatingStats } from "@/types/performer-profile";
-import { Star } from "lucide-react";
 
 interface PerformerReviewsProps {
     reviews: PerformerReview[];

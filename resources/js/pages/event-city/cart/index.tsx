@@ -1,13 +1,13 @@
-import { Footer } from "@/components/common/footer";
-import Header from "@/components/common/header";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Auth } from "@/types";
 import { Head, Link, router } from "@inertiajs/react";
 import axios from "axios";
 import { ArrowLeft, ShoppingBag, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { route } from "ziggy-js";
+import { Footer } from "@/components/common/footer";
+import Header from "@/components/common/header";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Auth } from "@/types";
 
 interface CartItem {
     id: string;

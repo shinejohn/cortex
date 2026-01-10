@@ -1,3 +1,9 @@
+import { Link } from "@inertiajs/react";
+import axios from "axios";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { toast } from "sonner";
+import { route } from "ziggy-js";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
@@ -6,14 +12,9 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import type { User } from "@/types";
 import type { SocialPost, SocialPostComment } from "@/types/social";
-import { Link } from "@inertiajs/react";
-import axios from "axios";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import { route } from "ziggy-js";
-import { toast } from "sonner";
 
 dayjs.extend(relativeTime);
+
 import { HeartIcon, MapPinIcon, MessageCircleIcon, MoreHorizontalIcon, SendIcon, ShareIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 

@@ -1,8 +1,8 @@
-import { EventList } from "../events/EventList";
-import { cn } from "@/lib/utils";
+import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
-import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { EventList } from "../events/EventList";
 
 interface CalendarDayProps {
     events: Array<{
@@ -27,7 +27,7 @@ interface CalendarDayProps {
 export function CalendarDay({ events, theme = "eventcity", className, initialDate, onDateChange }: CalendarDayProps) {
     const [currentDate, setCurrentDate] = useState(initialDate || new Date());
 
-    const themeColors = {
+    const _themeColors = {
         daynews: {
             header: "bg-muted",
             today: "bg-primary text-primary-foreground",

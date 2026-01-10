@@ -1,9 +1,9 @@
 import { Link } from "@inertiajs/react";
-import { CalendarIcon, MapPinIcon, DollarSignIcon, Share2Icon, ClockIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { CalendarIcon, ClockIcon, DollarSignIcon, MapPinIcon, Share2Icon } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface EventDetailProps {
     event: {
@@ -49,7 +49,7 @@ interface EventDetailProps {
 }
 
 export function EventDetail({ event, theme = "eventcity", className, showShare = true, weather }: EventDetailProps) {
-    const [shareSuccess, setShareSuccess] = useState(false);
+    const [_shareSuccess, setShareSuccess] = useState(false);
 
     // Use semantic tokens - consistent across themes
 
@@ -79,7 +79,7 @@ export function EventDetail({ event, theme = "eventcity", className, showShare =
                 });
                 setShareSuccess(true);
                 setTimeout(() => setShareSuccess(false), 2000);
-            } catch (error) {
+            } catch (_error) {
                 // User cancelled
             }
         } else {
@@ -93,9 +93,7 @@ export function EventDetail({ event, theme = "eventcity", className, showShare =
         <article className={cn("space-y-6", className)}>
             {/* Header */}
             <header className="space-y-4">
-                {event.category && (
-                    <Badge variant="secondary">{event.category}</Badge>
-                )}
+                {event.category && <Badge variant="secondary">{event.category}</Badge>}
 
                 <div className="flex items-start justify-between gap-4">
                     <h1 className="flex-1 text-3xl font-bold text-foreground md:text-4xl">{event.title}</h1>

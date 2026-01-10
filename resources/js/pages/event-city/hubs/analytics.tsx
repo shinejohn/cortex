@@ -1,13 +1,13 @@
-import { Header } from "@/components/common/header";
+import { router, usePage } from "@inertiajs/react";
+import { ArrowLeft, BarChart3, Calendar, Download, FileText, TrendingUp, Users } from "lucide-react";
+import { useState } from "react";
 import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
 import { SEO } from "@/components/common/seo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Auth } from "@/types";
-import { router, usePage } from "@inertiajs/react";
-import { ArrowLeft, Download, BarChart3, TrendingUp, Users, Calendar, FileText } from "lucide-react";
-import { useState } from "react";
 
 interface Hub {
     id: string;

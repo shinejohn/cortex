@@ -94,9 +94,7 @@ export default function CommunityShow({ community, businesses, categories, activ
                                         key={category.id}
                                         href={`/community/${community.slug}/${category.slug}`}
                                         className={`px-4 py-2 rounded whitespace-nowrap ${
-                                            activeCategory === category.slug
-                                                ? "bg-primary text-white"
-                                                : "bg-muted text-foreground hover:bg-muted"
+                                            activeCategory === category.slug ? "bg-primary text-white" : "bg-muted text-foreground hover:bg-muted"
                                         }`}
                                     >
                                         {category.name}

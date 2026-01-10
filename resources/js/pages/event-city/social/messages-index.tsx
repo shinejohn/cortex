@@ -1,6 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import AppLayout from "@/layouts/app-layout";
 import { Head, Link, router } from "@inertiajs/react";
 import axios from "axios";
 import {
@@ -23,6 +20,9 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import AppLayout from "@/layouts/app-layout";
 
 interface Participant {
     id: string;
@@ -76,7 +76,7 @@ export default function MessagesIndex({ conversations, selected_conversation, me
         messagesEndRef.current?.scrollIntoView({
             behavior: "smooth",
         });
-    }, [messages]);
+    });
 
     const formatMessageTime = (timestamp: string) => {
         const date = new Date(timestamp);
@@ -276,7 +276,9 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                                     className="h-10 w-10 rounded-full object-cover"
                                                 />
                                                 <div className="ml-3">
-                                                    <h2 className="text-lg font-medium text-foreground">{currentConversation.participants[0].name}</h2>
+                                                    <h2 className="text-lg font-medium text-foreground">
+                                                        {currentConversation.participants[0].name}
+                                                    </h2>
                                                     <p className="text-xs text-muted-foreground">
                                                         {currentConversation.participants[0].online ? "Online now" : "Offline"}
                                                     </p>
@@ -334,7 +336,9 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                                             </div>
                                                             <div
                                                                 className={`text-xs mt-1 flex items-center ${
-                                                                    isSelf ? "justify-end text-muted-foreground" : "justify-start text-muted-foreground"
+                                                                    isSelf
+                                                                        ? "justify-end text-muted-foreground"
+                                                                        : "justify-start text-muted-foreground"
                                                                 }`}
                                                             >
                                                                 {formatMessageTime(message.timestamp)}
