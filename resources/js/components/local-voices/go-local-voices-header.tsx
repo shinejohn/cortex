@@ -31,44 +31,41 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
     };
 
     return (
-        <header className="border-b bg-white sticky top-0 z-50 shadow-sm">
+        <header className="sticky top-0 z-50 border-b bg-background shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
                     <Link href="/" className="flex items-center space-x-3">
-                        <div className="bg-gradient-to-br from-purple-600 to-pink-600 p-2 rounded-lg shadow-md">
-                            <Mic className="h-6 w-6 text-white" />
+                        <div className="bg-gradient-to-br from-primary to-primary/80 p-2 rounded-lg shadow-md">
+                            <Mic className="h-6 w-6 text-primary-foreground" />
                         </div>
                         <div>
-                            <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                            <span className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
                                 Go Local Voices
                             </span>
-                            <p className="text-xs text-gray-500 -mt-1">Community Podcasts</p>
+                            <p className="text-xs text-muted-foreground -mt-1">Community Podcasts</p>
                         </div>
                     </Link>
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center space-x-6">
-                        <Link href="/" className="text-sm font-medium text-gray-700 hover:text-purple-600 transition-colors">
+                        <Link href="/" className="text-sm font-medium hover:text-primary transition-colors">
                             Browse
                         </Link>
                         {auth && (
                             <>
-                                <Link href="/dashboard" className="text-sm font-medium text-gray-700 hover:text-purple-600 transition-colors">
+                                <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
                                     Dashboard
                                 </Link>
                                 <Link href="/podcasts/create">
-                                    <Button
-                                        size="sm"
-                                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
-                                    >
+                                    <Button size="sm">
                                         <Plus className="mr-2 h-4 w-4" />
                                         Create Podcast
                                     </Button>
                                 </Link>
                             </>
                         )}
-                        <Link href="https://day.news" className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+                        <Link href="https://day.news" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                             Day.News →
                         </Link>
                     </nav>
@@ -77,13 +74,13 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
                     <div className="hidden lg:flex items-center space-x-4 flex-1 max-w-md ml-8">
                         <form onSubmit={handleSearch} className="flex-1">
                             <div className="relative">
-                                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                 <Input
                                     type="text"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Search podcasts..."
-                                    className="pl-10 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                                    className="pl-10"
                                 />
                             </div>
                         </form>
@@ -97,7 +94,7 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
                                     <button className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
                                         <Avatar className="h-8 w-8">
                                             <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
-                                            <AvatarFallback className="bg-purple-100 text-purple-600">
+                                            <AvatarFallback className="bg-accent text-accent-foreground">
                                                 {auth.user.name.charAt(0).toUpperCase()}
                                             </AvatarFallback>
                                         </Avatar>
@@ -107,7 +104,7 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
                                     <DropdownMenuLabel>
                                         <div className="flex flex-col space-y-1">
                                             <p className="text-sm font-medium">{auth.user.name}</p>
-                                            <p className="text-xs text-gray-500">{auth.user.email}</p>
+                                            <p className="text-xs text-muted-foreground">{auth.user.email}</p>
                                         </div>
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
@@ -136,10 +133,7 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
                                     </Button>
                                 </Link>
                                 <Link href="/register">
-                                    <Button
-                                        size="sm"
-                                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
-                                    >
+                                    <Button size="sm">
                                         Get Started
                                     </Button>
                                 </Link>
@@ -156,8 +150,8 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
                             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                                 <SheetHeader>
                                     <SheetTitle className="flex items-center space-x-2">
-                                        <Mic className="h-6 w-6 text-purple-600" />
-                                        <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent font-bold">
+                                        <Mic className="h-6 w-6 text-primary" />
+                                        <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent font-bold">
                                             Go Local Voices
                                         </span>
                                     </SheetTitle>
@@ -166,7 +160,7 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
                                     {/* Mobile Search */}
                                     <form onSubmit={handleSearch}>
                                         <div className="relative">
-                                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                             <Input
                                                 type="text"
                                                 value={searchQuery}
@@ -179,55 +173,72 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
 
                                     {/* Mobile Navigation */}
                                     <nav className="flex flex-col space-y-2">
-                                        <Link
-                                            href="/"
-                                            className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
-                                            onClick={() => setMobileMenuOpen(false)}
+                                        <Button
+                                            variant="ghost"
+                                            className="w-full justify-start"
+                                            onClick={() => {
+                                                router.get("/");
+                                                setMobileMenuOpen(false);
+                                            }}
                                         >
                                             Browse
-                                        </Link>
+                                        </Button>
                                         {auth ? (
                                             <>
-                                                <Link
-                                                    href="/dashboard"
-                                                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
-                                                    onClick={() => setMobileMenuOpen(false)}
+                                                <Button
+                                                    variant="ghost"
+                                                    className="w-full justify-start"
+                                                    onClick={() => {
+                                                        router.get("/dashboard");
+                                                        setMobileMenuOpen(false);
+                                                    }}
                                                 >
                                                     Dashboard
-                                                </Link>
-                                                <Link
-                                                    href="/podcasts/create"
-                                                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
-                                                    onClick={() => setMobileMenuOpen(false)}
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    className="w-full justify-start"
+                                                    onClick={() => {
+                                                        router.get("/podcasts/create");
+                                                        setMobileMenuOpen(false);
+                                                    }}
                                                 >
                                                     Create Podcast
-                                                </Link>
+                                                </Button>
                                             </>
                                         ) : (
                                             <>
-                                                <Link
-                                                    href="/login"
-                                                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
-                                                    onClick={() => setMobileMenuOpen(false)}
+                                                <Button
+                                                    variant="ghost"
+                                                    className="w-full justify-start"
+                                                    onClick={() => {
+                                                        router.get("/login");
+                                                        setMobileMenuOpen(false);
+                                                    }}
                                                 >
                                                     Sign In
-                                                </Link>
-                                                <Link
-                                                    href="/register"
-                                                    className="px-3 py-2 rounded-md text-sm font-medium bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700"
-                                                    onClick={() => setMobileMenuOpen(false)}
+                                                </Button>
+                                                <Button
+                                                    className="w-full justify-start"
+                                                    onClick={() => {
+                                                        router.get("/register");
+                                                        setMobileMenuOpen(false);
+                                                    }}
                                                 >
                                                     Get Started
-                                                </Link>
+                                                </Button>
                                             </>
                                         )}
-                                        <Link
-                                            href="https://day.news"
-                                            className="px-3 py-2 rounded-md text-sm text-gray-500 hover:bg-gray-100"
-                                            onClick={() => setMobileMenuOpen(false)}
+                                        <Button
+                                            variant="ghost"
+                                            className="w-full justify-start text-muted-foreground"
+                                            onClick={() => {
+                                                window.location.href = "https://day.news";
+                                                setMobileMenuOpen(false);
+                                            }}
                                         >
                                             Day.News →
-                                        </Link>
+                                        </Button>
                                     </nav>
                                 </div>
                             </SheetContent>

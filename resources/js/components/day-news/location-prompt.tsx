@@ -1,6 +1,8 @@
 import { useLocation } from "@/contexts/location-context";
 import { Check, MapPin, X } from "lucide-react";
 import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface LocationPromptProps {
     onDismiss?: () => void;
@@ -29,37 +31,38 @@ export default function LocationPrompt({ onDismiss }: LocationPromptProps) {
     };
 
     return (
-        <div className="border-b border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20">
+        <div className={cn("border-b bg-accent/50")}>
             <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                        <MapPin className="size-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
-                        <p className="text-sm text-gray-700 dark:text-gray-300">
+                        <MapPin className="size-5 flex-shrink-0 text-primary" />
+                        <p className="text-sm text-foreground">
                             Are you in <span className="font-semibold">{currentRegion.full_name}</span>?
                         </p>
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <button
+                        <Button
                             type="button"
                             onClick={handleConfirm}
                             disabled={isLoading}
-                            className="inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600"
+                            size="sm"
                         >
                             <Check className="size-4" />
                             <span>Yes, that's correct</span>
-                        </button>
+                        </Button>
 
-                        <button
+                        <Button
                             type="button"
+                            variant="outline"
                             onClick={handleDismiss}
                             disabled={isLoading}
-                            className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                            size="sm"
                             aria-label="Dismiss location prompt"
                         >
                             <X className="size-4" />
                             <span className="sr-only sm:not-sr-only">Change</span>
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>

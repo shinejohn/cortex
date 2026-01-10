@@ -35,6 +35,7 @@ fibonacco-dev-alb-1749938282.us-east-1.elb.amazonaws.com
 - **Domain:** `golocalvoices.com`
 - **Full URL:** `dev.golocalvoices.com`
 
+
 ### 5. AlphaSite
 - **Type:** CNAME
 - **Host:** `dev`

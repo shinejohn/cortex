@@ -1,6 +1,7 @@
 import { Link } from "@inertiajs/react";
 import { CalendarIcon, UserIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 interface NewsCardProps {
     article: {
@@ -36,15 +37,9 @@ export function NewsCard({
     showCategory = true,
 }: NewsCardProps) {
     const themeClasses = {
-        daynews: "border-blue-200 hover:border-blue-300",
-        downtownsguide: "border-purple-200 hover:border-purple-300",
-        eventcity: "border-indigo-200 hover:border-indigo-300",
-    };
-
-    const categoryColors = {
-        daynews: "bg-blue-100 text-blue-800",
-        downtownsguide: "bg-purple-100 text-purple-800",
-        eventcity: "bg-indigo-100 text-indigo-800",
+        daynews: "border-border hover:border-primary/50",
+        downtownsguide: "border-border hover:border-primary/50",
+        eventcity: "border-border hover:border-primary/50",
     };
 
     const href = article.slug ? `/posts/${article.slug}` : `/posts/${article.id}`;
@@ -59,7 +54,9 @@ export function NewsCard({
 
             <div className="space-y-2">
                 {showCategory && article.category && (
-                    <span className={cn("inline-block rounded-full px-2 py-1 text-xs font-medium", categoryColors[theme])}>{article.category}</span>
+                    <Badge variant="secondary" className="text-xs">
+                        {article.category}
+                    </Badge>
                 )}
 
                 <h3 className="line-clamp-2 text-lg font-semibold text-foreground">{article.title}</h3>
