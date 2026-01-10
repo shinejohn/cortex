@@ -2,6 +2,7 @@ import { Link } from "@inertiajs/react";
 import { MapPinIcon, StarIcon, PhoneIcon, GlobeIcon, ClockIcon, CheckCircleIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
 interface BusinessDetailProps {
     business: {
@@ -34,20 +35,7 @@ interface BusinessDetailProps {
 export function BusinessDetail({ business, theme = "downtownsguide", className, showMap = false }: BusinessDetailProps) {
     const [imageError, setImageError] = useState(false);
 
-    const themeColors = {
-        daynews: {
-            badge: "bg-blue-100 text-blue-800",
-            verified: "text-blue-600",
-        },
-        downtownsguide: {
-            badge: "bg-purple-100 text-purple-800",
-            verified: "text-purple-600",
-        },
-        eventcity: {
-            badge: "bg-indigo-100 text-indigo-800",
-            verified: "text-indigo-600",
-        },
-    };
+    // Use semantic tokens - consistent across themes
 
     const formatAddress = () => {
         const parts = [];
@@ -67,16 +55,16 @@ export function BusinessDetail({ business, theme = "downtownsguide", className, 
                         <div className="flex items-center gap-2">
                             <h1 className="text-3xl font-bold text-foreground md:text-4xl">{business.name}</h1>
                             {business.is_verified && (
-                                <CheckCircleIcon className={cn("h-6 w-6", themeColors[theme].verified)} title="Verified Business" />
+                                <CheckCircleIcon className="h-6 w-6 text-primary" title="Verified Business" />
                             )}
                         </div>
 
                         {business.categories && business.categories.length > 0 && (
                             <div className="mt-2 flex flex-wrap gap-2">
                                 {business.categories.map((category, index) => (
-                                    <span key={index} className={cn("rounded-full px-3 py-1 text-sm font-medium", themeColors[theme].badge)}>
+                                    <Badge key={index} variant="secondary">
                                         {category}
-                                    </span>
+                                    </Badge>
                                 ))}
                             </div>
                         )}
