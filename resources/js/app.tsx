@@ -28,7 +28,6 @@ createInertiaApp({
         const handleError = (error: Error, errorInfo: React.ErrorInfo) => {
             console.error("React rendering error:", error, errorInfo);
             // Log to error tracking service if available
-            // biome-ignore lint/suspicious/noExplicitAny: Sentry is a global that may not exist
             if (typeof window !== "undefined" && (window as { Sentry?: { captureException: (error: Error) => void } }).Sentry) {
                 (window as { Sentry: { captureException: (error: Error) => void } }).Sentry.captureException(error);
             }

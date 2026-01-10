@@ -34,7 +34,7 @@ const categories = [
 ];
 
 export default function PodcastCreate() {
-    const { auth, profile, viewMode } = usePage<PodcastCreatePageProps>().props;
+    const { auth } = usePage<PodcastCreatePageProps>().props;
     const coverInputRef = useRef<HTMLInputElement>(null);
     const [coverPreview, setCoverPreview] = useState<string | null>(null);
 

@@ -11,7 +11,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Link } from "@inertiajs/react";
 import { ShoppingCart } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { route } from "ziggy-js";
 
 interface CartItem {
@@ -39,6 +39,31 @@ export function CartDropdown({ initialItemCount = 0 }: CartDropdownProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
+    const fetchCartCount = useCallback(async () => {
+        try {
+            const response = await fetch(route("cart.count"));
+            const data = await response.json();
+            setItemCount(data.count || 0);
+        } catch (error) {
+            console.error("Failed to fetch cart count:", error);
+        }
+    }, []);
+
+    const fetchCart = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch("/api/cart/items");
+            if (response.ok) {
+                const data = await response.json();
+                setCartItems(data.items || []);
+            }
+        } catch (error) {
+            console.error("Failed to fetch cart items:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
     // Fetch cart data when dropdown opens
     useEffect(() => {
         if (isOpen && cartItems.length === 0) {
@@ -52,31 +77,6 @@ export function CartDropdown({ initialItemCount = 0 }: CartDropdownProps) {
         const interval = setInterval(fetchCartCount, 30000); // Every 30 seconds
         return () => clearInterval(interval);
     }, [fetchCartCount]);
-
-    const fetchCartCount = async () => {
-        try {
-            const response = await fetch(route("cart.count"));
-            const data = await response.json();
-            setItemCount(data.count || 0);
-        } catch (error) {
-            console.error("Failed to fetch cart count:", error);
-        }
-    };
-
-    const fetchCart = async () => {
-        setIsLoading(true);
-        try {
-            const response = await fetch("/api/cart/items");
-            if (response.ok) {
-                const data = await response.json();
-                setCartItems(data.items || []);
-            }
-        } catch (error) {
-            console.error("Failed to fetch cart items:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     return (
         <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>

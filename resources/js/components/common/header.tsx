@@ -295,9 +295,18 @@ function SearchBar({ className }: SearchBarProps) {
     );
 }
 
-function MessagesButton({ notifications }: { notifications?: any }) {
-    const messageNotifications = notifications?.notifications?.filter((n: any) => n.type === "message") || [];
-    const unreadMessageCount = messageNotifications.filter((n: any) => !n.read).length;
+interface Notification {
+    type: string;
+    read: boolean;
+}
+
+interface NotificationsData {
+    notifications?: Notification[];
+}
+
+function MessagesButton({ notifications }: { notifications?: NotificationsData }) {
+    const messageNotifications = notifications?.notifications?.filter((n: Notification) => n.type === "message") || [];
+    const unreadMessageCount = messageNotifications.filter((n: Notification) => !n.read).length;
 
     return (
         <NotificationDropdown

@@ -25,12 +25,25 @@ interface Podcast {
     };
 }
 
+interface PaginationLink {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
+
+interface PaginationMeta {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+}
+
 interface LocalVoicesPageProps {
     auth?: Auth;
     podcasts: {
         data: Podcast[];
-        links: any;
-        meta: any;
+        links: PaginationLink[];
+        meta: PaginationMeta;
     };
     filters: {
         category: string;
@@ -41,7 +54,7 @@ interface LocalVoicesPageProps {
 }
 
 export default function LocalVoicesIndex() {
-    const { auth, podcasts, filters, viewMode } = usePage<LocalVoicesPageProps>().props;
+    const { auth, podcasts, filters } = usePage<LocalVoicesPageProps>().props;
 
     const searchForm = useForm({
         search: filters.search || "",
@@ -214,7 +227,7 @@ export default function LocalVoicesIndex() {
                 {/* Pagination */}
                 {podcasts.links && podcasts.links.length > 3 && (
                     <div className="mt-8 flex justify-center gap-2">
-                        {podcasts.links.map((link: any, index: number) => (
+                        {podcasts.links.map((link: PaginationLink, index: number) => (
                             <Button
                                 key={index}
                                 variant={link.active ? "default" : "outline"}
