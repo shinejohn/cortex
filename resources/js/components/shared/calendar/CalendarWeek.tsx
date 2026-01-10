@@ -2,6 +2,7 @@ import { EventList } from "../events/EventList";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface CalendarWeekProps {
     events: Array<{
@@ -27,16 +28,16 @@ export function CalendarWeek({ events, theme = "eventcity", className, onDateSel
 
     const themeColors = {
         daynews: {
-            today: "bg-blue-600 text-white",
-            selected: "bg-blue-100",
+            today: "bg-primary text-primary-foreground",
+            selected: "bg-accent",
         },
         downtownsguide: {
-            today: "bg-purple-600 text-white",
-            selected: "bg-purple-100",
+            today: "bg-primary text-primary-foreground",
+            selected: "bg-accent",
         },
         eventcity: {
-            today: "bg-indigo-600 text-white",
-            selected: "bg-indigo-100",
+            today: "bg-primary text-primary-foreground",
+            selected: "bg-accent",
         },
     };
 
@@ -87,18 +88,18 @@ export function CalendarWeek({ events, theme = "eventcity", className, onDateSel
         <div className={cn("space-y-4", className)}>
             {/* Week Header */}
             <div className="flex items-center justify-between">
-                <button onClick={() => navigateWeek("prev")} className="rounded-md p-2 hover:bg-muted" aria-label="Previous week">
+                <Button variant="ghost" size="icon" onClick={() => navigateWeek("prev")} aria-label="Previous week">
                     <ChevronLeftIcon className="h-5 w-5" />
-                </button>
+                </Button>
 
                 <h2 className="text-xl font-semibold text-foreground">
                     {weekStart.toLocaleDateString("en-US", { month: "short", day: "numeric" })} -{" "}
                     {weekEnd.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                 </h2>
 
-                <button onClick={() => navigateWeek("next")} className="rounded-md p-2 hover:bg-muted" aria-label="Next week">
+                <Button variant="ghost" size="icon" onClick={() => navigateWeek("next")} aria-label="Next week">
                     <ChevronRightIcon className="h-5 w-5" />
-                </button>
+                </Button>
             </div>
 
             {/* Week Grid */}

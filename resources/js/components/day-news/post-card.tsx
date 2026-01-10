@@ -38,15 +38,15 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post, onDelete }: PostCardProps) {
-    const getTypeColor = (type: string) => {
-        const colors = {
-            article: "bg-blue-500",
-            announcement: "bg-yellow-500",
-            notice: "bg-orange-500",
-            ad: "bg-purple-500",
-            schedule: "bg-green-500",
+    const getTypeVariant = (type: string): "default" | "secondary" | "destructive" | "outline" => {
+        const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+            article: "default",
+            announcement: "secondary",
+            notice: "outline",
+            ad: "secondary",
+            schedule: "default",
         };
-        return colors[type as keyof typeof colors] || "bg-gray-500";
+        return variants[type] || "secondary";
     };
 
     const getStatusColor = (status: string) => {
@@ -63,7 +63,7 @@ export default function PostCard({ post, onDelete }: PostCardProps) {
         <Card className="overflow-hidden">
             <CardHeader>
                 <div className="mb-2 flex flex-wrap items-center gap-2">
-                    <Badge className={getTypeColor(post.type)}>{post.type}</Badge>
+                    <Badge variant={getTypeVariant(post.type)}>{post.type}</Badge>
                     <Badge variant={getStatusColor(post.status)}>{post.status}</Badge>
                     {post.category && <Badge variant="outline">{post.category.replace("_", " ")}</Badge>}
                 </div>

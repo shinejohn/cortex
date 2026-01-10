@@ -213,10 +213,10 @@ function LocationSelector() {
             </Button>
 
             {isOpen && (
-                <div className="absolute left-0 top-full z-50 mt-2 w-72 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                <div className="absolute left-0 top-full z-50 mt-2 w-72 rounded-lg border bg-popover shadow-lg">
                     <div className="p-3">
                         <div className="relative">
-                            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+                            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                             <Input
                                 type="text"
                                 value={query}
@@ -228,37 +228,39 @@ function LocationSelector() {
                         </div>
                     </div>
 
-                    <div className="border-t border-gray-200 dark:border-gray-700">
-                        <button
+                    <div className="border-t">
+                        <Button
                             type="button"
+                            variant="ghost"
                             onClick={handleUseMyLocation}
                             disabled={isDetecting || isLoading}
-                            className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-700"
+                            className="w-full justify-start gap-2 px-4 py-3"
                         >
                             {isDetecting ? <Loader2 className="size-4 animate-spin text-primary" /> : <MapPin className="size-4 text-primary" />}
                             <span className="font-medium">{isDetecting ? "Detecting..." : "Use my current location"}</span>
-                        </button>
+                        </Button>
                     </div>
 
                     {results.length > 0 && (
-                        <div className="max-h-60 overflow-y-auto border-t border-gray-200 dark:border-gray-700">
+                        <div className="max-h-60 overflow-y-auto border-t">
                             {results.map((region) => (
-                                <button
+                                <Button
                                     key={region.id}
                                     type="button"
+                                    variant="ghost"
                                     onClick={() => handleSelect(region)}
                                     disabled={isLoading}
-                                    className="flex w-full flex-col items-start px-4 py-3 text-left hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-700"
+                                    className="w-full flex-col items-start px-4 py-3 h-auto"
                                 >
-                                    <span className="font-medium text-gray-900 dark:text-white">{region.name}</span>
-                                    <span className="text-xs text-gray-500 dark:text-gray-400">{region.full_name}</span>
-                                </button>
+                                    <span className="font-medium">{region.name}</span>
+                                    <span className="text-xs text-muted-foreground">{region.full_name}</span>
+                                </Button>
                             ))}
                         </div>
                     )}
 
                     {query.length >= 2 && results.length === 0 && (
-                        <div className="border-t border-gray-200 p-4 text-center text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400">
+                        <div className="border-t p-4 text-center text-sm text-muted-foreground">
                             No locations found for "{query}"
                         </div>
                     )}
@@ -562,7 +564,7 @@ function HeaderContent({ auth }: HeaderProps) {
                                         <Button variant="ghost" className="size-10 rounded-full p-1">
                                             <Avatar className="size-8 overflow-hidden rounded-full">
                                                 <AvatarImage src={user.avatar} alt={user.name} />
-                                                <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
+                                                <AvatarFallback className="rounded-lg bg-muted text-foreground">
                                                     {getUserInitials(user.name)}
                                                 </AvatarFallback>
                                             </Avatar>

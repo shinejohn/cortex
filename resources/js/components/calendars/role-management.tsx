@@ -159,7 +159,7 @@ export function RoleManagement({ calendarId, editors, ownerId }: RoleManagementP
                         localEditors.map((editor) => (
                             <div key={editor.id} className="flex items-center justify-between p-3 border rounded-lg">
                                 <div className="flex items-center gap-3">
-                                    <div className="h-10 w-10 rounded-full bg-gray-200 overflow-hidden">
+                                    <div className="h-10 w-10 rounded-full bg-muted overflow-hidden">
                                         <img
                                             src={`https://ui-avatars.com/api/?name=${encodeURIComponent(editor.user.name)}`}
                                             alt={editor.user.name}
@@ -167,8 +167,8 @@ export function RoleManagement({ calendarId, editors, ownerId }: RoleManagementP
                                         />
                                     </div>
                                     <div>
-                                        <p className="font-medium text-gray-900">{editor.user.name}</p>
-                                        <p className="text-xs text-gray-500 capitalize">{editor.role}</p>
+                                        <p className="font-medium text-foreground">{editor.user.name}</p>
+                                        <p className="text-xs text-muted-foreground capitalize">{editor.role}</p>
                                     </div>
                                 </div>
                                 <Button

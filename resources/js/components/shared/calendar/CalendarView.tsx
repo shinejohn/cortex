@@ -2,6 +2,7 @@ import { EventList } from "../events/EventList";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface CalendarViewProps {
     events: Array<{
@@ -29,22 +30,22 @@ export function CalendarView({ events, theme = "eventcity", className, view = "m
 
     const themeColors = {
         daynews: {
-            header: "bg-blue-50",
-            today: "bg-blue-600 text-white",
-            selected: "bg-blue-100",
-            hover: "hover:bg-blue-50",
+            header: "bg-muted",
+            today: "bg-primary text-primary-foreground",
+            selected: "bg-accent",
+            hover: "hover:bg-accent/50",
         },
         downtownsguide: {
-            header: "bg-purple-50",
-            today: "bg-purple-600 text-white",
-            selected: "bg-purple-100",
-            hover: "hover:bg-purple-50",
+            header: "bg-muted",
+            today: "bg-primary text-primary-foreground",
+            selected: "bg-accent",
+            hover: "hover:bg-accent/50",
         },
         eventcity: {
-            header: "bg-indigo-50",
-            today: "bg-indigo-600 text-white",
-            selected: "bg-indigo-100",
-            hover: "hover:bg-indigo-50",
+            header: "bg-muted",
+            today: "bg-primary text-primary-foreground",
+            selected: "bg-accent",
+            hover: "hover:bg-accent/50",
         },
     };
 
@@ -117,18 +118,18 @@ export function CalendarView({ events, theme = "eventcity", className, view = "m
         <div className={cn("space-y-4", className)}>
             {/* Calendar Header */}
             <div className="flex items-center justify-between">
-                <button onClick={() => navigateMonth("prev")} className="rounded-md p-2 hover:bg-muted" aria-label="Previous month">
+                <Button variant="ghost" size="icon" onClick={() => navigateMonth("prev")} aria-label="Previous month">
                     <ChevronLeftIcon className="h-5 w-5" />
-                </button>
+                </Button>
 
                 <div className="flex items-center gap-2">
                     <CalendarIcon className="h-5 w-5 text-muted-foreground" />
                     <h2 className="text-xl font-semibold text-foreground">{monthName}</h2>
                 </div>
 
-                <button onClick={() => navigateMonth("next")} className="rounded-md p-2 hover:bg-muted" aria-label="Next month">
+                <Button variant="ghost" size="icon" onClick={() => navigateMonth("next")} aria-label="Next month">
                     <ChevronRightIcon className="h-5 w-5" />
-                </button>
+                </Button>
             </div>
 
             {/* Calendar Grid */}
@@ -154,11 +155,12 @@ export function CalendarView({ events, theme = "eventcity", className, view = "m
                         const selected = isSelected(date);
 
                         return (
-                            <button
+                            <Button
                                 key={date.toISOString()}
+                                variant="ghost"
                                 onClick={() => handleDateClick(date)}
                                 className={cn(
-                                    "aspect-square bg-background p-1 text-left transition-colors",
+                                    "aspect-square h-auto p-1 text-left transition-colors",
                                     today && themeColors[theme].today,
                                     selected && !today && themeColors[theme].selected,
                                     !today && !selected && themeColors[theme].hover,
@@ -183,7 +185,7 @@ export function CalendarView({ events, theme = "eventcity", className, view = "m
                                         </div>
                                     )}
                                 </div>
-                            </button>
+                            </Button>
                         );
                     })}
                 </div>

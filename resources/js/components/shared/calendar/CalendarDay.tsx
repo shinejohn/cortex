@@ -2,6 +2,7 @@ import { EventList } from "../events/EventList";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface CalendarDayProps {
     events: Array<{
@@ -28,16 +29,16 @@ export function CalendarDay({ events, theme = "eventcity", className, initialDat
 
     const themeColors = {
         daynews: {
-            header: "bg-blue-50",
-            today: "bg-blue-600 text-white",
+            header: "bg-muted",
+            today: "bg-primary text-primary-foreground",
         },
         downtownsguide: {
-            header: "bg-purple-50",
-            today: "bg-purple-600 text-white",
+            header: "bg-muted",
+            today: "bg-primary text-primary-foreground",
         },
         eventcity: {
-            header: "bg-indigo-50",
-            today: "bg-indigo-600 text-white",
+            header: "bg-muted",
+            today: "bg-primary text-primary-foreground",
         },
     };
 
@@ -79,9 +80,9 @@ export function CalendarDay({ events, theme = "eventcity", className, initialDat
         <div className={cn("space-y-4", className)}>
             {/* Day Header */}
             <div className="flex items-center justify-between rounded-lg border bg-card p-4">
-                <button onClick={() => navigateDay("prev")} className="rounded-md p-2 hover:bg-muted" aria-label="Previous day">
+                <Button variant="ghost" size="icon" onClick={() => navigateDay("prev")} aria-label="Previous day">
                     <ChevronLeftIcon className="h-5 w-5" />
-                </button>
+                </Button>
 
                 <div className="flex items-center gap-2">
                     <CalendarIcon className="h-5 w-5 text-muted-foreground" />
@@ -98,9 +99,9 @@ export function CalendarDay({ events, theme = "eventcity", className, initialDat
                     </div>
                 </div>
 
-                <button onClick={() => navigateDay("next")} className="rounded-md p-2 hover:bg-muted" aria-label="Next day">
+                <Button variant="ghost" size="icon" onClick={() => navigateDay("next")} aria-label="Next day">
                     <ChevronRightIcon className="h-5 w-5" />
-                </button>
+                </Button>
             </div>
 
             {/* Events List */}

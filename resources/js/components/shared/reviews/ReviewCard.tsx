@@ -1,6 +1,8 @@
 import { StarIcon, ThumbsUpIcon, UserIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface ReviewCardProps {
     review: {
@@ -29,13 +31,13 @@ export function ReviewCard({ review, theme = "downtownsguide", className, showHe
 
     const themeColors = {
         daynews: {
-            featured: "border-blue-200 bg-blue-50",
+            featured: "border-primary/20 bg-accent/50",
         },
         downtownsguide: {
-            featured: "border-purple-200 bg-purple-50",
+            featured: "border-primary/20 bg-accent/50",
         },
         eventcity: {
-            featured: "border-indigo-200 bg-indigo-50",
+            featured: "border-primary/20 bg-accent/50",
         },
     };
 
@@ -48,7 +50,7 @@ export function ReviewCard({ review, theme = "downtownsguide", className, showHe
 
     const renderStars = (rating: number) => {
         return Array.from({ length: 5 }).map((_, index) => (
-            <StarIcon key={index} className={cn("h-4 w-4", index < rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300")} />
+            <StarIcon key={index} className={cn("h-4 w-4", index < rating ? "fill-yellow-400 text-yellow-400" : "text-muted")} />
         ));
     };
 
@@ -80,7 +82,7 @@ export function ReviewCard({ review, theme = "downtownsguide", className, showHe
                                     )}
                                 </div>
                                 {review.is_verified && (
-                                    <span className="text-xs text-blue-600" title="Verified Review">
+                                    <span className="text-xs text-primary" title="Verified Review">
                                         ✓
                                     </span>
                                 )}
@@ -94,7 +96,11 @@ export function ReviewCard({ review, theme = "downtownsguide", className, showHe
                         </div>
                     </div>
 
-                    {review.is_featured && <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">Featured</span>}
+                    {review.is_featured && (
+                        <Badge variant="secondary" className="rounded-full">
+                            Featured
+                        </Badge>
+                    )}
                 </div>
 
                 {/* Title */}
@@ -106,18 +112,17 @@ export function ReviewCard({ review, theme = "downtownsguide", className, showHe
                 {/* Helpful Button */}
                 {showHelpful && (
                     <div className="flex items-center gap-2">
-                        <button
+                        <Button
                             onClick={handleHelpful}
                             disabled={helpfulClicked}
-                            className={cn(
-                                "flex items-center gap-1 rounded-md px-2 py-1 text-xs transition-colors",
-                                helpfulClicked ? "bg-green-100 text-green-700" : "bg-muted text-muted-foreground hover:bg-muted/80",
-                            )}
+                            variant={helpfulClicked ? "secondary" : "ghost"}
+                            size="sm"
+                            className="h-auto px-2 py-1 text-xs"
                         >
                             <ThumbsUpIcon className="h-3 w-3" />
                             <span>Helpful</span>
                             {review.helpful_count !== undefined && review.helpful_count > 0 && <span>({review.helpful_count})</span>}
-                        </button>
+                        </Button>
                     </div>
                 )}
             </div>
