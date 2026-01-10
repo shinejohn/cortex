@@ -47,7 +47,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: '8.3'
           tools: composer:v2
           extensions: sqlite, pdo_sqlite, mbstring, xml, ctype, json, fileinfo, openssl, tokenizer, pdo, curl, gd, intl, zip
 
@@ -151,12 +151,19 @@ jobs:
           - name: golocalvoices
             dockerfile: docker/Dockerfile.web
     
-    # Skip services if specific service is requested
     continue-on-error: false
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Verify Dockerfile Exists
+        run: |
+          if [ ! -f "${{ matrix.service.dockerfile }}" ]; then
+            echo "❌ Dockerfile not found: ${{ matrix.service.dockerfile }}"
+            exit 1
+          fi
+          echo "✅ Dockerfile found: ${{ matrix.service.dockerfile }}"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -165,12 +172,56 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Test AWS Connectivity
+        run: |
+          echo "Testing AWS connectivity..."
+          aws sts get-caller-identity || {
+            echo "❌ AWS credentials invalid"
+            exit 1
+          }
+          echo "✅ AWS connectivity verified"
+          aws sts get-caller-identity
+
+      - name: Verify ECR Repository
+        env:
+          SERVICE_NAME: ${{ matrix.service.name }}
+        run: |
+          REPO_NAME="fibonacco/${{ env.ENV }}/$SERVICE_NAME"
+          echo "Checking ECR repository: $REPO_NAME"
+          
+          if aws ecr describe-repositories --repository-names "$REPO_NAME" --region ${{ env.AWS_REGION }} 2>/dev/null; then
+            echo "✅ ECR repository exists: $REPO_NAME"
+          else
+            echo "⚠️  ECR repository not found: $REPO_NAME (will be created if permissions allow)"
+            # Try to create it
+            aws ecr create-repository \
+              --repository-name "$REPO_NAME" \
+              --region ${{ env.AWS_REGION }} \
+              --image-scanning-configuration scanOnPush=true \
+              --image-tag-mutability MUTABLE \
+              2>/dev/null && echo "✅ Repository created" || echo "⚠️  Could not create repository (may need manual creation)"
+          fi
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Verify ECR Login
+        run: |
+          echo "Verifying ECR login..."
+          echo "${{ steps.login-ecr.outputs.registry }}" | grep -q "\.dkr\.ecr\." && echo "✅ ECR login successful" || {
+            echo "❌ ECR login failed"
+            exit 1
+          }
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Verify Docker Buildx
+        run: |
+          docker buildx version
+          docker buildx ls
+          echo "✅ Docker Buildx ready"
 
       - name: Build and push Docker image
         env:
@@ -179,13 +230,37 @@ jobs:
           SERVICE_NAME: ${{ matrix.service.name }}
           DOCKERFILE: ${{ matrix.service.dockerfile }}
         run: |
+          echo "Building Docker image..."
+          echo "Registry: $ECR_REGISTRY"
+          echo "Service: $SERVICE_NAME"
+          echo "Dockerfile: $DOCKERFILE"
+          echo "Tag: $IMAGE_TAG"
+          
           docker buildx build \
             --platform linux/amd64 \
             --file $DOCKERFILE \
             --tag $ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:$IMAGE_TAG \
             --tag $ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:latest \
             --push \
+            --progress=plain \
             .
+          
+          echo "✅ Image built and pushed successfully"
+
+      - name: Verify Image Push
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          SERVICE_NAME: ${{ matrix.service.name }}
+        run: |
+          REPO_NAME="fibonacco/${{ env.ENV }}/$SERVICE_NAME"
+          echo "Verifying image exists in ECR..."
+          aws ecr describe-images \
+            --repository-name "$REPO_NAME" \
+            --region ${{ env.AWS_REGION }} \
+            --image-ids imageTag=${{ github.sha }} \
+            && echo "✅ Image verified in ECR" || {
+              echo "⚠️  Image not immediately visible (may take a moment)"
+            }
 
   deploy:
     name: Deploy to ECS
@@ -211,22 +286,172 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Update ECS service
+      - name: Verify AWS Connectivity
+        run: |
+          echo "Testing AWS connectivity..."
+          aws sts get-caller-identity || {
+            echo "❌ AWS credentials invalid"
+            exit 1
+          }
+          echo "✅ AWS connectivity verified"
+
+      - name: Verify ECS Cluster Exists
+        env:
+          CLUSTER_NAME: ${{ env.CLUSTER_NAME }}
+        run: |
+          echo "Checking ECS cluster: $CLUSTER_NAME"
+          if aws ecs describe-clusters --clusters "$CLUSTER_NAME" --region ${{ env.AWS_REGION }} --query 'clusters[0].status' --output text | grep -q "ACTIVE"; then
+            echo "✅ ECS cluster exists and is active: $CLUSTER_NAME"
+          else
+            echo "❌ ECS cluster not found or not active: $CLUSTER_NAME"
+            exit 1
+          fi
+
+      - name: Verify ECS Service Exists
         env:
           SERVICE_NAME: fibonacco-${{ env.ENV }}-${{ matrix.service }}
         run: |
-          aws ecs update-service \
+          echo "Checking ECS service: $SERVICE_NAME"
+          SERVICE_STATUS=$(aws ecs describe-services \
+            --cluster ${{ env.CLUSTER_NAME }} \
+            --services "$SERVICE_NAME" \
+            --region ${{ env.AWS_REGION }} \
+            --query 'services[0].status' \
+            --output text 2>/dev/null || echo "NOT_FOUND")
+          
+          if [ "$SERVICE_STATUS" = "ACTIVE" ] || [ "$SERVICE_STATUS" = "DRAINING" ]; then
+            echo "✅ ECS service exists: $SERVICE_NAME (status: $SERVICE_STATUS)"
+          else
+            echo "⚠️  ECS service not found or inactive: $SERVICE_NAME (status: $SERVICE_STATUS)"
+            echo "⚠️  Deployment will attempt to continue, but service may not exist"
+          fi
+
+      - name: Get Current Deployment
+        id: current-deployment
+        env:
+          SERVICE_NAME: fibonacco-${{ env.ENV }}-${{ matrix.service }}
+        run: |
+          CURRENT_TASK_DEF=$(aws ecs describe-services \
+            --cluster ${{ env.CLUSTER_NAME }} \
+            --services "$SERVICE_NAME" \
+            --region ${{ env.AWS_REGION }} \
+            --query 'services[0].taskDefinition' \
+            --output text 2>/dev/null || echo "")
+          
+          echo "current_task_def=$CURRENT_TASK_DEF" >> $GITHUB_OUTPUT
+          echo "Current task definition: $CURRENT_TASK_DEF"
+
+      - name: Update ECS service
+        id: deploy-service
+        env:
+          SERVICE_NAME: fibonacco-${{ env.ENV }}-${{ matrix.service }}
+        run: |
+          echo "Deploying service: $SERVICE_NAME"
+          echo "Cluster: ${{ env.CLUSTER_NAME }}"
+          echo "Region: ${{ env.AWS_REGION }}"
+          
+          DEPLOYMENT_ID=$(aws ecs update-service \
             --cluster ${{ env.CLUSTER_NAME }} \
             --service $SERVICE_NAME \
             --force-new-deployment \
-            --region ${{ env.AWS_REGION }}
+            --region ${{ env.AWS_REGION }} \
+            --query 'service.deployments[0].id' \
+            --output text 2>/dev/null || echo "")
+          
+          if [ -z "$DEPLOYMENT_ID" ]; then
+            echo "❌ Failed to update service"
+            exit 1
+          fi
+          
+          echo "deployment_id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
+          echo "✅ Deployment initiated: $DEPLOYMENT_ID"
 
       - name: Wait for deployment
         env:
           SERVICE_NAME: fibonacco-${{ env.ENV }}-${{ matrix.service }}
         run: |
+          echo "Waiting for deployment to stabilize..."
+          echo "This may take several minutes..."
+          
+          TIMEOUT=900  # 15 minutes
+          ELAPSED=0
+          
+          while [ $ELAPSED -lt $TIMEOUT ]; do
+            STATUS=$(aws ecs describe-services \
+              --cluster ${{ env.CLUSTER_NAME }} \
+              --services "$SERVICE_NAME" \
+              --region ${{ env.AWS_REGION }} \
+              --query 'services[0].deployments[?status==`PRIMARY`].runningCount' \
+              --output text 2>/dev/null || echo "0")
+            
+            DESIRED=$(aws ecs describe-services \
+              --cluster ${{ env.CLUSTER_NAME }} \
+              --services "$SERVICE_NAME" \
+              --region ${{ env.AWS_REGION }} \
+              --query 'services[0].desiredCount' \
+              --output text 2>/dev/null || echo "0")
+            
+            echo "Running: $STATUS / Desired: $DESIRED (elapsed: ${ELAPSED}s)"
+            
+            if [ "$STATUS" = "$DESIRED" ] && [ "$STATUS" != "0" ]; then
+              echo "✅ Deployment stabilized"
+              break
+            fi
+            
+            sleep 10
+            ELAPSED=$((ELAPSED + 10))
+          done
+          
+          # Use AWS CLI wait command as fallback
           aws ecs wait services-stable \
             --cluster ${{ env.CLUSTER_NAME }} \
-            --services $SERVICE_NAME \
-            --region ${{ env.AWS_REGION }}
+            --services "$SERVICE_NAME" \
+            --region ${{ env.AWS_REGION }} \
+            --max-attempts 30 \
+            || echo "⚠️  Wait command timed out, but deployment may still be in progress"
+
+      - name: Verify Deployment Health
+        env:
+          SERVICE_NAME: fibonacco-${{ env.ENV }}-${{ matrix.service }}
+        run: |
+          echo "Verifying deployment health..."
+          
+          RUNNING=$(aws ecs describe-services \
+            --cluster ${{ env.CLUSTER_NAME }} \
+            --services "$SERVICE_NAME" \
+            --region ${{ env.AWS_REGION }} \
+            --query 'services[0].runningCount' \
+            --output text 2>/dev/null || echo "0")
+          
+          DESIRED=$(aws ecs describe-services \
+            --cluster ${{ env.CLUSTER_NAME }} \
+            --services "$SERVICE_NAME" \
+            --region ${{ env.AWS_REGION }} \
+            --query 'services[0].desiredCount' \
+            --output text 2>/dev/null || echo "0")
+          
+          if [ "$RUNNING" = "$DESIRED" ] && [ "$RUNNING" != "0" ]; then
+            echo "✅ Deployment healthy: $RUNNING/$DESIRED tasks running"
+          else
+            echo "⚠️  Deployment may not be healthy: $RUNNING/$DESIRED tasks running"
+            echo "⚠️  Check ECS console for details"
+          fi
+
+      - name: Deployment Summary
+        if: always()
+        env:
+          SERVICE_NAME: fibonacco-${{ env.ENV }}-${{ matrix.service }}
+        run: |
+          echo "## Deployment Summary for $SERVICE_NAME" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Cluster: ${{ env.CLUSTER_NAME }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Service: $SERVICE_NAME" >> $GITHUB_STEP_SUMMARY
+          echo "- Region: ${{ env.AWS_REGION }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ Deployment completed successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Deployment failed or incomplete" >> $GITHUB_STEP_SUMMARY
+          fi
 

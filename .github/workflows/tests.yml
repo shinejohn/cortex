@@ -22,10 +22,15 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: '8.3'
           tools: composer:v2
           coverage: xdebug
           extensions: sqlite, pdo_sqlite, mbstring, xml, ctype, json, fileinfo, openssl, tokenizer, pdo, curl, gd, intl, zip
+
+      - name: Verify PHP Version
+        run: |
+          php -v
+          php --version | grep -q "8.3" && echo "✅ PHP 8.3 confirmed" || echo "⚠️  PHP version mismatch"
 
       - name: Copy Environment File (for composer scripts)
         run: |
@@ -39,23 +44,57 @@ jobs:
             echo "APP_URL=http://localhost" >> .env
           fi
 
+      - name: Verify Composer Configuration
+        run: |
+          if [ ! -f composer.json ]; then
+            echo "❌ composer.json not found"
+            exit 1
+          fi
+          echo "✅ composer.json exists"
+          composer validate --no-check-publish || echo "⚠️  Composer validation warning"
+
       - name: Install Composer Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-scripts
         env:
           COMPOSER_MEMORY_LIMIT: -1
+        continue-on-error: false
+
+      - name: Verify Composer Installation
+        run: |
+          if [ ! -d vendor ]; then
+            echo "❌ Vendor directory not found"
+            exit 1
+          fi
+          echo "✅ Composer dependencies installed"
+          composer show | head -5
 
       - name: Generate Application Key
-        run: php artisan key:generate
+        run: |
+          php artisan key:generate
+          if [ -z "$(grep APP_KEY .env | cut -d '=' -f2)" ]; then
+            echo "❌ APP_KEY not generated"
+            exit 1
+          fi
+          echo "✅ Application key generated"
 
       - name: Run Composer Post-Install Scripts
         run: |
-          php artisan package:discover --ansi || echo "Package discovery warning"
-          php artisan filament:upgrade || echo "Filament upgrade warning (non-critical)"
+          echo "Running package discovery..."
+          php artisan package:discover --ansi || echo "⚠️  Package discovery warning"
+          echo "Running Filament upgrade..."
+          php artisan filament:upgrade || echo "⚠️  Filament upgrade warning (non-critical)"
 
       - name: Verify Laravel Setup
         run: |
-          php artisan --version
-          php artisan package:discover --ansi || echo "Package discovery warning (non-critical)"
+          echo "Verifying Laravel installation..."
+          php artisan --version || exit 1
+          echo "✅ Laravel is working"
+          
+          echo "Verifying package discovery..."
+          php artisan package:discover --ansi || echo "⚠️  Package discovery warning (non-critical)"
+          
+          echo "Checking configuration..."
+          php artisan config:show app.name || echo "⚠️  Config check warning"
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -63,12 +102,48 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
+      - name: Verify Node Setup
+        run: |
+          node --version
+          npm --version
+          echo "✅ Node.js setup verified"
+
+      - name: Verify Package.json
+        run: |
+          if [ ! -f package.json ]; then
+            echo "❌ package.json not found"
+            exit 1
+          fi
+          echo "✅ package.json exists"
+          if ! grep -q '"build"' package.json; then
+            echo "⚠️  Build script not found in package.json"
+          fi
+
       - name: Install Node Dependencies
         run: npm ci
+        continue-on-error: false
+
+      - name: Verify Node Dependencies
+        run: |
+          if [ ! -d node_modules ]; then
+            echo "❌ node_modules directory not found"
+            exit 1
+          fi
+          echo "✅ Node dependencies installed"
+          npm list --depth=0 | head -10
 
       - name: Build Assets
         run: npm run build
         continue-on-error: false
+
+      - name: Verify Build Output
+        run: |
+          if [ -d public/build ]; then
+            echo "✅ Build output found in public/build"
+            ls -la public/build | head -5
+          else
+            echo "⚠️  Build output directory not found (may be normal for some setups)"
+          fi
 
       - name: Clear All Caches
         run: |
@@ -87,6 +162,26 @@ jobs:
       - name: Create Storage Link
         run: php artisan storage:link || true
 
+      - name: Verify Test Environment
+        run: |
+          echo "Verifying test environment..."
+          php artisan config:clear
+          echo "✅ Configuration cleared"
+          
+          # Verify Pest is available
+          if [ ! -f ./vendor/bin/pest ]; then
+            echo "❌ Pest not found"
+            exit 1
+          fi
+          echo "✅ Pest found"
+          
+          # Verify test directories exist
+          if [ ! -d tests/Feature ] && [ ! -d tests/Unit ]; then
+            echo "⚠️  No test directories found"
+          else
+            echo "✅ Test directories found"
+          fi
+
       - name: Run Tests
         env:
           APP_ENV: testing
@@ -103,4 +198,30 @@ jobs:
           STRIPE_SECRET: ${{ secrets.STRIPE_SECRET || 'sk_test_placeholder' }}
         run: |
           php artisan config:clear
-          php -d memory_limit=512M ./vendor/bin/pest --colors=always
+          php -d memory_limit=512M ./vendor/bin/pest --colors=always --log-junit=test-results.xml || TEST_EXIT_CODE=$?
+          
+          # Always upload test results, even on failure
+          if [ -f test-results.xml ]; then
+            echo "✅ Test results generated"
+          fi
+          
+          exit ${TEST_EXIT_CODE:-0}
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results.xml
+          retention-days: 7
+
+      - name: Test Summary
+        if: always()
+        run: |
+          echo "## Test Execution Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f test-results.xml ]; then
+            echo "✅ Test results file generated" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️  Test results file not found" >> $GITHUB_STEP_SUMMARY
+          fi
