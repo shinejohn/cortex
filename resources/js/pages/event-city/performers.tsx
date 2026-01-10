@@ -1,3 +1,5 @@
+import { Head, usePage } from "@inertiajs/react";
+import { useState } from "react";
 import CTASection from "@/components/common/cta-section";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
@@ -6,8 +8,6 @@ import { JoinCta } from "@/components/performers/join-cta";
 import { PerformerCard } from "@/components/performers/performer-card";
 import { SearchBar } from "@/components/performers/search-bar";
 import type { PerformersPageProps } from "@/types/performers";
-import { Head, usePage } from "@inertiajs/react";
-import { useState } from "react";
 
 export default function Performers() {
     const { auth, featuredPerformers = [] } = usePage<PerformersPageProps>().props;

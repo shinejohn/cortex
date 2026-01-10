@@ -1,9 +1,3 @@
-import { Footer } from "@/components/common/footer";
-import Header from "@/components/common/header";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import type { CommunityFilters, CommunityShowPageProps, CommunityThread, ThreadAuthor } from "@/types/community";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -25,6 +19,12 @@ import {
     XIcon,
 } from "lucide-react";
 import { useState } from "react";
+import { Footer } from "@/components/common/footer";
+import Header from "@/components/common/header";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import type { CommunityFilters, CommunityShowPageProps, CommunityThread, ThreadAuthor } from "@/types/community";
 
 // Initialize dayjs plugins
 dayjs.extend(relativeTime);

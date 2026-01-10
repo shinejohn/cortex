@@ -1,9 +1,9 @@
+import { Head, router } from "@inertiajs/react";
+import React from "react";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import PostForm from "@/components/day-news/post-form";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { Head, router } from "@inertiajs/react";
-import React from "react";
 
 interface Region {
     id: number;

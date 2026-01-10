@@ -1,3 +1,6 @@
+import { Head, useForm, usePage } from "@inertiajs/react";
+import { ArrowLeftIcon, PlusIcon, XIcon } from "lucide-react";
+import { useState } from "react";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
 import { Badge } from "@/components/ui/badge";
@@ -7,9 +10,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { CreateCommunityThreadPageProps, THREAD_TYPES, ThreadType } from "@/types/community";
-import { Head, useForm, usePage } from "@inertiajs/react";
-import { ArrowLeftIcon, PlusIcon, XIcon } from "lucide-react";
-import { useState } from "react";
 
 export default function CreateThread() {
     const { auth, community } = usePage<CreateCommunityThreadPageProps>().props;

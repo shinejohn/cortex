@@ -1,8 +1,8 @@
 import { StarIcon, ThumbsUpIcon, UserIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface ReviewCardProps {
     review: {

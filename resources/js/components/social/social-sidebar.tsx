@@ -1,13 +1,13 @@
+import { Link, router } from "@inertiajs/react";
+import axios from "axios";
+import { CalendarIcon, LinkIcon, MapPinIcon, UsersIcon } from "lucide-react";
+import { toast } from "sonner";
+import { route } from "ziggy-js";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { SocialUserProfile, User, UserWithSocial } from "@/types/social";
-import { Link, router } from "@inertiajs/react";
-import axios from "axios";
-import { CalendarIcon, LinkIcon, MapPinIcon, UsersIcon } from "lucide-react";
-import { route } from "ziggy-js";
-import { toast } from "sonner";
 
 interface SocialSidebarProps {
     currentUser: User;

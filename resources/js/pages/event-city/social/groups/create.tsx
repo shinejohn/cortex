@@ -1,14 +1,14 @@
+import { Head, Link, router } from "@inertiajs/react";
+import axios from "axios";
+import { ArrowLeftIcon, GlobeIcon, LockIcon, UserIcon } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import AppLayout from "@/layouts/app-layout";
-import { Head, Link, router } from "@inertiajs/react";
-import axios from "axios";
-import { ArrowLeftIcon, GlobeIcon, LockIcon, UserIcon } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
 
 export default function CreateGroup() {
     const [formData, setFormData] = useState({

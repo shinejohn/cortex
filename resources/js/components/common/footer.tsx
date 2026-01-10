@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Link } from "@inertiajs/react";
 import { FacebookIcon, InstagramIcon, LinkedinIcon, TwitterIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 /**
  * Page: Global Footer

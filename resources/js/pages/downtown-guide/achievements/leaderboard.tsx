@@ -1,8 +1,6 @@
-import { Head } from "@inertiajs/react";
-import { TrophyIcon, MedalIcon, TrendingUpIcon, FilterIcon } from "lucide-react";
+import { Head, Link, router } from "@inertiajs/react";
+import { FilterIcon, MedalIcon, TrendingUpIcon, TrophyIcon } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { router } from "@inertiajs/react";
-import { Link } from "@inertiajs/react";
 
 interface DowntownGuideLeaderboardProps {
     leaderboard: Array<{
@@ -135,11 +133,7 @@ export default function DowntownGuideLeaderboard({ leaderboard, period, type }: 
                                         {/* Avatar */}
                                         <div className="flex-shrink-0">
                                             {user.avatar ? (
-                                                <img
-                                                    src={user.avatar}
-                                                    alt={user.name}
-                                                    className="h-12 w-12 rounded-full border-2 border"
-                                                />
+                                                <img src={user.avatar} alt={user.name} className="h-12 w-12 rounded-full border-2 border" />
                                             ) : (
                                                 <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border bg-accent">
                                                     <span className="text-lg font-bold text-primary">{user.name.charAt(0).toUpperCase()}</span>

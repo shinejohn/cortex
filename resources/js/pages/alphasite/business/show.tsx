@@ -1,7 +1,7 @@
 import { Head, Link, useForm } from "@inertiajs/react";
-import { Business, BusinessTemplate, Tab } from "@/types";
-import Layout from "@/layouts/layout";
 import { useState } from "react";
+import Layout from "@/layouts/layout";
+import { Business, BusinessTemplate, Tab } from "@/types";
 
 interface Props {
     business: Business;

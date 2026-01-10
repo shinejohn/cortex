@@ -1,13 +1,13 @@
-import { Header } from "@/components/common/header";
+import { router, useForm, usePage } from "@inertiajs/react";
+import { ArrowLeft, Eye, Save } from "lucide-react";
+import { useState } from "react";
 import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
 import { SEO } from "@/components/common/seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Auth } from "@/types";
-import { router, useForm, usePage } from "@inertiajs/react";
-import { ArrowLeft, Save, Eye } from "lucide-react";
-import { useState } from "react";
 
 interface Hub {
     id: string;
@@ -65,7 +65,11 @@ export default function HubBuilder() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center">
-                            <Button variant="ghost" onClick={() => router.visit(`/hubs/${hub.slug}`)} className="text-muted-foreground hover:text-foreground">
+                            <Button
+                                variant="ghost"
+                                onClick={() => router.visit(`/hubs/${hub.slug}`)}
+                                className="text-muted-foreground hover:text-foreground"
+                            >
                                 <ArrowLeft className="h-5 w-5 mr-1" />
                                 Back to Hub
                             </Button>

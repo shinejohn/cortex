@@ -1,11 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import AppLayout from "@/layouts/app-layout";
 import { Head, Link } from "@inertiajs/react";
 import axios from "axios";
 import { ClockIcon, FilterIcon, MessageCircleIcon, SearchIcon, UsersIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 import { route } from "ziggy-js";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import AppLayout from "@/layouts/app-layout";
 
 interface Friend {
     id: string;

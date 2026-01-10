@@ -1,3 +1,9 @@
+import { Head, Link, router } from "@inertiajs/react";
+import axios from "axios";
+import { ArrowLeftIcon } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { route } from "ziggy-js";
 import { GoogleMapsProvider } from "@/components/providers/google-maps-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,12 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import AppLayout from "@/layouts/app-layout";
-import { Head, Link, router } from "@inertiajs/react";
-import axios from "axios";
-import { ArrowLeftIcon } from "lucide-react";
-import { useState } from "react";
-import { route } from "ziggy-js";
-import { toast } from "sonner";
 
 interface Workspace {
     can_accept_payments: boolean;
@@ -88,9 +88,10 @@ export default function CreateVenue({ workspace }: Props) {
             if (response.status === 200 || response.status === 201) {
                 router.visit(route("venues.show", response.data.id || response.data.venue?.id));
             }
-        } catch (error: any) {
-            if (error.response?.data?.errors) {
-                setErrors(error.response.data.errors);
+        } catch (error: unknown) {
+            const axiosError = error as { response?: { data?: { errors?: Record<string, string[]> } } };
+            if (axiosError.response?.data?.errors) {
+                setErrors(axiosError.response.data.errors);
             }
             console.error("Error creating venue:", error);
             const errorMessage =

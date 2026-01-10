@@ -1,11 +1,11 @@
-import { Header } from "@/components/common/header";
-import { Footer } from "@/components/common/footer";
-import { SEO } from "@/components/common/seo";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Auth } from "@/types";
 import { usePage } from "@inertiajs/react";
-import { FileText, Download, Calendar, User } from "lucide-react";
+import { Calendar, Download, FileText, User } from "lucide-react";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { SEO } from "@/components/common/seo";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Auth } from "@/types";
 
 interface PressRelease {
     id: string;
@@ -121,7 +121,9 @@ export default function Press() {
                 <Card>
                     <CardContent className="p-8 text-center">
                         <h2 className="text-3xl font-bold text-foreground mb-4">Media Kit</h2>
-                        <p className="text-xl text-muted-foreground mb-8">Download our media kit with logos, brand guidelines, and high-resolution images</p>
+                        <p className="text-xl text-muted-foreground mb-8">
+                            Download our media kit with logos, brand guidelines, and high-resolution images
+                        </p>
                         <Button size="lg">
                             <Download className="h-5 w-5 mr-2" />
                             Download Media Kit

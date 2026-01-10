@@ -1,3 +1,6 @@
+import { Head, router, usePage } from "@inertiajs/react";
+import { FilterIcon, GridIcon, ListIcon, MapPinIcon, SearchIcon, UsersIcon, XIcon } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { CalendarFilters } from "@/components/calendars/calendar_filters";
 import { Footer } from "@/components/common/footer";
 import { GridCard } from "@/components/common/grid-card";
@@ -10,9 +13,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { SharedData } from "@/types";
 import { Calendar, CalendarsPageProps, NewCalendar, TrendingCalendar } from "@/types/calendars";
-import { Head, router, usePage } from "@inertiajs/react";
-import { FilterIcon, GridIcon, ListIcon, MapPinIcon, SearchIcon, UsersIcon, XIcon } from "lucide-react";
-import React, { useEffect, useState } from "react";
 
 type ViewMode = "grid" | "list";
 type SortOption = "trending" | "followers" | "updated" | "new";
@@ -38,7 +38,7 @@ export default function CalendarsPage() {
 
         return () => clearTimeout(timer);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchQuery]);
+    }, [searchQuery, filters.search, handleFilterChange]);
 
     // Handle filter changes
     const handleFilterChange = (newFilters: Partial<typeof currentFilters>, newSort?: SortOption) => {

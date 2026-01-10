@@ -1,10 +1,10 @@
+import { Link } from "@inertiajs/react";
+import { ArrowRight, Calendar, MapPin, Star } from "lucide-react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PerformerProfile, PerformerReview, RatingStats } from "@/types/performer-profile";
-import { Link } from "@inertiajs/react";
-import { ArrowRight, Calendar, MapPin, Star } from "lucide-react";
-import { useState } from "react";
 
 interface PerformerOverviewProps {
     performer: PerformerProfile;

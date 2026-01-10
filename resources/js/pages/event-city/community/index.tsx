@@ -1,11 +1,11 @@
+import { Head, Link, usePage } from "@inertiajs/react";
+import { ArrowRightIcon, MessageCircleIcon, TrendingUpIcon, UsersIcon } from "lucide-react";
 import { Footer } from "@/components/common/footer";
 import { GridCard } from "@/components/common/grid-card";
 import Header from "@/components/common/header";
 import { CommunityShowcase } from "@/components/community/community-showcase";
 import { Button } from "@/components/ui/button";
 import type { Community, CommunityIndexPageProps } from "@/types/community";
-import { Head, Link, usePage } from "@inertiajs/react";
-import { ArrowRightIcon, MessageCircleIcon, TrendingUpIcon, UsersIcon } from "lucide-react";
 
 export default function CommunityIndex() {
     const { auth, communities = [], showcaseData = [] } = usePage<CommunityIndexPageProps>().props;

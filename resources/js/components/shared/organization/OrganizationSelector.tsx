@@ -1,9 +1,9 @@
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { useState, useEffect } from "react";
-import { SearchIcon, BuildingIcon } from "lucide-react";
 import { router } from "@inertiajs/react";
+import { BuildingIcon, SearchIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 interface OrganizationSelectorProps {
     onSelect: (organization: { id: string; name: string; organization_type?: string; organization_level?: string }) => void;

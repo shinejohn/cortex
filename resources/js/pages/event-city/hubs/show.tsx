@@ -1,13 +1,13 @@
-import { Header } from "@/components/common/header";
+import { Link, router, usePage } from "@inertiajs/react";
+import { ArrowLeft, BarChart3, Calendar, Edit, Settings, Users } from "lucide-react";
 import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
 import { SEO } from "@/components/common/seo";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
 import { Auth } from "@/types";
-import { Link, router, usePage } from "@inertiajs/react";
-import { ArrowLeft, Users, Calendar, Settings, BarChart3, Edit } from "lucide-react";
 
 interface Hub {
     id: string;

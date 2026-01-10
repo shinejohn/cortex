@@ -1,3 +1,6 @@
+import { Head, usePage } from "@inertiajs/react";
+import { Sparkles, Users } from "lucide-react";
+import { useState } from "react";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
 import { AlgorithmicFeed } from "@/components/social/algorithmic-feed";
@@ -6,12 +9,9 @@ import { SocialFeed } from "@/components/social/social-feed";
 import { SocialSidebar } from "@/components/social/social-sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { SocialFeedPageProps, SocialPost } from "@/types/social";
-import { Head, usePage } from "@inertiajs/react";
-import { Sparkles, Users } from "lucide-react";
-import { useState } from "react";
 
 export default function SocialIndex() {
-    const { auth, posts, user_profile, suggested_friends } = usePage<SocialFeedPageProps>().props;
+    const { auth, user_profile, suggested_friends } = usePage<SocialFeedPageProps>().props;
     const [newPosts, setNewPosts] = useState<SocialPost[]>([]);
 
     const handleNewPost = (post: SocialPost) => {

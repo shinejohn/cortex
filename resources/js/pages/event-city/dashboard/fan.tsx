@@ -1,14 +1,3 @@
-import { Header } from "@/components/common/header";
-import { Footer } from "@/components/common/footer";
-import { SEO } from "@/components/common/seo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CheckInFeed } from "@/components/check-in/CheckInFeed";
-import { PlannedEventsWidget } from "@/components/check-in/PlannedEventsWidget";
-import { Auth } from "@/types";
 import { Link, router, usePage } from "@inertiajs/react";
 import {
     Bell,
@@ -28,6 +17,17 @@ import {
     User,
 } from "lucide-react";
 import { useState } from "react";
+import { CheckInFeed } from "@/components/check-in/CheckInFeed";
+import { PlannedEventsWidget } from "@/components/check-in/PlannedEventsWidget";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { SEO } from "@/components/common/seo";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Auth } from "@/types";
 
 interface Artist {
     id: string;
@@ -512,7 +512,9 @@ export default function FanDashboard() {
                                                                             />
                                                                         ))}
                                                                     </div>
-                                                                    <div className="ml-2 text-sm text-muted-foreground">{formatDate(review.date)}</div>
+                                                                    <div className="ml-2 text-sm text-muted-foreground">
+                                                                        {formatDate(review.date)}
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <p className="mt-2 text-sm text-muted-foreground">{review.content}</p>

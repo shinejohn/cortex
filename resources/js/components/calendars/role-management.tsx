@@ -1,3 +1,9 @@
+import { router } from "@inertiajs/react";
+import axios from "axios";
+import { Plus, Trash2, UserCog } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { route } from "ziggy-js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -5,12 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CalendarEditor } from "@/types/calendars";
-import { router } from "@inertiajs/react";
-import axios from "axios";
-import { Plus, Trash2, UserCog } from "lucide-react";
-import { useState } from "react";
-import { route } from "ziggy-js";
-import { toast } from "sonner";
 
 interface RoleManagementProps {
     calendarId: number;

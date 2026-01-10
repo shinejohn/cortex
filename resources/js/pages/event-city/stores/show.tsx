@@ -1,3 +1,7 @@
+import { Head, Link, router } from "@inertiajs/react";
+import { AlertCircle, ArrowUpDown, CreditCard, Edit, Package, Plus, Search, ShoppingCart, Store as StoreIcon } from "lucide-react";
+import { useState } from "react";
+import { route } from "ziggy-js";
 import { Footer } from "@/components/common/footer";
 import { GridCard } from "@/components/common/grid-card";
 import Header from "@/components/common/header";
@@ -15,10 +19,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Auth } from "@/types";
-import { Head, Link, router } from "@inertiajs/react";
-import { AlertCircle, ArrowUpDown, CreditCard, Edit, Package, Plus, Search, ShoppingCart, Store as StoreIcon } from "lucide-react";
-import { useState } from "react";
-import { route } from "ziggy-js";
 
 interface Product {
     id: string;

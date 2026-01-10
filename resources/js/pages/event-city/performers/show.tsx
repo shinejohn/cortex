@@ -1,3 +1,5 @@
+import { usePage } from "@inertiajs/react";
+import { useState } from "react";
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
 import { SEO } from "@/components/common/seo";
@@ -9,8 +11,6 @@ import { PerformerReviews } from "@/components/performers/profile/reviews";
 import { PerformerTabs } from "@/components/performers/profile/tabs";
 import { PerformerUpcomingShows } from "@/components/performers/profile/upcoming-shows";
 import type { PerformerShowPageProps, ProfileTab } from "@/types/performer-profile";
-import { usePage } from "@inertiajs/react";
-import { useState } from "react";
 
 export default function PerformerShow() {
     const { performer, ratingStats, reviews, auth, isFollowing } = usePage<PerformerShowPageProps>().props;

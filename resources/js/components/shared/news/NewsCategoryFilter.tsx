@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface NewsCategoryFilterProps {
     categories: Array<{ id: string; name: string; slug: string; count?: number }>;

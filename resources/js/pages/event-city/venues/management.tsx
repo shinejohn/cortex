@@ -1,14 +1,14 @@
-import { Header } from "@/components/common/header";
-import { Footer } from "@/components/common/footer";
-import { SEO } from "@/components/common/seo";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Auth } from "@/types";
 import { Link, router, usePage } from "@inertiajs/react";
-import { Building, Calendar, DollarSign, Users, MapPin, Edit, Plus, TrendingUp, Star, Clock, CheckCircle, XCircle } from "lucide-react";
+import { Building, Calendar, CheckCircle, Clock, DollarSign, Edit, MapPin, Plus, Star, TrendingUp, Users, XCircle } from "lucide-react";
 import { useState } from "react";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { SEO } from "@/components/common/seo";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Auth } from "@/types";
 
 interface Venue {
     id: string;
@@ -95,7 +95,7 @@ export default function VenueManagement() {
 
             {/* Main Content */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
+                <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "overview" | "venues" | "bookings" | "analytics")}>
                     <TabsList>
                         <TabsTrigger value="overview">Overview</TabsTrigger>
                         <TabsTrigger value="venues">Venues</TabsTrigger>

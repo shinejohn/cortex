@@ -1,7 +1,7 @@
+import { Head } from "@inertiajs/react";
 import { buildCanonicalUrl, getImageUrl, getSiteConfig, truncateText } from "@/lib/seo/config";
 import { buildJsonLd } from "@/lib/seo/json-ld";
 import type { SEOProps } from "@/types/seo";
-import { Head } from "@inertiajs/react";
 
 /**
  * SEO Component

@@ -1,3 +1,7 @@
+import { Head, Link, useForm } from "@inertiajs/react";
+import { AlertCircle, CheckCircle, Clock, ImagePlus, Loader2, Store as StoreIcon, XCircle } from "lucide-react";
+import { useState } from "react";
+import { route } from "ziggy-js";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
 import { Badge } from "@/components/ui/badge";
@@ -7,10 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Auth } from "@/types";
-import { Head, Link, useForm } from "@inertiajs/react";
-import { AlertCircle, CheckCircle, Clock, ImagePlus, Loader2, Store as StoreIcon, XCircle } from "lucide-react";
-import { useState } from "react";
-import { route } from "ziggy-js";
 
 interface Store {
     id: string;

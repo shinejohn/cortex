@@ -1,3 +1,5 @@
+import { Head, router, useForm, usePage } from "@inertiajs/react";
+import { Clock, TrendingUp, Users } from "lucide-react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import NewsArticleCard from "@/components/day-news/news-article-card";
@@ -5,9 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { router, useForm } from "@inertiajs/react";
-import { Head, usePage } from "@inertiajs/react";
-import { Clock, TrendingUp, Users } from "lucide-react";
 
 interface TrendingPageProps {
     auth?: Auth;

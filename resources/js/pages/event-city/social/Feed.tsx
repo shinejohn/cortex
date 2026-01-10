@@ -1,3 +1,5 @@
+import { Head, usePage } from "@inertiajs/react";
+import { useState } from "react";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
 import { AlgorithmicFeed } from "@/components/social/algorithmic-feed";
@@ -5,8 +7,6 @@ import { InlinePostCreator } from "@/components/social/inline-post-creator";
 import { SocialSidebar } from "@/components/social/social-sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { SocialPost, SocialUserProfile, User } from "@/types/social";
-import { Head, usePage } from "@inertiajs/react";
-import { useState } from "react";
 
 interface SocialFeedPageProps {
     auth: {

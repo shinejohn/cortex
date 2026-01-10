@@ -1,11 +1,11 @@
 import { Head, Link, router } from "@inertiajs/react";
-import { EventCityBusinessCard } from "@/components/event-city/businesses/EventCityBusinessCard";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { SearchIcon, FilterIcon, CalendarIcon, SparklesIcon } from "lucide-react";
+import { CalendarIcon, FilterIcon, SearchIcon, SparklesIcon } from "lucide-react";
 import { useState } from "react";
+import { EventCityBusinessCard } from "@/components/event-city/businesses/EventCityBusinessCard";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Pagination } from "@/components/ui/pagination";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface EventCityBusinessesIndexProps {
     businesses: {

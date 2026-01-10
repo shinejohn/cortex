@@ -1,11 +1,11 @@
+import { useForm } from "@inertiajs/react";
+import { StarIcon } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { StarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
-import { useForm } from "@inertiajs/react";
 
 interface ReviewFormProps {
     onSubmit: (data: { title?: string; content: string; rating: number }) => void;

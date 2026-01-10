@@ -1,8 +1,8 @@
+import { Link } from "@inertiajs/react";
+import { ArrowRightIcon, GuitarIcon, HeadphonesIcon, MicIcon, MusicIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { PerformerCategory } from "@/types/performers";
-import { Link } from "@inertiajs/react";
-import { ArrowRightIcon, GuitarIcon, HeadphonesIcon, MicIcon, MusicIcon } from "lucide-react";
 
 const defaultCategories: PerformerCategory[] = [
     {

@@ -1,9 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import type { CommunityThreadReply } from "@/types/community";
 import { router } from "@inertiajs/react";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -11,6 +5,12 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { HeartIcon, MessageCircleIcon, MoreHorizontalIcon, PencilIcon, PinIcon, StarIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import type { CommunityThreadReply } from "@/types/community";
 
 // Initialize dayjs plugins
 dayjs.extend(relativeTime);
@@ -48,9 +48,10 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
             router.reload({ only: ["thread"] });
         } catch (error: unknown) {
             console.error("Failed to submit reply:", error);
-            const errorMessage = (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message || 
-                                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error || 
-                                "Failed to post reply. Please try again.";
+            const errorMessage =
+                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message ||
+                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error ||
+                "Failed to post reply. Please try again.";
             toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);
@@ -70,9 +71,10 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
             router.reload({ only: ["thread"] });
         } catch (error: unknown) {
             console.error("Failed to edit reply:", error);
-            const errorMessage = (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message || 
-                                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error || 
-                                "Failed to update reply. Please try again.";
+            const errorMessage =
+                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message ||
+                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error ||
+                "Failed to update reply. Please try again.";
             toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);
@@ -87,9 +89,10 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
                 router.reload({ only: ["thread"] });
             } catch (error: unknown) {
                 console.error("Failed to delete reply:", error);
-                const errorMessage = (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message || 
-                                    (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error || 
-                                    "Failed to delete reply. Please try again.";
+                const errorMessage =
+                    (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message ||
+                    (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error ||
+                    "Failed to delete reply. Please try again.";
                 toast.error(errorMessage);
             }
         }
@@ -101,9 +104,10 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
             router.reload({ only: ["thread"] });
         } catch (error: unknown) {
             console.error("Failed to like reply:", error);
-            const errorMessage = (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message || 
-                                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error || 
-                                "Failed to like reply. Please try again.";
+            const errorMessage =
+                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message ||
+                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error ||
+                "Failed to like reply. Please try again.";
             toast.error(errorMessage);
         }
     };

@@ -1,11 +1,11 @@
 import { Head, Link, router } from "@inertiajs/react";
-import { DayNewsBusinessCard } from "@/components/day-news/businesses/DayNewsBusinessCard";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { SearchIcon, FilterIcon, NewspaperIcon } from "lucide-react";
+import { FilterIcon, NewspaperIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";
+import { DayNewsBusinessCard } from "@/components/day-news/businesses/DayNewsBusinessCard";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Pagination } from "@/components/ui/pagination";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface DayNewsBusinessesIndexProps {
     businesses: {
@@ -96,7 +96,9 @@ export default function DayNewsBusinessesIndex({ businesses, featuredBusinesses,
                             <NewspaperIcon className="h-10 w-10 text-primary" />
                             <div>
                                 <h1 className="text-3xl font-bold text-foreground">Local Business Directory</h1>
-                                <p className="mt-1 text-lg text-muted-foreground">Discover local businesses and see what's happening in your community</p>
+                                <p className="mt-1 text-lg text-muted-foreground">
+                                    Discover local businesses and see what's happening in your community
+                                </p>
                             </div>
                         </div>
                     </div>

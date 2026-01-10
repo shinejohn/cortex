@@ -1,12 +1,12 @@
+import { Head, Link, router } from "@inertiajs/react";
+import { FileText, Plus } from "lucide-react";
+import React from "react";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import PostCard from "@/components/day-news/post-card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { Head, Link, router } from "@inertiajs/react";
-import { FileText, Plus } from "lucide-react";
-import React from "react";
 
 interface Region {
     id: number;

@@ -1,3 +1,6 @@
+import { Head, Link, router, usePage } from "@inertiajs/react";
+import { CalendarIcon, ClockIcon, FilterIcon, GridIcon, ListIcon, MapPinIcon, SearchIcon, StarIcon, TicketIcon, XIcon } from "lucide-react";
+import { useState } from "react";
 import CTASection from "@/components/common/cta-section";
 import { Footer } from "@/components/common/footer";
 import { GridCard } from "@/components/common/grid-card";
@@ -9,9 +12,6 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { type Event } from "@/types/events";
-import { Head, Link, router, usePage } from "@inertiajs/react";
-import { CalendarIcon, ClockIcon, FilterIcon, GridIcon, ListIcon, MapPinIcon, SearchIcon, StarIcon, TicketIcon, XIcon } from "lucide-react";
-import { useState } from "react";
 
 type ViewMode = "grid" | "list";
 type SortOption = "date" | "price_low" | "price_high" | "popularity" | "recommended";

@@ -1,3 +1,6 @@
+import { Head, router, useForm, usePage } from "@inertiajs/react";
+import { Building, Calendar, Clock, FileText, Filter, Hash, Search, TrendingUp, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import NewsArticleCard from "@/components/day-news/news-article-card";
@@ -6,10 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { router, useForm } from "@inertiajs/react";
-import { Search, X, Clock, Filter, TrendingUp, Calendar, Building, Hash, FileText } from "lucide-react";
-import { useState, useEffect } from "react";
-import { Head, usePage } from "@inertiajs/react";
 
 interface SearchResult {
     id: string;
@@ -66,7 +65,7 @@ export default function SearchPage() {
     } = usePage<SearchPageProps>().props;
     const [searchQuery, setSearchQuery] = useState(initialQuery);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [suggestions, setSuggestions] = useState<string[]>(initialSuggestions);
+    const [suggestions, _setSuggestions] = useState<string[]>(initialSuggestions);
 
     const searchForm = useForm({
         q: initialQuery,
@@ -120,7 +119,7 @@ export default function SearchPage() {
         });
     };
 
-    const allResults = [
+    const _allResults = [
         ...results.articles.map((r) => ({ ...r, type: "article" as const })),
         ...results.events.map((r) => ({ ...r, type: "event" as const })),
         ...results.businesses.map((r) => ({ ...r, type: "business" as const })),

@@ -1,9 +1,9 @@
-import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { UserInfo } from "@/components/user-info";
-import { type User } from "@/types";
 import { Link } from "@inertiajs/react";
 import { Bell, BookOpen, Building2, FileText, HelpCircle, LogOut, Megaphone, Newspaper, Settings, User as UserIcon } from "lucide-react";
 import { route } from "ziggy-js";
+import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { UserInfo } from "@/components/user-info";
+import { type User } from "@/types";
 
 interface DayNewsUserMenuContentProps {
     user: User;

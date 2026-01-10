@@ -1,3 +1,5 @@
+import { Newspaper } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { SEO } from "@/components/common/seo";
 import Advertisement from "@/components/day-news/advertisement";
 import DayNewsHeader from "@/components/day-news/day-news-header";
@@ -6,8 +8,6 @@ import NewsArticleCard from "@/components/day-news/news-article-card";
 import NewspaperMasthead from "@/components/day-news/newspaper-masthead";
 import { LocationProvider, useLocation } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { Newspaper } from "lucide-react";
-import React, { useEffect, useState } from "react";
 
 interface Region {
     id: string;

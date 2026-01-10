@@ -1,3 +1,5 @@
+import { Head, router, useForm, usePage } from "@inertiajs/react";
+import { Headphones, Mic, Plus, Search, Users } from "lucide-react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import { Badge } from "@/components/ui/badge";
@@ -5,9 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { router, useForm } from "@inertiajs/react";
-import { Head, usePage } from "@inertiajs/react";
-import { Headphones, Mic, Plus, Search, Users } from "lucide-react";
 
 interface Podcast {
     id: string;

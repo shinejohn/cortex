@@ -1,12 +1,11 @@
+import { Head, router, useForm, usePage } from "@inertiajs/react";
+import { Headphones, Mic, Plus, Search } from "lucide-react";
 import { SEO } from "@/components/common/seo";
-import GoLocalVoicesLayout from "@/layouts/go-local-voices-layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import GoLocalVoicesLayout from "@/layouts/go-local-voices-layout";
 import type { Auth } from "@/types";
-import { router, useForm } from "@inertiajs/react";
-import { Head, usePage } from "@inertiajs/react";
-import { Headphones, Mic, Plus, Search } from "lucide-react";
 
 interface Podcast {
     id: string;

@@ -1,6 +1,6 @@
 import { Head, Link, useForm } from "@inertiajs/react";
-import Layout from "@/layouts/layout";
 import { useState } from "react";
+import Layout from "@/layouts/layout";
 
 interface Props {
     query?: string;

@@ -1,10 +1,10 @@
+import { Head } from "@inertiajs/react";
+import { Briefcase, Calendar, Globe, Heart, Landmark, Leaf, TrendingUp, Users } from "lucide-react";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { SharedData } from "@/types";
-import { Head } from "@inertiajs/react";
-import { Briefcase, Calendar, Globe, Heart, Landmark, Leaf, TrendingUp, Users } from "lucide-react";
 
 interface ImpactStat {
     readonly number: string;

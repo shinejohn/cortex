@@ -1,9 +1,9 @@
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "@inertiajs/react";
 import { Clock, MapPin } from "lucide-react";
 import React from "react";
 import { route } from "ziggy-js";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface Region {
     id: string;

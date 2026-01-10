@@ -1,7 +1,7 @@
+import * as React from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import useMediaQuery from "@/hooks/use-media-query";
-import * as React from "react";
 import If from "./if";
 
 interface ResponsiveDialogProps {

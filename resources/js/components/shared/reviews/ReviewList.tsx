@@ -1,5 +1,5 @@
-import { ReviewCard } from "./ReviewCard";
 import { cn } from "@/lib/utils";
+import { ReviewCard } from "./ReviewCard";
 
 interface ReviewListProps {
     reviews: Array<{

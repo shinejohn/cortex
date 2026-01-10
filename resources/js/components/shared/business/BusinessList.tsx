@@ -1,5 +1,5 @@
-import { BusinessCard } from "./BusinessCard";
 import { cn } from "@/lib/utils";
+import { BusinessCard } from "./BusinessCard";
 
 interface BusinessListProps {
     businesses: Array<{

@@ -1,16 +1,14 @@
+import { Head, router, useForm } from "@inertiajs/react";
+import { ArrowLeft, Building, Calendar, Percent, Ticket, Upload } from "lucide-react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { useForm } from "@inertiajs/react";
-import { Head } from "@inertiajs/react";
-import { ArrowLeft, Building, Calendar, Percent, Ticket, Upload } from "lucide-react";
-import { router } from "@inertiajs/react";
 
 interface CreateCouponProps {
     auth?: Auth;

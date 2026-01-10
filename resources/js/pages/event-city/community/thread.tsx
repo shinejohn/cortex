@@ -1,18 +1,7 @@
-import { Footer } from "@/components/common/footer";
-import Header from "@/components/common/header";
-import { ThreadReply } from "@/components/community/thread-reply";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
-import type { ThreadPageProps } from "@/types/community";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import axios from "axios";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { toast } from "sonner";
 import {
     AlertCircleIcon,
     ArrowLeftIcon,
@@ -28,6 +17,17 @@ import {
     ShareIcon,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+import { Footer } from "@/components/common/footer";
+import Header from "@/components/common/header";
+import { ThreadReply } from "@/components/community/thread-reply";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import type { ThreadPageProps } from "@/types/community";
 
 // Initialize dayjs plugins
 dayjs.extend(relativeTime);

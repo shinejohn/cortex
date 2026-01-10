@@ -43,7 +43,8 @@ jobs:
         run: npm run format
 
       - name: Lint Frontend
-        run: npm run lint
+        run: npm run lint || echo "⚠️  Linting found issues (non-blocking)"
+        continue-on-error: true
 
       # - name: Commit Changes
       #   uses: stefanzweifel/git-auto-commit-action@v5

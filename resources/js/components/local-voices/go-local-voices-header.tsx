@@ -1,9 +1,8 @@
 import { Link, router } from "@inertiajs/react";
-import { Mic, Search, Plus, User, Menu } from "lucide-react";
+import { Menu, Mic, Plus, Search, User } from "lucide-react";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,6 +11,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { Auth } from "@/types";
 
@@ -133,9 +133,7 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
                                     </Button>
                                 </Link>
                                 <Link href="/register">
-                                    <Button size="sm">
-                                        Get Started
-                                    </Button>
+                                    <Button size="sm">Get Started</Button>
                                 </Link>
                             </div>
                         )}

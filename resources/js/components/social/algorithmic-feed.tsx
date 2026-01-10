@@ -1,9 +1,9 @@
+import { Loader2, RefreshCw } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SocialPostCard } from "@/components/social/social-post-card";
 import { Button } from "@/components/ui/button";
 import type { User } from "@/types";
 import type { SocialPost } from "@/types/social";
-import { Loader2, RefreshCw } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
 
 interface AlgorithmicFeedProps {
     feedType: "for-you" | "followed";

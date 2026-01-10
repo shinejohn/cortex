@@ -1,3 +1,6 @@
+import { Head, Link, router, useForm } from "@inertiajs/react";
+import { Calendar, CreditCard, Loader2, MapPin, Package, ShoppingBag, Store as StoreIcon, User } from "lucide-react";
+import { route } from "ziggy-js";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
 import { Badge } from "@/components/ui/badge";
@@ -5,9 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Auth } from "@/types";
-import { Head, Link, router, useForm } from "@inertiajs/react";
-import { Calendar, CreditCard, Loader2, MapPin, Package, ShoppingBag, Store as StoreIcon, User } from "lucide-react";
-import { route } from "ziggy-js";
 
 interface OrderItem {
     id: string;

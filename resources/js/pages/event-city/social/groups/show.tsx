@@ -1,13 +1,13 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import AppLayout from "@/layouts/app-layout";
 import { Head, Link, router } from "@inertiajs/react";
 import axios from "axios";
 import { ArrowLeftIcon, GlobeIcon, LockIcon, MessageSquareIcon, PlusIcon, SettingsIcon, UserIcon, UserPlusIcon, UsersIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import AppLayout from "@/layouts/app-layout";
 
 interface GroupMember {
     id: string;

@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import AppLayout from "@/layouts/app-layout";
 import { Head } from "@inertiajs/react";
 import axios from "axios";
 import { LockIcon, UserPlusIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import AppLayout from "@/layouts/app-layout";
 
 interface User {
     id: string;

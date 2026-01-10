@@ -1,13 +1,3 @@
-import { FollowButton } from "@/components/common/follow-button";
-import { Footer } from "@/components/common/footer";
-import { Header } from "@/components/common/header";
-import { SEO } from "@/components/common/seo";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Auth } from "@/types";
 import { Link, router } from "@inertiajs/react";
 import {
     ArrowRight,
@@ -28,6 +18,16 @@ import {
     X,
 } from "lucide-react";
 import { useState } from "react";
+import { FollowButton } from "@/components/common/follow-button";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { SEO } from "@/components/common/seo";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Auth } from "@/types";
 
 interface Event {
     id: string;
@@ -105,7 +105,7 @@ interface Props {
 
 export default function EventDetail({ auth, event, similarEvents, isFollowing, canEdit, isCheckedIn = false, recentCheckIns = [] }: Props) {
     const [activeTab, setActiveTab] = useState("overview");
-    const [showCheckInModal, setShowCheckInModal] = useState(false);
+    const [_showCheckInModal, _setShowCheckInModal] = useState(false);
 
     const formatEventDate = (dateString: string) => {
         const date = new Date(dateString);

@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
 import { FaFacebook, FaGithub, FaGoogle, FaLink, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { cn } from "@/lib/utils";
 
 const ProviderIcon = ({ provider, className }: { provider: string; className?: string }) => {
     function getProviderIcon(provider: string) {

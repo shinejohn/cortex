@@ -1,15 +1,14 @@
+import { Head, router, usePage } from "@inertiajs/react";
+import { Calendar, FileText, Hash, TrendingUp, Users } from "lucide-react";
+import { useState } from "react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import NewsArticleCard from "@/components/day-news/news-article-card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import { router } from "@inertiajs/react";
-import { Hash, TrendingUp, Users, Calendar, FileText } from "lucide-react";
-import { Head, usePage } from "@inertiajs/react";
-import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface Tag {
     id: string;

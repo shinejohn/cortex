@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
 import { GlassWaterIcon, HeartIcon, MusicIcon, PaletteIcon, StarIcon, SunIcon, UserIcon, UtensilsIcon } from "lucide-react";
 import React from "react";
+import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 
 type Category = {

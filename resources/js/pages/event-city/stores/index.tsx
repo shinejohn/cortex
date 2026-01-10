@@ -1,3 +1,7 @@
+import { Head, Link, router } from "@inertiajs/react";
+import { Package, Search, Store as StoreIcon } from "lucide-react";
+import { useState } from "react";
+import { route } from "ziggy-js";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
 import { Badge } from "@/components/ui/badge";
@@ -6,10 +10,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Auth } from "@/types";
-import { Head, Link, router } from "@inertiajs/react";
-import { Package, Search, Store as StoreIcon } from "lucide-react";
-import { useState } from "react";
-import { route } from "ziggy-js";
 
 interface Product {
     id: string;
@@ -61,7 +61,7 @@ export default function StoresIndex({ auth, stores, filters }: StoresIndexProps)
         );
     };
 
-    const formatPrice = (price: number): string => {
+    const _formatPrice = (price: number): string => {
         return new Intl.NumberFormat("en-US", {
             style: "currency",
             currency: "USD",

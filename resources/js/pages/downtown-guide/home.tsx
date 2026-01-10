@@ -1,5 +1,5 @@
 import { Head, Link } from "@inertiajs/react";
-import { StoreIcon, StarIcon, TagIcon, SparklesIcon, TrendingUpIcon } from "lucide-react";
+import { SparklesIcon, StarIcon, StoreIcon, TagIcon, TrendingUpIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function DowntownGuideHome() {
@@ -50,7 +50,9 @@ export default function DowntownGuideHome() {
                                 <StoreIcon className="h-6 w-6 text-primary" />
                             </div>
                             <h3 className="text-xl font-bold text-foreground">Business Directory</h3>
-                            <p className="mt-2 text-muted-foreground">Find local businesses with detailed profiles, hours, contact information, and more.</p>
+                            <p className="mt-2 text-muted-foreground">
+                                Find local businesses with detailed profiles, hours, contact information, and more.
+                            </p>
                             <Link href={route("downtown-guide.businesses.index")} className="mt-4 inline-block text-primary hover:text-primary">
                                 Browse Businesses →
                             </Link>

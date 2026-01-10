@@ -1,14 +1,13 @@
+import { Head, router, useForm, usePage } from "@inertiajs/react";
+import { Mic, Upload, X } from "lucide-react";
+import { useRef, useState } from "react";
 import { SEO } from "@/components/common/seo";
-import GoLocalVoicesLayout from "@/layouts/go-local-voices-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import GoLocalVoicesLayout from "@/layouts/go-local-voices-layout";
 import type { Auth } from "@/types";
-import { router, useForm } from "@inertiajs/react";
-import { Head, usePage } from "@inertiajs/react";
-import { Mic, Upload, X } from "lucide-react";
-import { useRef, useState } from "react";
 
 interface Podcast {
     id: string;
@@ -23,7 +22,7 @@ interface EpisodeCreatePageProps {
 }
 
 export default function EpisodeCreate() {
-    const { auth, podcast, viewMode } = usePage<EpisodeCreatePageProps>().props;
+    const { auth, podcast } = usePage<EpisodeCreatePageProps>().props;
     const audioInputRef = useRef<HTMLInputElement>(null);
     const [audioPreview, setAudioPreview] = useState<string | null>(null);
 
@@ -67,11 +66,7 @@ export default function EpisodeCreate() {
             <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-white py-12">
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="mb-4">
-                        <Button
-                            variant="ghost"
-                            onClick={() => router.visit(`/podcasts/${podcast.slug}`)}
-                            className="text-primary hover:text-primary"
-                        >
+                        <Button variant="ghost" onClick={() => router.visit(`/podcasts/${podcast.slug}`)} className="text-primary hover:text-primary">
                             ← Back to {podcast.title}
                         </Button>
                     </div>
@@ -215,7 +210,9 @@ export default function EpisodeCreate() {
                                 Cancel
                             </Button>
                         </div>
-                        <p className="text-sm text-muted-foreground">The episode will be saved as a draft. You can publish it from the podcast page.</p>
+                        <p className="text-sm text-muted-foreground">
+                            The episode will be saved as a draft. You can publish it from the podcast page.
+                        </p>
                     </form>
                 </div>
             </div>

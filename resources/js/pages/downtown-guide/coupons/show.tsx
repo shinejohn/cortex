@@ -1,8 +1,8 @@
 import { Head, Link, router } from "@inertiajs/react";
-import { TagIcon, ArrowLeftIcon, CopyIcon, CheckIcon, SparklesIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowLeftIcon, CheckIcon, CopyIcon, SparklesIcon, TagIcon } from "lucide-react";
 import { useState } from "react";
 import { BusinessCard } from "@/components/shared/business/BusinessCard";
+import { Button } from "@/components/ui/button";
 
 interface DowntownGuideCouponsShowProps {
     coupon: {
@@ -50,7 +50,7 @@ export default function DowntownGuideCouponsShow({ coupon, relatedCoupons }: Dow
         setApplying(true);
         try {
             await router.post(route("downtown-guide.coupons.apply", coupon.id));
-        } catch (error) {
+        } catch (_error) {
             // Error handling
         } finally {
             setApplying(false);
@@ -139,7 +139,9 @@ export default function DowntownGuideCouponsShow({ coupon, relatedCoupons }: Dow
                                     {coupon.start_date && (
                                         <div>
                                             <p className="text-xs font-medium text-muted-foreground">Valid From</p>
-                                            <p className="text-sm font-semibold text-foreground">{new Date(coupon.start_date).toLocaleDateString()}</p>
+                                            <p className="text-sm font-semibold text-foreground">
+                                                {new Date(coupon.start_date).toLocaleDateString()}
+                                            </p>
                                         </div>
                                     )}
                                     {coupon.end_date && (

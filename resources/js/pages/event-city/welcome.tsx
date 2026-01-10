@@ -1,3 +1,4 @@
+import { usePage } from "@inertiajs/react";
 import CategoryFilter from "@/components/common/category-filter";
 import CTASection from "@/components/common/cta-section";
 import DateSelector from "@/components/common/date-selector";
@@ -11,7 +12,6 @@ import PerformersGrid from "@/components/performers/performers-grid";
 import VenuesGrid from "@/components/venues/venues-grid";
 import { LocationProvider } from "@/contexts/location-context";
 import { type SharedData } from "@/types";
-import { usePage } from "@inertiajs/react";
 
 export default function Welcome() {
     const { auth } = usePage<SharedData>().props;

@@ -1,14 +1,14 @@
-import { Header } from "@/components/common/header";
-import { Footer } from "@/components/common/footer";
-import { SEO } from "@/components/common/seo";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Auth } from "@/types";
 import { Link, router, usePage } from "@inertiajs/react";
-import { Search, Filter, Grid3x3, List, Calendar, MapPin, Music, Star, TrendingUp, Users, Clock, X } from "lucide-react";
+import { Calendar, Clock, Filter, Grid3x3, List, MapPin, Music, Search, Star, TrendingUp, Users, X } from "lucide-react";
 import { useState } from "react";
+import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
+import { SEO } from "@/components/common/seo";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Auth } from "@/types";
 
 interface Performer {
     id: string;

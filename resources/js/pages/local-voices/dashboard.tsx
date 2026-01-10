@@ -1,11 +1,10 @@
+import { Head, router, usePage } from "@inertiajs/react";
+import { Headphones, Mic, Plus, Users } from "lucide-react";
 import { SEO } from "@/components/common/seo";
-import GoLocalVoicesLayout from "@/layouts/go-local-voices-layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import GoLocalVoicesLayout from "@/layouts/go-local-voices-layout";
 import type { Auth } from "@/types";
-import { router } from "@inertiajs/react";
-import { Head, usePage } from "@inertiajs/react";
-import { Headphones, Mic, Plus, Users } from "lucide-react";
 
 interface CreatorProfile {
     id: string;
@@ -60,7 +59,7 @@ const getStatusColor = (status: string) => {
 };
 
 export default function CreatorDashboard() {
-    const { auth, profile, podcasts, viewMode } = usePage<CreatorDashboardPageProps>().props;
+    const { auth, profile, podcasts } = usePage<CreatorDashboardPageProps>().props;
 
     return (
         <GoLocalVoicesLayout auth={auth}>
@@ -182,7 +181,9 @@ export default function CreatorDashboard() {
                                                 {podcast.status}
                                             </Badge>
                                         </div>
-                                        {podcast.description && <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">{podcast.description}</p>}
+                                        {podcast.description && (
+                                            <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">{podcast.description}</p>
+                                        )}
                                         <div className="flex items-center justify-between text-xs text-muted-foreground">
                                             <span>{podcast.episodes_count} episodes</span>
                                             <span>{podcast.total_listens.toLocaleString()} listens</span>

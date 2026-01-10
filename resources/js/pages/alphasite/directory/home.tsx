@@ -97,7 +97,9 @@ export default function Home({ featuredCommunities, featuredBusinesses, stats }:
                                     )}
                                     <div className="p-6">
                                         <h3 className="text-xl font-semibold mb-2">{community.name}</h3>
-                                        {community.total_businesses && <p className="text-muted-foreground">{community.total_businesses} businesses</p>}
+                                        {community.total_businesses && (
+                                            <p className="text-muted-foreground">{community.total_businesses} businesses</p>
+                                        )}
                                     </div>
                                 </Link>
                             ))}

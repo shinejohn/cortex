@@ -1,8 +1,8 @@
+import { MapPin } from "lucide-react";
+import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { useWeather } from "@/hooks/day-news/use-weather";
 import { getWeatherIcon } from "@/lib/day-news/weather-icons";
-import { MapPin } from "lucide-react";
-import React from "react";
 
 interface Region {
     id: string;

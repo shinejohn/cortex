@@ -1,3 +1,7 @@
+import axios from "axios";
+import { GlobeIcon, ImageIcon, LockIcon, MapPinIcon, UsersIcon, X } from "lucide-react";
+import { useState } from "react";
+import { route } from "ziggy-js";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -5,10 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import type { User } from "@/types";
 import type { CreatePostForm, SocialPost } from "@/types/social";
-import axios from "axios";
-import { GlobeIcon, ImageIcon, LockIcon, MapPinIcon, UsersIcon, X } from "lucide-react";
-import { useState } from "react";
-import { route } from "ziggy-js";
 
 interface CreatePostModalProps {
     isOpen: boolean;

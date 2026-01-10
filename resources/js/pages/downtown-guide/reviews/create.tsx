@@ -1,8 +1,7 @@
-import { Head, Link, useForm } from "@inertiajs/react";
-import { ReviewForm } from "@/components/shared/reviews/ReviewForm";
+import { Head, Link, router, useForm } from "@inertiajs/react";
 import { ArrowLeftIcon, StarIcon } from "lucide-react";
+import { ReviewForm } from "@/components/shared/reviews/ReviewForm";
 import { Button } from "@/components/ui/button";
-import { router } from "@inertiajs/react";
 
 interface DowntownGuideReviewsCreateProps {
     business: {
@@ -107,7 +106,10 @@ export default function DowntownGuideReviewsCreate({ business }: DowntownGuideRe
 
                             {/* Submit */}
                             <div className="flex items-center justify-end gap-4">
-                                <Link href={route("downtown-guide.businesses.show", business.slug)} className="text-muted-foreground hover:text-foreground">
+                                <Link
+                                    href={route("downtown-guide.businesses.show", business.slug)}
+                                    className="text-muted-foreground hover:text-foreground"
+                                >
                                     Cancel
                                 </Link>
                                 <Button type="submit" disabled={processing} className="bg-primary hover:bg-primary">

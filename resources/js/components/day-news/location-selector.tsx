@@ -1,8 +1,8 @@
-import { useLocation } from "@/contexts/location-context";
 import { MapPin, Search } from "lucide-react";
-import React, { useState, useEffect, useRef } from "react";
-import { Input } from "@/components/ui/input";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useLocation } from "@/contexts/location-context";
 import { cn } from "@/lib/utils";
 
 interface Region {
@@ -100,9 +100,7 @@ export default function LocationSelector({ onSelect, className = "" }: LocationS
                             className="w-full justify-start gap-2"
                         >
                             <MapPin className="size-5 text-primary" />
-                            <span className="font-medium">
-                                {isDetecting ? "Detecting..." : "Use my current location"}
-                            </span>
+                            <span className="font-medium">{isDetecting ? "Detecting..." : "Use my current location"}</span>
                         </Button>
                     </div>
 

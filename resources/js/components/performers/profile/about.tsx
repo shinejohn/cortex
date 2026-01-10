@@ -1,7 +1,7 @@
+import { Calendar, Check, MapPin, Music, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PerformerProfile } from "@/types/performer-profile";
-import { Calendar, Check, MapPin, Music, X } from "lucide-react";
 
 interface PerformerAboutProps {
     performer: PerformerProfile;

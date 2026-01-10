@@ -1,12 +1,11 @@
-import { Head, Link } from "@inertiajs/react";
-import { SearchIcon, StoreIcon, CalendarIcon, NewspaperIcon, TagIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Head, Link, router } from "@inertiajs/react";
+import { CalendarIcon, NewspaperIcon, SearchIcon, StoreIcon, TagIcon } from "lucide-react";
 import { useState } from "react";
-import { router } from "@inertiajs/react";
 import { BusinessList } from "@/components/shared/business/BusinessList";
 import { EventList } from "@/components/shared/events/EventList";
 import { NewsList } from "@/components/shared/news/NewsList";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface DowntownGuideSearchIndexProps {
     query: string;

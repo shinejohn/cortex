@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "@inertiajs/react";
 import { ExternalLink } from "lucide-react";
 import React, { useEffect, useRef } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface Advertisement {
     id: number;

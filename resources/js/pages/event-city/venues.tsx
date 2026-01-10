@@ -1,3 +1,6 @@
+import { Head, usePage } from "@inertiajs/react";
+import { FilterIcon, GridIcon, ListIcon, MapIcon, MapPinIcon, SearchIcon, SlidersIcon, StarIcon, XIcon } from "lucide-react";
+import React, { useState } from "react";
 import { Footer } from "@/components/common/footer";
 import { GridCard } from "@/components/common/grid-card";
 import { GridSection } from "@/components/common/grid-section";
@@ -8,14 +11,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { CTASection } from "@/components/venues/CTASection";
 import { EmptyState } from "@/components/venues/EmptyState";
-import { MobileFilterSidebar } from "@/components/venues/MobileFilterSidebar";
 import { FilterSidebar } from "@/components/venues/filter-sidebar";
+import { MobileFilterSidebar } from "@/components/venues/MobileFilterSidebar";
 import { cn } from "@/lib/utils";
 import { SharedData } from "@/types";
 import { NewVenue, TrendingVenue, Venue, VenueFilters, VenuesPageProps } from "@/types/venues";
-import { Head, usePage } from "@inertiajs/react";
-import { FilterIcon, GridIcon, ListIcon, MapIcon, MapPinIcon, SearchIcon, SlidersIcon, StarIcon, XIcon } from "lucide-react";
-import React, { useState } from "react";
 
 type ViewMode = "grid" | "list" | "map";
 type SortOption = "recommended" | "popular" | "newest" | "price_low" | "price_high" | "distance" | "rating" | "capacity";

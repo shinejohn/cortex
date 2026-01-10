@@ -1,8 +1,8 @@
+import { ChevronDown, ChevronUp, Info, Shield, ShieldAlert, ShieldCheck } from "lucide-react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { ChevronDown, ChevronUp, Info, Shield, ShieldAlert, ShieldCheck } from "lucide-react";
-import { useState } from "react";
 
 interface TrustMetricsData {
     fact_accuracy: number;

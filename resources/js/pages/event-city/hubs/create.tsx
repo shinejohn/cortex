@@ -1,16 +1,16 @@
-import { Header } from "@/components/common/header";
+import { router, useForm } from "@inertiajs/react";
+import { AlertCircle, Check, ChevronLeft, Eye, Save } from "lucide-react";
+import { useState } from "react";
 import { Footer } from "@/components/common/footer";
+import { Header } from "@/components/common/header";
 import { SEO } from "@/components/common/seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { Auth } from "@/types";
-import { router, useForm } from "@inertiajs/react";
-import { ChevronLeft, Save, Eye, Check, AlertCircle } from "lucide-react";
-import { useState } from "react";
 
 interface Props {
     auth: Auth;
@@ -180,7 +180,9 @@ export default function HubCreate() {
                             <CardTitle>Hub Preview</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-muted-foreground mb-6">Review your hub before publishing. You can go back to any section to make changes.</p>
+                            <p className="text-muted-foreground mb-6">
+                                Review your hub before publishing. You can go back to any section to make changes.
+                            </p>
                             <div className="aspect-video bg-muted rounded-lg overflow-hidden border border p-8">
                                 <div className="text-center">
                                     <h3 className="text-2xl font-bold mb-2">{data.name || "Hub Name"}</h3>

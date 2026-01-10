@@ -1,9 +1,9 @@
 import { Link } from "@inertiajs/react";
-import { CalendarIcon, MapPinIcon, StarIcon, TicketIcon, ClockIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { CalendarIcon, ClockIcon, MapPinIcon, StarIcon, TicketIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface EventCityBusinessCardProps {
     business: {

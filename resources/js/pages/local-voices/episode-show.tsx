@@ -1,12 +1,11 @@
-import { SEO } from "@/components/common/seo";
-import GoLocalVoicesLayout from "@/layouts/go-local-voices-layout";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import type { Auth } from "@/types";
-import { router } from "@inertiajs/react";
-import { Head, usePage } from "@inertiajs/react";
+import { Head, router, usePage } from "@inertiajs/react";
 import { Calendar, Download, Headphones, Play, Share2 } from "lucide-react";
 import { useRef, useState } from "react";
+import { SEO } from "@/components/common/seo";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import GoLocalVoicesLayout from "@/layouts/go-local-voices-layout";
+import type { Auth } from "@/types";
 
 interface Episode {
     id: string;

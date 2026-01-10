@@ -1,8 +1,8 @@
 import { Link } from "@inertiajs/react";
-import { CalendarIcon, MapPinIcon, DollarSignIcon, Share2Icon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { CalendarIcon, DollarSignIcon, MapPinIcon, Share2Icon } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface EventCardProps {
     event: {
@@ -40,7 +40,7 @@ export function EventCard({
     showPrice = true,
     showShare = false,
 }: EventCardProps) {
-    const [shareSuccess, setShareSuccess] = useState(false);
+    const [_shareSuccess, setShareSuccess] = useState(false);
 
     const themeClasses = {
         daynews: "border-border hover:border-primary/50",
@@ -48,7 +48,7 @@ export function EventCard({
         eventcity: "border-border hover:border-primary/50",
     };
 
-    const categoryColors = {
+    const _categoryColors = {
         daynews: "bg-accent text-accent-foreground",
         downtownsguide: "bg-accent text-accent-foreground",
         eventcity: "bg-accent text-accent-foreground",
@@ -80,7 +80,7 @@ export function EventCard({
                 });
                 setShareSuccess(true);
                 setTimeout(() => setShareSuccess(false), 2000);
-            } catch (error) {
+            } catch (_error) {
                 // User cancelled
             }
         } else {

@@ -1,3 +1,7 @@
+import { Link } from "@inertiajs/react";
+import { ShoppingCart } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { route } from "ziggy-js";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,10 +13,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Link } from "@inertiajs/react";
-import { ShoppingCart } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { route } from "ziggy-js";
 
 interface CartItem {
     id: string;
