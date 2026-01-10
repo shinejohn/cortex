@@ -21,6 +21,18 @@ pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Unit');
 
+// Global test setup
+uses()->beforeEach(function () {
+    // Ensure HTTP is prevented from making real requests
+    \Illuminate\Support\Facades\Http::preventStrayRequests();
+    
+    // Set default test environment
+    config([
+        'app.env' => 'testing',
+        'app.debug' => true,
+    ]);
+})->in('Feature', 'Unit');
+
 /*
 |--------------------------------------------------------------------------
 | Expectations
