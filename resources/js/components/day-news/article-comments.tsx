@@ -38,7 +38,7 @@ interface ArticleCommentsProps {
 export function ArticleComments({ articleId, comments: initialComments, total, auth }: ArticleCommentsProps) {
     const [comments, setComments] = useState<Comment[]>(initialComments);
     const [sortBy, setSortBy] = useState<"best" | "newest" | "oldest">("best");
-    const [showComments, setShowComments] = useState(true);
+    const [showComments] = useState(true);
     const [replyingTo, setReplyingTo] = useState<string | null>(null);
 
     const commentForm = useForm({

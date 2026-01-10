@@ -46,9 +46,11 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
             setIsReplying(false);
             toast.success("Reply posted successfully");
             router.reload({ only: ["thread"] });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Failed to submit reply:", error);
-            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to post reply. Please try again.";
+            const errorMessage = (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message || 
+                                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error || 
+                                "Failed to post reply. Please try again.";
             toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);
@@ -66,9 +68,11 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
             setIsEditing(false);
             toast.success("Reply updated successfully");
             router.reload({ only: ["thread"] });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Failed to edit reply:", error);
-            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to update reply. Please try again.";
+            const errorMessage = (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message || 
+                                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error || 
+                                "Failed to update reply. Please try again.";
             toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);
@@ -81,9 +85,11 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
                 await axios.delete(`/community/reply/${reply.id}`);
                 toast.success("Reply deleted successfully");
                 router.reload({ only: ["thread"] });
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error("Failed to delete reply:", error);
-                const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to delete reply. Please try again.";
+                const errorMessage = (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message || 
+                                    (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error || 
+                                    "Failed to delete reply. Please try again.";
                 toast.error(errorMessage);
             }
         }
@@ -93,9 +99,11 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
         try {
             await axios.post(`/community/reply/${reply.id}/like`);
             router.reload({ only: ["thread"] });
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Failed to like reply:", error);
-            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to like reply. Please try again.";
+            const errorMessage = (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message || 
+                                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error || 
+                                "Failed to like reply. Please try again.";
             toast.error(errorMessage);
         }
     };

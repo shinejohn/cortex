@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { router } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,6 +33,26 @@ export default function NotificationSubscribe({ platform, communityId, initialSu
     });
     const [vapidKey, setVapidKey] = useState<string | null>(null);
 
+    const fetchVapidKey = useCallback(async () => {
+        try {
+            const response = await fetch("/api/notifications/vapid-key");
+            const data = await response.json();
+            setVapidKey(data.publicKey);
+        } catch (error) {
+            console.error("Failed to fetch VAPID key:", error);
+        }
+    }, []);
+
+    const checkExistingSubscription = useCallback(async () => {
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager.getSubscription();
+            setIsSubscribed(!!subscription);
+        } catch (error) {
+            console.error("Error checking subscription:", error);
+        }
+    }, []);
+
     useEffect(() => {
         // Check if push notifications are supported
         if ("serviceWorker" in navigator && "PushManager" in window) {
@@ -41,26 +61,6 @@ export default function NotificationSubscribe({ platform, communityId, initialSu
             fetchVapidKey();
         }
     }, [checkExistingSubscription, fetchVapidKey]);
-
-    const fetchVapidKey = async () => {
-        try {
-            const response = await fetch("/api/notifications/vapid-key");
-            const data = await response.json();
-            setVapidKey(data.publicKey);
-        } catch (error) {
-            console.error("Failed to fetch VAPID key:", error);
-        }
-    };
-
-    const checkExistingSubscription = async () => {
-        try {
-            const registration = await navigator.serviceWorker.ready;
-            const subscription = await registration.pushManager.getSubscription();
-            setIsSubscribed(!!subscription);
-        } catch (error) {
-            console.error("Error checking subscription:", error);
-        }
-    };
 
     const subscribeToPush = async () => {
         setIsLoading(true);

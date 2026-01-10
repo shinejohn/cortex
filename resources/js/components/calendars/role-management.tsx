@@ -24,7 +24,7 @@ export function RoleManagement({ calendarId, editors, ownerId }: RoleManagementP
     const [role, setRole] = useState<"editor" | "admin">("editor");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState("");
-    const [localEditors, setLocalEditors] = useState<CalendarEditor[]>(editors);
+    const [localEditors, _setLocalEditors] = useState<CalendarEditor[]>(editors);
 
     const handleAddEditor = async (e: React.FormEvent) => {
         e.preventDefault();

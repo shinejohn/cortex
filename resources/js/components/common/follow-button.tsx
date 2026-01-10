@@ -50,9 +50,11 @@ export function FollowButton({
             setIsFollowing(response.data.following);
             const action = response.data.following ? "saved" : "unsaved";
             toast.success(`Successfully ${action}`);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Failed to toggle follow:", error);
-            const errorMessage = error.response?.data?.message || error.response?.data?.error || "Failed to update follow status. Please try again.";
+            const errorMessage = (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message || 
+                                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error || 
+                                "Failed to update follow status. Please try again.";
             toast.error(errorMessage);
             // Revert optimistic update
             setIsFollowing(!isFollowing);

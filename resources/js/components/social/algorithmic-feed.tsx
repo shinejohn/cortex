@@ -47,7 +47,7 @@ export function AlgorithmicFeed({ feedType, currentUser, newPosts = [] }: Algori
 
             if (node) observer.current.observe(node);
         },
-        [loadingMore, hasMore, loading],
+        [loadingMore, hasMore, loading, loadMore],
     );
 
     // Load initial feed
