@@ -10,6 +10,10 @@ on:
     - cron: '0 9 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   status-report:
     name: Generate Status Report
@@ -86,6 +90,14 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
+              body: report
+            });
+
+
+              body: report
+            });
+
+
               body: report
             });
 
