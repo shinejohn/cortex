@@ -49,7 +49,22 @@ jobs:
         with:
           php-version: '8.4'
           tools: composer:v2
-          extensions: sqlite, pdo_sqlite, mbstring, xml, ctype, json, fileinfo, openssl, tokenizer
+          extensions: sqlite, pdo_sqlite, mbstring, xml, ctype, json, fileinfo, openssl, tokenizer, pdo, curl, gd, intl, zip
+
+      - name: Copy Environment File (for composer scripts)
+        run: |
+          if [ -f .env.example ]; then
+            cp .env.example .env
+          else
+            echo "APP_NAME=Laravel" > .env
+            echo "APP_ENV=testing" >> .env
+            echo "APP_KEY=" >> .env
+            echo "APP_DEBUG=true" >> .env
+            echo "APP_URL=http://localhost" >> .env
+          fi
+
+      - name: Generate Application Key (for composer scripts)
+        run: php artisan key:generate || true
 
       - name: Install Composer Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
@@ -65,24 +80,17 @@ jobs:
 
       - name: Build Assets
         run: npm run build
-
-      - name: Copy Environment File
-        run: |
-          if [ -f .env.example ]; then
-            cp .env.example .env
-          else
-            echo "APP_NAME=Laravel" > .env
-            echo "APP_ENV=testing" >> .env
-            echo "APP_KEY=" >> .env
-          fi
-
-      - name: Generate Application Key
-        run: php artisan key:generate
+        continue-on-error: false
 
       - name: Clear All Caches
         run: |
           php artisan config:clear || true
           php artisan cache:clear || true
+          php artisan route:clear || true
+          php artisan view:clear || true
+
+      - name: Create Storage Link
+        run: php artisan storage:link || true
 
       - name: Run Tests
         env:
