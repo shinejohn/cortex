@@ -54,7 +54,7 @@ export default function MyTickets() {
     };
 
     const renderOrderCard = (order: TicketOrder) => (
-        <div key={order.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div key={order.id} className="bg-card rounded-lg shadow-sm border border overflow-hidden">
             <div className="flex">
                 <div className="w-24 h-24 flex-shrink-0">
                     <img src={order.event.image} alt={order.event.title} className="w-full h-full object-cover" />
@@ -62,8 +62,8 @@ export default function MyTickets() {
                 <div className="flex-1 p-4">
                     <div className="flex justify-between items-start">
                         <div className="flex-1">
-                            <h3 className="font-bold text-lg text-gray-900 mb-1">{order.event.title}</h3>
-                            <div className="flex items-center text-sm text-gray-600 mb-1">
+                            <h3 className="font-bold text-lg text-foreground mb-1">{order.event.title}</h3>
+                            <div className="flex items-center text-sm text-muted-foreground mb-1">
                                 <CalendarIcon className="h-4 w-4 mr-1" />
                                 {new Date(order.event.event_date).toLocaleDateString("en-US", {
                                     year: "numeric",
@@ -71,15 +71,15 @@ export default function MyTickets() {
                                     day: "numeric",
                                 })}
                             </div>
-                            <div className="flex items-center text-sm text-gray-600 mb-1">
+                            <div className="flex items-center text-sm text-muted-foreground mb-1">
                                 <ClockIcon className="h-4 w-4 mr-1" />
                                 {order.event.time}
                             </div>
-                            <div className="flex items-center text-sm text-gray-600 mb-2">
+                            <div className="flex items-center text-sm text-muted-foreground mb-2">
                                 <MapPinIcon className="h-4 w-4 mr-1" />
                                 {order.event.venue?.name}
                             </div>
-                            <div className="text-sm text-gray-600">
+                            <div className="text-sm text-muted-foreground">
                                 {order.items.map((item, index) => (
                                     <div key={item.id}>
                                         {item.quantity}x {item.ticket_plan.name}
@@ -89,7 +89,7 @@ export default function MyTickets() {
                             </div>
                         </div>
                         <div className="text-right">
-                            <div className="text-lg font-bold text-gray-900 mb-2">${Number(order.total).toFixed(2)}</div>
+                            <div className="text-lg font-bold text-foreground mb-2">${Number(order.total).toFixed(2)}</div>
                             <div className="space-y-2">
                                 {order.status === "completed" && (
                                     <>
@@ -119,33 +119,33 @@ export default function MyTickets() {
 
             <Header auth={auth} />
 
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-muted/50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     {/* Breadcrumb */}
                     <nav className="mb-8">
-                        <div className="flex items-center space-x-2 text-sm text-gray-500">
-                            <Link href="/" className="hover:text-gray-700">
+                        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                            <Link href="/" className="hover:text-foreground">
                                 Home
                             </Link>
                             <span>/</span>
-                            <Link href="/tickets" className="hover:text-gray-700">
+                            <Link href="/tickets" className="hover:text-foreground">
                                 Tickets
                             </Link>
                             <span>/</span>
-                            <span className="text-gray-900">My Tickets</span>
+                            <span className="text-foreground">My Tickets</span>
                         </div>
                     </nav>
 
                     <div className="mb-8">
-                        <h1 className="text-3xl font-bold text-gray-900">My Tickets</h1>
-                        <p className="text-gray-600 mt-2">View and manage all your ticket purchases</p>
+                        <h1 className="text-3xl font-bold text-foreground">My Tickets</h1>
+                        <p className="text-muted-foreground mt-2">View and manage all your ticket purchases</p>
                     </div>
 
                     {orders.length === 0 ? (
                         <div className="text-center py-12">
                             <TicketIcon className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                            <h2 className="text-xl font-medium text-gray-900 mb-2">No tickets yet</h2>
-                            <p className="text-gray-600 mb-6">Browse events and purchase tickets to see them here.</p>
+                            <h2 className="text-xl font-medium text-foreground mb-2">No tickets yet</h2>
+                            <p className="text-muted-foreground mb-6">Browse events and purchase tickets to see them here.</p>
                             <Link href="/events">
                                 <Button>Browse Events</Button>
                             </Link>
@@ -155,7 +155,7 @@ export default function MyTickets() {
                             {/* Completed Orders */}
                             {completedOrders.length > 0 && (
                                 <div className="mb-8">
-                                    <h2 className="text-xl font-bold text-gray-900 mb-4">Your Tickets ({completedOrders.length})</h2>
+                                    <h2 className="text-xl font-bold text-foreground mb-4">Your Tickets ({completedOrders.length})</h2>
                                     <div className="space-y-4">{completedOrders.map(renderOrderCard)}</div>
                                 </div>
                             )}
@@ -163,15 +163,15 @@ export default function MyTickets() {
                             {/* Pending Orders */}
                             {pendingOrders.length > 0 && (
                                 <div className="mb-8">
-                                    <h2 className="text-xl font-bold text-gray-900 mb-4">Pending Orders ({pendingOrders.length})</h2>
+                                    <h2 className="text-xl font-bold text-foreground mb-4">Pending Orders ({pendingOrders.length})</h2>
                                     <div className="space-y-4">{pendingOrders.map(renderOrderCard)}</div>
                                 </div>
                             )}
 
                             {/* Browse More Events */}
-                            <div className="bg-white rounded-lg shadow-sm p-6 text-center">
-                                <h3 className="text-lg font-medium text-gray-900 mb-2">Looking for more events?</h3>
-                                <p className="text-gray-600 mb-4">Discover new events happening in your area.</p>
+                            <div className="bg-card rounded-lg shadow-sm p-6 text-center">
+                                <h3 className="text-lg font-medium text-foreground mb-2">Looking for more events?</h3>
+                                <p className="text-muted-foreground mb-4">Discover new events happening in your area.</p>
                                 <Link href="/events">
                                     <Button>Browse Events</Button>
                                 </Link>

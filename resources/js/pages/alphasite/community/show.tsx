@@ -36,7 +36,7 @@ export default function CommunityShow({ community, businesses, categories, activ
                 <meta name="description" content={community.description || `Businesses in ${community.name}`} />
             </Head>
 
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-muted/50">
                 {/* Hero Section */}
                 <div className="relative h-64 bg-gradient-to-r from-blue-600 to-purple-600">
                     {community.hero_image_url && (
@@ -51,25 +51,25 @@ export default function CommunityShow({ community, businesses, categories, activ
                 </div>
 
                 {/* Stats Bar */}
-                <div className="bg-white border-b border-gray-200">
+                <div className="bg-card border-b border">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                             {community.total_businesses !== undefined && (
                                 <div>
-                                    <div className="text-2xl font-bold text-blue-600">{community.total_businesses}</div>
-                                    <div className="text-gray-600">Total Businesses</div>
+                                    <div className="text-2xl font-bold text-primary">{community.total_businesses}</div>
+                                    <div className="text-muted-foreground">Total Businesses</div>
                                 </div>
                             )}
                             {community.premium_businesses !== undefined && (
                                 <div>
-                                    <div className="text-2xl font-bold text-blue-600">{community.premium_businesses}</div>
-                                    <div className="text-gray-600">Premium Businesses</div>
+                                    <div className="text-2xl font-bold text-primary">{community.premium_businesses}</div>
+                                    <div className="text-muted-foreground">Premium Businesses</div>
                                 </div>
                             )}
                             {community.total_categories !== undefined && (
                                 <div>
-                                    <div className="text-2xl font-bold text-blue-600">{community.total_categories}</div>
-                                    <div className="text-gray-600">Categories</div>
+                                    <div className="text-2xl font-bold text-primary">{community.total_categories}</div>
+                                    <div className="text-muted-foreground">Categories</div>
                                 </div>
                             )}
                         </div>
@@ -78,13 +78,13 @@ export default function CommunityShow({ community, businesses, categories, activ
 
                 {/* Categories Filter */}
                 {categories && categories.length > 0 && (
-                    <div className="bg-white border-b border-gray-200">
+                    <div className="bg-card border-b border">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                             <div className="flex space-x-4 overflow-x-auto">
                                 <Link
                                     href={`/community/${community.slug}`}
                                     className={`px-4 py-2 rounded whitespace-nowrap ${
-                                        !activeCategory ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                        !activeCategory ? "bg-primary text-white" : "bg-muted text-foreground hover:bg-muted"
                                     }`}
                                 >
                                     All
@@ -95,8 +95,8 @@ export default function CommunityShow({ community, businesses, categories, activ
                                         href={`/community/${community.slug}/${category.slug}`}
                                         className={`px-4 py-2 rounded whitespace-nowrap ${
                                             activeCategory === category.slug
-                                                ? "bg-blue-600 text-white"
-                                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                                ? "bg-primary text-white"
+                                                : "bg-muted text-foreground hover:bg-muted"
                                         }`}
                                     >
                                         {category.name}
@@ -114,7 +114,7 @@ export default function CommunityShow({ community, businesses, categories, activ
                             <Link
                                 key={business.id}
                                 href={`/business/${business.slug}`}
-                                className="bg-white rounded-lg shadow hover:shadow-lg transition p-6"
+                                className="bg-card rounded-lg shadow hover:shadow-lg transition p-6"
                             >
                                 <div className="flex items-start space-x-4">
                                     {business.images && business.images.length > 0 && (
@@ -123,7 +123,7 @@ export default function CommunityShow({ community, businesses, categories, activ
                                     <div className="flex-1">
                                         <h3 className="text-lg font-semibold mb-1">{business.name}</h3>
                                         {business.rating && (
-                                            <div className="flex items-center text-sm text-gray-600 mb-2">
+                                            <div className="flex items-center text-sm text-muted-foreground mb-2">
                                                 <svg className="w-4 h-4 text-yellow-400 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                                 </svg>
@@ -131,7 +131,7 @@ export default function CommunityShow({ community, businesses, categories, activ
                                                 {business.reviews_count && <span className="ml-1">({business.reviews_count})</span>}
                                             </div>
                                         )}
-                                        {business.address && <p className="text-sm text-gray-500">{business.address}</p>}
+                                        {business.address && <p className="text-sm text-muted-foreground">{business.address}</p>}
                                     </div>
                                 </div>
                             </Link>
@@ -147,7 +147,7 @@ export default function CommunityShow({ community, businesses, categories, activ
                                         key={index}
                                         href={link.url || "#"}
                                         className={`px-4 py-2 rounded ${
-                                            link.active ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"
+                                            link.active ? "bg-primary text-white" : "bg-card text-foreground hover:bg-muted/50"
                                         } ${!link.url ? "opacity-50 cursor-not-allowed" : ""}`}
                                         dangerouslySetInnerHTML={{ __html: link.label }}
                                     />

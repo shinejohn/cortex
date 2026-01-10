@@ -49,7 +49,7 @@ export default function PerformerOnboarding() {
     };
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-card">
             <SEO
                 type="page"
                 site="event-city"
@@ -60,7 +60,7 @@ export default function PerformerOnboarding() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-purple-700 text-white py-16">
+            <div className="bg-primary text-white py-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
                         <h1 className="text-4xl font-extrabold sm:text-5xl">Grow Your Performance Career</h1>
@@ -80,29 +80,29 @@ export default function PerformerOnboarding() {
                             <div className="flex flex-col items-center">
                                 <div
                                     className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                                        currentStep >= 1 ? "bg-purple-600 text-white" : "bg-gray-200 text-gray-500"
+                                        currentStep >= 1 ? "bg-primary text-white" : "bg-muted text-muted-foreground"
                                     }`}
                                 >
                                     <span className="font-medium">1</span>
                                 </div>
                                 <span className="text-sm mt-2">Learn</span>
                             </div>
-                            <div className={`flex-1 h-1 mx-4 ${currentStep >= 2 ? "bg-purple-600" : "bg-gray-200"}`}></div>
+                            <div className={`flex-1 h-1 mx-4 ${currentStep >= 2 ? "bg-primary" : "bg-muted"}`}></div>
                             <div className="flex flex-col items-center">
                                 <div
                                     className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                                        currentStep >= 2 ? "bg-purple-600 text-white" : "bg-gray-200 text-gray-500"
+                                        currentStep >= 2 ? "bg-primary text-white" : "bg-muted text-muted-foreground"
                                     }`}
                                 >
                                     <span className="font-medium">2</span>
                                 </div>
                                 <span className="text-sm mt-2">Payment</span>
                             </div>
-                            <div className={`flex-1 h-1 mx-4 ${currentStep >= 3 ? "bg-purple-600" : "bg-gray-200"}`}></div>
+                            <div className={`flex-1 h-1 mx-4 ${currentStep >= 3 ? "bg-primary" : "bg-muted"}`}></div>
                             <div className="flex flex-col items-center">
                                 <div
                                     className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                                        currentStep >= 3 ? "bg-purple-600 text-white" : "bg-gray-200 text-gray-500"
+                                        currentStep >= 3 ? "bg-primary text-white" : "bg-muted text-muted-foreground"
                                     }`}
                                 >
                                     <span className="font-medium">3</span>
@@ -123,44 +123,44 @@ export default function PerformerOnboarding() {
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                                 <div className="flex">
                                     <div className="flex-shrink-0">
-                                        <div className="flex items-center justify-center h-12 w-12 rounded-md bg-purple-100 text-purple-600">
+                                        <div className="flex items-center justify-center h-12 w-12 rounded-md bg-accent text-primary">
                                             <Calendar className="h-6 w-6" />
                                         </div>
                                     </div>
                                     <div className="ml-4">
-                                        <h3 className="text-lg font-medium text-gray-900">Book More Gigs</h3>
-                                        <p className="mt-2 text-gray-600">
+                                        <h3 className="text-lg font-medium text-foreground">Book More Gigs</h3>
+                                        <p className="mt-2 text-muted-foreground">
                                             Get discovered by venues and event organizers looking for talent like you.
                                         </p>
                                     </div>
                                 </div>
                                 <div className="flex">
                                     <div className="flex-shrink-0">
-                                        <div className="flex items-center justify-center h-12 w-12 rounded-md bg-purple-100 text-purple-600">
+                                        <div className="flex items-center justify-center h-12 w-12 rounded-md bg-accent text-primary">
                                             <Users className="h-6 w-6" />
                                         </div>
                                     </div>
                                     <div className="ml-4">
-                                        <h3 className="text-lg font-medium text-gray-900">Grow Your Audience</h3>
-                                        <p className="mt-2 text-gray-600">Promote your upcoming shows to our community of local event-goers.</p>
+                                        <h3 className="text-lg font-medium text-foreground">Grow Your Audience</h3>
+                                        <p className="mt-2 text-muted-foreground">Promote your upcoming shows to our community of local event-goers.</p>
                                     </div>
                                 </div>
                                 <div className="flex">
                                     <div className="flex-shrink-0">
-                                        <div className="flex items-center justify-center h-12 w-12 rounded-md bg-purple-100 text-purple-600">
+                                        <div className="flex items-center justify-center h-12 w-12 rounded-md bg-accent text-primary">
                                             <DollarSign className="h-6 w-6" />
                                         </div>
                                     </div>
                                     <div className="ml-4">
-                                        <h3 className="text-lg font-medium text-gray-900">Increase Your Income</h3>
-                                        <p className="mt-2 text-gray-600">
+                                        <h3 className="text-lg font-medium text-foreground">Increase Your Income</h3>
+                                        <p className="mt-2 text-muted-foreground">
                                             Set your rates, negotiate terms, and get paid securely through our platform.
                                         </p>
                                     </div>
                                 </div>
                             </div>
 
-                            <h3 className="text-xl font-semibold text-gray-900 mb-4">What's Included:</h3>
+                            <h3 className="text-xl font-semibold text-foreground mb-4">What's Included:</h3>
                             <ul className="space-y-3 mb-8">
                                 <li className="flex items-start">
                                     <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 mr-2" />
@@ -208,10 +208,10 @@ export default function PerformerOnboarding() {
                                         <CardTitle>Basic</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-3xl font-bold text-purple-600 mb-4">
-                                            $9.99<span className="text-base font-normal text-gray-500">/month</span>
+                                        <div className="text-3xl font-bold text-primary mb-4">
+                                            $9.99<span className="text-base font-normal text-muted-foreground">/month</span>
                                         </div>
-                                        <p className="text-gray-600 mb-6">Perfect for solo performers just getting started</p>
+                                        <p className="text-muted-foreground mb-6">Perfect for solo performers just getting started</p>
                                         <ul className="space-y-3 mb-8">
                                             <li className="flex items-start">
                                                 <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 mr-2" />
@@ -234,17 +234,17 @@ export default function PerformerOnboarding() {
 
                                 {/* Pro Plan */}
                                 <Card className="border-2 border-purple-500 relative">
-                                    <div className="absolute top-0 right-0 bg-purple-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
+                                    <div className="absolute top-0 right-0 bg-accent/500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
                                         POPULAR
                                     </div>
                                     <CardHeader>
                                         <CardTitle>Pro</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-3xl font-bold text-purple-600 mb-4">
-                                            $24.99<span className="text-base font-normal text-gray-500">/month</span>
+                                        <div className="text-3xl font-bold text-primary mb-4">
+                                            $24.99<span className="text-base font-normal text-muted-foreground">/month</span>
                                         </div>
-                                        <p className="text-gray-600 mb-6">For active performers looking to grow</p>
+                                        <p className="text-muted-foreground mb-6">For active performers looking to grow</p>
                                         <ul className="space-y-3 mb-8">
                                             <li className="flex items-start">
                                                 <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 mr-2" />
@@ -273,10 +273,10 @@ export default function PerformerOnboarding() {
                                         <CardTitle>Premium</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-3xl font-bold text-purple-600 mb-4">
-                                            $49.99<span className="text-base font-normal text-gray-500">/month</span>
+                                        <div className="text-3xl font-bold text-primary mb-4">
+                                            $49.99<span className="text-base font-normal text-muted-foreground">/month</span>
                                         </div>
-                                        <p className="text-gray-600 mb-6">For professional bands and established performers</p>
+                                        <p className="text-muted-foreground mb-6">For professional bands and established performers</p>
                                         <ul className="space-y-3 mb-8">
                                             <li className="flex items-start">
                                                 <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 mr-2" />
@@ -303,7 +303,7 @@ export default function PerformerOnboarding() {
                             </div>
 
                             <div className="text-center mb-8">
-                                <p className="text-gray-600">All plans include a 14-day free trial. Cancel anytime.</p>
+                                <p className="text-muted-foreground">All plans include a 14-day free trial. Cancel anytime.</p>
                             </div>
 
                             <div className="flex justify-center">
@@ -340,7 +340,7 @@ export default function PerformerOnboarding() {
                                         className={errors.name ? "border-red-500" : ""}
                                         required
                                     />
-                                    {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+                                    {errors.name && <p className="mt-1 text-sm text-destructive">{errors.name}</p>}
                                 </div>
 
                                 <div>
@@ -359,7 +359,7 @@ export default function PerformerOnboarding() {
                                             <SelectItem value="other">Other</SelectItem>
                                         </SelectContent>
                                     </Select>
-                                    {errors.category && <p className="mt-1 text-sm text-red-600">{errors.category}</p>}
+                                    {errors.category && <p className="mt-1 text-sm text-destructive">{errors.category}</p>}
                                 </div>
 
                                 <div>
@@ -373,7 +373,7 @@ export default function PerformerOnboarding() {
                                         className={errors.bio ? "border-red-500" : ""}
                                         required
                                     />
-                                    {errors.bio && <p className="mt-1 text-sm text-red-600">{errors.bio}</p>}
+                                    {errors.bio && <p className="mt-1 text-sm text-destructive">{errors.bio}</p>}
                                 </div>
 
                                 <div>
@@ -386,7 +386,7 @@ export default function PerformerOnboarding() {
                                         className={errors.location ? "border-red-500" : ""}
                                         required
                                     />
-                                    {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location}</p>}
+                                    {errors.location && <p className="mt-1 text-sm text-destructive">{errors.location}</p>}
                                 </div>
 
                                 <div>
@@ -402,7 +402,7 @@ export default function PerformerOnboarding() {
                                             <SelectItem value="$$$$">$$$$ ($1000+)</SelectItem>
                                         </SelectContent>
                                     </Select>
-                                    {errors.price_range && <p className="mt-1 text-sm text-red-600">{errors.price_range}</p>}
+                                    {errors.price_range && <p className="mt-1 text-sm text-destructive">{errors.price_range}</p>}
                                 </div>
 
                                 <div className="flex justify-center">
@@ -417,55 +417,55 @@ export default function PerformerOnboarding() {
                 )}
 
                 {/* Testimonials */}
-                <Card className="mt-12 bg-purple-50">
+                <Card className="mt-12 bg-accent/50">
                     <CardHeader>
                         <CardTitle className="text-center">What Performers Say About Us</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="bg-white p-6 rounded-lg shadow-sm">
+                            <div className="bg-card p-6 rounded-lg shadow-sm">
                                 <div className="flex items-center mb-4">
                                     {[...Array(5)].map((_, i) => (
                                         <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
                                     ))}
                                 </div>
-                                <p className="text-gray-600 mb-4">
+                                <p className="text-muted-foreground mb-4">
                                     "I've booked 12 gigs in my first month using GoEventCity. The platform connects me directly with venues looking
                                     for my style of music."
                                 </p>
                                 <div className="font-medium">
-                                    <p className="text-gray-900">Sarah Johnson</p>
-                                    <p className="text-gray-500 text-sm">Folk Singer-Songwriter</p>
+                                    <p className="text-foreground">Sarah Johnson</p>
+                                    <p className="text-muted-foreground text-sm">Folk Singer-Songwriter</p>
                                 </div>
                             </div>
-                            <div className="bg-white p-6 rounded-lg shadow-sm">
+                            <div className="bg-card p-6 rounded-lg shadow-sm">
                                 <div className="flex items-center mb-4">
                                     {[...Array(5)].map((_, i) => (
                                         <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
                                     ))}
                                 </div>
-                                <p className="text-gray-600 mb-4">
+                                <p className="text-muted-foreground mb-4">
                                     "As a DJ, I was struggling to find consistent work. Since joining GoEventCity, I'm now booked solid every weekend
                                     and have raised my rates."
                                 </p>
                                 <div className="font-medium">
-                                    <p className="text-gray-900">DJ Coastal</p>
-                                    <p className="text-gray-500 text-sm">Electronic Music DJ</p>
+                                    <p className="text-foreground">DJ Coastal</p>
+                                    <p className="text-muted-foreground text-sm">Electronic Music DJ</p>
                                 </div>
                             </div>
-                            <div className="bg-white p-6 rounded-lg shadow-sm">
+                            <div className="bg-card p-6 rounded-lg shadow-sm">
                                 <div className="flex items-center mb-4">
                                     {[...Array(5)].map((_, i) => (
                                         <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
                                     ))}
                                 </div>
-                                <p className="text-gray-600 mb-4">
+                                <p className="text-muted-foreground mb-4">
                                     "Our band has grown our local following by 300% in just 6 months. The exposure through GoEventCity has been
                                     incredible for us."
                                 </p>
                                 <div className="font-medium">
-                                    <p className="text-gray-900">The Sunset Vibes</p>
-                                    <p className="text-gray-500 text-sm">Indie Rock Band</p>
+                                    <p className="text-foreground">The Sunset Vibes</p>
+                                    <p className="text-muted-foreground text-sm">Indie Rock Band</p>
                                 </div>
                             </div>
                         </div>

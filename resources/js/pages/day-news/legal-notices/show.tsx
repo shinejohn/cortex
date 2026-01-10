@@ -47,13 +47,13 @@ const typeLabels: Record<string, string> = {
 
 const getTypeColor = (type: string) => {
     const colors: Record<string, string> = {
-        foreclosure: "bg-indigo-100 text-indigo-700",
+        foreclosure: "bg-accent text-primary",
         probate: "bg-green-100 text-green-700",
         name_change: "bg-amber-100 text-amber-700",
-        business_formation: "bg-blue-100 text-blue-700",
-        public_hearing: "bg-purple-100 text-purple-700",
+        business_formation: "bg-accent text-primary",
+        public_hearing: "bg-accent text-primary",
     };
-    return colors[type] || "bg-gray-100 text-gray-700";
+    return colors[type] || "bg-muted text-foreground";
 };
 
 export default function LegalNoticeShow() {

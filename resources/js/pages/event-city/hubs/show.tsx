@@ -63,7 +63,7 @@ export default function HubShow() {
     const canEdit = userRole === "owner" || userRole === "admin" || userRole === "editor";
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             <SEO
                 type="page"
                 site="event-city"
@@ -77,7 +77,7 @@ export default function HubShow() {
 
             {/* Hub Header */}
             <div
-                className="bg-gray-900 text-white relative"
+                className="bg-muted text-foreground relative"
                 style={{
                     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${hub.banner_image || hub.image})`,
                     backgroundSize: "cover",
@@ -95,22 +95,22 @@ export default function HubShow() {
                         <div>
                             <div className="flex items-center gap-2 mb-2">
                                 <h1 className="text-3xl font-bold">{hub.name}</h1>
-                                {hub.is_verified && <Badge className="bg-blue-600">Verified</Badge>}
-                                {hub.is_featured && <Badge className="bg-indigo-600">Featured</Badge>}
+                                {hub.is_verified && <Badge className="bg-primary">Verified</Badge>}
+                                {hub.is_featured && <Badge className="bg-primary">Featured</Badge>}
                             </div>
                             <p className="mt-2 text-white/80 max-w-2xl">{hub.description}</p>
                         </div>
                         {canEdit && (
                             <div className="mt-4 md:mt-0 flex items-center space-x-2">
                                 <Link href={`/hubs/${hub.slug}/builder`}>
-                                    <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+                                    <Button variant="outline" className="bg-card/10 border-white/20 text-white hover:bg-card/20">
                                         <Settings className="h-4 w-4 mr-2" />
                                         Manage Hub
                                     </Button>
                                 </Link>
                                 {hub.analytics_enabled && (
                                     <Link href={`/hubs/${hub.slug}/analytics`}>
-                                        <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+                                        <Button variant="outline" className="bg-card/10 border-white/20 text-white hover:bg-card/20">
                                             <BarChart3 className="h-4 w-4 mr-2" />
                                             Analytics
                                         </Button>
@@ -142,7 +142,7 @@ export default function HubShow() {
                                             <CardTitle>About</CardTitle>
                                         </CardHeader>
                                         <CardContent>
-                                            <p className="text-gray-700 whitespace-pre-wrap">{hub.about}</p>
+                                            <p className="text-foreground whitespace-pre-wrap">{hub.about}</p>
                                         </CardContent>
                                     </Card>
                                 )}
@@ -155,20 +155,20 @@ export default function HubShow() {
                                     <CardContent>
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                             <div>
-                                                <div className="text-2xl font-bold text-gray-900">{hub.members_count}</div>
-                                                <div className="text-sm text-gray-500">Members</div>
+                                                <div className="text-2xl font-bold text-foreground">{hub.members_count}</div>
+                                                <div className="text-sm text-muted-foreground">Members</div>
                                             </div>
                                             <div>
-                                                <div className="text-2xl font-bold text-gray-900">{hub.events_count}</div>
-                                                <div className="text-sm text-gray-500">Events</div>
+                                                <div className="text-2xl font-bold text-foreground">{hub.events_count}</div>
+                                                <div className="text-sm text-muted-foreground">Events</div>
                                             </div>
                                             <div>
-                                                <div className="text-2xl font-bold text-gray-900">{hub.articles_count}</div>
-                                                <div className="text-sm text-gray-500">Articles</div>
+                                                <div className="text-2xl font-bold text-foreground">{hub.articles_count}</div>
+                                                <div className="text-sm text-muted-foreground">Articles</div>
                                             </div>
                                             <div>
-                                                <div className="text-2xl font-bold text-gray-900">{hub.followers_count}</div>
-                                                <div className="text-sm text-gray-500">Followers</div>
+                                                <div className="text-2xl font-bold text-foreground">{hub.followers_count}</div>
+                                                <div className="text-sm text-muted-foreground">Followers</div>
                                             </div>
                                         </div>
                                     </CardContent>
@@ -184,24 +184,24 @@ export default function HubShow() {
                                     <CardContent className="space-y-3">
                                         {hub.category && (
                                             <div>
-                                                <div className="text-sm text-gray-500">Category</div>
+                                                <div className="text-sm text-muted-foreground">Category</div>
                                                 <div className="font-medium">{hub.category}</div>
                                             </div>
                                         )}
                                         {hub.location && (
                                             <div>
-                                                <div className="text-sm text-gray-500">Location</div>
+                                                <div className="text-sm text-muted-foreground">Location</div>
                                                 <div className="font-medium">{hub.location}</div>
                                             </div>
                                         )}
                                         {hub.website && (
                                             <div>
-                                                <div className="text-sm text-gray-500">Website</div>
+                                                <div className="text-sm text-muted-foreground">Website</div>
                                                 <a
                                                     href={hub.website}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="font-medium text-indigo-600 hover:text-indigo-800"
+                                                    className="font-medium text-primary hover:text-primary/80"
                                                 >
                                                     Visit Website
                                                 </a>
@@ -221,7 +221,7 @@ export default function HubShow() {
                                                 {hub.members.slice(0, 5).map((member) => (
                                                     <div key={member.id} className="flex items-center justify-between">
                                                         <div className="flex items-center">
-                                                            <div className="h-8 w-8 rounded-full bg-gray-200 overflow-hidden mr-2">
+                                                            <div className="h-8 w-8 rounded-full bg-muted overflow-hidden mr-2">
                                                                 <img
                                                                     src={member.user.avatar || `https://ui-avatars.com/api/?name=${member.user.name}`}
                                                                     alt={member.user.name}
@@ -230,7 +230,7 @@ export default function HubShow() {
                                                             </div>
                                                             <div>
                                                                 <div className="text-sm font-medium">{member.user.name}</div>
-                                                                <div className="text-xs text-gray-500">{member.role}</div>
+                                                                <div className="text-xs text-muted-foreground">{member.role}</div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -265,7 +265,7 @@ export default function HubShow() {
                                     </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-gray-600">Events will be displayed here.</p>
+                                    <p className="text-muted-foreground">Events will be displayed here.</p>
                                 </CardContent>
                             </Card>
                         </TabsContent>
@@ -278,7 +278,7 @@ export default function HubShow() {
                                     <CardTitle>Articles</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-gray-600">Articles will be displayed here.</p>
+                                    <p className="text-muted-foreground">Articles will be displayed here.</p>
                                 </CardContent>
                             </Card>
                         </TabsContent>
@@ -291,7 +291,7 @@ export default function HubShow() {
                                     <CardTitle>Community</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-gray-600">Community discussions will be displayed here.</p>
+                                    <p className="text-muted-foreground">Community discussions will be displayed here.</p>
                                 </CardContent>
                             </Card>
                         </TabsContent>
@@ -304,7 +304,7 @@ export default function HubShow() {
                                     <CardTitle>Gallery</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-gray-600">Gallery images will be displayed here.</p>
+                                    <p className="text-muted-foreground">Gallery images will be displayed here.</p>
                                 </CardContent>
                             </Card>
                         </TabsContent>

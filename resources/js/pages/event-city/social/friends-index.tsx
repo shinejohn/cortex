@@ -71,22 +71,22 @@ export default function FriendsIndex({ friends, sentRequests }: Props) {
     return (
         <AppLayout>
             <Head title="Friends" />
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-muted/50">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     {/* Page header */}
                     <div className="mb-6">
-                        <h1 className="text-2xl font-bold text-gray-900">Friends</h1>
-                        <p className="text-gray-600">
+                        <h1 className="text-2xl font-bold text-foreground">Friends</h1>
+                        <p className="text-muted-foreground">
                             Your friends on the platform ({friends.length} friends{requests.length > 0 ? `, ${requests.length} pending requests` : ""}
                             )
                         </p>
                     </div>
 
                     {/* Search and filter */}
-                    <div className="bg-white rounded-lg shadow mb-6 p-4">
+                    <div className="bg-card rounded-lg shadow mb-6 p-4">
                         <div className="flex flex-col sm:flex-row gap-4">
                             <div className="relative flex-grow">
-                                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                 <Input
                                     type="text"
                                     placeholder="Search friends by name or username"
@@ -106,13 +106,13 @@ export default function FriendsIndex({ friends, sentRequests }: Props) {
 
                     {/* Sent requests section */}
                     {filteredRequests.length > 0 && (
-                        <div className="bg-white rounded-lg shadow mb-6">
-                            <div className="p-4 border-b border-gray-200">
+                        <div className="bg-card rounded-lg shadow mb-6">
+                            <div className="p-4 border-b border">
                                 <div className="flex items-center gap-2">
                                     <ClockIcon className="h-5 w-5 text-amber-500" />
-                                    <h2 className="text-lg font-medium text-gray-900">Pending Friend Requests ({filteredRequests.length})</h2>
+                                    <h2 className="text-lg font-medium text-foreground">Pending Friend Requests ({filteredRequests.length})</h2>
                                 </div>
-                                <p className="text-sm text-gray-500 mt-1">Friend requests you've sent that are waiting for a response</p>
+                                <p className="text-sm text-muted-foreground mt-1">Friend requests you've sent that are waiting for a response</p>
                             </div>
                             <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {filteredRequests.map((request) => (
@@ -120,9 +120,9 @@ export default function FriendsIndex({ friends, sentRequests }: Props) {
                                         <div className="flex items-center">
                                             <img src={request.avatar} alt={request.name} className="h-16 w-16 rounded-full object-cover" />
                                             <div className="ml-4 flex-1 min-w-0">
-                                                <h3 className="font-medium text-gray-900 truncate">{request.name}</h3>
-                                                <p className="text-sm text-gray-500 truncate">@{request.username}</p>
-                                                {request.location && <p className="text-xs text-gray-400 truncate">{request.location}</p>}
+                                                <h3 className="font-medium text-foreground truncate">{request.name}</h3>
+                                                <p className="text-sm text-muted-foreground truncate">@{request.username}</p>
+                                                {request.location && <p className="text-xs text-muted-foreground truncate">{request.location}</p>}
                                                 <div className="flex items-center gap-1 mt-1">
                                                     <ClockIcon className="h-3 w-3 text-amber-500" />
                                                     <span className="text-xs text-amber-600 font-medium">Pending</span>
@@ -154,21 +154,21 @@ export default function FriendsIndex({ friends, sentRequests }: Props) {
                     )}
 
                     {/* Friends grid */}
-                    <div className="bg-white rounded-lg shadow">
-                        <div className="p-4 border-b border-gray-200">
-                            <h2 className="text-lg font-medium text-gray-900">All Friends ({filteredFriends.length})</h2>
+                    <div className="bg-card rounded-lg shadow">
+                        <div className="p-4 border-b border">
+                            <h2 className="text-lg font-medium text-foreground">All Friends ({filteredFriends.length})</h2>
                         </div>
 
                         {filteredFriends.length > 0 ? (
                             <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {filteredFriends.map((friend) => (
-                                    <div key={friend.id} className="border border-gray-200 rounded-lg p-4">
+                                    <div key={friend.id} className="border border rounded-lg p-4">
                                         <div className="flex items-center">
                                             <img src={friend.avatar} alt={friend.name} className="h-16 w-16 rounded-full object-cover" />
                                             <div className="ml-4 flex-1 min-w-0">
-                                                <h3 className="font-medium text-gray-900 truncate">{friend.name}</h3>
-                                                <p className="text-sm text-gray-500 truncate">@{friend.username}</p>
-                                                {friend.location && <p className="text-xs text-gray-400 truncate">{friend.location}</p>}
+                                                <h3 className="font-medium text-foreground truncate">{friend.name}</h3>
+                                                <p className="text-sm text-muted-foreground truncate">@{friend.username}</p>
+                                                {friend.location && <p className="text-xs text-muted-foreground truncate">{friend.location}</p>}
                                             </div>
                                         </div>
 
@@ -190,15 +190,15 @@ export default function FriendsIndex({ friends, sentRequests }: Props) {
                             </div>
                         ) : searchQuery ? (
                             <div className="p-8 text-center">
-                                <SearchIcon className="h-12 w-12 mx-auto text-gray-400 mb-3" />
-                                <h3 className="text-lg font-medium text-gray-900 mb-2">No friends found</h3>
-                                <p className="text-gray-500">No friends match your search query "{searchQuery}".</p>
+                                <SearchIcon className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+                                <h3 className="text-lg font-medium text-foreground mb-2">No friends found</h3>
+                                <p className="text-muted-foreground">No friends match your search query "{searchQuery}".</p>
                             </div>
                         ) : (
                             <div className="p-8 text-center">
-                                <UsersIcon className="h-12 w-12 mx-auto text-gray-400 mb-3" />
-                                <h3 className="text-lg font-medium text-gray-900 mb-2">No friends yet</h3>
-                                <p className="text-gray-500 mb-4">Start connecting with people to build your network.</p>
+                                <UsersIcon className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+                                <h3 className="text-lg font-medium text-foreground mb-2">No friends yet</h3>
+                                <p className="text-muted-foreground mb-4">Start connecting with people to build your network.</p>
                                 <Link href="/social">
                                     <Button>Explore Social Feed</Button>
                                 </Link>

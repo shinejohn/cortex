@@ -90,7 +90,7 @@ export default function LocalVoicesIndex() {
                         <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                             Go Local Voices
                         </h1>
-                        <p className="text-xl text-gray-600 mb-6">Discover and share local podcasts from your community</p>
+                        <p className="text-xl text-muted-foreground mb-6">Discover and share local podcasts from your community</p>
                         {auth && (
                             <Button
                                 onClick={() => router.visit("/register")}
@@ -106,13 +106,13 @@ export default function LocalVoicesIndex() {
                     <form onSubmit={handleSearch} className="mb-8 space-y-4">
                         <div className="flex gap-4 max-w-2xl mx-auto">
                             <div className="relative flex-1">
-                                <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                                <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                                 <Input
                                     type="text"
                                     value={searchForm.data.search}
                                     onChange={(e) => searchForm.setData("search", e.target.value)}
                                     placeholder="Search podcasts..."
-                                    className="pl-10 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                                    className="pl-10 border focus:border-purple-500 focus:ring-purple-500"
                                 />
                             </div>
                             <Button
@@ -134,7 +134,7 @@ export default function LocalVoicesIndex() {
                                     className={
                                         searchForm.data.category === cat.value
                                             ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
-                                            : "border-gray-300 hover:border-purple-500"
+                                            : "border hover:border-purple-500"
                                     }
                                     onClick={() => {
                                         searchForm.setData("category", cat.value);
@@ -156,8 +156,8 @@ export default function LocalVoicesIndex() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 {podcasts.data.length === 0 ? (
                     <div className="py-12 text-center">
-                        <Mic className="mx-auto mb-4 h-16 w-16 text-gray-400" />
-                        <p className="text-gray-600 text-lg mb-2">No podcasts found.</p>
+                        <Mic className="mx-auto mb-4 h-16 w-16 text-muted-foreground" />
+                        <p className="text-muted-foreground text-lg mb-2">No podcasts found.</p>
                         {auth && (
                             <Button
                                 className="mt-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
@@ -172,7 +172,7 @@ export default function LocalVoicesIndex() {
                         {podcasts.data.map((podcast) => (
                             <div
                                 key={podcast.id}
-                                className="cursor-pointer rounded-lg border border-gray-200 bg-white transition-all hover:shadow-lg hover:border-purple-300"
+                                className="cursor-pointer rounded-lg border border bg-card transition-all hover:shadow-lg hover:border-purple-300"
                                 onClick={() => router.visit(`/podcasts/${podcast.slug}`)}
                             >
                                 {podcast.cover_image ? (
@@ -183,17 +183,17 @@ export default function LocalVoicesIndex() {
                                     </div>
                                 )}
                                 <div className="p-5">
-                                    <h3 className="mb-2 text-lg font-semibold text-gray-900">{podcast.title}</h3>
-                                    {podcast.description && <p className="mb-3 line-clamp-2 text-sm text-gray-600">{podcast.description}</p>}
+                                    <h3 className="mb-2 text-lg font-semibold text-foreground">{podcast.title}</h3>
+                                    {podcast.description && <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">{podcast.description}</p>}
                                     <div className="mb-3 flex items-center gap-2">
                                         <img
                                             src={podcast.creator.avatar || "/default-avatar.png"}
                                             alt={podcast.creator.display_name}
-                                            className="h-6 w-6 rounded-full object-cover border border-gray-200"
+                                            className="h-6 w-6 rounded-full object-cover border border"
                                         />
-                                        <span className="text-sm text-gray-600">{podcast.creator.display_name}</span>
+                                        <span className="text-sm text-muted-foreground">{podcast.creator.display_name}</span>
                                     </div>
-                                    <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
+                                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
                                         <div className="flex items-center gap-4">
                                             <span>{podcast.episodes_count} episodes</span>
                                             <span>{podcast.subscribers_count} subscribers</span>
@@ -201,7 +201,7 @@ export default function LocalVoicesIndex() {
                                         <span>{podcast.total_listens.toLocaleString()} listens</span>
                                     </div>
                                     {podcast.category && (
-                                        <Badge variant="outline" className="mt-2 border-purple-200 text-purple-700 bg-purple-50">
+                                        <Badge variant="outline" className="mt-2 border text-primary bg-accent/50">
                                             {podcast.category}
                                         </Badge>
                                     )}
@@ -222,7 +222,7 @@ export default function LocalVoicesIndex() {
                                 className={
                                     link.active
                                         ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
-                                        : "border-gray-300 hover:border-purple-500"
+                                        : "border hover:border-purple-500"
                                 }
                                 onClick={() => link.url && router.visit(link.url)}
                                 disabled={!link.url}

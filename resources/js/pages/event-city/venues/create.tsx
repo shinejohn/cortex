@@ -187,7 +187,7 @@ export default function CreateVenue({ workspace }: Props) {
                                         required
                                         className="mt-1"
                                     />
-                                    {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+                                    {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
                                 </div>
 
                                 <div>
@@ -201,7 +201,7 @@ export default function CreateVenue({ workspace }: Props) {
                                         rows={4}
                                         className="mt-1"
                                     />
-                                    {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+                                    {errors.description && <p className="text-sm text-destructive mt-1">{errors.description}</p>}
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
@@ -216,7 +216,7 @@ export default function CreateVenue({ workspace }: Props) {
                                             required
                                             className="mt-1"
                                         />
-                                        {errors.venue_type && <p className="text-sm text-red-500 mt-1">{errors.venue_type}</p>}
+                                        {errors.venue_type && <p className="text-sm text-destructive mt-1">{errors.venue_type}</p>}
                                     </div>
 
                                     <div>
@@ -231,7 +231,7 @@ export default function CreateVenue({ workspace }: Props) {
                                             min="1"
                                             className="mt-1"
                                         />
-                                        {errors.capacity && <p className="text-sm text-red-500 mt-1">{errors.capacity}</p>}
+                                        {errors.capacity && <p className="text-sm text-destructive mt-1">{errors.capacity}</p>}
                                     </div>
                                 </div>
                             </CardContent>
@@ -345,7 +345,7 @@ export default function CreateVenue({ workspace }: Props) {
                                             readOnly
                                             className="mt-1 bg-muted"
                                         />
-                                        {errors.latitude && <p className="text-sm text-red-500 mt-1">{errors.latitude}</p>}
+                                        {errors.latitude && <p className="text-sm text-destructive mt-1">{errors.latitude}</p>}
                                     </div>
 
                                     <div>
@@ -358,7 +358,7 @@ export default function CreateVenue({ workspace }: Props) {
                                             readOnly
                                             className="mt-1 bg-muted"
                                         />
-                                        {errors.longitude && <p className="text-sm text-red-500 mt-1">{errors.longitude}</p>}
+                                        {errors.longitude && <p className="text-sm text-destructive mt-1">{errors.longitude}</p>}
                                     </div>
                                 </div>
                             </CardContent>

@@ -195,7 +195,7 @@ export default function CalendarsPage() {
                                         <div className="text-xs text-muted-foreground">Followers</div>
                                     </div>
                                     <div className="text-center">
-                                        <div className="text-lg sm:text-xl font-bold text-purple-600">{stats.active_curators}</div>
+                                        <div className="text-lg sm:text-xl font-bold text-primary">{stats.active_curators}</div>
                                         <div className="text-xs text-muted-foreground">Curators</div>
                                     </div>
                                 </div>

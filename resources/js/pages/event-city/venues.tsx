@@ -189,7 +189,7 @@ export default function VenuesPage() {
                                     <div className="text-xs text-muted-foreground">Events This Week</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-lg sm:text-xl font-bold text-purple-600">{stats.newVenuesThisWeek}</div>
+                                    <div className="text-lg sm:text-xl font-bold text-primary">{stats.newVenuesThisWeek}</div>
                                     <div className="text-xs text-muted-foreground">New This Week</div>
                                 </div>
                             </div>

@@ -38,7 +38,7 @@ export default function PerformerShow() {
             />
             <Header auth={auth} />
 
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-muted/50">
                 <PerformerHero performer={performer} isFollowing={isFollowing} />
 
                 <PerformerQuickStats performer={performer} />

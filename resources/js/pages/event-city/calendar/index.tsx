@@ -61,7 +61,7 @@ export default function CalendarPage() {
             case "sunny":
                 return <Sun className="h-5 w-5 text-yellow-500" />;
             case "cloudy":
-                return <Cloud className="h-5 w-5 text-gray-400" />;
+                return <Cloud className="h-5 w-5 text-muted-foreground" />;
             case "rainy":
                 return <CloudRain className="h-5 w-5 text-blue-400" />;
             default:
@@ -79,7 +79,7 @@ export default function CalendarPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             <SEO
                 type="page"
                 site="event-city"
@@ -94,8 +94,8 @@ export default function CalendarPage() {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Event Calendar</h1>
-                        <p className="mt-1 text-gray-600">{events.length} events found</p>
+                        <h1 className="text-3xl font-bold text-foreground">Event Calendar</h1>
+                        <p className="mt-1 text-muted-foreground">{events.length} events found</p>
                     </div>
                     <div className="mt-4 md:mt-0 flex items-center space-x-2">
                         {viewMode === "month" && (
@@ -150,8 +150,8 @@ export default function CalendarPage() {
                                                 />
                                             </div>
                                             <div className="flex-1">
-                                                <h3 className="text-lg font-semibold text-gray-900">{event.title}</h3>
-                                                <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                                                <h3 className="text-lg font-semibold text-foreground">{event.title}</h3>
+                                                <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                                     <div className="flex items-center">
                                                         <Calendar className="h-4 w-4 mr-1" />
                                                         {formatDate(event.event_date)}
@@ -165,12 +165,12 @@ export default function CalendarPage() {
                                                         {event.venue.name}
                                                     </div>
                                                     {event.distance && (
-                                                        <div className="text-gray-500">{event.distance.miles.toFixed(1)} miles away</div>
+                                                        <div className="text-muted-foreground">{event.distance.miles.toFixed(1)} miles away</div>
                                                     )}
                                                     {event.weather && <div className="flex items-center">{getWeatherIcon(event.weather)}</div>}
                                                 </div>
                                                 <div className="mt-2 flex items-center justify-between">
-                                                    <span className="text-sm font-medium text-indigo-600">
+                                                    <span className="text-sm font-medium text-primary">
                                                         {event.is_free ? "Free" : `$${event.price_min}+`}
                                                     </span>
                                                     <Button size="sm" variant="outline">
@@ -188,7 +188,7 @@ export default function CalendarPage() {
                     <TabsContent value="month" className="mt-6">
                         <Card>
                             <CardContent className="p-6">
-                                <div className="text-center text-gray-500">Calendar grid view will be implemented here</div>
+                                <div className="text-center text-muted-foreground">Calendar grid view will be implemented here</div>
                             </CardContent>
                         </Card>
                     </TabsContent>
@@ -224,8 +224,8 @@ export default function CalendarPage() {
                                                     />
                                                 </div>
                                                 <div className="flex-1">
-                                                    <h3 className="text-lg font-semibold text-gray-900">{event.title}</h3>
-                                                    <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                                                    <h3 className="text-lg font-semibold text-foreground">{event.title}</h3>
+                                                    <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                                         <div className="flex items-center">
                                                             <Clock className="h-4 w-4 mr-1" />
                                                             {event.time}
@@ -236,7 +236,7 @@ export default function CalendarPage() {
                                                         </div>
                                                     </div>
                                                     <div className="mt-2">
-                                                        <span className="text-sm font-medium text-indigo-600">
+                                                        <span className="text-sm font-medium text-primary">
                                                             {event.is_free ? "Free" : `$${event.price_min}+`}
                                                         </span>
                                                     </div>
@@ -277,8 +277,8 @@ export default function CalendarPage() {
                                                     />
                                                 </div>
                                                 <div className="flex-1">
-                                                    <h3 className="text-lg font-semibold text-gray-900">{event.title}</h3>
-                                                    <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                                                    <h3 className="text-lg font-semibold text-foreground">{event.title}</h3>
+                                                    <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                                         <div className="flex items-center">
                                                             <Calendar className="h-4 w-4 mr-1" />
                                                             {formatDate(event.event_date)}
@@ -293,7 +293,7 @@ export default function CalendarPage() {
                                                         </div>
                                                     </div>
                                                     <div className="mt-2">
-                                                        <span className="text-sm font-medium text-indigo-600">
+                                                        <span className="text-sm font-medium text-primary">
                                                             {event.is_free ? "Free" : `$${event.price_min}+`}
                                                         </span>
                                                     </div>

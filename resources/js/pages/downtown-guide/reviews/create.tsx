@@ -49,11 +49,11 @@ export default function DowntownGuideReviewsCreate({ business }: DowntownGuideRe
                 </div>
 
                 <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
-                    <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
+                    <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {/* Rating */}
                             <div>
-                                <label className="mb-2 block text-sm font-medium text-gray-700">Your Rating *</label>
+                                <label className="mb-2 block text-sm font-medium text-foreground">Your Rating *</label>
                                 <div className="flex items-center gap-2">
                                     {[1, 2, 3, 4, 5].map((rating) => (
                                         <button key={rating} type="button" onClick={() => setData("rating", rating)} className="focus:outline-none">
@@ -64,16 +64,16 @@ export default function DowntownGuideReviewsCreate({ business }: DowntownGuideRe
                                             />
                                         </button>
                                     ))}
-                                    <span className="ml-2 text-sm text-gray-600">
+                                    <span className="ml-2 text-sm text-muted-foreground">
                                         {data.rating} {data.rating === 1 ? "star" : "stars"}
                                     </span>
                                 </div>
-                                {errors.rating && <p className="mt-1 text-sm text-red-600">{errors.rating}</p>}
+                                {errors.rating && <p className="mt-1 text-sm text-destructive">{errors.rating}</p>}
                             </div>
 
                             {/* Title */}
                             <div>
-                                <label htmlFor="title" className="mb-2 block text-sm font-medium text-gray-700">
+                                <label htmlFor="title" className="mb-2 block text-sm font-medium text-foreground">
                                     Review Title (Optional)
                                 </label>
                                 <input
@@ -81,15 +81,15 @@ export default function DowntownGuideReviewsCreate({ business }: DowntownGuideRe
                                     id="title"
                                     value={data.title}
                                     onChange={(e) => setData("title", e.target.value)}
-                                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                                    className="w-full rounded-lg border border px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
                                     placeholder="Summarize your experience"
                                 />
-                                {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
+                                {errors.title && <p className="mt-1 text-sm text-destructive">{errors.title}</p>}
                             </div>
 
                             {/* Content */}
                             <div>
-                                <label htmlFor="content" className="mb-2 block text-sm font-medium text-gray-700">
+                                <label htmlFor="content" className="mb-2 block text-sm font-medium text-foreground">
                                     Your Review *
                                 </label>
                                 <textarea
@@ -97,20 +97,20 @@ export default function DowntownGuideReviewsCreate({ business }: DowntownGuideRe
                                     value={data.content}
                                     onChange={(e) => setData("content", e.target.value)}
                                     rows={6}
-                                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                                    className="w-full rounded-lg border border px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
                                     placeholder="Share your experience with this business..."
                                     required
                                 />
-                                {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content}</p>}
-                                <p className="mt-1 text-xs text-gray-500">Minimum 10 characters required</p>
+                                {errors.content && <p className="mt-1 text-sm text-destructive">{errors.content}</p>}
+                                <p className="mt-1 text-xs text-muted-foreground">Minimum 10 characters required</p>
                             </div>
 
                             {/* Submit */}
                             <div className="flex items-center justify-end gap-4">
-                                <Link href={route("downtown-guide.businesses.show", business.slug)} className="text-gray-600 hover:text-gray-900">
+                                <Link href={route("downtown-guide.businesses.show", business.slug)} className="text-muted-foreground hover:text-foreground">
                                     Cancel
                                 </Link>
-                                <Button type="submit" disabled={processing} className="bg-purple-600 hover:bg-purple-700">
+                                <Button type="submit" disabled={processing} className="bg-primary hover:bg-primary">
                                     {processing ? "Submitting..." : "Submit Review"}
                                 </Button>
                             </div>

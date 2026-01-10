@@ -125,7 +125,7 @@ export default function CalendarShow() {
     };
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-card">
             <Head title={calendar.title} />
             <Header auth={auth} />
 
@@ -136,7 +136,7 @@ export default function CalendarShow() {
                 <div className="absolute bottom-0 left-0 right-0 p-8">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-white">
-                            <Button variant="ghost" onClick={handleBack} className="mb-4 text-white hover:text-gray-200 hover:bg-white/10 p-2">
+                            <Button variant="ghost" onClick={handleBack} className="mb-4 text-white hover:text-gray-200 hover:bg-card/10 p-2">
                                 <ArrowLeft className="h-4 w-4 mr-1" />
                                 Back to Calendars
                             </Button>
@@ -145,7 +145,7 @@ export default function CalendarShow() {
                                     <h1 className="text-4xl font-bold mb-4 flex items-center">
                                         {calendar.title}
                                         {calendar.is_verified && (
-                                            <Badge className="ml-2 bg-blue-100 text-blue-800">
+                                            <Badge className="ml-2 bg-accent text-primary">
                                                 <CheckCircle className="h-3.5 w-3.5 mr-1" />
                                                 Verified
                                             </Badge>
@@ -168,7 +168,7 @@ export default function CalendarShow() {
                                 </div>
                                 {canEdit && (
                                     <Link href={`/calendars/${calendar.id}/edit`}>
-                                        <Button variant="secondary" className="bg-white text-gray-900 hover:bg-gray-100">
+                                        <Button variant="secondary" className="bg-card text-foreground hover:bg-accent">
                                             <MessageCircle className="h-5 w-5 mr-2" />
                                             Edit Calendar
                                         </Button>
@@ -181,18 +181,18 @@ export default function CalendarShow() {
             </div>
 
             {/* Context Bar */}
-            <div className="bg-indigo-50 py-3">
+            <div className="bg-accent/50 py-3">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-wrap items-center justify-between gap-4">
                         <div className="flex items-center text-sm">
                             <Calendar className="h-4 w-4 text-indigo-500 mr-1" />
                             <span className="font-medium text-gray-800">{calendar.category}</span>
                         </div>
-                        <div className="flex items-center text-sm text-gray-700">
-                            <Clock className="h-4 w-4 text-gray-500 mr-1" />
+                        <div className="flex items-center text-sm text-foreground">
+                            <Clock className="h-4 w-4 text-muted-foreground mr-1" />
                             Updates {calendar.update_frequency}
                         </div>
-                        <div className="flex items-center text-sm text-gray-700">
+                        <div className="flex items-center text-sm text-foreground">
                             <DollarSign className="h-4 w-4 text-green-500 mr-1" />
                             {Number(calendar.subscription_price) > 0 ? `$${Number(calendar.subscription_price).toFixed(2)}/month` : "Free"}
                         </div>
@@ -210,17 +210,17 @@ export default function CalendarShow() {
                             <CardContent className="p-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     <div>
-                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Category</h3>
+                                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Category</h3>
                                         <Badge variant="secondary">{calendar.category}</Badge>
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Update Frequency</h3>
+                                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Update Frequency</h3>
                                         <p className="text-base font-medium capitalize">{calendar.update_frequency}</p>
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Subscription</h3>
+                                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Subscription</h3>
                                         <div className="flex items-center">
-                                            <DollarSign className="h-4 w-4 text-gray-400 mr-1" />
+                                            <DollarSign className="h-4 w-4 text-muted-foreground mr-1" />
                                             <p className="text-base font-medium">
                                                 {Number(calendar.subscription_price) > 0
                                                     ? `$${Number(calendar.subscription_price).toFixed(2)}/month`
@@ -229,9 +229,9 @@ export default function CalendarShow() {
                                         </div>
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Curator</h3>
+                                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Curator</h3>
                                         <div className="flex items-center">
-                                            <div className="h-6 w-6 rounded-full bg-gray-200 overflow-hidden mr-2">
+                                            <div className="h-6 w-6 rounded-full bg-muted overflow-hidden mr-2">
                                                 <img
                                                     src={
                                                         calendar.user.avatar ||
@@ -283,9 +283,9 @@ export default function CalendarShow() {
                                                     <Link
                                                         key={event.id}
                                                         href={`/events/${event.id}`}
-                                                        className="flex items-start hover:bg-gray-50 p-3 -mx-3 rounded-md"
+                                                        className="flex items-start hover:bg-muted/50 p-3 -mx-3 rounded-md"
                                                     >
-                                                        <div className="h-16 w-16 rounded-md overflow-hidden flex-shrink-0 bg-gray-200">
+                                                        <div className="h-16 w-16 rounded-md overflow-hidden flex-shrink-0 bg-muted">
                                                             <img
                                                                 src={event.image || "/images/event-placeholder.jpg"}
                                                                 alt={event.title}
@@ -293,18 +293,18 @@ export default function CalendarShow() {
                                                             />
                                                         </div>
                                                         <div className="ml-4 flex-1">
-                                                            <h5 className="text-base font-medium text-gray-900 line-clamp-1">{event.title}</h5>
-                                                            <p className="text-sm text-gray-500 mt-1">
+                                                            <h5 className="text-base font-medium text-foreground line-clamp-1">{event.title}</h5>
+                                                            <p className="text-sm text-muted-foreground mt-1">
                                                                 {formatEventDate(event.event_date)} • {event.time}
                                                             </p>
                                                             {event.venue && (
-                                                                <div className="flex items-center text-xs text-gray-600 mt-1">
+                                                                <div className="flex items-center text-xs text-muted-foreground mt-1">
                                                                     <MapPin className="h-3 w-3 mr-1" />
                                                                     {event.venue.name}
                                                                 </div>
                                                             )}
                                                             <div className="mt-2 flex items-center justify-between">
-                                                                <span className="text-sm text-gray-900 font-medium">
+                                                                <span className="text-sm text-foreground font-medium">
                                                                     {event.is_free
                                                                         ? "Free"
                                                                         : event.price_min === event.price_max
@@ -320,7 +320,7 @@ export default function CalendarShow() {
                                                 ))}
                                             </div>
                                         ) : (
-                                            <p className="text-gray-500">No events in this calendar yet</p>
+                                            <p className="text-muted-foreground">No events in this calendar yet</p>
                                         )}
                                     </CardContent>
                                 </Card>
@@ -334,35 +334,35 @@ export default function CalendarShow() {
                                     <CardContent>
                                         <div className="space-y-4">
                                             <div>
-                                                <h4 className="text-sm font-medium text-gray-900 mb-2">Description</h4>
-                                                <p className="text-gray-700 leading-relaxed">{calendar.description || "No description available."}</p>
+                                                <h4 className="text-sm font-medium text-foreground mb-2">Description</h4>
+                                                <p className="text-foreground leading-relaxed">{calendar.description || "No description available."}</p>
                                             </div>
 
                                             {calendar.about && (
-                                                <div className="border-t border-gray-200 pt-4">
-                                                    <h4 className="text-sm font-medium text-gray-900 mb-2">More Details</h4>
-                                                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{calendar.about}</p>
+                                                <div className="border-t border pt-4">
+                                                    <h4 className="text-sm font-medium text-foreground mb-2">More Details</h4>
+                                                    <p className="text-foreground leading-relaxed whitespace-pre-wrap">{calendar.about}</p>
                                                 </div>
                                             )}
 
-                                            <div className="border-t border-gray-200 pt-4">
-                                                <h4 className="text-sm font-medium text-gray-900 mb-2">Calendar Stats</h4>
+                                            <div className="border-t border pt-4">
+                                                <h4 className="text-sm font-medium text-foreground mb-2">Calendar Stats</h4>
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div>
-                                                        <p className="text-xs text-gray-500">Total Events</p>
-                                                        <p className="text-lg font-semibold text-gray-900">{calendar.events_count}</p>
+                                                        <p className="text-xs text-muted-foreground">Total Events</p>
+                                                        <p className="text-lg font-semibold text-foreground">{calendar.events_count}</p>
                                                     </div>
                                                     <div>
-                                                        <p className="text-xs text-gray-500">Followers</p>
-                                                        <p className="text-lg font-semibold text-gray-900">{calendar.followers_count}</p>
+                                                        <p className="text-xs text-muted-foreground">Followers</p>
+                                                        <p className="text-lg font-semibold text-foreground">{calendar.followers_count}</p>
                                                     </div>
                                                     <div>
-                                                        <p className="text-xs text-gray-500">Category</p>
-                                                        <p className="text-sm font-medium text-gray-900">{calendar.category}</p>
+                                                        <p className="text-xs text-muted-foreground">Category</p>
+                                                        <p className="text-sm font-medium text-foreground">{calendar.category}</p>
                                                     </div>
                                                     <div>
-                                                        <p className="text-xs text-gray-500">Created</p>
-                                                        <p className="text-sm font-medium text-gray-900">
+                                                        <p className="text-xs text-muted-foreground">Created</p>
+                                                        <p className="text-sm font-medium text-foreground">
                                                             {new Date(calendar.created_at).toLocaleDateString()}
                                                         </p>
                                                     </div>
@@ -384,12 +384,12 @@ export default function CalendarShow() {
                                         {/* Editors Section */}
                                         {calendar.editors && calendar.editors.length > 0 && (
                                             <div className="mb-6">
-                                                <h4 className="text-sm font-medium text-gray-900 mb-3">Editors & Admins</h4>
+                                                <h4 className="text-sm font-medium text-foreground mb-3">Editors & Admins</h4>
                                                 <div className="space-y-3">
                                                     {calendar.editors.map((editor) => (
                                                         <div key={editor.id} className="flex items-center justify-between">
                                                             <div className="flex items-center">
-                                                                <div className="h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                                                <div className="h-10 w-10 rounded-full bg-muted overflow-hidden mr-3">
                                                                     <img
                                                                         src={
                                                                             editor.avatar ||
@@ -400,8 +400,8 @@ export default function CalendarShow() {
                                                                     />
                                                                 </div>
                                                                 <div>
-                                                                    <p className="font-medium text-gray-900">{editor.name}</p>
-                                                                    <p className="text-xs text-gray-500 capitalize">{editor.pivot.role}</p>
+                                                                    <p className="font-medium text-foreground">{editor.name}</p>
+                                                                    <p className="text-xs text-muted-foreground capitalize">{editor.pivot.role}</p>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -414,11 +414,11 @@ export default function CalendarShow() {
                                         {/* Followers Section */}
                                         {followers && followers.length > 0 ? (
                                             <div>
-                                                <h4 className="text-sm font-medium text-gray-900 mb-3">Followers</h4>
+                                                <h4 className="text-sm font-medium text-foreground mb-3">Followers</h4>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                     {followers.map((follower) => (
                                                         <div key={follower.id} className="flex items-center">
-                                                            <div className="h-8 w-8 rounded-full bg-gray-200 overflow-hidden mr-2">
+                                                            <div className="h-8 w-8 rounded-full bg-muted overflow-hidden mr-2">
                                                                 <img
                                                                     src={`https://ui-avatars.com/api/?name=${encodeURIComponent(follower.name)}`}
                                                                     alt={follower.name}
@@ -426,14 +426,14 @@ export default function CalendarShow() {
                                                                 />
                                                             </div>
                                                             <div>
-                                                                <p className="text-sm font-medium text-gray-900">{follower.name}</p>
+                                                                <p className="text-sm font-medium text-foreground">{follower.name}</p>
                                                             </div>
                                                         </div>
                                                     ))}
                                                 </div>
                                             </div>
                                         ) : (
-                                            <p className="text-gray-500">No followers yet</p>
+                                            <p className="text-muted-foreground">No followers yet</p>
                                         )}
                                     </CardContent>
                                 </Card>
@@ -453,34 +453,34 @@ export default function CalendarShow() {
                         <Card className="mb-6">
                             <CardHeader>
                                 <CardTitle className="flex items-center">
-                                    <Calendar className="h-5 w-5 text-gray-500 mr-2" />
+                                    <Calendar className="h-5 w-5 text-muted-foreground mr-2" />
                                     Calendar Info
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="flex items-start justify-between">
                                     <div>
-                                        <h4 className="font-medium text-gray-900">{calendar.title}</h4>
-                                        <p className="text-sm text-gray-500 mt-1">{calendar.category}</p>
-                                        {calendar.location && <p className="text-xs text-gray-400">{calendar.location}</p>}
+                                        <h4 className="font-medium text-foreground">{calendar.title}</h4>
+                                        <p className="text-sm text-muted-foreground mt-1">{calendar.category}</p>
+                                        {calendar.location && <p className="text-xs text-muted-foreground">{calendar.location}</p>}
                                     </div>
                                 </div>
                                 <Separator />
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm text-gray-600">Followers</span>
+                                        <span className="text-sm text-muted-foreground">Followers</span>
                                         <span className="font-medium">{calendar.followers_count}</span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm text-gray-600">Events</span>
+                                        <span className="text-sm text-muted-foreground">Events</span>
                                         <span className="font-medium">{calendar.events_count}</span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm text-gray-600">Updates</span>
+                                        <span className="text-sm text-muted-foreground">Updates</span>
                                         <span className="font-medium capitalize">{calendar.update_frequency}</span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm text-gray-600">Price</span>
+                                        <span className="text-sm text-muted-foreground">Price</span>
                                         <span className="font-medium">
                                             {Number(calendar.subscription_price) > 0
                                                 ? `$${Number(calendar.subscription_price).toFixed(2)}/mo`
@@ -503,13 +503,13 @@ export default function CalendarShow() {
                         <Card className="mb-6">
                             <CardHeader>
                                 <CardTitle className="flex items-center">
-                                    <Users className="h-5 w-5 text-gray-500 mr-2" />
+                                    <Users className="h-5 w-5 text-muted-foreground mr-2" />
                                     Curator
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="flex items-center">
-                                    <div className="h-12 w-12 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                    <div className="h-12 w-12 rounded-full bg-muted overflow-hidden mr-3">
                                         <img
                                             src={calendar.user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(calendar.user.name)}`}
                                             alt={calendar.user.name}
@@ -517,8 +517,8 @@ export default function CalendarShow() {
                                         />
                                     </div>
                                     <div>
-                                        <p className="font-medium text-gray-900">{calendar.user.name}</p>
-                                        <p className="text-sm text-gray-500">Calendar Owner</p>
+                                        <p className="font-medium text-foreground">{calendar.user.name}</p>
+                                        <p className="text-sm text-muted-foreground">Calendar Owner</p>
                                     </div>
                                 </div>
                             </CardContent>
@@ -538,23 +538,23 @@ export default function CalendarShow() {
                                         <Link
                                             key={event.id}
                                             href={`/events/${event.id}`}
-                                            className="flex items-start hover:bg-gray-50 p-2 -mx-2 rounded-md"
+                                            className="flex items-start hover:bg-muted/50 p-2 -mx-2 rounded-md"
                                         >
                                             <div className="flex-shrink-0 w-10 text-center">
-                                                <div className="text-sm font-bold text-gray-900">{new Date(event.event_date).getDate()}</div>
-                                                <div className="text-xs text-gray-500">
+                                                <div className="text-sm font-bold text-foreground">{new Date(event.event_date).getDate()}</div>
+                                                <div className="text-xs text-muted-foreground">
                                                     {new Date(event.event_date).toLocaleDateString("en-US", {
                                                         month: "short",
                                                     })}
                                                 </div>
                                             </div>
                                             <div className="ml-3 flex-1">
-                                                <h5 className="text-sm font-medium text-gray-900 line-clamp-1">{event.title}</h5>
-                                                <div className="text-xs text-gray-500 flex items-center mt-1">
+                                                <h5 className="text-sm font-medium text-foreground line-clamp-1">{event.title}</h5>
+                                                <div className="text-xs text-muted-foreground flex items-center mt-1">
                                                     <Clock className="h-3 w-3 mr-1" />
                                                     {event.time}
                                                 </div>
-                                                <div className="text-xs text-gray-600 mt-1">
+                                                <div className="text-xs text-muted-foreground mt-1">
                                                     {event.is_free
                                                         ? "Free"
                                                         : event.price_min === event.price_max
@@ -565,7 +565,7 @@ export default function CalendarShow() {
                                         </Link>
                                     ))}
                                     <Separator />
-                                    <Button variant="ghost" size="sm" className="w-full text-indigo-600" onClick={() => setActiveTab("events")}>
+                                    <Button variant="ghost" size="sm" className="w-full text-primary" onClick={() => setActiveTab("events")}>
                                         View all events
                                         <ArrowRight className="h-4 w-4 ml-1" />
                                     </Button>
@@ -589,27 +589,27 @@ export default function CalendarShow() {
                         <CardContent>
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                                    <label className="block text-sm font-medium text-foreground mb-1">Your Name</label>
                                     <input
                                         type="text"
                                         placeholder="Enter your name"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 border border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                    <label className="block text-sm font-medium text-foreground mb-1">Email Address</label>
                                     <input
                                         type="email"
                                         placeholder="Enter your email"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 border border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                                    <label className="block text-sm font-medium text-foreground mb-1">Message</label>
                                     <textarea
                                         rows={4}
                                         placeholder="What would you like to know about this calendar?"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 border border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     ></textarea>
                                 </div>
                             </div>

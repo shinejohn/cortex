@@ -29,7 +29,7 @@ export default function MagicLink({ status, error, auth, invitation }: { status?
             <Head title="Magic Link" />
 
             {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
-            {error && <div className="mb-4 text-center text-sm font-medium text-red-600">{error}</div>}
+            {error && <div className="mb-4 text-center text-sm font-medium text-destructive">{error}</div>}
 
             <div className="space-y-6">
                 <form onSubmit={submit}>

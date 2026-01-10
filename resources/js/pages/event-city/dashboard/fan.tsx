@@ -154,7 +154,7 @@ export default function FanDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             <SEO
                 type="page"
                 site="event-city"
@@ -165,7 +165,7 @@ export default function FanDashboard() {
             <Header auth={auth} />
 
             {/* Dashboard Header */}
-            <div className="bg-indigo-700 text-white">
+            <div className="bg-primary text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                         <div>
@@ -173,11 +173,11 @@ export default function FanDashboard() {
                             <p className="mt-1 text-indigo-200">Keep track of your favorite artists, upcoming shows, and exclusive content</p>
                         </div>
                         <div className="mt-4 md:mt-0 flex space-x-3">
-                            <Button variant="outline" className="bg-white text-indigo-700 hover:bg-indigo-50">
+                            <Button variant="outline" className="bg-card text-primary hover:bg-accent/50">
                                 <Bell className="h-5 w-5 mr-2" />
                                 Notifications
                             </Button>
-                            <Button variant="outline" className="bg-indigo-600 text-white hover:bg-indigo-700">
+                            <Button variant="outline" className="bg-primary text-white hover:bg-primary">
                                 <Settings className="h-5 w-5 mr-2" />
                                 Settings
                             </Button>
@@ -188,19 +188,19 @@ export default function FanDashboard() {
                     <div className="mt-6">
                         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
                             <TabsList className="bg-transparent text-white border-white/20">
-                                <TabsTrigger value="artists" className="data-[state=active]:bg-indigo-800">
+                                <TabsTrigger value="artists" className="data-[state=active]:bg-primary">
                                     <Music className="mr-2 h-5 w-5" />
                                     My Artists
                                 </TabsTrigger>
-                                <TabsTrigger value="shows" className="data-[state=active]:bg-indigo-800">
+                                <TabsTrigger value="shows" className="data-[state=active]:bg-primary">
                                     <Ticket className="mr-2 h-5 w-5" />
                                     Upcoming Shows
                                 </TabsTrigger>
-                                <TabsTrigger value="content" className="data-[state=active]:bg-indigo-800">
+                                <TabsTrigger value="content" className="data-[state=active]:bg-primary">
                                     <Star className="mr-2 h-5 w-5" />
                                     Exclusive Content
                                 </TabsTrigger>
-                                <TabsTrigger value="activity" className="data-[state=active]:bg-indigo-800">
+                                <TabsTrigger value="activity" className="data-[state=active]:bg-primary">
                                     <User className="mr-2 h-5 w-5" />
                                     My Activity
                                 </TabsTrigger>
@@ -218,20 +218,20 @@ export default function FanDashboard() {
                         {activeTab === "artists" && (
                             <div>
                                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-                                    <h2 className="text-2xl font-bold text-gray-900">My Artists</h2>
+                                    <h2 className="text-2xl font-bold text-foreground">My Artists</h2>
                                     <div className="mt-3 md:mt-0 flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
                                         <div className="relative">
-                                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                             <input
                                                 type="text"
                                                 placeholder="Search artists"
-                                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                                className="block w-full pl-10 pr-3 py-2 border border rounded-md bg-card placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                             />
                                         </div>
                                         <select
                                             value={artistSort}
                                             onChange={(e) => setArtistSort(e.target.value)}
-                                            className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                            className="block w-full pl-3 pr-10 py-2 text-base border border focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                                         >
                                             <option value="recently-active">Recently Active</option>
                                             <option value="a-z">A-Z</option>
@@ -259,24 +259,24 @@ export default function FanDashboard() {
                                             </div>
                                             <CardContent className="p-4">
                                                 <div className="flex items-center justify-between">
-                                                    <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                                                    <h3 className="text-lg font-semibold text-foreground flex items-center">
                                                         {artist.name}
                                                         {artist.is_verified && <CheckCircle className="h-4 w-4 text-blue-500 ml-1" />}
                                                     </h3>
                                                 </div>
-                                                <div className="mt-1 flex items-center text-sm text-gray-500">
+                                                <div className="mt-1 flex items-center text-sm text-muted-foreground">
                                                     <MapPin className="h-4 w-4 mr-1" />
                                                     {artist.location}
                                                 </div>
-                                                <div className="mt-1 flex items-center text-sm text-gray-500">
+                                                <div className="mt-1 flex items-center text-sm text-muted-foreground">
                                                     <Music className="h-4 w-4 mr-1" />
                                                     {artist.genre}
                                                 </div>
                                                 <div className="mt-3 flex items-center justify-between">
-                                                    <span className="text-sm font-medium text-indigo-600">
+                                                    <span className="text-sm font-medium text-primary">
                                                         {artist.upcoming_shows} upcoming {artist.upcoming_shows === 1 ? "show" : "shows"}
                                                     </span>
-                                                    <span className="text-xs text-gray-500">
+                                                    <span className="text-xs text-muted-foreground">
                                                         Last active {new Date(artist.last_active).toLocaleDateString()}
                                                     </span>
                                                 </div>
@@ -303,9 +303,9 @@ export default function FanDashboard() {
                         {activeTab === "shows" && (
                             <div>
                                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-                                    <h2 className="text-2xl font-bold text-gray-900">Upcoming Shows</h2>
+                                    <h2 className="text-2xl font-bold text-foreground">Upcoming Shows</h2>
                                     <div className="mt-3 md:mt-0 flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
-                                        <div className="flex border border-gray-300 rounded-md overflow-hidden">
+                                        <div className="flex border border rounded-md overflow-hidden">
                                             <Button variant={showView === "list" ? "default" : "ghost"} size="sm" onClick={() => setShowView("list")}>
                                                 List
                                             </Button>
@@ -321,7 +321,7 @@ export default function FanDashboard() {
                                         <select
                                             value={distanceFilter}
                                             onChange={(e) => setDistanceFilter(e.target.value)}
-                                            className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                            className="block w-full pl-3 pr-10 py-2 text-base border border focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                                         >
                                             <option value="all">All Locations</option>
                                             <option value="local">Local (≤ 50 miles)</option>
@@ -342,7 +342,7 @@ export default function FanDashboard() {
                                             {filteredShows.length > 0 ? (
                                                 <ul className="divide-y divide-gray-200">
                                                     {filteredShows.map((show) => (
-                                                        <li key={show.id} className="px-4 py-4 sm:px-6 hover:bg-gray-50">
+                                                        <li key={show.id} className="px-4 py-4 sm:px-6 hover:bg-muted/50">
                                                             <div className="flex items-center justify-between">
                                                                 <div className="flex items-center">
                                                                     <div className="flex-shrink-0 h-12 w-12 rounded-md overflow-hidden">
@@ -353,10 +353,10 @@ export default function FanDashboard() {
                                                                         />
                                                                     </div>
                                                                     <div className="ml-4">
-                                                                        <div className="text-sm font-medium text-indigo-600">
+                                                                        <div className="text-sm font-medium text-primary">
                                                                             {formatDate(show.date)}
                                                                         </div>
-                                                                        <div className="text-sm text-gray-500">{formatTime(show.date)}</div>
+                                                                        <div className="text-sm text-muted-foreground">{formatTime(show.date)}</div>
                                                                     </div>
                                                                 </div>
                                                                 <div className="ml-2 flex-shrink-0 flex">
@@ -379,26 +379,26 @@ export default function FanDashboard() {
                                                             </div>
                                                             <div className="mt-2 sm:flex sm:justify-between">
                                                                 <div className="sm:flex">
-                                                                    <div className="flex items-center text-sm text-gray-500">
-                                                                        <Music className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-                                                                        <span className="font-medium text-gray-900">{show.artist_name}</span>
+                                                                    <div className="flex items-center text-sm text-muted-foreground">
+                                                                        <Music className="flex-shrink-0 mr-1.5 h-5 w-5 text-muted-foreground" />
+                                                                        <span className="font-medium text-foreground">{show.artist_name}</span>
                                                                     </div>
-                                                                    <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                                                                        <MapPin className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
+                                                                    <div className="mt-2 flex items-center text-sm text-muted-foreground sm:mt-0 sm:ml-6">
+                                                                        <MapPin className="flex-shrink-0 mr-1.5 h-5 w-5 text-muted-foreground" />
                                                                         <p>
                                                                             {show.venue_name}, {show.venue_location}
                                                                         </p>
                                                                     </div>
                                                                 </div>
-                                                                <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                                                                <div className="mt-2 flex items-center text-sm text-muted-foreground sm:mt-0">
                                                                     <span>${show.ticket_price}</span>
                                                                     <Button size="sm" className="ml-4">
                                                                         Get Tickets
                                                                     </Button>
                                                                 </div>
                                                             </div>
-                                                            <div className="mt-2 flex items-center text-sm text-gray-500">
-                                                                <MapPin className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
+                                                            <div className="mt-2 flex items-center text-sm text-muted-foreground">
+                                                                <MapPin className="flex-shrink-0 mr-1.5 h-5 w-5 text-muted-foreground" />
                                                                 <p>{show.distance.toFixed(1)} miles away</p>
                                                             </div>
                                                         </li>
@@ -406,9 +406,9 @@ export default function FanDashboard() {
                                                 </ul>
                                             ) : (
                                                 <div className="px-4 py-12 text-center">
-                                                    <Ticket className="mx-auto h-12 w-12 text-gray-400" />
-                                                    <h3 className="mt-2 text-lg font-medium text-gray-900">No shows found</h3>
-                                                    <p className="mt-1 text-sm text-gray-500">
+                                                    <Ticket className="mx-auto h-12 w-12 text-muted-foreground" />
+                                                    <h3 className="mt-2 text-lg font-medium text-foreground">No shows found</h3>
+                                                    <p className="mt-1 text-sm text-muted-foreground">
                                                         Try adjusting your filters or follow more artists to see their upcoming shows.
                                                     </p>
                                                 </div>
@@ -423,11 +423,11 @@ export default function FanDashboard() {
                         {activeTab === "content" && (
                             <div>
                                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-                                    <h2 className="text-2xl font-bold text-gray-900">Exclusive Content</h2>
+                                    <h2 className="text-2xl font-bold text-foreground">Exclusive Content</h2>
                                     <select
                                         value={contentFilter}
                                         onChange={(e) => setContentFilter(e.target.value)}
-                                        className="block w-full md:w-auto pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                        className="block w-full md:w-auto pl-3 pr-10 py-2 text-base border border focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                                     >
                                         <option value="all">All Content</option>
                                         <option value="release">New Releases</option>
@@ -455,15 +455,15 @@ export default function FanDashboard() {
                                                 </div>
                                             </div>
                                             <CardContent className="p-4">
-                                                <div className="flex items-center text-sm text-gray-500">
+                                                <div className="flex items-center text-sm text-muted-foreground">
                                                     <Music className="h-4 w-4 mr-1" />
                                                     {content.artist_name}
                                                 </div>
-                                                <div className="mt-1 flex items-center text-sm text-gray-500">
+                                                <div className="mt-1 flex items-center text-sm text-muted-foreground">
                                                     <Calendar className="h-4 w-4 mr-1" />
                                                     {formatDate(content.date)}
                                                 </div>
-                                                <p className="mt-3 text-sm text-gray-600">{content.description}</p>
+                                                <p className="mt-3 text-sm text-muted-foreground">{content.description}</p>
                                                 <div className="mt-4 flex space-x-2">
                                                     <Button className="flex-1">
                                                         {content.type === "release" && "Listen Now"}
@@ -482,7 +482,7 @@ export default function FanDashboard() {
                         {/* My Activity Section */}
                         {activeTab === "activity" && (
                             <div>
-                                <h2 className="text-2xl font-bold text-gray-900 mb-6">My Activity</h2>
+                                <h2 className="text-2xl font-bold text-foreground mb-6">My Activity</h2>
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                     {/* Reviews Written */}
                                     <Card>
@@ -499,9 +499,9 @@ export default function FanDashboard() {
                                                         <li key={review.id} className="py-4">
                                                             <div className="flex items-center justify-between">
                                                                 <div className="flex items-center">
-                                                                    <div className="text-sm font-medium text-indigo-600">{review.artist_name}</div>
+                                                                    <div className="text-sm font-medium text-primary">{review.artist_name}</div>
                                                                     <div className="mx-2 text-gray-300">•</div>
-                                                                    <div className="text-sm text-gray-500">{review.event_name}</div>
+                                                                    <div className="text-sm text-muted-foreground">{review.event_name}</div>
                                                                 </div>
                                                                 <div className="flex items-center">
                                                                     <div className="flex items-center">
@@ -512,12 +512,12 @@ export default function FanDashboard() {
                                                                             />
                                                                         ))}
                                                                     </div>
-                                                                    <div className="ml-2 text-sm text-gray-500">{formatDate(review.date)}</div>
+                                                                    <div className="ml-2 text-sm text-muted-foreground">{formatDate(review.date)}</div>
                                                                 </div>
                                                             </div>
-                                                            <p className="mt-2 text-sm text-gray-600">{review.content}</p>
+                                                            <p className="mt-2 text-sm text-muted-foreground">{review.content}</p>
                                                             <div className="mt-2 flex items-center justify-between">
-                                                                <div className="flex items-center text-sm text-gray-500">
+                                                                <div className="flex items-center text-sm text-muted-foreground">
                                                                     <Heart className="h-4 w-4 mr-1 text-pink-500" />
                                                                     {review.likes} likes
                                                                 </div>
@@ -526,7 +526,7 @@ export default function FanDashboard() {
                                                     ))}
                                                 </ul>
                                             ) : (
-                                                <div className="text-center py-5 text-gray-500">You haven't written any reviews yet.</div>
+                                                <div className="text-center py-5 text-muted-foreground">You haven't written any reviews yet.</div>
                                             )}
                                         </CardContent>
                                     </Card>
@@ -574,13 +574,13 @@ export default function FanDashboard() {
                     <div className="space-y-8">
                         {/* Planned Events Widget */}
                         <div>
-                            <h2 className="text-xl font-semibold text-gray-900 mb-4">Upcoming Events</h2>
+                            <h2 className="text-xl font-semibold text-foreground mb-4">Upcoming Events</h2>
                             <PlannedEventsWidget />
                         </div>
 
                         {/* Friends' Check-ins */}
                         <div>
-                            <h2 className="text-xl font-semibold text-gray-900 mb-4">Friends' Activity</h2>
+                            <h2 className="text-xl font-semibold text-foreground mb-4">Friends' Activity</h2>
                             <CheckInFeed checkIns={[]} />
                         </div>
                     </div>

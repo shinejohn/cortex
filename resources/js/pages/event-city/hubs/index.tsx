@@ -49,7 +49,7 @@ export default function HubsIndex() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             <SEO
                 type="page"
                 site="event-city"
@@ -61,16 +61,16 @@ export default function HubsIndex() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-indigo-700 text-white">
+            <div className="bg-primary text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
                     <div className="max-w-3xl">
                         <h1 className="text-3xl md:text-4xl font-bold mb-4">Discover Local Communities</h1>
                         <p className="text-lg text-indigo-100 mb-8">
                             Connect with people who share your interests, join local groups, and never miss what's happening in your area.
                         </p>
-                        <form onSubmit={handleSearch} className="bg-white rounded-lg p-2 flex items-center shadow-md">
+                        <form onSubmit={handleSearch} className="bg-card rounded-lg p-2 flex items-center shadow-md">
                             <div className="flex-grow flex items-center">
-                                <Search className="h-5 w-5 text-gray-400 ml-2 mr-2" />
+                                <Search className="h-5 w-5 text-muted-foreground ml-2 mr-2" />
                                 <input
                                     type="text"
                                     placeholder="Search communities..."
@@ -79,13 +79,13 @@ export default function HubsIndex() {
                                     className="w-full border-none focus:ring-0 text-gray-800"
                                 />
                             </div>
-                            <div className="border-l border-gray-200 pl-4 flex items-center">
-                                <MapPin className="h-5 w-5 text-gray-400 mr-2" />
+                            <div className="border-l border pl-4 flex items-center">
+                                <MapPin className="h-5 w-5 text-muted-foreground mr-2" />
                                 <span className="text-gray-800">Clearwater, FL</span>
                             </div>
                             <button
                                 type="submit"
-                                className="ml-4 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors"
+                                className="ml-4 bg-primary text-white px-4 py-2 rounded-md hover:bg-primary transition-colors"
                             >
                                 Search
                             </button>
@@ -97,7 +97,7 @@ export default function HubsIndex() {
             {/* Communities List */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-gray-900">Popular Communities</h2>
+                    <h2 className="text-2xl font-bold text-foreground">Popular Communities</h2>
                     {auth.user && (
                         <Link href="/hubs/create">
                             <Button>
@@ -115,20 +115,20 @@ export default function HubsIndex() {
                             className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
                             onClick={() => router.visit(`/hubs/${hub.slug}`)}
                         >
-                            <div className="h-40 bg-gray-100 relative">
+                            <div className="h-40 bg-muted relative">
                                 <img
                                     src={hub.image || "https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?w=400&h=300&fit=crop"}
                                     alt={hub.name}
                                     className="w-full h-full object-cover"
                                 />
-                                {hub.is_featured && <Badge className="absolute top-2 left-2 bg-indigo-600">Featured</Badge>}
-                                {hub.is_verified && <Badge className="absolute top-2 right-2 bg-blue-600">Verified</Badge>}
+                                {hub.is_featured && <Badge className="absolute top-2 left-2 bg-primary">Featured</Badge>}
+                                {hub.is_verified && <Badge className="absolute top-2 right-2 bg-primary">Verified</Badge>}
                             </div>
                             <CardContent className="p-4">
-                                <h3 className="text-lg font-bold text-gray-900 mb-1">{hub.name}</h3>
-                                <p className="text-sm text-gray-600 mb-3 line-clamp-2">{hub.description}</p>
+                                <h3 className="text-lg font-bold text-foreground mb-1">{hub.name}</h3>
+                                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{hub.description}</p>
                                 {hub.location && (
-                                    <div className="flex items-center text-sm text-gray-500 mb-3">
+                                    <div className="flex items-center text-sm text-muted-foreground mb-3">
                                         <MapPin className="h-4 w-4 mr-1" />
                                         <span>{hub.location}</span>
                                     </div>
@@ -165,10 +165,10 @@ export default function HubsIndex() {
                                     disabled={!link.url}
                                     className={`px-4 py-2 rounded-md ${
                                         link.active
-                                            ? "bg-indigo-600 text-white"
+                                            ? "bg-primary text-white"
                                             : link.url
-                                              ? "bg-white text-gray-700 hover:bg-gray-50"
-                                              : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                              ? "bg-card text-foreground hover:bg-muted/50"
+                                              : "bg-muted text-muted-foreground cursor-not-allowed"
                                     }`}
                                     dangerouslySetInnerHTML={{ __html: link.label }}
                                 />

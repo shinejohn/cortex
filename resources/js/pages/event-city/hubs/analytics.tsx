@@ -62,7 +62,7 @@ export default function HubAnalytics() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             <SEO
                 type="page"
                 site="event-city"
@@ -74,7 +74,7 @@ export default function HubAnalytics() {
 
             {/* Hub Header */}
             <div
-                className="bg-gray-900 text-white relative"
+                className="bg-muted text-foreground relative"
                 style={{
                     backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${hub.image})`,
                     backgroundSize: "cover",
@@ -105,7 +105,7 @@ export default function HubAnalytics() {
                                     <SelectItem value="365">Last year</SelectItem>
                                 </SelectContent>
                             </Select>
-                            <Button variant="outline" className="bg-indigo-600 text-white hover:bg-indigo-700">
+                            <Button variant="outline" className="bg-primary text-white hover:bg-primary">
                                 <Download className="h-4 w-4 mr-1.5" />
                                 Export Report
                             </Button>
@@ -121,13 +121,13 @@ export default function HubAnalytics() {
                     <Card>
                         <CardContent className="p-6">
                             <div className="flex items-center">
-                                <div className="flex-shrink-0 h-10 w-10 rounded-md bg-indigo-100 flex items-center justify-center">
-                                    <BarChart3 className="h-6 w-6 text-indigo-600" />
+                                <div className="flex-shrink-0 h-10 w-10 rounded-md bg-accent flex items-center justify-center">
+                                    <BarChart3 className="h-6 w-6 text-primary" />
                                 </div>
                                 <div className="ml-4">
-                                    <h2 className="text-sm font-medium text-gray-500">Page Views</h2>
-                                    <p className="text-2xl font-semibold text-gray-900">{totals.page_views.toLocaleString()}</p>
-                                    <p className="text-xs text-gray-500">Avg: {averages.page_views.toLocaleString()}/day</p>
+                                    <h2 className="text-sm font-medium text-muted-foreground">Page Views</h2>
+                                    <p className="text-2xl font-semibold text-foreground">{totals.page_views.toLocaleString()}</p>
+                                    <p className="text-xs text-muted-foreground">Avg: {averages.page_views.toLocaleString()}/day</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -140,9 +140,9 @@ export default function HubAnalytics() {
                                     <Users className="h-6 w-6 text-green-600" />
                                 </div>
                                 <div className="ml-4">
-                                    <h2 className="text-sm font-medium text-gray-500">Unique Visitors</h2>
-                                    <p className="text-2xl font-semibold text-gray-900">{totals.unique_visitors.toLocaleString()}</p>
-                                    <p className="text-xs text-gray-500">Avg: {averages.unique_visitors.toLocaleString()}/day</p>
+                                    <h2 className="text-sm font-medium text-muted-foreground">Unique Visitors</h2>
+                                    <p className="text-2xl font-semibold text-foreground">{totals.unique_visitors.toLocaleString()}</p>
+                                    <p className="text-xs text-muted-foreground">Avg: {averages.unique_visitors.toLocaleString()}/day</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -151,13 +151,13 @@ export default function HubAnalytics() {
                     <Card>
                         <CardContent className="p-6">
                             <div className="flex items-center">
-                                <div className="flex-shrink-0 h-10 w-10 rounded-md bg-purple-100 flex items-center justify-center">
-                                    <Calendar className="h-6 w-6 text-purple-600" />
+                                <div className="flex-shrink-0 h-10 w-10 rounded-md bg-accent flex items-center justify-center">
+                                    <Calendar className="h-6 w-6 text-primary" />
                                 </div>
                                 <div className="ml-4">
-                                    <h2 className="text-sm font-medium text-gray-500">Events Published</h2>
-                                    <p className="text-2xl font-semibold text-gray-900">{totals.events_published}</p>
-                                    <p className="text-xs text-gray-500">Created: {totals.events_created}</p>
+                                    <h2 className="text-sm font-medium text-muted-foreground">Events Published</h2>
+                                    <p className="text-2xl font-semibold text-foreground">{totals.events_published}</p>
+                                    <p className="text-xs text-muted-foreground">Created: {totals.events_created}</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -166,13 +166,13 @@ export default function HubAnalytics() {
                     <Card>
                         <CardContent className="p-6">
                             <div className="flex items-center">
-                                <div className="flex-shrink-0 h-10 w-10 rounded-md bg-blue-100 flex items-center justify-center">
-                                    <TrendingUp className="h-6 w-6 text-blue-600" />
+                                <div className="flex-shrink-0 h-10 w-10 rounded-md bg-accent flex items-center justify-center">
+                                    <TrendingUp className="h-6 w-6 text-primary" />
                                 </div>
                                 <div className="ml-4">
-                                    <h2 className="text-sm font-medium text-gray-500">Engagement Score</h2>
-                                    <p className="text-2xl font-semibold text-gray-900">{averages.engagement_score.toFixed(1)}</p>
-                                    <p className="text-xs text-gray-500">Members: {totals.members_joined}</p>
+                                    <h2 className="text-sm font-medium text-muted-foreground">Engagement Score</h2>
+                                    <p className="text-2xl font-semibold text-foreground">{averages.engagement_score.toFixed(1)}</p>
+                                    <p className="text-xs text-muted-foreground">Members: {totals.members_joined}</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -185,8 +185,8 @@ export default function HubAnalytics() {
                         <CardTitle>Analytics Overview</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-                            <p className="text-gray-500">Chart visualization will be implemented here</p>
+                        <div className="h-64 flex items-center justify-center bg-muted/50 rounded-lg">
+                            <p className="text-muted-foreground">Chart visualization will be implemented here</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -200,11 +200,11 @@ export default function HubAnalytics() {
                         <CardContent>
                             <div className="space-y-3">
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Articles Created</span>
+                                    <span className="text-muted-foreground">Articles Created</span>
                                     <span className="font-medium">{totals.articles_created}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Articles Published</span>
+                                    <span className="text-muted-foreground">Articles Published</span>
                                     <span className="font-medium">{totals.articles_published}</span>
                                 </div>
                             </div>
@@ -218,11 +218,11 @@ export default function HubAnalytics() {
                         <CardContent>
                             <div className="space-y-3">
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Members Joined</span>
+                                    <span className="text-muted-foreground">Members Joined</span>
                                     <span className="font-medium">{totals.members_joined}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-600">Followers Gained</span>
+                                    <span className="text-muted-foreground">Followers Gained</span>
                                     <span className="font-medium">{totals.followers_gained}</span>
                                 </div>
                             </div>
@@ -234,8 +234,8 @@ export default function HubAnalytics() {
                             <CardTitle className="text-lg">Revenue</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-gray-900">${totals.revenue.toFixed(2)}</div>
-                            <p className="text-sm text-gray-500 mt-1">Total revenue</p>
+                            <div className="text-2xl font-bold text-foreground">${totals.revenue.toFixed(2)}</div>
+                            <p className="text-sm text-muted-foreground mt-1">Total revenue</p>
                         </CardContent>
                     </Card>
                 </div>

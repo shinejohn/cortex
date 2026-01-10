@@ -50,7 +50,7 @@ export default function HubBuilder() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             <SEO
                 type="page"
                 site="event-city"
@@ -61,15 +61,15 @@ export default function HubBuilder() {
             <Header auth={auth} />
 
             {/* Header */}
-            <div className="bg-white border-b border-gray-200">
+            <div className="bg-card border-b border">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center">
-                            <Button variant="ghost" onClick={() => router.visit(`/hubs/${hub.slug}`)} className="text-gray-500 hover:text-gray-700">
+                            <Button variant="ghost" onClick={() => router.visit(`/hubs/${hub.slug}`)} className="text-muted-foreground hover:text-foreground">
                                 <ArrowLeft className="h-5 w-5 mr-1" />
                                 Back to Hub
                             </Button>
-                            <h1 className="ml-6 text-xl font-bold text-gray-900">Hub Builder</h1>
+                            <h1 className="ml-6 text-xl font-bold text-foreground">Hub Builder</h1>
                         </div>
                         <div className="flex items-center space-x-3">
                             <Button variant="outline" onClick={() => router.visit(`/hubs/${hub.slug}/preview`)}>
@@ -97,7 +97,7 @@ export default function HubBuilder() {
                                 <CardTitle>Design Settings</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-gray-600 mb-4">Customize your hub's appearance.</p>
+                                <p className="text-muted-foreground mb-4">Customize your hub's appearance.</p>
                                 <Button onClick={handleSaveDesign} disabled={processing}>
                                     <Save className="h-4 w-4 mr-2" />
                                     {processing ? "Saving..." : "Save Design"}
@@ -112,13 +112,13 @@ export default function HubBuilder() {
                                 <CardTitle>Manage Sections</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-gray-600 mb-4">Configure which sections appear on your hub.</p>
+                                <p className="text-muted-foreground mb-4">Configure which sections appear on your hub.</p>
                                 <div className="space-y-4">
                                     {hub.sections.map((section) => (
                                         <div key={section.id} className="flex items-center justify-between p-4 border rounded-lg">
                                             <div>
                                                 <div className="font-medium">{section.title}</div>
-                                                <div className="text-sm text-gray-500">{section.type}</div>
+                                                <div className="text-sm text-muted-foreground">{section.type}</div>
                                             </div>
                                             <div className="flex items-center space-x-2">
                                                 <input
@@ -150,7 +150,7 @@ export default function HubBuilder() {
                                 <CardTitle>Permissions & Roles</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-gray-600">Manage member permissions and roles.</p>
+                                <p className="text-muted-foreground">Manage member permissions and roles.</p>
                             </CardContent>
                         </Card>
                     </TabsContent>
@@ -161,7 +161,7 @@ export default function HubBuilder() {
                                 <CardTitle>Monetization</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-gray-600">Set up monetization options for your hub.</p>
+                                <p className="text-muted-foreground">Set up monetization options for your hub.</p>
                             </CardContent>
                         </Card>
                     </TabsContent>

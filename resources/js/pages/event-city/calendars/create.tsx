@@ -140,7 +140,7 @@ export default function CreateCalendar({ workspace }: Props) {
                                         required
                                         className="mt-1"
                                     />
-                                    {errors.title && <p className="text-sm text-red-500 mt-1">{errors.title}</p>}
+                                    {errors.title && <p className="text-sm text-destructive mt-1">{errors.title}</p>}
                                 </div>
 
                                 <div>
@@ -154,7 +154,7 @@ export default function CreateCalendar({ workspace }: Props) {
                                         rows={3}
                                         className="mt-1"
                                     />
-                                    {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+                                    {errors.description && <p className="text-sm text-destructive mt-1">{errors.description}</p>}
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
@@ -172,7 +172,7 @@ export default function CreateCalendar({ workspace }: Props) {
                                                 ))}
                                             </SelectContent>
                                         </Select>
-                                        {errors.category && <p className="text-sm text-red-500 mt-1">{errors.category}</p>}
+                                        {errors.category && <p className="text-sm text-destructive mt-1">{errors.category}</p>}
                                     </div>
 
                                     <div>
@@ -192,7 +192,7 @@ export default function CreateCalendar({ workspace }: Props) {
                                                 ))}
                                             </SelectContent>
                                         </Select>
-                                        {errors.update_frequency && <p className="text-sm text-red-500 mt-1">{errors.update_frequency}</p>}
+                                        {errors.update_frequency && <p className="text-sm text-destructive mt-1">{errors.update_frequency}</p>}
                                     </div>
                                 </div>
 
@@ -206,7 +206,7 @@ export default function CreateCalendar({ workspace }: Props) {
                                         onChange={(e) => handleInputChange("location", e.target.value)}
                                         className="mt-1"
                                     />
-                                    {errors.location && <p className="text-sm text-red-500 mt-1">{errors.location}</p>}
+                                    {errors.location && <p className="text-sm text-destructive mt-1">{errors.location}</p>}
                                 </div>
 
                                 <div>
@@ -232,7 +232,7 @@ export default function CreateCalendar({ workspace }: Props) {
                                         rows={5}
                                         className="mt-1"
                                     />
-                                    {errors.about && <p className="text-sm text-red-500 mt-1">{errors.about}</p>}
+                                    {errors.about && <p className="text-sm text-destructive mt-1">{errors.about}</p>}
                                 </div>
                             </CardContent>
                         </Card>
@@ -273,7 +273,7 @@ export default function CreateCalendar({ workspace }: Props) {
                                             ? "Must be free ($0.00) until workspace is approved for payments"
                                             : "Set to $0.00 for a free calendar"}
                                     </p>
-                                    {errors.subscription_price && <p className="text-sm text-red-500 mt-1">{errors.subscription_price}</p>}
+                                    {errors.subscription_price && <p className="text-sm text-destructive mt-1">{errors.subscription_price}</p>}
                                 </div>
 
                                 <div className="flex items-center space-x-2">

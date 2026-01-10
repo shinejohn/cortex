@@ -72,10 +72,10 @@ export default function DowntownGuideSearchIndex({ query, results, suggestions =
 
                 <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                     {/* Search Bar */}
-                    <div className="mb-6 rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
+                    <div className="mb-6 rounded-xl border-2 border bg-card p-6 shadow-lg">
                         <div className="flex gap-4">
                             <div className="relative flex-1">
-                                <SearchIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                                <SearchIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                                 <Input
                                     type="text"
                                     placeholder="Search businesses, events, articles, coupons..."
@@ -85,7 +85,7 @@ export default function DowntownGuideSearchIndex({ query, results, suggestions =
                                     className="pl-10 text-lg"
                                 />
                             </div>
-                            <Button onClick={handleSearch} className="bg-purple-600 hover:bg-purple-700">
+                            <Button onClick={handleSearch} className="bg-primary hover:bg-primary">
                                 Search
                             </Button>
                         </div>
@@ -93,7 +93,7 @@ export default function DowntownGuideSearchIndex({ query, results, suggestions =
                         {/* Suggestions */}
                         {suggestions.length > 0 && (
                             <div className="mt-4">
-                                <p className="mb-2 text-sm text-gray-600">Suggestions:</p>
+                                <p className="mb-2 text-sm text-muted-foreground">Suggestions:</p>
                                 <div className="flex flex-wrap gap-2">
                                     {suggestions.map((suggestion, index) => (
                                         <button
@@ -102,7 +102,7 @@ export default function DowntownGuideSearchIndex({ query, results, suggestions =
                                                 setSearchQuery(suggestion);
                                                 router.get(route("downtown-guide.search.index"), { q: suggestion, type, ...filters });
                                             }}
-                                            className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-700 hover:bg-purple-200"
+                                            className="rounded-full bg-accent px-3 py-1 text-sm text-primary hover:bg-accent/80"
                                         >
                                             {suggestion}
                                         </button>
@@ -118,7 +118,7 @@ export default function DowntownGuideSearchIndex({ query, results, suggestions =
                             {totalResults > 0 ? (
                                 <div className="space-y-8">
                                     {/* Results Summary */}
-                                    <div className="text-sm text-gray-600">
+                                    <div className="text-sm text-muted-foreground">
                                         Found {totalResults} result{totalResults === 1 ? "" : "s"} for "{query}"
                                     </div>
 
@@ -126,8 +126,8 @@ export default function DowntownGuideSearchIndex({ query, results, suggestions =
                                     {results.businesses && results.businesses.length > 0 && (
                                         <section>
                                             <div className="mb-4 flex items-center gap-2">
-                                                <StoreIcon className="h-5 w-5 text-purple-600" />
-                                                <h2 className="text-xl font-bold text-gray-900">Businesses ({results.businesses.length})</h2>
+                                                <StoreIcon className="h-5 w-5 text-primary" />
+                                                <h2 className="text-xl font-bold text-foreground">Businesses ({results.businesses.length})</h2>
                                             </div>
                                             <BusinessList businesses={results.businesses} theme="downtownsguide" gridCols={3} />
                                         </section>
@@ -137,8 +137,8 @@ export default function DowntownGuideSearchIndex({ query, results, suggestions =
                                     {results.events && results.events.length > 0 && (
                                         <section>
                                             <div className="mb-4 flex items-center gap-2">
-                                                <CalendarIcon className="h-5 w-5 text-purple-600" />
-                                                <h2 className="text-xl font-bold text-gray-900">Events ({results.events.length})</h2>
+                                                <CalendarIcon className="h-5 w-5 text-primary" />
+                                                <h2 className="text-xl font-bold text-foreground">Events ({results.events.length})</h2>
                                             </div>
                                             <EventList events={results.events} theme="downtownsguide" gridCols={3} />
                                         </section>
@@ -148,8 +148,8 @@ export default function DowntownGuideSearchIndex({ query, results, suggestions =
                                     {results.articles && results.articles.length > 0 && (
                                         <section>
                                             <div className="mb-4 flex items-center gap-2">
-                                                <NewspaperIcon className="h-5 w-5 text-purple-600" />
-                                                <h2 className="text-xl font-bold text-gray-900">Articles ({results.articles.length})</h2>
+                                                <NewspaperIcon className="h-5 w-5 text-primary" />
+                                                <h2 className="text-xl font-bold text-foreground">Articles ({results.articles.length})</h2>
                                             </div>
                                             <NewsList articles={results.articles} theme="downtownsguide" gridCols={3} />
                                         </section>
@@ -159,17 +159,17 @@ export default function DowntownGuideSearchIndex({ query, results, suggestions =
                                     {results.coupons && results.coupons.length > 0 && (
                                         <section>
                                             <div className="mb-4 flex items-center gap-2">
-                                                <TagIcon className="h-5 w-5 text-purple-600" />
-                                                <h2 className="text-xl font-bold text-gray-900">Coupons ({results.coupons.length})</h2>
+                                                <TagIcon className="h-5 w-5 text-primary" />
+                                                <h2 className="text-xl font-bold text-foreground">Coupons ({results.coupons.length})</h2>
                                             </div>
                                             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                                                 {results.coupons.map((coupon) => (
                                                     <Link
                                                         key={coupon.id}
                                                         href={route("downtown-guide.coupons.show", coupon.slug)}
-                                                        className="rounded-xl border-2 border-purple-200 bg-white p-4 shadow-lg hover:border-purple-400"
+                                                        className="rounded-xl border-2 border bg-card p-4 shadow-lg hover:border-purple-400"
                                                     >
-                                                        <h3 className="font-bold text-gray-900">{coupon.title}</h3>
+                                                        <h3 className="font-bold text-foreground">{coupon.title}</h3>
                                                     </Link>
                                                 ))}
                                             </div>
@@ -177,18 +177,18 @@ export default function DowntownGuideSearchIndex({ query, results, suggestions =
                                     )}
                                 </div>
                             ) : (
-                                <div className="rounded-xl border-2 border-dashed border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
+                                <div className="rounded-xl border-2 border-dashed border bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
                                     <SearchIcon className="mx-auto h-12 w-12 text-purple-400" />
-                                    <p className="mt-4 text-lg font-bold text-gray-900">No results found</p>
-                                    <p className="mt-2 text-sm text-gray-600">Try different keywords or browse our categories</p>
+                                    <p className="mt-4 text-lg font-bold text-foreground">No results found</p>
+                                    <p className="mt-2 text-sm text-muted-foreground">Try different keywords or browse our categories</p>
                                 </div>
                             )}
                         </>
                     ) : (
-                        <div className="rounded-xl border-2 border-dashed border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
+                        <div className="rounded-xl border-2 border-dashed border bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
                             <SearchIcon className="mx-auto h-12 w-12 text-purple-400" />
-                            <p className="mt-4 text-lg font-bold text-gray-900">Start your search</p>
-                            <p className="mt-2 text-sm text-gray-600">Enter keywords to search businesses, events, articles, and coupons</p>
+                            <p className="mt-4 text-lg font-bold text-foreground">Start your search</p>
+                            <p className="mt-2 text-sm text-muted-foreground">Enter keywords to search businesses, events, articles, and coupons</p>
                         </div>
                     )}
                 </div>

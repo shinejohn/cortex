@@ -283,7 +283,7 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                                         required
                                         className="mt-1"
                                     />
-                                    {errors.title && <p className="text-sm text-red-500 mt-1">{errors.title}</p>}
+                                    {errors.title && <p className="text-sm text-destructive mt-1">{errors.title}</p>}
                                 </div>
 
                                 <div>
@@ -297,7 +297,7 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                                         rows={4}
                                         className="mt-1"
                                     />
-                                    {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
+                                    {errors.description && <p className="text-sm text-destructive mt-1">{errors.description}</p>}
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
@@ -311,7 +311,7 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                                             required
                                             className="mt-1"
                                         />
-                                        {errors.event_date && <p className="text-sm text-red-500 mt-1">{errors.event_date}</p>}
+                                        {errors.event_date && <p className="text-sm text-destructive mt-1">{errors.event_date}</p>}
                                     </div>
 
                                     <div>
@@ -324,7 +324,7 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                                             required
                                             className="mt-1"
                                         />
-                                        {errors.time && <p className="text-sm text-red-500 mt-1">{errors.time}</p>}
+                                        {errors.time && <p className="text-sm text-destructive mt-1">{errors.time}</p>}
                                     </div>
                                 </div>
 
@@ -339,7 +339,7 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                                         required
                                         className="mt-1"
                                     />
-                                    {errors.category && <p className="text-sm text-red-500 mt-1">{errors.category}</p>}
+                                    {errors.category && <p className="text-sm text-destructive mt-1">{errors.category}</p>}
                                 </div>
 
                                 <div>
@@ -455,7 +455,7 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                                                 min="0"
                                                 className="mt-1"
                                             />
-                                            {errors.price_min && <p className="text-sm text-red-500 mt-1">{errors.price_min}</p>}
+                                            {errors.price_min && <p className="text-sm text-destructive mt-1">{errors.price_min}</p>}
                                         </div>
 
                                         <div>
@@ -470,7 +470,7 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                                                 min="0"
                                                 className="mt-1"
                                             />
-                                            {errors.price_max && <p className="text-sm text-red-500 mt-1">{errors.price_max}</p>}
+                                            {errors.price_max && <p className="text-sm text-destructive mt-1">{errors.price_max}</p>}
                                         </div>
                                     </div>
                                 )}
@@ -687,7 +687,7 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                                             readOnly
                                             className="mt-1 bg-muted"
                                         />
-                                        {errors.latitude && <p className="text-sm text-red-500 mt-1">{errors.latitude}</p>}
+                                        {errors.latitude && <p className="text-sm text-destructive mt-1">{errors.latitude}</p>}
                                     </div>
 
                                     <div>
@@ -700,7 +700,7 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                                             readOnly
                                             className="mt-1 bg-muted"
                                         />
-                                        {errors.longitude && <p className="text-sm text-red-500 mt-1">{errors.longitude}</p>}
+                                        {errors.longitude && <p className="text-sm text-destructive mt-1">{errors.longitude}</p>}
                                     </div>
                                 </div>
                             </CardContent>

@@ -70,7 +70,7 @@ export default function EpisodeCreate() {
                         <Button
                             variant="ghost"
                             onClick={() => router.visit(`/podcasts/${podcast.slug}`)}
-                            className="text-purple-600 hover:text-purple-700"
+                            className="text-primary hover:text-primary"
                         >
                             ← Back to {podcast.title}
                         </Button>
@@ -80,21 +80,21 @@ export default function EpisodeCreate() {
                         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                             Upload Episode
                         </h1>
-                        <p className="text-gray-600">Add a new episode to your podcast</p>
+                        <p className="text-muted-foreground">Add a new episode to your podcast</p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6 bg-white rounded-lg border border-gray-200 p-8 shadow-sm">
+                    <form onSubmit={handleSubmit} className="space-y-6 bg-card rounded-lg border border p-8 shadow-sm">
                         {/* Audio File */}
                         <div>
                             <Label>Audio File *</Label>
                             <div className="mt-2">
                                 {audioPreview ? (
-                                    <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-4">
+                                    <div className="flex items-center justify-between rounded-lg border border bg-muted/50 p-4">
                                         <div className="flex items-center gap-3">
-                                            <Mic className="h-8 w-8 text-purple-600" />
+                                            <Mic className="h-8 w-8 text-primary" />
                                             <div>
-                                                <p className="font-medium text-gray-900">{audioPreview}</p>
-                                                <p className="text-sm text-gray-600">MP3, WAV, or M4A • Max 100MB</p>
+                                                <p className="font-medium text-foreground">{audioPreview}</p>
+                                                <p className="text-sm text-muted-foreground">MP3, WAV, or M4A • Max 100MB</p>
                                             </div>
                                         </div>
                                         <Button
@@ -115,16 +115,16 @@ export default function EpisodeCreate() {
                                 ) : (
                                     <div
                                         onClick={() => audioInputRef.current?.click()}
-                                        className="flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 transition-colors hover:border-purple-400 hover:bg-purple-50"
+                                        className="flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border transition-colors hover:border-purple-400 hover:bg-accent/50"
                                     >
-                                        <Upload className="mb-2 h-12 w-12 text-gray-400" />
-                                        <p className="text-sm text-gray-600">Click to upload audio file</p>
-                                        <p className="mt-1 text-xs text-gray-500">MP3, WAV, or M4A • Max 100MB</p>
+                                        <Upload className="mb-2 h-12 w-12 text-muted-foreground" />
+                                        <p className="text-sm text-muted-foreground">Click to upload audio file</p>
+                                        <p className="mt-1 text-xs text-muted-foreground">MP3, WAV, or M4A • Max 100MB</p>
                                     </div>
                                 )}
                                 <input ref={audioInputRef} type="file" accept="audio/*" onChange={handleAudioChange} className="hidden" required />
                             </div>
-                            {form.errors.audio_file && <p className="mt-1 text-sm text-red-600">{form.errors.audio_file}</p>}
+                            {form.errors.audio_file && <p className="mt-1 text-sm text-destructive">{form.errors.audio_file}</p>}
                         </div>
 
                         {/* Title */}
@@ -134,10 +134,10 @@ export default function EpisodeCreate() {
                                 id="title"
                                 value={form.data.title}
                                 onChange={(e) => form.setData("title", e.target.value)}
-                                className="mt-2 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                                className="mt-2 border focus:border-purple-500 focus:ring-purple-500"
                                 required
                             />
-                            {form.errors.title && <p className="mt-1 text-sm text-red-600">{form.errors.title}</p>}
+                            {form.errors.title && <p className="mt-1 text-sm text-destructive">{form.errors.title}</p>}
                         </div>
 
                         {/* Episode Number */}
@@ -147,10 +147,10 @@ export default function EpisodeCreate() {
                                 id="episode_number"
                                 value={form.data.episode_number}
                                 onChange={(e) => form.setData("episode_number", e.target.value)}
-                                className="mt-2 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                                className="mt-2 border focus:border-purple-500 focus:ring-purple-500"
                                 placeholder="e.g., 001, S01E01"
                             />
-                            {form.errors.episode_number && <p className="mt-1 text-sm text-red-600">{form.errors.episode_number}</p>}
+                            {form.errors.episode_number && <p className="mt-1 text-sm text-destructive">{form.errors.episode_number}</p>}
                         </div>
 
                         {/* Description */}
@@ -160,11 +160,11 @@ export default function EpisodeCreate() {
                                 id="description"
                                 value={form.data.description}
                                 onChange={(e) => form.setData("description", e.target.value)}
-                                className="mt-2 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                                className="mt-2 border focus:border-purple-500 focus:ring-purple-500"
                                 rows={4}
                                 placeholder="Brief description of this episode..."
                             />
-                            {form.errors.description && <p className="mt-1 text-sm text-red-600">{form.errors.description}</p>}
+                            {form.errors.description && <p className="mt-1 text-sm text-destructive">{form.errors.description}</p>}
                         </div>
 
                         {/* Show Notes */}
@@ -174,18 +174,18 @@ export default function EpisodeCreate() {
                                 id="show_notes"
                                 value={form.data.show_notes}
                                 onChange={(e) => form.setData("show_notes", e.target.value)}
-                                className="mt-2 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                                className="mt-2 border focus:border-purple-500 focus:ring-purple-500"
                                 rows={8}
                                 placeholder="Detailed show notes, links, timestamps, etc..."
                             />
-                            {form.errors.show_notes && <p className="mt-1 text-sm text-red-600">{form.errors.show_notes}</p>}
+                            {form.errors.show_notes && <p className="mt-1 text-sm text-destructive">{form.errors.show_notes}</p>}
                         </div>
 
                         {/* Error Display */}
                         {Object.keys(form.errors).length > 0 && (
-                            <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-                                <p className="mb-2 font-semibold text-red-800">Please fix the following errors:</p>
-                                <ul className="list-disc list-inside space-y-1 text-sm text-red-700">
+                            <div className="rounded-lg border border-destructive/20 bg-red-50 p-4">
+                                <p className="mb-2 font-semibold text-destructive">Please fix the following errors:</p>
+                                <ul className="list-disc list-inside space-y-1 text-sm text-destructive">
                                     {Object.entries(form.errors).map(([field, error]) => (
                                         <li key={field}>
                                             <strong>{field}:</strong> {error as string}
@@ -210,12 +210,12 @@ export default function EpisodeCreate() {
                                 variant="outline"
                                 onClick={() => router.visit(`/podcasts/${podcast.slug}`)}
                                 disabled={form.processing}
-                                className="border-gray-300"
+                                className="border"
                             >
                                 Cancel
                             </Button>
                         </div>
-                        <p className="text-sm text-gray-600">The episode will be saved as a draft. You can publish it from the podcast page.</p>
+                        <p className="text-sm text-muted-foreground">The episode will be saved as a draft. You can publish it from the podcast page.</p>
                     </form>
                 </div>
             </div>

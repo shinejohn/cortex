@@ -168,7 +168,7 @@ export default function CreatePerformer({ workspace }: Props) {
                                         required
                                         className="mt-1"
                                     />
-                                    {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+                                    {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
                                 </div>
 
                                 <div>
@@ -195,7 +195,7 @@ export default function CreatePerformer({ workspace }: Props) {
                                         rows={4}
                                         className="mt-1"
                                     />
-                                    {errors.bio && <p className="text-sm text-red-500 mt-1">{errors.bio}</p>}
+                                    {errors.bio && <p className="text-sm text-destructive mt-1">{errors.bio}</p>}
                                 </div>
 
                                 <div>
@@ -222,7 +222,7 @@ export default function CreatePerformer({ workspace }: Props) {
                                             </span>
                                         ))}
                                     </div>
-                                    {errors.genres && <p className="text-sm text-red-500 mt-1">{errors.genres}</p>}
+                                    {errors.genres && <p className="text-sm text-destructive mt-1">{errors.genres}</p>}
                                 </div>
 
                                 <div className="grid grid-cols-3 gap-4">

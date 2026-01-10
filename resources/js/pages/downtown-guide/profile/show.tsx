@@ -76,7 +76,7 @@ export default function DowntownGuideProfileShow({
                             {user.avatar ? (
                                 <img src={user.avatar} alt={user.name} className="h-24 w-24 rounded-full border-4 border-white shadow-lg" />
                             ) : (
-                                <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-white/20 shadow-lg">
+                                <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-card/20 shadow-lg">
                                     <UserIcon className="h-12 w-12 text-white" />
                                 </div>
                             )}
@@ -101,50 +101,50 @@ export default function DowntownGuideProfileShow({
                 <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                     {/* Stats Cards */}
                     <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                        <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
+                        <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
                             <div className="flex items-center gap-3">
-                                <div className="rounded-lg bg-purple-100 p-2">
-                                    <StarIcon className="h-6 w-6 text-purple-600" />
+                                <div className="rounded-lg bg-accent p-2">
+                                    <StarIcon className="h-6 w-6 text-primary" />
                                 </div>
                                 <div>
-                                    <p className="text-2xl font-bold text-gray-900">{stats.reviews_count}</p>
-                                    <p className="text-sm text-gray-600">Reviews</p>
+                                    <p className="text-2xl font-bold text-foreground">{stats.reviews_count}</p>
+                                    <p className="text-sm text-muted-foreground">Reviews</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
+                        <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
                             <div className="flex items-center gap-3">
                                 <div className="rounded-lg bg-pink-100 p-2">
                                     <TrophyIcon className="h-6 w-6 text-pink-600" />
                                 </div>
                                 <div>
-                                    <p className="text-2xl font-bold text-gray-900">{stats.achievements_count}</p>
-                                    <p className="text-sm text-gray-600">Achievements</p>
+                                    <p className="text-2xl font-bold text-foreground">{stats.achievements_count}</p>
+                                    <p className="text-sm text-muted-foreground">Achievements</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
+                        <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
                             <div className="flex items-center gap-3">
-                                <div className="rounded-lg bg-purple-100 p-2">
-                                    <UsersIcon className="h-6 w-6 text-purple-600" />
+                                <div className="rounded-lg bg-accent p-2">
+                                    <UsersIcon className="h-6 w-6 text-primary" />
                                 </div>
                                 <div>
-                                    <p className="text-2xl font-bold text-gray-900">{stats.followers_count}</p>
-                                    <p className="text-sm text-gray-600">Followers</p>
+                                    <p className="text-2xl font-bold text-foreground">{stats.followers_count}</p>
+                                    <p className="text-sm text-muted-foreground">Followers</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
+                        <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
                             <div className="flex items-center gap-3">
                                 <div className="rounded-lg bg-pink-100 p-2">
                                     <GiftIcon className="h-6 w-6 text-pink-600" />
                                 </div>
                                 <div>
-                                    <p className="text-2xl font-bold text-gray-900">{loyaltyPrograms.length}</p>
-                                    <p className="text-sm text-gray-600">Loyalty Programs</p>
+                                    <p className="text-2xl font-bold text-foreground">{loyaltyPrograms.length}</p>
+                                    <p className="text-sm text-muted-foreground">Loyalty Programs</p>
                                 </div>
                             </div>
                         </div>
@@ -152,43 +152,43 @@ export default function DowntownGuideProfileShow({
 
                     {/* Tabs */}
                     <Tabs defaultValue="activity" className="w-full">
-                        <TabsList className="grid w-full grid-cols-4 bg-purple-50">
-                            <TabsTrigger value="activity" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                        <TabsList className="grid w-full grid-cols-4 bg-accent/50">
+                            <TabsTrigger value="activity" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                                 Activity
                             </TabsTrigger>
-                            <TabsTrigger value="achievements" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                            <TabsTrigger value="achievements" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                                 <TrophyIcon className="mr-2 h-4 w-4" />
                                 Achievements ({achievements.length})
                             </TabsTrigger>
-                            <TabsTrigger value="loyalty" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                            <TabsTrigger value="loyalty" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                                 <GiftIcon className="mr-2 h-4 w-4" />
                                 Loyalty ({loyaltyPrograms.length})
                             </TabsTrigger>
-                            <TabsTrigger value="referrals" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                            <TabsTrigger value="referrals" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                                 <UsersIcon className="mr-2 h-4 w-4" />
                                 Referrals ({referrals.length})
                             </TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="activity" className="mt-6">
-                            <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
-                                <h2 className="mb-4 text-xl font-bold text-gray-900">Recent Activity</h2>
+                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
+                                <h2 className="mb-4 text-xl font-bold text-foreground">Recent Activity</h2>
                                 {activity.length > 0 ? (
                                     <div className="space-y-4">
                                         {activity.map((item) => (
-                                            <div key={item.id} className="flex items-start gap-4 border-b border-gray-200 pb-4 last:border-0">
-                                                <TrendingUpIcon className="h-5 w-5 text-purple-600" />
+                                            <div key={item.id} className="flex items-start gap-4 border-b border pb-4 last:border-0">
+                                                <TrendingUpIcon className="h-5 w-5 text-primary" />
                                                 <div className="flex-1">
-                                                    <p className="text-sm text-gray-900">{item.description}</p>
+                                                    <p className="text-sm text-foreground">{item.description}</p>
                                                     {item.created_at && (
-                                                        <p className="mt-1 text-xs text-gray-500">{new Date(item.created_at).toLocaleDateString()}</p>
+                                                        <p className="mt-1 text-xs text-muted-foreground">{new Date(item.created_at).toLocaleDateString()}</p>
                                                     )}
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="py-8 text-center text-gray-500">
+                                    <div className="py-8 text-center text-muted-foreground">
                                         <p>No recent activity</p>
                                     </div>
                                 )}
@@ -196,20 +196,20 @@ export default function DowntownGuideProfileShow({
                         </TabsContent>
 
                         <TabsContent value="achievements" className="mt-6">
-                            <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
-                                <h2 className="mb-4 text-xl font-bold text-gray-900">Achievements</h2>
+                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
+                                <h2 className="mb-4 text-xl font-bold text-foreground">Achievements</h2>
                                 {achievements.length > 0 ? (
                                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                                         {achievements.map((achievement) => (
                                             <div
                                                 key={achievement.id}
-                                                className="rounded-lg border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50 p-4"
+                                                className="rounded-lg border-2 border bg-gradient-to-r from-purple-50 to-pink-50 p-4"
                                             >
                                                 {achievement.icon && <div className="mb-2 text-3xl">{achievement.icon}</div>}
-                                                <h3 className="font-bold text-gray-900">{achievement.name}</h3>
-                                                {achievement.description && <p className="mt-1 text-sm text-gray-600">{achievement.description}</p>}
+                                                <h3 className="font-bold text-foreground">{achievement.name}</h3>
+                                                {achievement.description && <p className="mt-1 text-sm text-muted-foreground">{achievement.description}</p>}
                                                 {achievement.unlocked_at && (
-                                                    <p className="mt-2 text-xs text-gray-500">
+                                                    <p className="mt-2 text-xs text-muted-foreground">
                                                         Unlocked {new Date(achievement.unlocked_at).toLocaleDateString()}
                                                     </p>
                                                 )}
@@ -217,8 +217,8 @@ export default function DowntownGuideProfileShow({
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="py-8 text-center text-gray-500">
-                                        <TrophyIcon className="mx-auto h-12 w-12 text-gray-400" />
+                                    <div className="py-8 text-center text-muted-foreground">
+                                        <TrophyIcon className="mx-auto h-12 w-12 text-muted-foreground" />
                                         <p className="mt-4">No achievements yet</p>
                                     </div>
                                 )}
@@ -226,29 +226,29 @@ export default function DowntownGuideProfileShow({
                         </TabsContent>
 
                         <TabsContent value="loyalty" className="mt-6">
-                            <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
-                                <h2 className="mb-4 text-xl font-bold text-gray-900">Loyalty Programs</h2>
+                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
+                                <h2 className="mb-4 text-xl font-bold text-foreground">Loyalty Programs</h2>
                                 {loyaltyPrograms.length > 0 ? (
                                     <div className="space-y-4">
                                         {loyaltyPrograms.map((program) => (
                                             <div
                                                 key={program.id}
-                                                className="flex items-center justify-between rounded-lg border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50 p-4"
+                                                className="flex items-center justify-between rounded-lg border-2 border bg-gradient-to-r from-purple-50 to-pink-50 p-4"
                                             >
                                                 <div>
-                                                    <h3 className="font-bold text-gray-900">{program.business_name}</h3>
-                                                    <p className="text-sm text-gray-600">Loyalty Program</p>
+                                                    <h3 className="font-bold text-foreground">{program.business_name}</h3>
+                                                    <p className="text-sm text-muted-foreground">Loyalty Program</p>
                                                 </div>
                                                 <div className="text-right">
-                                                    <p className="text-2xl font-bold text-purple-600">{program.points}</p>
-                                                    <p className="text-xs text-gray-600">Points</p>
+                                                    <p className="text-2xl font-bold text-primary">{program.points}</p>
+                                                    <p className="text-xs text-muted-foreground">Points</p>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="py-8 text-center text-gray-500">
-                                        <GiftIcon className="mx-auto h-12 w-12 text-gray-400" />
+                                    <div className="py-8 text-center text-muted-foreground">
+                                        <GiftIcon className="mx-auto h-12 w-12 text-muted-foreground" />
                                         <p className="mt-4">Not enrolled in any loyalty programs</p>
                                     </div>
                                 )}
@@ -256,18 +256,18 @@ export default function DowntownGuideProfileShow({
                         </TabsContent>
 
                         <TabsContent value="referrals" className="mt-6">
-                            <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
-                                <h2 className="mb-4 text-xl font-bold text-gray-900">Referrals</h2>
+                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
+                                <h2 className="mb-4 text-xl font-bold text-foreground">Referrals</h2>
                                 {referrals.length > 0 ? (
                                     <div className="space-y-4">
                                         {referrals.map((referral) => (
                                             <div
                                                 key={referral.id}
-                                                className="flex items-center justify-between rounded-lg border-2 border-purple-200 bg-white p-4"
+                                                className="flex items-center justify-between rounded-lg border-2 border bg-card p-4"
                                             >
                                                 <div>
-                                                    <p className="font-medium text-gray-900">{referral.referred_user_name}</p>
-                                                    <p className="text-sm text-gray-600">Referred user</p>
+                                                    <p className="font-medium text-foreground">{referral.referred_user_name}</p>
+                                                    <p className="text-sm text-muted-foreground">Referred user</p>
                                                 </div>
                                                 <span
                                                     className={`rounded-full px-3 py-1 text-xs font-medium ${
@@ -282,8 +282,8 @@ export default function DowntownGuideProfileShow({
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="py-8 text-center text-gray-500">
-                                        <UsersIcon className="mx-auto h-12 w-12 text-gray-400" />
+                                    <div className="py-8 text-center text-muted-foreground">
+                                        <UsersIcon className="mx-auto h-12 w-12 text-muted-foreground" />
                                         <p className="mt-4">No referrals yet</p>
                                     </div>
                                 )}

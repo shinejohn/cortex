@@ -118,7 +118,7 @@ export default function DowntownGuideBusinessShow({
                             <span>Back to Business Directory</span>
                         </Link>
                         <div className="flex items-center gap-4">
-                            <div className="rounded-xl bg-white/20 p-2 backdrop-blur-sm">
+                            <div className="rounded-xl bg-card/20 p-2 backdrop-blur-sm">
                                 <StoreIcon className="h-6 w-6 text-white" />
                             </div>
                             <div>
@@ -134,26 +134,26 @@ export default function DowntownGuideBusinessShow({
                         {/* Main Content */}
                         <div className="lg:col-span-2 space-y-8">
                             {/* Business Details */}
-                            <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
+                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
                                 <BusinessDetail business={business} theme="downtownsguide" showMap={true} />
                             </div>
 
                             {/* Tabs */}
                             <Tabs defaultValue="reviews" className="w-full">
-                                <TabsList className="grid w-full grid-cols-4 bg-purple-50">
-                                    <TabsTrigger value="reviews" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                                <TabsList className="grid w-full grid-cols-4 bg-accent/50">
+                                    <TabsTrigger value="reviews" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                                         <StarIcon className="mr-2 h-4 w-4" />
                                         Reviews ({reviews.data.length})
                                     </TabsTrigger>
-                                    <TabsTrigger value="deals" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                                    <TabsTrigger value="deals" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                                         <TagIcon className="mr-2 h-4 w-4" />
                                         Deals & Coupons ({activeCoupons.length + deals.length})
                                     </TabsTrigger>
-                                    <TabsTrigger value="events" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                                    <TabsTrigger value="events" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                                         <CalendarIcon className="mr-2 h-4 w-4" />
                                         Events ({upcomingEvents.length})
                                     </TabsTrigger>
-                                    <TabsTrigger value="news" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                                    <TabsTrigger value="news" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                                         <NewspaperIcon className="mr-2 h-4 w-4" />
                                         News ({relatedArticles.length})
                                     </TabsTrigger>
@@ -162,7 +162,7 @@ export default function DowntownGuideBusinessShow({
                                 <TabsContent value="reviews" className="mt-6">
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
-                                            <h2 className="text-xl font-bold text-gray-900">Customer Reviews</h2>
+                                            <h2 className="text-xl font-bold text-foreground">Customer Reviews</h2>
                                             {averageRating > 0 && (
                                                 <div className="flex items-center gap-2">
                                                     <StarIcon className="h-5 w-5 fill-yellow-400 text-yellow-400" />
@@ -176,30 +176,30 @@ export default function DowntownGuideBusinessShow({
 
                                 <TabsContent value="deals" className="mt-6">
                                     <div className="space-y-4">
-                                        <h2 className="text-xl font-bold text-gray-900">Active Deals & Coupons</h2>
+                                        <h2 className="text-xl font-bold text-foreground">Active Deals & Coupons</h2>
                                         {deals.length > 0 || activeCoupons.length > 0 ? (
                                             <div className="grid gap-4 md:grid-cols-2">
                                                 {deals.map((deal) => (
                                                     <div
                                                         key={deal.id}
-                                                        className="rounded-lg border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50 p-4"
+                                                        className="rounded-lg border-2 border bg-gradient-to-r from-purple-50 to-pink-50 p-4"
                                                     >
                                                         <h3 className="font-bold text-purple-900">{deal.title}</h3>
-                                                        {deal.description && <p className="mt-1 text-sm text-gray-700">{deal.description}</p>}
+                                                        {deal.description && <p className="mt-1 text-sm text-foreground">{deal.description}</p>}
                                                     </div>
                                                 ))}
                                                 {activeCoupons.map((coupon) => (
-                                                    <div key={coupon.id} className="rounded-lg border-2 border-purple-200 bg-white p-4">
+                                                    <div key={coupon.id} className="rounded-lg border-2 border bg-card p-4">
                                                         <h3 className="font-bold text-purple-900">{coupon.title}</h3>
-                                                        {coupon.code && <p className="mt-1 text-sm font-mono text-purple-600">Code: {coupon.code}</p>}
+                                                        {coupon.code && <p className="mt-1 text-sm font-mono text-primary">Code: {coupon.code}</p>}
                                                     </div>
                                                 ))}
                                             </div>
                                         ) : (
-                                            <div className="rounded-xl border-2 border-dashed border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 p-8 text-center">
+                                            <div className="rounded-xl border-2 border-dashed border bg-gradient-to-br from-purple-50 to-pink-50 p-8 text-center">
                                                 <TagIcon className="mx-auto h-12 w-12 text-purple-400" />
-                                                <p className="mt-4 text-lg font-bold text-gray-900">No active deals</p>
-                                                <p className="mt-2 text-sm text-gray-600">Check back later for deals and coupons</p>
+                                                <p className="mt-4 text-lg font-bold text-foreground">No active deals</p>
+                                                <p className="mt-2 text-sm text-muted-foreground">Check back later for deals and coupons</p>
                                             </div>
                                         )}
                                     </div>
@@ -207,13 +207,13 @@ export default function DowntownGuideBusinessShow({
 
                                 <TabsContent value="events" className="mt-6">
                                     <div className="space-y-4">
-                                        <h2 className="text-xl font-bold text-gray-900">Upcoming Events</h2>
+                                        <h2 className="text-xl font-bold text-foreground">Upcoming Events</h2>
                                         {upcomingEvents.length > 0 ? (
                                             <EventList events={upcomingEvents} theme="downtownsguide" gridCols={2} />
                                         ) : (
-                                            <div className="rounded-xl border-2 border-dashed border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 p-8 text-center">
+                                            <div className="rounded-xl border-2 border-dashed border bg-gradient-to-br from-purple-50 to-pink-50 p-8 text-center">
                                                 <CalendarIcon className="mx-auto h-12 w-12 text-purple-400" />
-                                                <p className="mt-4 text-lg font-bold text-gray-900">No upcoming events</p>
+                                                <p className="mt-4 text-lg font-bold text-foreground">No upcoming events</p>
                                             </div>
                                         )}
                                     </div>
@@ -221,13 +221,13 @@ export default function DowntownGuideBusinessShow({
 
                                 <TabsContent value="news" className="mt-6">
                                     <div className="space-y-4">
-                                        <h2 className="text-xl font-bold text-gray-900">News & Articles</h2>
+                                        <h2 className="text-xl font-bold text-foreground">News & Articles</h2>
                                         {relatedArticles.length > 0 ? (
                                             <NewsList articles={relatedArticles} theme="downtownsguide" gridCols={2} />
                                         ) : (
-                                            <div className="rounded-xl border-2 border-dashed border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 p-8 text-center">
+                                            <div className="rounded-xl border-2 border-dashed border bg-gradient-to-br from-purple-50 to-pink-50 p-8 text-center">
                                                 <NewspaperIcon className="mx-auto h-12 w-12 text-purple-400" />
-                                                <p className="mt-4 text-lg font-bold text-gray-900">No articles found</p>
+                                                <p className="mt-4 text-lg font-bold text-foreground">No articles found</p>
                                             </div>
                                         )}
                                     </div>
@@ -238,12 +238,12 @@ export default function DowntownGuideBusinessShow({
                         {/* Sidebar */}
                         <div className="space-y-6">
                             {/* Quick Stats */}
-                            <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
-                                <h3 className="mb-4 text-lg font-bold text-gray-900">Quick Stats</h3>
+                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
+                                <h3 className="mb-4 text-lg font-bold text-foreground">Quick Stats</h3>
                                 <div className="space-y-3">
                                     {business.rating !== undefined && (
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm text-gray-600">Rating</span>
+                                            <span className="text-sm text-muted-foreground">Rating</span>
                                             <div className="flex items-center gap-1">
                                                 <StarIcon className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                                                 <span className="font-semibold">{business.rating.toFixed(1)}</span>
@@ -252,13 +252,13 @@ export default function DowntownGuideBusinessShow({
                                     )}
                                     {business.reviews_count !== undefined && (
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm text-gray-600">Reviews</span>
+                                            <span className="text-sm text-muted-foreground">Reviews</span>
                                             <span className="font-semibold">{business.reviews_count}</span>
                                         </div>
                                     )}
                                     {activeCoupons.length + deals.length > 0 && (
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm text-gray-600">Active Deals</span>
+                                            <span className="text-sm text-muted-foreground">Active Deals</span>
                                             <span className="font-semibold">{activeCoupons.length + deals.length}</span>
                                         </div>
                                     )}
@@ -267,8 +267,8 @@ export default function DowntownGuideBusinessShow({
 
                             {/* Related Businesses */}
                             {relatedBusinesses.length > 0 && (
-                                <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
-                                    <h3 className="mb-4 text-lg font-bold text-gray-900">Similar Businesses</h3>
+                                <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
+                                    <h3 className="mb-4 text-lg font-bold text-foreground">Similar Businesses</h3>
                                     <BusinessList businesses={relatedBusinesses} theme="downtownsguide" gridCols={1} />
                                 </div>
                             )}

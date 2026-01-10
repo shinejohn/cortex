@@ -40,7 +40,7 @@ export default function OrganizerDashboard() {
     const [activeTab, setActiveTab] = useState<"overview" | "events" | "analytics" | "settings">("overview");
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             <SEO
                 type="page"
                 site="event-city"
@@ -51,7 +51,7 @@ export default function OrganizerDashboard() {
             <Header auth={auth} />
 
             {/* Header */}
-            <div className="bg-indigo-700 text-white">
+            <div className="bg-primary text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                         <div>
@@ -61,7 +61,7 @@ export default function OrganizerDashboard() {
                         <div className="mt-4 md:mt-0">
                             <Button
                                 variant="outline"
-                                className="bg-white text-indigo-700 hover:bg-indigo-50"
+                                className="bg-card text-primary hover:bg-accent/50"
                                 onClick={() => router.visit("/events/create")}
                             >
                                 <Plus className="h-5 w-5 mr-2" />
@@ -87,12 +87,12 @@ export default function OrganizerDashboard() {
                             <Card>
                                 <CardContent className="p-6">
                                     <div className="flex items-center">
-                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-indigo-100 flex items-center justify-center">
-                                            <Calendar className="h-6 w-6 text-indigo-600" />
+                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-accent flex items-center justify-center">
+                                            <Calendar className="h-6 w-6 text-primary" />
                                         </div>
                                         <div className="ml-4">
-                                            <h2 className="text-sm font-medium text-gray-500">Total Events</h2>
-                                            <p className="text-2xl font-semibold text-gray-900">{stats.total_events}</p>
+                                            <h2 className="text-sm font-medium text-muted-foreground">Total Events</h2>
+                                            <p className="text-2xl font-semibold text-foreground">{stats.total_events}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -105,8 +105,8 @@ export default function OrganizerDashboard() {
                                             <Calendar className="h-6 w-6 text-green-600" />
                                         </div>
                                         <div className="ml-4">
-                                            <h2 className="text-sm font-medium text-gray-500">Upcoming Events</h2>
-                                            <p className="text-2xl font-semibold text-gray-900">{stats.upcoming_events}</p>
+                                            <h2 className="text-sm font-medium text-muted-foreground">Upcoming Events</h2>
+                                            <p className="text-2xl font-semibold text-foreground">{stats.upcoming_events}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -115,12 +115,12 @@ export default function OrganizerDashboard() {
                             <Card>
                                 <CardContent className="p-6">
                                     <div className="flex items-center">
-                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-blue-100 flex items-center justify-center">
-                                            <DollarSign className="h-6 w-6 text-blue-600" />
+                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-accent flex items-center justify-center">
+                                            <DollarSign className="h-6 w-6 text-primary" />
                                         </div>
                                         <div className="ml-4">
-                                            <h2 className="text-sm font-medium text-gray-500">Total Revenue</h2>
-                                            <p className="text-2xl font-semibold text-gray-900">${stats.total_revenue.toLocaleString()}</p>
+                                            <h2 className="text-sm font-medium text-muted-foreground">Total Revenue</h2>
+                                            <p className="text-2xl font-semibold text-foreground">${stats.total_revenue.toLocaleString()}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -129,12 +129,12 @@ export default function OrganizerDashboard() {
                             <Card>
                                 <CardContent className="p-6">
                                     <div className="flex items-center">
-                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-purple-100 flex items-center justify-center">
-                                            <Users className="h-6 w-6 text-purple-600" />
+                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-accent flex items-center justify-center">
+                                            <Users className="h-6 w-6 text-primary" />
                                         </div>
                                         <div className="ml-4">
-                                            <h2 className="text-sm font-medium text-gray-500">Total Attendees</h2>
-                                            <p className="text-2xl font-semibold text-gray-900">{stats.total_attendees.toLocaleString()}</p>
+                                            <h2 className="text-sm font-medium text-muted-foreground">Total Attendees</h2>
+                                            <p className="text-2xl font-semibold text-foreground">{stats.total_attendees.toLocaleString()}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -168,7 +168,7 @@ export default function OrganizerDashboard() {
                                     <CardTitle>Recent Activity</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-gray-600">Recent activity will be displayed here.</p>
+                                    <p className="text-muted-foreground">Recent activity will be displayed here.</p>
                                 </CardContent>
                             </Card>
                         </div>
@@ -176,7 +176,7 @@ export default function OrganizerDashboard() {
 
                     <TabsContent value="events" className="mt-6">
                         <div className="mb-6 flex justify-between items-center">
-                            <h2 className="text-2xl font-bold text-gray-900">My Events</h2>
+                            <h2 className="text-2xl font-bold text-foreground">My Events</h2>
                             <Button onClick={() => router.visit("/events/create")}>
                                 <Plus className="h-5 w-5 mr-2" />
                                 Create Event
@@ -190,10 +190,10 @@ export default function OrganizerDashboard() {
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-3 mb-2">
-                                                    <h3 className="text-lg font-semibold text-gray-900">{event.title}</h3>
+                                                    <h3 className="text-lg font-semibold text-foreground">{event.title}</h3>
                                                     <Badge variant={event.status === "published" ? "default" : "outline"}>{event.status}</Badge>
                                                 </div>
-                                                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-3">
+                                                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-3">
                                                     <div className="flex items-center">
                                                         <Calendar className="h-4 w-4 mr-1" />
                                                         {new Date(event.event_date).toLocaleDateString()}
@@ -234,8 +234,8 @@ export default function OrganizerDashboard() {
                                 <CardTitle>Event Analytics</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-                                    <p className="text-gray-500">Analytics charts will be displayed here</p>
+                                <div className="h-64 flex items-center justify-center bg-muted/50 rounded-lg">
+                                    <p className="text-muted-foreground">Analytics charts will be displayed here</p>
                                 </div>
                             </CardContent>
                         </Card>
@@ -247,7 +247,7 @@ export default function OrganizerDashboard() {
                                 <CardTitle>Organizer Settings</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-gray-600">Settings will be displayed here.</p>
+                                <p className="text-muted-foreground">Settings will be displayed here.</p>
                             </CardContent>
                         </Card>
                     </TabsContent>

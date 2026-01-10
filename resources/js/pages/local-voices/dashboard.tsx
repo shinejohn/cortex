@@ -51,11 +51,11 @@ const getStatusColor = (status: string) => {
         case "pending":
             return "bg-yellow-100 text-yellow-700 border-yellow-200";
         case "rejected":
-            return "bg-red-100 text-red-700 border-red-200";
+            return "bg-destructive/10 text-destructive border-destructive/20";
         case "suspended":
-            return "bg-gray-100 text-gray-700 border-gray-200";
+            return "bg-muted text-foreground border";
         default:
-            return "bg-gray-100 text-gray-700 border-gray-200";
+            return "bg-muted text-foreground border";
     }
 };
 
@@ -77,7 +77,7 @@ export default function CreatorDashboard() {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Profile Header */}
-                <div className="mb-8 rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
+                <div className="mb-8 rounded-lg border border bg-card p-8 shadow-sm">
                     {profile.cover_image && (
                         <div className="mb-6 -mx-8 -mt-8">
                             <img src={profile.cover_image} alt="Cover" className="h-48 w-full object-cover rounded-t-lg" />
@@ -93,38 +93,38 @@ export default function CreatorDashboard() {
                         )}
                         <div className="flex-1">
                             <div className="mb-2 flex items-center gap-2">
-                                <h1 className="text-3xl font-bold text-gray-900">{profile.display_name}</h1>
+                                <h1 className="text-3xl font-bold text-foreground">{profile.display_name}</h1>
                                 <Badge className={getStatusColor(profile.status)}>{profile.status.toUpperCase()}</Badge>
                             </div>
-                            {profile.bio && <p className="text-gray-600">{profile.bio}</p>}
+                            {profile.bio && <p className="text-muted-foreground">{profile.bio}</p>}
                         </div>
                     </div>
                 </div>
 
                 {/* Stats */}
                 <div className="mb-8 grid gap-4 md:grid-cols-4">
-                    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                        <div className="text-sm text-gray-600 mb-1">Podcasts</div>
-                        <div className="text-2xl font-bold text-gray-900">{profile.podcasts_count}</div>
+                    <div className="rounded-lg border border bg-card p-4 shadow-sm">
+                        <div className="text-sm text-muted-foreground mb-1">Podcasts</div>
+                        <div className="text-2xl font-bold text-foreground">{profile.podcasts_count}</div>
                     </div>
-                    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                        <div className="text-sm text-gray-600 mb-1">Episodes</div>
-                        <div className="text-2xl font-bold text-gray-900">{profile.episodes_count}</div>
+                    <div className="rounded-lg border border bg-card p-4 shadow-sm">
+                        <div className="text-sm text-muted-foreground mb-1">Episodes</div>
+                        <div className="text-2xl font-bold text-foreground">{profile.episodes_count}</div>
                     </div>
-                    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                        <div className="text-sm text-gray-600 mb-1">Followers</div>
-                        <div className="text-2xl font-bold text-gray-900">{profile.followers_count}</div>
+                    <div className="rounded-lg border border bg-card p-4 shadow-sm">
+                        <div className="text-sm text-muted-foreground mb-1">Followers</div>
+                        <div className="text-2xl font-bold text-foreground">{profile.followers_count}</div>
                     </div>
-                    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                        <div className="text-sm text-gray-600 mb-1">Total Listens</div>
-                        <div className="text-2xl font-bold text-gray-900">{profile.total_listens.toLocaleString()}</div>
+                    <div className="rounded-lg border border bg-card p-4 shadow-sm">
+                        <div className="text-sm text-muted-foreground mb-1">Total Listens</div>
+                        <div className="text-2xl font-bold text-foreground">{profile.total_listens.toLocaleString()}</div>
                     </div>
                 </div>
 
                 {/* Podcasts */}
                 <div>
                     <div className="mb-4 flex items-center justify-between">
-                        <h2 className="text-2xl font-bold text-gray-900">Your Podcasts</h2>
+                        <h2 className="text-2xl font-bold text-foreground">Your Podcasts</h2>
                         {profile.status === "approved" && (
                             <Button
                                 onClick={() => router.visit("/podcasts/create")}
@@ -136,9 +136,9 @@ export default function CreatorDashboard() {
                         )}
                     </div>
                     {podcasts.length === 0 ? (
-                        <div className="rounded-lg border border-gray-200 bg-white p-12 text-center shadow-sm">
-                            <Headphones className="mx-auto mb-4 h-12 w-12 text-gray-400" />
-                            <p className="mb-4 text-gray-600">No podcasts yet.</p>
+                        <div className="rounded-lg border border bg-card p-12 text-center shadow-sm">
+                            <Headphones className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+                            <p className="mb-4 text-muted-foreground">No podcasts yet.</p>
                             {profile.status === "approved" && (
                                 <Button
                                     onClick={() => router.visit("/podcasts/create")}
@@ -148,7 +148,7 @@ export default function CreatorDashboard() {
                                 </Button>
                             )}
                             {profile.status === "pending" && (
-                                <p className="text-sm text-gray-600">
+                                <p className="text-sm text-muted-foreground">
                                     Your creator profile is pending approval. You'll be able to create podcasts once approved.
                                 </p>
                             )}
@@ -158,7 +158,7 @@ export default function CreatorDashboard() {
                             {podcasts.map((podcast) => (
                                 <div
                                     key={podcast.id}
-                                    className="cursor-pointer rounded-lg border border-gray-200 bg-white transition-all hover:shadow-md hover:border-purple-300"
+                                    className="cursor-pointer rounded-lg border border bg-card transition-all hover:shadow-md hover:border-purple-300"
                                     onClick={() => router.visit(`/podcasts/${podcast.slug}`)}
                                 >
                                     {podcast.cover_image ? (
@@ -170,20 +170,20 @@ export default function CreatorDashboard() {
                                     )}
                                     <div className="p-4">
                                         <div className="mb-2 flex items-center justify-between">
-                                            <h3 className="font-semibold text-gray-900">{podcast.title}</h3>
+                                            <h3 className="font-semibold text-foreground">{podcast.title}</h3>
                                             <Badge
                                                 variant={podcast.status === "published" ? "default" : "secondary"}
                                                 className={
                                                     podcast.status === "published"
                                                         ? "bg-green-100 text-green-700 border-green-200"
-                                                        : "bg-gray-100 text-gray-700 border-gray-200"
+                                                        : "bg-muted text-foreground border"
                                                 }
                                             >
                                                 {podcast.status}
                                             </Badge>
                                         </div>
-                                        {podcast.description && <p className="mb-3 line-clamp-2 text-sm text-gray-600">{podcast.description}</p>}
-                                        <div className="flex items-center justify-between text-xs text-gray-500">
+                                        {podcast.description && <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">{podcast.description}</p>}
+                                        <div className="flex items-center justify-between text-xs text-muted-foreground">
                                             <span>{podcast.episodes_count} episodes</span>
                                             <span>{podcast.total_listens.toLocaleString()} listens</span>
                                         </div>

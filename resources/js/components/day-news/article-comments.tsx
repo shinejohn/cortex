@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
@@ -231,7 +232,7 @@ function CommentItem({ comment, onLike, onReply, auth }: CommentItemProps) {
                 <div className="flex-1">
                     <div className="mb-2 flex items-center gap-2">
                         <span className="font-semibold">{comment.user.name}</span>
-                        {comment.is_pinned && <span className="rounded bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-800">PINNED</span>}
+                        {comment.is_pinned && <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">PINNED</Badge>}
                         <span className="text-sm text-muted-foreground">•</span>
                         <span className="text-sm text-muted-foreground">{comment.time_ago}</span>
                     </div>

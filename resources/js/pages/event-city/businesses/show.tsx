@@ -115,7 +115,7 @@ export default function EventCityBusinessShow({
                             <span>Back to Venue Directory</span>
                         </Link>
                         <div className="flex items-center gap-4">
-                            <div className="rounded-xl bg-white/20 p-2 backdrop-blur-sm">
+                            <div className="rounded-xl bg-card/20 p-2 backdrop-blur-sm">
                                 <CalendarIcon className="h-6 w-6 text-white" />
                             </div>
                             <div>
@@ -131,22 +131,22 @@ export default function EventCityBusinessShow({
                         {/* Main Content */}
                         <div className="lg:col-span-2 space-y-8">
                             {/* Business Details */}
-                            <div className="rounded-xl border-2 border-indigo-200 bg-white p-6 shadow-lg">
+                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
                                 <BusinessDetail business={business} theme="eventcity" showMap={true} />
                             </div>
 
                             {/* Tabs */}
                             <Tabs defaultValue="events" className="w-full">
-                                <TabsList className="grid w-full grid-cols-3 bg-indigo-50">
-                                    <TabsTrigger value="events" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white">
+                                <TabsList className="grid w-full grid-cols-3 bg-accent/50">
+                                    <TabsTrigger value="events" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                                         <CalendarIcon className="mr-2 h-4 w-4" />
                                         Upcoming Events ({allEvents.length})
                                     </TabsTrigger>
-                                    <TabsTrigger value="reviews" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white">
+                                    <TabsTrigger value="reviews" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                                         <StarIcon className="mr-2 h-4 w-4" />
                                         Reviews ({reviews.data.length})
                                     </TabsTrigger>
-                                    <TabsTrigger value="related" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white">
+                                    <TabsTrigger value="related" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                                         <MapPinIcon className="mr-2 h-4 w-4" />
                                         Related Venues
                                     </TabsTrigger>
@@ -155,8 +155,8 @@ export default function EventCityBusinessShow({
                                 <TabsContent value="events" className="mt-6">
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2">
-                                            <SparklesIcon className="h-5 w-5 text-indigo-600" />
-                                            <h2 className="text-xl font-bold text-gray-900">Upcoming Events at {business.name}</h2>
+                                            <SparklesIcon className="h-5 w-5 text-primary" />
+                                            <h2 className="text-xl font-bold text-foreground">Upcoming Events at {business.name}</h2>
                                         </div>
                                         {allEvents.length > 0 ? (
                                             <EventList
@@ -168,10 +168,10 @@ export default function EventCityBusinessShow({
                                                 showPrice={true}
                                             />
                                         ) : (
-                                            <div className="rounded-xl border-2 border-dashed border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-8 text-center">
+                                            <div className="rounded-xl border-2 border-dashed border bg-gradient-to-br from-indigo-50 to-purple-50 p-8 text-center">
                                                 <CalendarIcon className="mx-auto h-12 w-12 text-indigo-400" />
-                                                <p className="mt-4 text-lg font-bold text-gray-900">No upcoming events</p>
-                                                <p className="mt-2 text-sm text-gray-600">Check back later for events at this venue</p>
+                                                <p className="mt-4 text-lg font-bold text-foreground">No upcoming events</p>
+                                                <p className="mt-2 text-sm text-muted-foreground">Check back later for events at this venue</p>
                                             </div>
                                         )}
                                     </div>
@@ -180,7 +180,7 @@ export default function EventCityBusinessShow({
                                 <TabsContent value="reviews" className="mt-6">
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
-                                            <h2 className="text-xl font-bold text-gray-900">Venue Reviews</h2>
+                                            <h2 className="text-xl font-bold text-foreground">Venue Reviews</h2>
                                             {averageRating > 0 && (
                                                 <div className="flex items-center gap-2">
                                                     <StarIcon className="h-5 w-5 fill-yellow-400 text-yellow-400" />
@@ -194,13 +194,13 @@ export default function EventCityBusinessShow({
 
                                 <TabsContent value="related" className="mt-6">
                                     <div className="space-y-4">
-                                        <h2 className="text-xl font-bold text-gray-900">Related Venues & Performers</h2>
+                                        <h2 className="text-xl font-bold text-foreground">Related Venues & Performers</h2>
                                         {relatedBusinesses.length > 0 ? (
                                             <BusinessList businesses={relatedBusinesses} theme="eventcity" gridCols={2} />
                                         ) : (
-                                            <div className="rounded-xl border-2 border-dashed border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-8 text-center">
+                                            <div className="rounded-xl border-2 border-dashed border bg-gradient-to-br from-indigo-50 to-purple-50 p-8 text-center">
                                                 <MapPinIcon className="mx-auto h-12 w-12 text-indigo-400" />
-                                                <p className="mt-4 text-lg font-bold text-gray-900">No related venues</p>
+                                                <p className="mt-4 text-lg font-bold text-foreground">No related venues</p>
                                             </div>
                                         )}
                                     </div>
@@ -211,12 +211,12 @@ export default function EventCityBusinessShow({
                         {/* Sidebar */}
                         <div className="space-y-6">
                             {/* Quick Stats */}
-                            <div className="rounded-xl border-2 border-indigo-200 bg-white p-6 shadow-lg">
-                                <h3 className="mb-4 text-lg font-bold text-gray-900">Quick Stats</h3>
+                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
+                                <h3 className="mb-4 text-lg font-bold text-foreground">Quick Stats</h3>
                                 <div className="space-y-3">
                                     {business.rating !== undefined && (
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm text-gray-600">Rating</span>
+                                            <span className="text-sm text-muted-foreground">Rating</span>
                                             <div className="flex items-center gap-1">
                                                 <StarIcon className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                                                 <span className="font-semibold">{business.rating.toFixed(1)}</span>
@@ -225,13 +225,13 @@ export default function EventCityBusinessShow({
                                     )}
                                     {business.reviews_count !== undefined && (
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm text-gray-600">Reviews</span>
+                                            <span className="text-sm text-muted-foreground">Reviews</span>
                                             <span className="font-semibold">{business.reviews_count}</span>
                                         </div>
                                     )}
                                     {allEvents.length > 0 && (
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm text-gray-600">Upcoming Events</span>
+                                            <span className="text-sm text-muted-foreground">Upcoming Events</span>
                                             <span className="font-semibold">{allEvents.length}</span>
                                         </div>
                                     )}
@@ -240,21 +240,21 @@ export default function EventCityBusinessShow({
 
                             {/* Contact Info */}
                             {(business.phone || business.email || business.website) && (
-                                <div className="rounded-xl border-2 border-indigo-200 bg-white p-6 shadow-lg">
-                                    <h3 className="mb-4 text-lg font-bold text-gray-900">Contact</h3>
+                                <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
+                                    <h3 className="mb-4 text-lg font-bold text-foreground">Contact</h3>
                                     <div className="space-y-2 text-sm">
                                         {business.phone && (
                                             <div>
-                                                <span className="text-gray-600">Phone: </span>
-                                                <a href={`tel:${business.phone}`} className="text-indigo-600 hover:underline">
+                                                <span className="text-muted-foreground">Phone: </span>
+                                                <a href={`tel:${business.phone}`} className="text-primary hover:underline">
                                                     {business.phone}
                                                 </a>
                                             </div>
                                         )}
                                         {business.email && (
                                             <div>
-                                                <span className="text-gray-600">Email: </span>
-                                                <a href={`mailto:${business.email}`} className="text-indigo-600 hover:underline">
+                                                <span className="text-muted-foreground">Email: </span>
+                                                <a href={`mailto:${business.email}`} className="text-primary hover:underline">
                                                     {business.email}
                                                 </a>
                                             </div>
@@ -265,7 +265,7 @@ export default function EventCityBusinessShow({
                                                     href={business.website}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-indigo-600 hover:underline"
+                                                    className="text-primary hover:underline"
                                                 >
                                                     Visit Website
                                                 </a>

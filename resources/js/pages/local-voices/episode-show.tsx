@@ -100,14 +100,14 @@ export default function EpisodeShow() {
                     <Button
                         variant="ghost"
                         onClick={() => router.visit(`/podcasts/${episode.podcast.slug}`)}
-                        className="text-purple-600 hover:text-purple-700"
+                        className="text-primary hover:text-primary"
                     >
                         ← Back to {episode.podcast.title}
                     </Button>
                 </div>
 
                 {/* Episode Header */}
-                <div className="mb-8 rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
+                <div className="mb-8 rounded-lg border border bg-card p-8 shadow-sm">
                     <div className="mb-6 flex gap-6">
                         {episode.podcast.cover_image ? (
                             <img
@@ -123,19 +123,19 @@ export default function EpisodeShow() {
                         <div className="flex-1">
                             <div className="mb-2 flex items-center gap-2">
                                 {episode.episode_number && (
-                                    <Badge variant="outline" className="border-purple-200 text-purple-700">
+                                    <Badge variant="outline" className="border text-primary">
                                         #{episode.episode_number}
                                     </Badge>
                                 )}
-                                <span className="text-sm text-gray-600">{episode.podcast.title}</span>
+                                <span className="text-sm text-muted-foreground">{episode.podcast.title}</span>
                             </div>
-                            <h1 className="mb-2 text-3xl font-bold text-gray-900">{episode.title}</h1>
-                            <div className="flex items-center gap-4 text-sm text-gray-600">
+                            <h1 className="mb-2 text-3xl font-bold text-foreground">{episode.title}</h1>
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                 <div className="flex items-center gap-1">
                                     <img
                                         src={episode.podcast.creator.avatar || "/default-avatar.png"}
                                         alt={episode.podcast.creator.display_name}
-                                        className="h-5 w-5 rounded-full object-cover border border-gray-200"
+                                        className="h-5 w-5 rounded-full object-cover border border"
                                     />
                                     {episode.podcast.creator.display_name}
                                 </div>
@@ -168,7 +168,7 @@ export default function EpisodeShow() {
                                 {isPlaying ? "⏸" : <Play className="h-6 w-6" />}
                             </Button>
                             <div className="flex-1">
-                                <div className="mb-2 h-2 w-full overflow-hidden rounded-full bg-white">
+                                <div className="mb-2 h-2 w-full overflow-hidden rounded-full bg-card">
                                     <div
                                         className="h-full bg-gradient-to-r from-purple-600 to-pink-600 transition-all"
                                         style={{
@@ -176,21 +176,21 @@ export default function EpisodeShow() {
                                         }}
                                     />
                                 </div>
-                                <div className="flex justify-between text-xs text-gray-600">
+                                <div className="flex justify-between text-xs text-muted-foreground">
                                     <span>{formatTime(currentTime)}</span>
                                     <span>{formatTime(duration)}</span>
                                 </div>
                             </div>
                             <div className="flex gap-2">
-                                <Button variant="outline" size="sm" className="border-gray-300">
+                                <Button variant="outline" size="sm" className="border">
                                     <Download className="h-4 w-4" />
                                 </Button>
-                                <Button variant="outline" size="sm" className="border-gray-300">
+                                <Button variant="outline" size="sm" className="border">
                                     <Share2 className="h-4 w-4" />
                                 </Button>
                             </div>
                         </div>
-                        <div className="flex items-center gap-6 text-sm text-gray-600">
+                        <div className="flex items-center gap-6 text-sm text-muted-foreground">
                             <span>{episode.listens_count.toLocaleString()} listens</span>
                             <span>{episode.downloads_count.toLocaleString()} downloads</span>
                             <span>{episode.likes_count} likes</span>
@@ -201,33 +201,33 @@ export default function EpisodeShow() {
 
                 {/* Description */}
                 {episode.description && (
-                    <div className="mb-8 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-                        <h2 className="mb-4 text-xl font-bold text-gray-900">Description</h2>
-                        <div className="prose max-w-none whitespace-pre-wrap text-gray-700">{episode.description}</div>
+                    <div className="mb-8 rounded-lg border border bg-card p-6 shadow-sm">
+                        <h2 className="mb-4 text-xl font-bold text-foreground">Description</h2>
+                        <div className="prose max-w-none whitespace-pre-wrap text-foreground">{episode.description}</div>
                     </div>
                 )}
 
                 {/* Show Notes */}
                 {episode.show_notes && (
-                    <div className="mb-8 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-                        <h2 className="mb-4 text-xl font-bold text-gray-900">Show Notes</h2>
-                        <div className="prose max-w-none whitespace-pre-wrap text-gray-700">{episode.show_notes}</div>
+                    <div className="mb-8 rounded-lg border border bg-card p-6 shadow-sm">
+                        <h2 className="mb-4 text-xl font-bold text-foreground">Show Notes</h2>
+                        <div className="prose max-w-none whitespace-pre-wrap text-foreground">{episode.show_notes}</div>
                     </div>
                 )}
 
                 {/* Related Episodes */}
                 {related.length > 0 && (
                     <div>
-                        <h2 className="mb-4 text-2xl font-bold text-gray-900">More Episodes</h2>
+                        <h2 className="mb-4 text-2xl font-bold text-foreground">More Episodes</h2>
                         <div className="space-y-3">
                             {related.map((relatedEpisode) => (
                                 <div
                                     key={relatedEpisode.id}
-                                    className="cursor-pointer rounded-lg border border-gray-200 bg-white p-4 transition-all hover:shadow-md hover:border-purple-300"
+                                    className="cursor-pointer rounded-lg border border bg-card p-4 transition-all hover:shadow-md hover:border-purple-300"
                                     onClick={() => router.visit(`/podcasts/${episode.podcast.slug}/episodes/${relatedEpisode.slug}`)}
                                 >
-                                    <h3 className="font-semibold text-gray-900">{relatedEpisode.title}</h3>
-                                    <div className="mt-1 flex items-center gap-4 text-sm text-gray-600">
+                                    <h3 className="font-semibold text-foreground">{relatedEpisode.title}</h3>
+                                    <div className="mt-1 flex items-center gap-4 text-sm text-muted-foreground">
                                         {relatedEpisode.published_at && <span>{new Date(relatedEpisode.published_at).toLocaleDateString()}</span>}
                                         <span>{relatedEpisode.formatted_duration}</span>
                                     </div>

@@ -28,7 +28,7 @@ export default function Careers() {
     const { auth, jobs } = usePage<Props>().props;
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-card">
             <SEO
                 type="page"
                 site="event-city"
@@ -49,24 +49,24 @@ export default function Careers() {
 
             {/* Why Work Here */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Why Work at GoEventCity?</h2>
+                <h2 className="text-3xl font-bold text-foreground text-center mb-12">Why Work at GoEventCity?</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
                     <Card>
                         <CardContent className="p-6 text-center">
-                            <div className="h-16 w-16 rounded-full bg-indigo-100 flex items-center justify-center mx-auto mb-4">
-                                <Users className="h-8 w-8 text-indigo-600" />
+                            <div className="h-16 w-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
+                                <Users className="h-8 w-8 text-primary" />
                             </div>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">Great Culture</h3>
-                            <p className="text-gray-600">Work with passionate people who care about building amazing experiences</p>
+                            <h3 className="text-xl font-semibold text-foreground mb-2">Great Culture</h3>
+                            <p className="text-muted-foreground">Work with passionate people who care about building amazing experiences</p>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardContent className="p-6 text-center">
-                            <div className="h-16 w-16 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-4">
-                                <Zap className="h-8 w-8 text-purple-600" />
+                            <div className="h-16 w-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
+                                <Zap className="h-8 w-8 text-primary" />
                             </div>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">Fast Growth</h3>
-                            <p className="text-gray-600">Join a rapidly growing company with opportunities for career advancement</p>
+                            <h3 className="text-xl font-semibold text-foreground mb-2">Fast Growth</h3>
+                            <p className="text-muted-foreground">Join a rapidly growing company with opportunities for career advancement</p>
                         </CardContent>
                     </Card>
                     <Card>
@@ -74,14 +74,14 @@ export default function Careers() {
                             <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
                                 <Heart className="h-8 w-8 text-green-600" />
                             </div>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">Impact</h3>
-                            <p className="text-gray-600">Make a real difference in how communities connect and celebrate</p>
+                            <h3 className="text-xl font-semibold text-foreground mb-2">Impact</h3>
+                            <p className="text-muted-foreground">Make a real difference in how communities connect and celebrate</p>
                         </CardContent>
                     </Card>
                 </div>
 
                 {/* Open Positions */}
-                <h2 className="text-3xl font-bold text-gray-900 mb-8">Open Positions</h2>
+                <h2 className="text-3xl font-bold text-foreground mb-8">Open Positions</h2>
                 <div className="space-y-4">
                     {jobs.map((job) => (
                         <Card key={job.id} className="hover:shadow-lg transition-shadow">
@@ -89,10 +89,10 @@ export default function Careers() {
                                 <div className="flex items-start justify-between">
                                     <div className="flex-1">
                                         <div className="flex items-center gap-3 mb-2">
-                                            <h3 className="text-2xl font-bold text-gray-900">{job.title}</h3>
+                                            <h3 className="text-2xl font-bold text-foreground">{job.title}</h3>
                                             <Badge variant="outline">{job.department}</Badge>
                                         </div>
-                                        <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+                                        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
                                             <div className="flex items-center">
                                                 <MapPin className="h-4 w-4 mr-1" />
                                                 {job.location}
@@ -103,7 +103,7 @@ export default function Careers() {
                                             </div>
                                             <div className="flex items-center">Posted {new Date(job.posted_date).toLocaleDateString()}</div>
                                         </div>
-                                        <p className="text-gray-700 mb-4">{job.description}</p>
+                                        <p className="text-foreground mb-4">{job.description}</p>
                                         <div className="flex flex-wrap gap-2">
                                             {job.requirements.slice(0, 3).map((req, index) => (
                                                 <Badge key={index} variant="secondary">
@@ -124,13 +124,13 @@ export default function Careers() {
             </div>
 
             {/* CTA */}
-            <div className="bg-indigo-700 text-white py-16">
+            <div className="bg-primary text-white py-16">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-3xl font-bold mb-4">Don't See a Role That Fits?</h2>
                     <p className="text-xl text-indigo-100 mb-8">
                         We're always looking for talented people. Send us your resume and we'll keep you in mind for future opportunities.
                     </p>
-                    <Button size="lg" variant="outline" className="bg-white text-indigo-700 hover:bg-indigo-50">
+                    <Button size="lg" variant="outline" className="bg-card text-primary hover:bg-accent/50">
                         Submit General Application
                     </Button>
                 </div>

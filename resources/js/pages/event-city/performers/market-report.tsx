@@ -36,7 +36,7 @@ export default function MarketReport() {
     const [timeRange, setTimeRange] = useState("last6Months");
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             <SEO
                 type="page"
                 site="event-city"
@@ -47,14 +47,14 @@ export default function MarketReport() {
             <Header auth={auth} />
 
             {/* Header */}
-            <div className="bg-purple-700 text-white">
+            <div className="bg-primary text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="flex items-center justify-between">
                         <div>
                             <h1 className="text-4xl font-bold mb-2">Market Report</h1>
                             <p className="text-xl text-purple-100">Data-driven insights for performers</p>
                         </div>
-                        <Button variant="outline" className="bg-white text-purple-700 hover:bg-purple-50">
+                        <Button variant="outline" className="bg-card text-primary hover:bg-accent/50">
                             <Download className="h-5 w-5 mr-2" />
                             Download Report
                         </Button>
@@ -63,11 +63,11 @@ export default function MarketReport() {
             </div>
 
             {/* Filters */}
-            <div className="bg-white border-b border-gray-200">
+            <div className="bg-card border-b border">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex flex-wrap gap-4">
                         <div className="flex-1 min-w-[200px]">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                            <label className="block text-sm font-medium text-foreground mb-1">Location</label>
                             <Select value={selectedLocation} onValueChange={setSelectedLocation}>
                                 <SelectTrigger>
                                     <SelectValue />
@@ -82,7 +82,7 @@ export default function MarketReport() {
                             </Select>
                         </div>
                         <div className="flex-1 min-w-[200px]">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Genre</label>
+                            <label className="block text-sm font-medium text-foreground mb-1">Genre</label>
                             <Select value={selectedGenre} onValueChange={setSelectedGenre}>
                                 <SelectTrigger>
                                     <SelectValue />
@@ -97,7 +97,7 @@ export default function MarketReport() {
                             </Select>
                         </div>
                         <div className="flex-1 min-w-[200px]">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Time Range</label>
+                            <label className="block text-sm font-medium text-foreground mb-1">Time Range</label>
                             <Select value={timeRange} onValueChange={setTimeRange}>
                                 <SelectTrigger>
                                     <SelectValue />
@@ -122,13 +122,13 @@ export default function MarketReport() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Total Gigs</p>
-                                    <p className="text-3xl font-bold text-gray-900 mt-1">
+                                    <p className="text-sm font-medium text-muted-foreground">Total Gigs</p>
+                                    <p className="text-3xl font-bold text-foreground mt-1">
                                         {marketData.gigs_by_genre.reduce((sum, item) => sum + item.value, 0)}
                                     </p>
                                 </div>
-                                <div className="h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center">
-                                    <Calendar className="h-6 w-6 text-purple-600" />
+                                <div className="h-12 w-12 rounded-full bg-accent flex items-center justify-center">
+                                    <Calendar className="h-6 w-6 text-primary" />
                                 </div>
                             </div>
                         </CardContent>
@@ -137,8 +137,8 @@ export default function MarketReport() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Avg Pay</p>
-                                    <p className="text-3xl font-bold text-gray-900 mt-1">
+                                    <p className="text-sm font-medium text-muted-foreground">Avg Pay</p>
+                                    <p className="text-3xl font-bold text-foreground mt-1">
                                         $
                                         {Math.round(
                                             marketData.avg_pay_by_genre.reduce((sum, item) => sum + item.value, 0) /
@@ -156,11 +156,11 @@ export default function MarketReport() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Top Genre</p>
-                                    <p className="text-3xl font-bold text-gray-900 mt-1">{marketData.gigs_by_genre[0]?.name || "N/A"}</p>
+                                    <p className="text-sm font-medium text-muted-foreground">Top Genre</p>
+                                    <p className="text-3xl font-bold text-foreground mt-1">{marketData.gigs_by_genre[0]?.name || "N/A"}</p>
                                 </div>
-                                <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
-                                    <Music className="h-6 w-6 text-blue-600" />
+                                <div className="h-12 w-12 rounded-full bg-accent flex items-center justify-center">
+                                    <Music className="h-6 w-6 text-primary" />
                                 </div>
                             </div>
                         </CardContent>
@@ -169,7 +169,7 @@ export default function MarketReport() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Growth</p>
+                                    <p className="text-sm font-medium text-muted-foreground">Growth</p>
                                     <p className="text-3xl font-bold text-green-600 mt-1">+15%</p>
                                 </div>
                                 <div className="h-12 w-12 rounded-full bg-yellow-100 flex items-center justify-center">
@@ -187,8 +187,8 @@ export default function MarketReport() {
                             <CardTitle>Gigs by Genre</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-                                <p className="text-gray-500">Chart visualization will be displayed here</p>
+                            <div className="h-64 flex items-center justify-center bg-muted/50 rounded-lg">
+                                <p className="text-muted-foreground">Chart visualization will be displayed here</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -197,8 +197,8 @@ export default function MarketReport() {
                             <CardTitle>Average Pay by Genre</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-                                <p className="text-gray-500">Chart visualization will be displayed here</p>
+                            <div className="h-64 flex items-center justify-center bg-muted/50 rounded-lg">
+                                <p className="text-muted-foreground">Chart visualization will be displayed here</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -210,8 +210,8 @@ export default function MarketReport() {
                         <CardTitle>Demand Trend</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-                            <p className="text-gray-500">Trend chart will be displayed here</p>
+                        <div className="h-64 flex items-center justify-center bg-muted/50 rounded-lg">
+                            <p className="text-muted-foreground">Trend chart will be displayed here</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -224,14 +224,14 @@ export default function MarketReport() {
                     <CardContent>
                         <div className="space-y-4">
                             {marketData.top_opportunities.map((opportunity, index) => (
-                                <div key={index} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                                <div key={index} className="border border rounded-lg p-4 hover:bg-muted/50 transition-colors">
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">
-                                            <h3 className="text-lg font-semibold text-gray-900 mb-1">{opportunity.title}</h3>
-                                            <p className="text-gray-600 mb-2">{opportunity.description}</p>
+                                            <h3 className="text-lg font-semibold text-foreground mb-1">{opportunity.title}</h3>
+                                            <p className="text-muted-foreground mb-2">{opportunity.description}</p>
                                             <div className="flex items-center gap-4 text-sm">
                                                 <span className="text-green-600 font-medium">{opportunity.impact}</span>
-                                                <span className="text-gray-500">{opportunity.action}</span>
+                                                <span className="text-muted-foreground">{opportunity.action}</span>
                                             </div>
                                         </div>
                                         <Button variant="outline" size="sm">

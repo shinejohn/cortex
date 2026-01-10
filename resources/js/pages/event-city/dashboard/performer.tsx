@@ -50,7 +50,7 @@ export default function PerformerDashboard() {
     const [activeTab, setActiveTab] = useState<"overview" | "gigs" | "analytics" | "profile">("overview");
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             <SEO
                 type="page"
                 site="event-city"
@@ -61,7 +61,7 @@ export default function PerformerDashboard() {
             <Header auth={auth} />
 
             {/* Header */}
-            <div className="bg-purple-700 text-white">
+            <div className="bg-primary text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                         <div className="flex items-center">
@@ -80,7 +80,7 @@ export default function PerformerDashboard() {
                         <div className="mt-4 md:mt-0 flex space-x-3">
                             <Button
                                 variant="outline"
-                                className="bg-white text-purple-700 hover:bg-purple-50"
+                                className="bg-card text-primary hover:bg-accent/50"
                                 onClick={() => router.visit(`/performers/${performer.id}/edit`)}
                             >
                                 <Edit className="h-5 w-5 mr-2" />
@@ -106,12 +106,12 @@ export default function PerformerDashboard() {
                             <Card>
                                 <CardContent className="p-6">
                                     <div className="flex items-center">
-                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-purple-100 flex items-center justify-center">
-                                            <Calendar className="h-6 w-6 text-purple-600" />
+                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-accent flex items-center justify-center">
+                                            <Calendar className="h-6 w-6 text-primary" />
                                         </div>
                                         <div className="ml-4">
-                                            <h2 className="text-sm font-medium text-gray-500">Upcoming Shows</h2>
-                                            <p className="text-2xl font-semibold text-gray-900">{stats.upcoming_shows}</p>
+                                            <h2 className="text-sm font-medium text-muted-foreground">Upcoming Shows</h2>
+                                            <p className="text-2xl font-semibold text-foreground">{stats.upcoming_shows}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -124,8 +124,8 @@ export default function PerformerDashboard() {
                                             <DollarSign className="h-6 w-6 text-green-600" />
                                         </div>
                                         <div className="ml-4">
-                                            <h2 className="text-sm font-medium text-gray-500">Total Revenue</h2>
-                                            <p className="text-2xl font-semibold text-gray-900">${stats.total_revenue.toLocaleString()}</p>
+                                            <h2 className="text-sm font-medium text-muted-foreground">Total Revenue</h2>
+                                            <p className="text-2xl font-semibold text-foreground">${stats.total_revenue.toLocaleString()}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -134,12 +134,12 @@ export default function PerformerDashboard() {
                             <Card>
                                 <CardContent className="p-6">
                                     <div className="flex items-center">
-                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-blue-100 flex items-center justify-center">
-                                            <Star className="h-6 w-6 text-blue-600" />
+                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-accent flex items-center justify-center">
+                                            <Star className="h-6 w-6 text-primary" />
                                         </div>
                                         <div className="ml-4">
-                                            <h2 className="text-sm font-medium text-gray-500">Average Rating</h2>
-                                            <p className="text-2xl font-semibold text-gray-900">{stats.average_rating.toFixed(1)}</p>
+                                            <h2 className="text-sm font-medium text-muted-foreground">Average Rating</h2>
+                                            <p className="text-2xl font-semibold text-foreground">{stats.average_rating.toFixed(1)}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -148,12 +148,12 @@ export default function PerformerDashboard() {
                             <Card>
                                 <CardContent className="p-6">
                                     <div className="flex items-center">
-                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-indigo-100 flex items-center justify-center">
-                                            <Users className="h-6 w-6 text-indigo-600" />
+                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-accent flex items-center justify-center">
+                                            <Users className="h-6 w-6 text-primary" />
                                         </div>
                                         <div className="ml-4">
-                                            <h2 className="text-sm font-medium text-gray-500">Followers</h2>
-                                            <p className="text-2xl font-semibold text-gray-900">{performer.followers_count.toLocaleString()}</p>
+                                            <h2 className="text-sm font-medium text-muted-foreground">Followers</h2>
+                                            <p className="text-2xl font-semibold text-foreground">{performer.followers_count.toLocaleString()}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -195,7 +195,7 @@ export default function PerformerDashboard() {
                                     <CardTitle>Recent Activity</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-gray-600">Recent activity will be displayed here.</p>
+                                    <p className="text-muted-foreground">Recent activity will be displayed here.</p>
                                 </CardContent>
                             </Card>
                         </div>
@@ -203,7 +203,7 @@ export default function PerformerDashboard() {
 
                     <TabsContent value="gigs" className="mt-6">
                         <div className="mb-6 flex justify-between items-center">
-                            <h2 className="text-2xl font-bold text-gray-900">Gigs</h2>
+                            <h2 className="text-2xl font-bold text-foreground">Gigs</h2>
                             <Button onClick={() => router.visit("/performers/discovery")}>
                                 <Plus className="h-5 w-5 mr-2" />
                                 Find New Gigs
@@ -223,8 +223,8 @@ export default function PerformerDashboard() {
                                             <CardContent className="p-6">
                                                 <div className="flex items-start justify-between">
                                                     <div className="flex-1">
-                                                        <h3 className="text-lg font-semibold text-gray-900">{gig.event.title}</h3>
-                                                        <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                                                        <h3 className="text-lg font-semibold text-foreground">{gig.event.title}</h3>
+                                                        <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                                             <div className="flex items-center">
                                                                 <Calendar className="h-4 w-4 mr-1" />
                                                                 {new Date(gig.event.event_date).toLocaleDateString()}
@@ -258,8 +258,8 @@ export default function PerformerDashboard() {
                                             <CardContent className="p-6">
                                                 <div className="flex items-start justify-between">
                                                     <div className="flex-1">
-                                                        <h3 className="text-lg font-semibold text-gray-900">{gig.event.title}</h3>
-                                                        <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                                                        <h3 className="text-lg font-semibold text-foreground">{gig.event.title}</h3>
+                                                        <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                                             <div className="flex items-center">
                                                                 <Calendar className="h-4 w-4 mr-1" />
                                                                 {new Date(gig.event.event_date).toLocaleDateString()}
@@ -289,8 +289,8 @@ export default function PerformerDashboard() {
                                 <CardTitle>Analytics</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-                                    <p className="text-gray-500">Analytics charts will be displayed here</p>
+                                <div className="h-64 flex items-center justify-center bg-muted/50 rounded-lg">
+                                    <p className="text-muted-foreground">Analytics charts will be displayed here</p>
                                 </div>
                             </CardContent>
                         </Card>
@@ -302,7 +302,7 @@ export default function PerformerDashboard() {
                                 <CardTitle>Profile Information</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-gray-600">Profile information will be displayed here.</p>
+                                <p className="text-muted-foreground">Profile information will be displayed here.</p>
                             </CardContent>
                         </Card>
                     </TabsContent>

@@ -55,7 +55,7 @@ export default function VenueOwnerDashboard() {
     const [activeTab, setActiveTab] = useState<"overview" | "venues" | "bookings" | "analytics">("overview");
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             <SEO
                 type="page"
                 site="event-city"
@@ -66,7 +66,7 @@ export default function VenueOwnerDashboard() {
             <Header auth={auth} />
 
             {/* Header */}
-            <div className="bg-indigo-700 text-white">
+            <div className="bg-primary text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                         <div>
@@ -76,7 +76,7 @@ export default function VenueOwnerDashboard() {
                         <div className="mt-4 md:mt-0">
                             <Button
                                 variant="outline"
-                                className="bg-white text-indigo-700 hover:bg-indigo-50"
+                                className="bg-card text-primary hover:bg-accent/50"
                                 onClick={() => router.visit("/venues/submit")}
                             >
                                 <Plus className="h-5 w-5 mr-2" />
@@ -102,12 +102,12 @@ export default function VenueOwnerDashboard() {
                             <Card>
                                 <CardContent className="p-6">
                                     <div className="flex items-center">
-                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-indigo-100 flex items-center justify-center">
-                                            <Building className="h-6 w-6 text-indigo-600" />
+                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-accent flex items-center justify-center">
+                                            <Building className="h-6 w-6 text-primary" />
                                         </div>
                                         <div className="ml-4">
-                                            <h2 className="text-sm font-medium text-gray-500">Total Venues</h2>
-                                            <p className="text-2xl font-semibold text-gray-900">{stats.total_venues}</p>
+                                            <h2 className="text-sm font-medium text-muted-foreground">Total Venues</h2>
+                                            <p className="text-2xl font-semibold text-foreground">{stats.total_venues}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -120,8 +120,8 @@ export default function VenueOwnerDashboard() {
                                             <Calendar className="h-6 w-6 text-green-600" />
                                         </div>
                                         <div className="ml-4">
-                                            <h2 className="text-sm font-medium text-gray-500">Upcoming Bookings</h2>
-                                            <p className="text-2xl font-semibold text-gray-900">{stats.upcoming_bookings}</p>
+                                            <h2 className="text-sm font-medium text-muted-foreground">Upcoming Bookings</h2>
+                                            <p className="text-2xl font-semibold text-foreground">{stats.upcoming_bookings}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -130,12 +130,12 @@ export default function VenueOwnerDashboard() {
                             <Card>
                                 <CardContent className="p-6">
                                     <div className="flex items-center">
-                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-blue-100 flex items-center justify-center">
-                                            <DollarSign className="h-6 w-6 text-blue-600" />
+                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-accent flex items-center justify-center">
+                                            <DollarSign className="h-6 w-6 text-primary" />
                                         </div>
                                         <div className="ml-4">
-                                            <h2 className="text-sm font-medium text-gray-500">Total Revenue</h2>
-                                            <p className="text-2xl font-semibold text-gray-900">${stats.total_revenue.toLocaleString()}</p>
+                                            <h2 className="text-sm font-medium text-muted-foreground">Total Revenue</h2>
+                                            <p className="text-2xl font-semibold text-foreground">${stats.total_revenue.toLocaleString()}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -144,12 +144,12 @@ export default function VenueOwnerDashboard() {
                             <Card>
                                 <CardContent className="p-6">
                                     <div className="flex items-center">
-                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-purple-100 flex items-center justify-center">
-                                            <Users className="h-6 w-6 text-purple-600" />
+                                        <div className="flex-shrink-0 h-10 w-10 rounded-md bg-accent flex items-center justify-center">
+                                            <Users className="h-6 w-6 text-primary" />
                                         </div>
                                         <div className="ml-4">
-                                            <h2 className="text-sm font-medium text-gray-500">Total Bookings</h2>
-                                            <p className="text-2xl font-semibold text-gray-900">{stats.total_bookings}</p>
+                                            <h2 className="text-sm font-medium text-muted-foreground">Total Bookings</h2>
+                                            <p className="text-2xl font-semibold text-foreground">{stats.total_bookings}</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -179,7 +179,7 @@ export default function VenueOwnerDashboard() {
                                     <CardTitle>Recent Activity</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-gray-600">Recent activity will be displayed here.</p>
+                                    <p className="text-muted-foreground">Recent activity will be displayed here.</p>
                                 </CardContent>
                             </Card>
                         </div>
@@ -187,7 +187,7 @@ export default function VenueOwnerDashboard() {
 
                     <TabsContent value="venues" className="mt-6">
                         <div className="mb-6 flex justify-between items-center">
-                            <h2 className="text-2xl font-bold text-gray-900">My Venues</h2>
+                            <h2 className="text-2xl font-bold text-foreground">My Venues</h2>
                             <Button onClick={() => router.visit("/venues/submit")}>
                                 <Plus className="h-5 w-5 mr-2" />
                                 Add Venue
@@ -206,19 +206,19 @@ export default function VenueOwnerDashboard() {
                                     </div>
                                     <CardContent className="p-6">
                                         <div className="flex items-start justify-between mb-2">
-                                            <h3 className="text-lg font-semibold text-gray-900">{venue.name}</h3>
+                                            <h3 className="text-lg font-semibold text-foreground">{venue.name}</h3>
                                             <Badge variant={venue.status === "active" ? "default" : "outline"}>{venue.status}</Badge>
                                         </div>
-                                        <div className="flex items-center text-sm text-gray-600 mb-4">
+                                        <div className="flex items-center text-sm text-muted-foreground mb-4">
                                             <MapPin className="h-4 w-4 mr-1" />
                                             {venue.city}, {venue.state}
                                         </div>
                                         <div className="flex items-center justify-between text-sm mb-4">
-                                            <div className="flex items-center text-gray-600">
+                                            <div className="flex items-center text-muted-foreground">
                                                 <Calendar className="h-4 w-4 mr-1" />
                                                 {venue.upcoming_bookings} upcoming
                                             </div>
-                                            <div className="flex items-center text-gray-600">
+                                            <div className="flex items-center text-muted-foreground">
                                                 <DollarSign className="h-4 w-4 mr-1" />${venue.revenue.toLocaleString()}
                                             </div>
                                         </div>
@@ -239,7 +239,7 @@ export default function VenueOwnerDashboard() {
 
                     <TabsContent value="bookings" className="mt-6">
                         <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-gray-900">Upcoming Bookings</h2>
+                            <h2 className="text-2xl font-bold text-foreground">Upcoming Bookings</h2>
                         </div>
 
                         <div className="space-y-4">
@@ -248,8 +248,8 @@ export default function VenueOwnerDashboard() {
                                     <CardContent className="p-6">
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1">
-                                                <h3 className="text-lg font-semibold text-gray-900">{booking.event.title}</h3>
-                                                <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                                                <h3 className="text-lg font-semibold text-foreground">{booking.event.title}</h3>
+                                                <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                                     <div className="flex items-center">
                                                         <Calendar className="h-4 w-4 mr-1" />
                                                         {new Date(booking.event.event_date).toLocaleDateString()}
@@ -282,8 +282,8 @@ export default function VenueOwnerDashboard() {
                                 <CardTitle>Venue Analytics</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-                                    <p className="text-gray-500">Analytics charts will be displayed here</p>
+                                <div className="h-64 flex items-center justify-center bg-muted/50 rounded-lg">
+                                    <p className="text-muted-foreground">Analytics charts will be displayed here</p>
                                 </div>
                             </CardContent>
                         </Card>

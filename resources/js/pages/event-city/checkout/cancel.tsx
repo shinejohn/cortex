@@ -66,12 +66,12 @@ export default function CheckoutCancel({ auth, order }: CheckoutCancelProps) {
                         </Card>
 
                         {/* Info Box */}
-                        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-left">
+                        <div className="p-4 bg-accent/50 border border-primary/20 rounded-lg text-left">
                             <div className="flex gap-3">
-                                <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                                <AlertCircle className="h-5 w-5 text-primary dark:text-blue-400 flex-shrink-0 mt-0.5" />
                                 <div className="space-y-1">
                                     <p className="font-semibold text-blue-900 dark:text-blue-100">Want to complete your purchase?</p>
-                                    <p className="text-sm text-blue-800 dark:text-blue-200">
+                                    <p className="text-sm text-primary dark:text-blue-200">
                                         You can retry the checkout process or continue shopping to add more items to your cart.
                                     </p>
                                 </div>

@@ -156,7 +156,7 @@ export default function NotificationsIndex({ notifications }: NotificationsIndex
                                 <Card
                                     key={notification.id}
                                     className={`transition-all cursor-pointer hover:shadow-md ${
-                                        !notification.read ? "border-blue-200 bg-blue-50/50 dark:border-blue-800 dark:bg-blue-950/20" : ""
+                                        !notification.read ? "border-primary/20 bg-accent/50" : ""
                                     }`}
                                     onClick={() => handleNotificationClick(notification)}
                                 >
@@ -188,7 +188,7 @@ export default function NotificationsIndex({ notifications }: NotificationsIndex
                                                                 {dayjs(notification.created_at).fromNow()}
                                                             </span>
                                                             {notification.action_url && (
-                                                                <div className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400">
+                                                                <div className="flex items-center gap-1 text-xs text-primary dark:text-blue-400">
                                                                     <ExternalLink className="size-3" />
                                                                     Click to view
                                                                 </div>
@@ -199,7 +199,7 @@ export default function NotificationsIndex({ notifications }: NotificationsIndex
                                                     {/* Unread indicator */}
                                                     {!notification.read && (
                                                         <div className="flex-shrink-0">
-                                                            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                                            <div className="w-3 h-3 bg-accent/500 rounded-full"></div>
                                                         </div>
                                                     )}
                                                 </div>
