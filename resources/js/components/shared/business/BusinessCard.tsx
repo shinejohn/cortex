@@ -1,6 +1,7 @@
 import { Link } from "@inertiajs/react";
 import { MapPinIcon, StarIcon, PhoneIcon, GlobeIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 interface BusinessCardProps {
     business: {
@@ -36,16 +37,12 @@ export function BusinessCard({
     showAddress = true,
     showContact = false,
 }: BusinessCardProps) {
-    const themeClasses = {
-        daynews: "border-blue-200 hover:border-blue-300",
-        downtownsguide: "border-purple-200 hover:border-purple-300",
-        eventcity: "border-indigo-200 hover:border-indigo-300",
-    };
+    // Use semantic tokens - consistent across themes
 
     const href = business.slug ? `/businesses/${business.slug}` : `/businesses/${business.id}`;
 
     return (
-        <Link href={href} className={cn("group block rounded-lg border bg-card p-4 transition-all hover:shadow-md", themeClasses[theme], className)}>
+        <Link href={href} className={cn("group block rounded-lg border bg-card p-4 transition-all hover:shadow-md hover:border-primary/50", className)}>
             <div className="flex gap-4">
                 {business.image && (
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md">
@@ -63,9 +60,9 @@ export function BusinessCard({
                             <div className="flex items-center gap-2">
                                 <h3 className="text-lg font-semibold text-foreground">{business.name}</h3>
                                 {business.is_verified && (
-                                    <span className="text-xs text-blue-600" title="Verified">
+                                    <Badge variant="secondary" className="text-xs" title="Verified">
                                         ✓
-                                    </span>
+                                    </Badge>
                                 )}
                             </div>
 

@@ -2,6 +2,8 @@ import { Link } from "@inertiajs/react";
 import { CalendarIcon, MapPinIcon, DollarSignIcon, Share2Icon, ClockIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface EventDetailProps {
     event: {
@@ -49,23 +51,7 @@ interface EventDetailProps {
 export function EventDetail({ event, theme = "eventcity", className, showShare = true, weather }: EventDetailProps) {
     const [shareSuccess, setShareSuccess] = useState(false);
 
-    const themeColors = {
-        daynews: {
-            border: "border-blue-200",
-            badge: "bg-blue-100 text-blue-800",
-            button: "bg-blue-600 hover:bg-blue-700",
-        },
-        downtownsguide: {
-            border: "border-purple-200",
-            badge: "bg-purple-100 text-purple-800",
-            button: "bg-purple-600 hover:bg-purple-700",
-        },
-        eventcity: {
-            border: "border-indigo-200",
-            badge: "bg-indigo-100 text-indigo-800",
-            button: "bg-indigo-600 hover:bg-indigo-700",
-        },
-    };
+    // Use semantic tokens - consistent across themes
 
     const formatDate = (dateString?: string) => {
         if (!dateString) return null;
@@ -108,16 +94,16 @@ export function EventDetail({ event, theme = "eventcity", className, showShare =
             {/* Header */}
             <header className="space-y-4">
                 {event.category && (
-                    <span className={cn("inline-block rounded-full px-3 py-1 text-sm font-medium", themeColors[theme].badge)}>{event.category}</span>
+                    <Badge variant="secondary">{event.category}</Badge>
                 )}
 
                 <div className="flex items-start justify-between gap-4">
                     <h1 className="flex-1 text-3xl font-bold text-foreground md:text-4xl">{event.title}</h1>
 
                     {showShare && (
-                        <button onClick={handleShare} className="rounded-md p-2 hover:bg-muted" title="Share event">
-                            <Share2Icon className="h-5 w-5 text-muted-foreground" />
-                        </button>
+                        <Button variant="ghost" size="icon" onClick={handleShare} title="Share event">
+                            <Share2Icon className="h-5 w-5" />
+                        </Button>
                     )}
                 </div>
 

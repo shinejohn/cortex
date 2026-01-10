@@ -2,6 +2,8 @@ import { Link } from "@inertiajs/react";
 import { CalendarIcon, EyeIcon, UserIcon, Share2Icon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface NewsDetailProps {
     article: {
@@ -28,20 +30,7 @@ interface NewsDetailProps {
 export function NewsDetail({ article, theme = "daynews", className, showShare = true }: NewsDetailProps) {
     const [shareSuccess, setShareSuccess] = useState(false);
 
-    const themeColors = {
-        daynews: {
-            border: "border-blue-200",
-            badge: "bg-blue-100 text-blue-800",
-        },
-        downtownsguide: {
-            border: "border-purple-200",
-            badge: "bg-purple-100 text-purple-800",
-        },
-        eventcity: {
-            border: "border-indigo-200",
-            badge: "bg-indigo-100 text-indigo-800",
-        },
-    };
+    // Use semantic tokens - consistent across themes
 
     const handleShare = async () => {
         if (navigator.share) {
@@ -69,9 +58,7 @@ export function NewsDetail({ article, theme = "daynews", className, showShare = 
             {/* Header */}
             <header className="space-y-4">
                 {article.category && (
-                    <span className={cn("inline-block rounded-full px-3 py-1 text-sm font-medium", themeColors[theme].badge)}>
-                        {article.category}
-                    </span>
+                    <Badge variant="secondary">{article.category}</Badge>
                 )}
 
                 <h1 className="text-3xl font-bold text-foreground md:text-4xl">{article.title}</h1>
@@ -111,14 +98,16 @@ export function NewsDetail({ article, theme = "daynews", className, showShare = 
                     )}
 
                     {showShare && (
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={handleShare}
-                            className="ml-auto flex items-center gap-1 rounded-md px-2 py-1 hover:bg-muted"
+                            className="ml-auto"
                             title="Share article"
                         >
                             <Share2Icon className="h-4 w-4" />
                             {shareSuccess ? "Copied!" : "Share"}
-                        </button>
+                        </Button>
                     )}
                 </div>
             </header>

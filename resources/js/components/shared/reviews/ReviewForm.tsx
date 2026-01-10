@@ -23,20 +23,9 @@ export function ReviewForm({ onSubmit, theme = "downtownsguide", className, init
         rating: initialRating,
     });
 
-    const themeColors = {
-        daynews: {
-            star: "text-blue-500",
-            starFilled: "fill-blue-500 text-blue-500",
-        },
-        downtownsguide: {
-            star: "text-purple-500",
-            starFilled: "fill-purple-500 text-purple-500",
-        },
-        eventcity: {
-            star: "text-indigo-500",
-            starFilled: "fill-indigo-500 text-indigo-500",
-        },
-    };
+    // Use semantic tokens for star colors - consistent across themes
+    const starFilled = "fill-yellow-400 text-yellow-400";
+    const starEmpty = "text-muted";
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -66,7 +55,7 @@ export function ReviewForm({ onSubmit, theme = "downtownsguide", className, init
                     onMouseLeave={() => setHoveredRating(0)}
                     className="focus:outline-none"
                 >
-                    <StarIcon className={cn("h-6 w-6 transition-colors", isFilled ? themeColors[theme].starFilled : "text-gray-300")} />
+                    <StarIcon className={cn("h-6 w-6 transition-colors", isFilled ? starFilled : starEmpty)} />
                 </button>
             );
         });
@@ -80,13 +69,13 @@ export function ReviewForm({ onSubmit, theme = "downtownsguide", className, init
                     {renderStars()}
                     {rating > 0 && <span className="text-sm text-muted-foreground">{rating} out of 5</span>}
                 </div>
-                {errors.rating && <p className="text-sm text-red-600">{errors.rating}</p>}
+                {errors.rating && <p className="text-sm text-destructive">{errors.rating}</p>}
             </div>
 
             <div className="space-y-2">
                 <Label htmlFor="title">Title (Optional)</Label>
                 <Input id="title" value={data.title} onChange={(e) => setData("title", e.target.value)} placeholder="Give your review a title" />
-                {errors.title && <p className="text-sm text-red-600">{errors.title}</p>}
+                {errors.title && <p className="text-sm text-destructive">{errors.title}</p>}
             </div>
 
             <div className="space-y-2">
@@ -99,7 +88,7 @@ export function ReviewForm({ onSubmit, theme = "downtownsguide", className, init
                     rows={5}
                     required
                 />
-                {errors.content && <p className="text-sm text-red-600">{errors.content}</p>}
+                {errors.content && <p className="text-sm text-destructive">{errors.content}</p>}
             </div>
 
             <Button type="submit" disabled={processing || !rating || !data.content}>

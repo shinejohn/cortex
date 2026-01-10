@@ -32,10 +32,10 @@ export function SuccessMessage({ title, message, onDismiss, className, autoDismi
     }
 
     return (
-        <Alert className={cn("mb-4 border-green-200 bg-green-50", className)}>
-            <CheckCircle2 className="h-4 w-4 text-green-600" />
-            <AlertTitle className="text-green-800">{title || "Success"}</AlertTitle>
-            <AlertDescription className="mt-2 text-green-700">{message}</AlertDescription>
+        <Alert className={cn("mb-4 border-success/50 bg-success/10 [&>svg]:text-success", className)} variant="default">
+            <CheckCircle2 className="h-4 w-4" />
+            <AlertTitle className="text-success-foreground">{title || "Success"}</AlertTitle>
+            <AlertDescription className="mt-2 text-success-foreground/80">{message}</AlertDescription>
             {onDismiss && (
                 <Button variant="ghost" size="sm" className="absolute right-2 top-2" onClick={handleDismiss}>
                     <X className="h-4 w-4" />
