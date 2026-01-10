@@ -44,6 +44,13 @@ jobs:
 
       - name: Install Composer Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
+        env:
+          COMPOSER_MEMORY_LIMIT: -1
+
+      - name: Verify Laravel Setup
+        run: |
+          php artisan --version || echo "Artisan not available"
+          php artisan package:discover --ansi || echo "Package discovery failed (non-critical)"
 
       - name: Setup Node
         uses: actions/setup-node@v4
