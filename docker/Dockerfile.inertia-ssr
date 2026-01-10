@@ -1,10 +1,22 @@
 # Inertia SSR Service Dockerfile
 # Node.js service for server-side rendering
 
-FROM node:20-alpine AS base
+FROM php:8.4-cli-alpine AS base
+
+# Install system dependencies and Node.js
+RUN apk add --no-cache \
+    git \
+    curl \
+    nodejs \
+    npm \
+    && curl -fsSL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
 # Set working directory
 WORKDIR /app
+
+# Copy composer files and install PHP dependencies (needed for ziggy-js alias in vite.config.ts)
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 # Copy package files
 COPY package*.json ./
