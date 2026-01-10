@@ -47,4 +47,6 @@ jobs:
         run: php artisan key:generate
 
       - name: Tests
+        env:
+          STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
         run: ./vendor/bin/pest
