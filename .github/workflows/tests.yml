@@ -22,12 +22,13 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.4
+          php-version: '8.4'
           tools: composer:v2
           coverage: xdebug
+          extensions: sqlite, pdo_sqlite, mbstring, xml, ctype, json, fileinfo, openssl, tokenizer
 
       - name: Install Composer Dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-scripts
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -42,12 +43,30 @@ jobs:
         run: npm run build
 
       - name: Copy Environment File
-        run: cp .env.example .env
+        run: |
+          if [ -f .env.example ]; then
+            cp .env.example .env
+          else
+            echo "APP_NAME=Laravel" > .env
+            echo "APP_ENV=testing" >> .env
+            echo "APP_KEY=" >> .env
+            echo "APP_DEBUG=true" >> .env
+            echo "APP_URL=http://localhost" >> .env
+          fi
 
       - name: Generate Application Key
         run: php artisan key:generate
 
-      - name: Tests
+      - name: Clear Configuration Cache
+        run: php artisan config:clear
+
+      - name: Create Storage Link
+        run: php artisan storage:link || true
+
+      - name: Run Tests
         env:
+          APP_ENV: testing
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ":memory:"
           STRIPE_SECRET: ${{ secrets.STRIPE_SECRET }}
-        run: ./vendor/bin/pest
+        run: php artisan config:clear && ./vendor/bin/pest
