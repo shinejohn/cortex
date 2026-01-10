@@ -46,7 +46,7 @@ export default function SubmitVenue() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             <SEO
                 type="page"
                 site="event-city"
@@ -57,7 +57,7 @@ export default function SubmitVenue() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-indigo-700 text-white">
+            <div className="bg-primary text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                     <div className="text-center">
                         <h1 className="text-4xl font-extrabold sm:text-5xl">List Your Venue</h1>
@@ -86,7 +86,7 @@ export default function SubmitVenue() {
                                     className={errors.name ? "border-red-500" : ""}
                                     required
                                 />
-                                {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+                                {errors.name && <p className="mt-1 text-sm text-destructive">{errors.name}</p>}
                             </div>
 
                             <div>
@@ -106,7 +106,7 @@ export default function SubmitVenue() {
                                         <SelectItem value="other">Other</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                {errors.category && <p className="mt-1 text-sm text-red-600">{errors.category}</p>}
+                                {errors.category && <p className="mt-1 text-sm text-destructive">{errors.category}</p>}
                             </div>
 
                             <div>
@@ -120,7 +120,7 @@ export default function SubmitVenue() {
                                     className={errors.description ? "border-red-500" : ""}
                                     required
                                 />
-                                {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
+                                {errors.description && <p className="mt-1 text-sm text-destructive">{errors.description}</p>}
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -134,7 +134,7 @@ export default function SubmitVenue() {
                                         className={errors.address ? "border-red-500" : ""}
                                         required
                                     />
-                                    {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address}</p>}
+                                    {errors.address && <p className="mt-1 text-sm text-destructive">{errors.address}</p>}
                                 </div>
 
                                 <div>
@@ -147,7 +147,7 @@ export default function SubmitVenue() {
                                         className={errors.city ? "border-red-500" : ""}
                                         required
                                     />
-                                    {errors.city && <p className="mt-1 text-sm text-red-600">{errors.city}</p>}
+                                    {errors.city && <p className="mt-1 text-sm text-destructive">{errors.city}</p>}
                                 </div>
 
                                 <div>
@@ -160,7 +160,7 @@ export default function SubmitVenue() {
                                         className={errors.state ? "border-red-500" : ""}
                                         required
                                     />
-                                    {errors.state && <p className="mt-1 text-sm text-red-600">{errors.state}</p>}
+                                    {errors.state && <p className="mt-1 text-sm text-destructive">{errors.state}</p>}
                                 </div>
 
                                 <div>
@@ -173,7 +173,7 @@ export default function SubmitVenue() {
                                         className={errors.zip_code ? "border-red-500" : ""}
                                         required
                                     />
-                                    {errors.zip_code && <p className="mt-1 text-sm text-red-600">{errors.zip_code}</p>}
+                                    {errors.zip_code && <p className="mt-1 text-sm text-destructive">{errors.zip_code}</p>}
                                 </div>
                             </div>
 
@@ -188,7 +188,7 @@ export default function SubmitVenue() {
                                         placeholder="(555) 123-4567"
                                         className={errors.phone ? "border-red-500" : ""}
                                     />
-                                    {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
+                                    {errors.phone && <p className="mt-1 text-sm text-destructive">{errors.phone}</p>}
                                 </div>
 
                                 <div>
@@ -201,7 +201,7 @@ export default function SubmitVenue() {
                                         placeholder="venue@example.com"
                                         className={errors.email ? "border-red-500" : ""}
                                     />
-                                    {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+                                    {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email}</p>}
                                 </div>
                             </div>
 
@@ -215,7 +215,7 @@ export default function SubmitVenue() {
                                     placeholder="https://example.com"
                                     className={errors.website ? "border-red-500" : ""}
                                 />
-                                {errors.website && <p className="mt-1 text-sm text-red-600">{errors.website}</p>}
+                                {errors.website && <p className="mt-1 text-sm text-destructive">{errors.website}</p>}
                             </div>
 
                             <div>
@@ -228,7 +228,7 @@ export default function SubmitVenue() {
                                     placeholder="Maximum capacity"
                                     className={errors.capacity ? "border-red-500" : ""}
                                 />
-                                {errors.capacity && <p className="mt-1 text-sm text-red-600">{errors.capacity}</p>}
+                                {errors.capacity && <p className="mt-1 text-sm text-destructive">{errors.capacity}</p>}
                             </div>
 
                             <div className="flex justify-end space-x-4">
@@ -254,8 +254,8 @@ export default function SubmitVenue() {
                             <div className="flex items-start">
                                 <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-0.5" />
                                 <div>
-                                    <h3 className="font-semibold text-gray-900">Reach More Customers</h3>
-                                    <p className="text-gray-600 mt-1">
+                                    <h3 className="font-semibold text-foreground">Reach More Customers</h3>
+                                    <p className="text-muted-foreground mt-1">
                                         Get discovered by event organizers and performers actively looking for venues.
                                     </p>
                                 </div>
@@ -263,22 +263,22 @@ export default function SubmitVenue() {
                             <div className="flex items-start">
                                 <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-0.5" />
                                 <div>
-                                    <h3 className="font-semibold text-gray-900">Easy Booking Management</h3>
-                                    <p className="text-gray-600 mt-1">Manage availability, bookings, and payments all in one place.</p>
+                                    <h3 className="font-semibold text-foreground">Easy Booking Management</h3>
+                                    <p className="text-muted-foreground mt-1">Manage availability, bookings, and payments all in one place.</p>
                                 </div>
                             </div>
                             <div className="flex items-start">
                                 <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-0.5" />
                                 <div>
-                                    <h3 className="font-semibold text-gray-900">Increase Revenue</h3>
-                                    <p className="text-gray-600 mt-1">Fill empty dates and maximize your venue's earning potential.</p>
+                                    <h3 className="font-semibold text-foreground">Increase Revenue</h3>
+                                    <p className="text-muted-foreground mt-1">Fill empty dates and maximize your venue's earning potential.</p>
                                 </div>
                             </div>
                             <div className="flex items-start">
                                 <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-0.5" />
                                 <div>
-                                    <h3 className="font-semibold text-gray-900">Build Your Reputation</h3>
-                                    <p className="text-gray-600 mt-1">Collect reviews and ratings to build trust with potential customers.</p>
+                                    <h3 className="font-semibold text-foreground">Build Your Reputation</h3>
+                                    <p className="text-muted-foreground mt-1">Collect reviews and ratings to build trust with potential customers.</p>
                                 </div>
                             </div>
                         </div>

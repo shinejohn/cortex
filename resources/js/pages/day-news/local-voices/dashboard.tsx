@@ -51,11 +51,11 @@ const getStatusColor = (status: string) => {
         case "pending":
             return "bg-yellow-100 text-yellow-700";
         case "rejected":
-            return "bg-red-100 text-red-700";
+            return "bg-destructive/10 text-destructive";
         case "suspended":
-            return "bg-gray-100 text-gray-700";
+            return "bg-muted text-foreground";
         default:
-            return "bg-gray-100 text-gray-700";
+            return "bg-muted text-foreground";
     }
 };
 

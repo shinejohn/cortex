@@ -47,21 +47,21 @@ const metricInfo = {
 };
 
 function getScoreColor(score: number): string {
-    if (score >= 80) return "text-green-600 dark:text-green-400";
+    if (score >= 80) return "text-success";
     if (score >= 60) return "text-yellow-600 dark:text-yellow-400";
-    return "text-red-600 dark:text-red-400";
+    return "text-destructive";
 }
 
 function getScoreBgColor(score: number): string {
-    if (score >= 80) return "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800";
+    if (score >= 80) return "bg-success/10 border-success/20";
     if (score >= 60) return "bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800";
-    return "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800";
+    return "bg-destructive/10 border-destructive/20";
 }
 
 function getBarColor(score: number): string {
-    if (score >= 80) return "bg-green-500";
+    if (score >= 80) return "bg-success";
     if (score >= 60) return "bg-yellow-500";
-    return "bg-red-500";
+    return "bg-destructive";
 }
 
 function ScoreBar({ score, label }: { score: number; label: string }) {

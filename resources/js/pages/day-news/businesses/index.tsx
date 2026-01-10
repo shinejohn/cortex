@@ -90,13 +90,13 @@ export default function DayNewsBusinessesIndex({ businesses, featuredBusinesses,
 
             <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
                 {/* Header */}
-                <div className="border-b-4 border-blue-600 bg-white shadow-sm">
+                <div className="border-b-4 border-blue-600 bg-card shadow-sm">
                     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                         <div className="flex items-center gap-3">
-                            <NewspaperIcon className="h-10 w-10 text-blue-600" />
+                            <NewspaperIcon className="h-10 w-10 text-primary" />
                             <div>
-                                <h1 className="text-3xl font-bold text-gray-900">Local Business Directory</h1>
-                                <p className="mt-1 text-lg text-gray-600">Discover local businesses and see what's happening in your community</p>
+                                <h1 className="text-3xl font-bold text-foreground">Local Business Directory</h1>
+                                <p className="mt-1 text-lg text-muted-foreground">Discover local businesses and see what's happening in your community</p>
                             </div>
                         </div>
                     </div>
@@ -106,7 +106,7 @@ export default function DayNewsBusinessesIndex({ businesses, featuredBusinesses,
                     {/* Featured Businesses */}
                     {featuredBusinesses.length > 0 && (
                         <section className="mb-12">
-                            <h2 className="mb-4 text-2xl font-bold text-gray-900">Featured Businesses with Recent News</h2>
+                            <h2 className="mb-4 text-2xl font-bold text-foreground">Featured Businesses with Recent News</h2>
                             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                                 {featuredBusinesses.map((item) => (
                                     <DayNewsBusinessCard
@@ -121,10 +121,10 @@ export default function DayNewsBusinessesIndex({ businesses, featuredBusinesses,
                     )}
 
                     {/* Filters */}
-                    <div className="mb-6 rounded-lg border-2 border-blue-200 bg-white p-4 shadow-sm">
+                    <div className="mb-6 rounded-lg border-2 border-primary/20 bg-card p-4 shadow-sm">
                         <div className="grid gap-4 md:grid-cols-4">
                             <div className="relative">
-                                <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                                <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                 <Input
                                     type="text"
                                     placeholder="Search businesses..."
@@ -154,14 +154,14 @@ export default function DayNewsBusinessesIndex({ businesses, featuredBusinesses,
                                     id="verified"
                                     checked={verifiedOnly}
                                     onChange={(e) => setVerifiedOnly(e.target.checked)}
-                                    className="h-4 w-4 rounded border-gray-300 text-blue-600"
+                                    className="h-4 w-4 rounded border text-primary"
                                 />
-                                <label htmlFor="verified" className="text-sm text-gray-700">
+                                <label htmlFor="verified" className="text-sm text-foreground">
                                     Verified only
                                 </label>
                             </div>
 
-                            <Button onClick={handleSearch} className="w-full bg-blue-600 hover:bg-blue-700">
+                            <Button onClick={handleSearch} className="w-full bg-primary hover:bg-primary">
                                 <FilterIcon className="mr-2 h-4 w-4" />
                                 Apply Filters
                             </Button>
@@ -171,11 +171,11 @@ export default function DayNewsBusinessesIndex({ businesses, featuredBusinesses,
                     {/* Business List */}
                     <section>
                         <div className="mb-4 flex items-center justify-between">
-                            <h2 className="text-xl font-semibold text-gray-900">
+                            <h2 className="text-xl font-semibold text-foreground">
                                 {currentRegion ? `Businesses in ${currentRegion.name}` : "All Businesses"}
                             </h2>
                             <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-600">Sort by:</span>
+                                <span className="text-sm text-muted-foreground">Sort by:</span>
                                 <Select
                                     value={`${sort.sort}-${sort.direction}`}
                                     onValueChange={(value) => {
@@ -203,10 +203,10 @@ export default function DayNewsBusinessesIndex({ businesses, featuredBusinesses,
                                 ))}
                             </div>
                         ) : (
-                            <div className="rounded-lg border-2 border-dashed border-blue-200 bg-blue-50 p-12 text-center">
+                            <div className="rounded-lg border-2 border-dashed border-primary/20 bg-accent/50 p-12 text-center">
                                 <NewspaperIcon className="mx-auto h-12 w-12 text-blue-400" />
-                                <p className="mt-4 text-lg font-medium text-gray-900">No businesses found</p>
-                                <p className="mt-2 text-sm text-gray-600">Try adjusting your search or filters</p>
+                                <p className="mt-4 text-lg font-medium text-foreground">No businesses found</p>
+                                <p className="mt-2 text-sm text-muted-foreground">Try adjusting your search or filters</p>
                             </div>
                         )}
 

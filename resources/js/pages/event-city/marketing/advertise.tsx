@@ -37,7 +37,7 @@ export default function Advertise() {
     };
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-card">
             <SEO
                 type="page"
                 site="event-city"
@@ -60,24 +60,24 @@ export default function Advertise() {
 
             {/* Benefits Section */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Why Advertise With Us?</h2>
+                <h2 className="text-3xl font-bold text-foreground text-center mb-12">Why Advertise With Us?</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
                     <Card>
                         <CardContent className="p-6 text-center">
-                            <div className="h-16 w-16 rounded-full bg-indigo-100 flex items-center justify-center mx-auto mb-4">
-                                <Users className="h-8 w-8 text-indigo-600" />
+                            <div className="h-16 w-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
+                                <Users className="h-8 w-8 text-primary" />
                             </div>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">Targeted Audience</h3>
-                            <p className="text-gray-600">Reach people actively looking for events, venues, and performers in your area</p>
+                            <h3 className="text-xl font-semibold text-foreground mb-2">Targeted Audience</h3>
+                            <p className="text-muted-foreground">Reach people actively looking for events, venues, and performers in your area</p>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardContent className="p-6 text-center">
-                            <div className="h-16 w-16 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-4">
-                                <TrendingUp className="h-8 w-8 text-purple-600" />
+                            <div className="h-16 w-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
+                                <TrendingUp className="h-8 w-8 text-primary" />
                             </div>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">High Engagement</h3>
-                            <p className="text-gray-600">Our users are highly engaged and actively planning events, making them ideal customers</p>
+                            <h3 className="text-xl font-semibold text-foreground mb-2">High Engagement</h3>
+                            <p className="text-muted-foreground">Our users are highly engaged and actively planning events, making them ideal customers</p>
                         </CardContent>
                     </Card>
                     <Card>
@@ -85,15 +85,15 @@ export default function Advertise() {
                             <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
                                 <Target className="h-8 w-8 text-green-600" />
                             </div>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">Local Focus</h3>
-                            <p className="text-gray-600">Target specific cities, neighborhoods, and event categories for maximum relevance</p>
+                            <h3 className="text-xl font-semibold text-foreground mb-2">Local Focus</h3>
+                            <p className="text-muted-foreground">Target specific cities, neighborhoods, and event categories for maximum relevance</p>
                         </CardContent>
                     </Card>
                 </div>
 
                 {/* Advertising Options */}
                 <div className="mb-16">
-                    <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Advertising Options</h2>
+                    <h2 className="text-3xl font-bold text-foreground text-center mb-12">Advertising Options</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <Card>
                             <CardHeader>
@@ -114,7 +114,7 @@ export default function Advertise() {
                                         <span>Enhanced visibility with badges</span>
                                     </li>
                                 </ul>
-                                <p className="text-2xl font-bold text-gray-900 mb-2">Starting at $99/month</p>
+                                <p className="text-2xl font-bold text-foreground mb-2">Starting at $99/month</p>
                             </CardContent>
                         </Card>
                         <Card>
@@ -136,7 +136,7 @@ export default function Advertise() {
                                         <span>Geo-targeted campaigns</span>
                                     </li>
                                 </ul>
-                                <p className="text-2xl font-bold text-gray-900 mb-2">Starting at $299/month</p>
+                                <p className="text-2xl font-bold text-foreground mb-2">Starting at $299/month</p>
                             </CardContent>
                         </Card>
                     </div>
@@ -159,7 +159,7 @@ export default function Advertise() {
                                         className={errors.name ? "border-red-500" : ""}
                                         required
                                     />
-                                    {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+                                    {errors.name && <p className="mt-1 text-sm text-destructive">{errors.name}</p>}
                                 </div>
                                 <div>
                                     <Label htmlFor="email">Email *</Label>
@@ -171,7 +171,7 @@ export default function Advertise() {
                                         className={errors.email ? "border-red-500" : ""}
                                         required
                                     />
-                                    {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+                                    {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email}</p>}
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -190,7 +190,7 @@ export default function Advertise() {
                                     id="campaign_type"
                                     value={data.campaign_type}
                                     onChange={(e) => setData("campaign_type", e.target.value)}
-                                    className="w-full border-gray-300 rounded-md"
+                                    className="w-full border rounded-md"
                                 >
                                     <option value="">Select campaign type</option>
                                     <option value="event-listing">Event Listing</option>
@@ -205,7 +205,7 @@ export default function Advertise() {
                                     id="budget"
                                     value={data.budget}
                                     onChange={(e) => setData("budget", e.target.value)}
-                                    className="w-full border-gray-300 rounded-md"
+                                    className="w-full border rounded-md"
                                 >
                                     <option value="">Select budget range</option>
                                     <option value="under-500">Under $500/month</option>

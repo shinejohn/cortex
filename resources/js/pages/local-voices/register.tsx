@@ -77,10 +77,10 @@ export default function CreatorRegister() {
             <GoLocalVoicesLayout auth={auth}>
                 <Head title="Creator Profile - Go Local Voices" />
                 <div className="max-w-3xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-                    <div className="rounded-lg border border-gray-200 bg-white p-8 text-center shadow-sm">
+                    <div className="rounded-lg border border bg-card p-8 text-center shadow-sm">
                         <Mic className="mx-auto mb-4 h-12 w-12 text-purple-400" />
-                        <h2 className="mb-2 text-2xl font-bold text-gray-900">Creator Profile Already Exists</h2>
-                        <p className="mb-4 text-gray-600">
+                        <h2 className="mb-2 text-2xl font-bold text-foreground">Creator Profile Already Exists</h2>
+                        <p className="mb-4 text-muted-foreground">
                             Your creator profile "{existingProfile.display_name}" is {existingProfile.status}.
                         </p>
                         <Button
@@ -114,10 +114,10 @@ export default function CreatorRegister() {
                         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                             Become a Creator
                         </h1>
-                        <p className="text-gray-600">Share your voice with the community</p>
+                        <p className="text-muted-foreground">Share your voice with the community</p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6 bg-white rounded-lg border border-gray-200 p-8 shadow-sm">
+                    <form onSubmit={handleSubmit} className="space-y-6 bg-card rounded-lg border border p-8 shadow-sm">
                         {/* Cover Image */}
                         <div>
                             <Label>Cover Image (Optional)</Label>
@@ -127,7 +127,7 @@ export default function CreatorRegister() {
                                         <img
                                             src={coverPreview}
                                             alt="Cover preview"
-                                            className="h-48 w-full rounded-lg border border-gray-200 object-cover"
+                                            className="h-48 w-full rounded-lg border border object-cover"
                                         />
                                         <Button
                                             type="button"
@@ -148,10 +148,10 @@ export default function CreatorRegister() {
                                 ) : (
                                     <div
                                         onClick={() => coverInputRef.current?.click()}
-                                        className="flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 transition-colors hover:border-purple-400 hover:bg-purple-50"
+                                        className="flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border transition-colors hover:border-purple-400 hover:bg-accent/50"
                                     >
-                                        <Upload className="mb-2 h-8 w-8 text-gray-400" />
-                                        <p className="text-sm text-gray-600">Upload cover image</p>
+                                        <Upload className="mb-2 h-8 w-8 text-muted-foreground" />
+                                        <p className="text-sm text-muted-foreground">Upload cover image</p>
                                     </div>
                                 )}
                                 <input ref={coverInputRef} type="file" accept="image/*" onChange={handleCoverChange} className="hidden" />
@@ -167,7 +167,7 @@ export default function CreatorRegister() {
                                         <img
                                             src={avatarPreview}
                                             alt="Avatar preview"
-                                            className="h-32 w-32 rounded-full border-2 border-gray-200 object-cover"
+                                            className="h-32 w-32 rounded-full border-2 border object-cover"
                                         />
                                         <Button
                                             type="button"
@@ -188,9 +188,9 @@ export default function CreatorRegister() {
                                 ) : (
                                     <div
                                         onClick={() => avatarInputRef.current?.click()}
-                                        className="flex h-32 w-32 cursor-pointer flex-col items-center justify-center rounded-full border-2 border-dashed border-gray-300 transition-colors hover:border-purple-400 hover:bg-purple-50"
+                                        className="flex h-32 w-32 cursor-pointer flex-col items-center justify-center rounded-full border-2 border-dashed border transition-colors hover:border-purple-400 hover:bg-accent/50"
                                     >
-                                        <Upload className="h-8 w-8 text-gray-400" />
+                                        <Upload className="h-8 w-8 text-muted-foreground" />
                                     </div>
                                 )}
                                 <input ref={avatarInputRef} type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
@@ -204,10 +204,10 @@ export default function CreatorRegister() {
                                 id="display_name"
                                 value={form.data.display_name}
                                 onChange={(e) => form.setData("display_name", e.target.value)}
-                                className="mt-2 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                                className="mt-2 border focus:border-purple-500 focus:ring-purple-500"
                                 required
                             />
-                            {form.errors.display_name && <p className="mt-1 text-sm text-red-600">{form.errors.display_name}</p>}
+                            {form.errors.display_name && <p className="mt-1 text-sm text-destructive">{form.errors.display_name}</p>}
                         </div>
 
                         {/* Bio */}
@@ -217,16 +217,16 @@ export default function CreatorRegister() {
                                 id="bio"
                                 value={form.data.bio}
                                 onChange={(e) => form.setData("bio", e.target.value)}
-                                className="mt-2 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                                className="mt-2 border focus:border-purple-500 focus:ring-purple-500"
                                 rows={6}
                                 placeholder="Tell listeners about yourself and your podcast..."
                             />
-                            {form.errors.bio && <p className="mt-1 text-sm text-red-600">{form.errors.bio}</p>}
+                            {form.errors.bio && <p className="mt-1 text-sm text-destructive">{form.errors.bio}</p>}
                         </div>
 
                         {/* Social Links */}
-                        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                            <h3 className="mb-4 font-semibold text-gray-900">Social Media Links (Optional)</h3>
+                        <div className="rounded-lg border border bg-muted/50 p-4">
+                            <h3 className="mb-4 font-semibold text-foreground">Social Media Links (Optional)</h3>
                             <div className="space-y-4">
                                 <div>
                                     <Label htmlFor="twitter">Twitter/X</Label>
@@ -240,7 +240,7 @@ export default function CreatorRegister() {
                                                 twitter: e.target.value,
                                             })
                                         }
-                                        className="mt-2 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                                        className="mt-2 border focus:border-purple-500 focus:ring-purple-500"
                                         placeholder="https://twitter.com/yourhandle"
                                     />
                                 </div>
@@ -256,7 +256,7 @@ export default function CreatorRegister() {
                                                 instagram: e.target.value,
                                             })
                                         }
-                                        className="mt-2 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                                        className="mt-2 border focus:border-purple-500 focus:ring-purple-500"
                                         placeholder="https://instagram.com/yourhandle"
                                     />
                                 </div>
@@ -272,7 +272,7 @@ export default function CreatorRegister() {
                                                 facebook: e.target.value,
                                             })
                                         }
-                                        className="mt-2 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                                        className="mt-2 border focus:border-purple-500 focus:ring-purple-500"
                                         placeholder="https://facebook.com/yourpage"
                                     />
                                 </div>
@@ -288,7 +288,7 @@ export default function CreatorRegister() {
                                                 youtube: e.target.value,
                                             })
                                         }
-                                        className="mt-2 border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                                        className="mt-2 border focus:border-purple-500 focus:ring-purple-500"
                                         placeholder="https://youtube.com/@yourchannel"
                                     />
                                 </div>
@@ -297,9 +297,9 @@ export default function CreatorRegister() {
 
                         {/* Error Display */}
                         {Object.keys(form.errors).length > 0 && (
-                            <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-                                <p className="mb-2 font-semibold text-red-800">Please fix the following errors:</p>
-                                <ul className="list-disc list-inside space-y-1 text-sm text-red-700">
+                            <div className="rounded-lg border border-destructive/20 bg-red-50 p-4">
+                                <p className="mb-2 font-semibold text-destructive">Please fix the following errors:</p>
+                                <ul className="list-disc list-inside space-y-1 text-sm text-destructive">
                                     {Object.entries(form.errors).map(([field, error]) => (
                                         <li key={field}>
                                             <strong>{field}:</strong> {error as string}
@@ -324,12 +324,12 @@ export default function CreatorRegister() {
                                 variant="outline"
                                 onClick={() => router.visit("/")}
                                 disabled={form.processing}
-                                className="border-gray-300"
+                                className="border"
                             >
                                 Cancel
                             </Button>
                         </div>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                             Your application will be reviewed before approval. You'll be notified once your creator profile is approved.
                         </p>
                     </form>

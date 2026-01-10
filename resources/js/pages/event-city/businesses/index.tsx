@@ -93,7 +93,7 @@ export default function EventCityBusinessesIndex({ businesses, featuredBusinesse
                     <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
                     <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
                         <div className="flex items-center gap-4">
-                            <div className="rounded-xl bg-white/20 p-3 backdrop-blur-sm">
+                            <div className="rounded-xl bg-card/20 p-3 backdrop-blur-sm">
                                 <CalendarIcon className="h-10 w-10 text-white" />
                             </div>
                             <div>
@@ -109,8 +109,8 @@ export default function EventCityBusinessesIndex({ businesses, featuredBusinesse
                     {featuredBusinesses.length > 0 && (
                         <section className="mb-12">
                             <div className="mb-6 flex items-center gap-2">
-                                <SparklesIcon className="h-6 w-6 text-indigo-600" />
-                                <h2 className="text-3xl font-bold text-gray-900">Featured Venues with Upcoming Events</h2>
+                                <SparklesIcon className="h-6 w-6 text-primary" />
+                                <h2 className="text-3xl font-bold text-foreground">Featured Venues with Upcoming Events</h2>
                             </div>
                             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                                 {featuredBusinesses.map((item) => (
@@ -126,10 +126,10 @@ export default function EventCityBusinessesIndex({ businesses, featuredBusinesse
                     )}
 
                     {/* Filters */}
-                    <div className="mb-6 rounded-xl border-2 border-indigo-200 bg-white p-6 shadow-lg">
+                    <div className="mb-6 rounded-xl border-2 border bg-card p-6 shadow-lg">
                         <div className="grid gap-4 md:grid-cols-4">
                             <div className="relative">
-                                <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                                <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                 <Input
                                     type="text"
                                     placeholder="Search venues & performers..."
@@ -160,14 +160,14 @@ export default function EventCityBusinessesIndex({ businesses, featuredBusinesse
                                     id="verified"
                                     checked={verifiedOnly}
                                     onChange={(e) => setVerifiedOnly(e.target.checked)}
-                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600"
+                                    className="h-4 w-4 rounded border text-primary"
                                 />
-                                <label htmlFor="verified" className="text-sm font-medium text-gray-700">
+                                <label htmlFor="verified" className="text-sm font-medium text-foreground">
                                     Verified only
                                 </label>
                             </div>
 
-                            <Button onClick={handleSearch} className="w-full bg-indigo-600 hover:bg-indigo-700">
+                            <Button onClick={handleSearch} className="w-full bg-primary hover:bg-primary">
                                 <FilterIcon className="mr-2 h-4 w-4" />
                                 Apply Filters
                             </Button>
@@ -177,9 +177,9 @@ export default function EventCityBusinessesIndex({ businesses, featuredBusinesse
                     {/* Business List */}
                     <section>
                         <div className="mb-4 flex items-center justify-between">
-                            <h2 className="text-2xl font-bold text-gray-900">All Venues & Performers</h2>
+                            <h2 className="text-2xl font-bold text-foreground">All Venues & Performers</h2>
                             <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-600">Sort by:</span>
+                                <span className="text-sm text-muted-foreground">Sort by:</span>
                                 <Select
                                     value={`${sort.sort}-${sort.direction}`}
                                     onValueChange={(value) => {
@@ -211,10 +211,10 @@ export default function EventCityBusinessesIndex({ businesses, featuredBusinesse
                                 ))}
                             </div>
                         ) : (
-                            <div className="rounded-xl border-2 border-dashed border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-12 text-center">
+                            <div className="rounded-xl border-2 border-dashed border bg-gradient-to-br from-indigo-50 to-purple-50 p-12 text-center">
                                 <CalendarIcon className="mx-auto h-16 w-16 text-indigo-400" />
-                                <p className="mt-4 text-xl font-bold text-gray-900">No venues found</p>
-                                <p className="mt-2 text-sm text-gray-600">Try adjusting your search or filters</p>
+                                <p className="mt-4 text-xl font-bold text-foreground">No venues found</p>
+                                <p className="mt-2 text-sm text-muted-foreground">Try adjusting your search or filters</p>
                             </div>
                         )}
 

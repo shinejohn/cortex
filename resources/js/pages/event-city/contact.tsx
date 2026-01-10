@@ -37,7 +37,7 @@ export default function ContactPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             <SEO
                 type="page"
                 site="event-city"
@@ -49,7 +49,7 @@ export default function ContactPage() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-indigo-700 text-white">
+            <div className="bg-primary text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                     <div className="text-center">
                         <h1 className="text-4xl font-extrabold sm:text-5xl">Contact Us</h1>
@@ -81,7 +81,7 @@ export default function ContactPage() {
                                                 required
                                                 className={errors.name ? "border-red-500" : ""}
                                             />
-                                            {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+                                            {errors.name && <p className="mt-1 text-sm text-destructive">{errors.name}</p>}
                                         </div>
                                         <div>
                                             <Label htmlFor="email">Email *</Label>
@@ -93,7 +93,7 @@ export default function ContactPage() {
                                                 required
                                                 className={errors.email ? "border-red-500" : ""}
                                             />
-                                            {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+                                            {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email}</p>}
                                         </div>
                                     </div>
 
@@ -112,7 +112,7 @@ export default function ContactPage() {
                                                 <SelectItem value="other">Other</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        {errors.category && <p className="mt-1 text-sm text-red-600">{errors.category}</p>}
+                                        {errors.category && <p className="mt-1 text-sm text-destructive">{errors.category}</p>}
                                     </div>
 
                                     <div>
@@ -124,7 +124,7 @@ export default function ContactPage() {
                                             required
                                             className={errors.subject ? "border-red-500" : ""}
                                         />
-                                        {errors.subject && <p className="mt-1 text-sm text-red-600">{errors.subject}</p>}
+                                        {errors.subject && <p className="mt-1 text-sm text-destructive">{errors.subject}</p>}
                                     </div>
 
                                     <div>
@@ -137,7 +137,7 @@ export default function ContactPage() {
                                             rows={6}
                                             className={errors.message ? "border-red-500" : ""}
                                         />
-                                        {errors.message && <p className="mt-1 text-sm text-red-600">{errors.message}</p>}
+                                        {errors.message && <p className="mt-1 text-sm text-destructive">{errors.message}</p>}
                                     </div>
 
                                     <Button type="submit" disabled={processing} className="w-full">
@@ -157,24 +157,24 @@ export default function ContactPage() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="flex items-start">
-                                    <Mail className="h-5 w-5 text-indigo-600 mr-3 mt-0.5" />
+                                    <Mail className="h-5 w-5 text-primary mr-3 mt-0.5" />
                                     <div>
-                                        <div className="font-medium text-gray-900">Email</div>
-                                        <div className="text-gray-600">support@goeventcity.com</div>
+                                        <div className="font-medium text-foreground">Email</div>
+                                        <div className="text-muted-foreground">support@goeventcity.com</div>
                                     </div>
                                 </div>
                                 <div className="flex items-start">
-                                    <Phone className="h-5 w-5 text-indigo-600 mr-3 mt-0.5" />
+                                    <Phone className="h-5 w-5 text-primary mr-3 mt-0.5" />
                                     <div>
-                                        <div className="font-medium text-gray-900">Phone</div>
-                                        <div className="text-gray-600">(555) 123-4567</div>
+                                        <div className="font-medium text-foreground">Phone</div>
+                                        <div className="text-muted-foreground">(555) 123-4567</div>
                                     </div>
                                 </div>
                                 <div className="flex items-start">
-                                    <MapPin className="h-5 w-5 text-indigo-600 mr-3 mt-0.5" />
+                                    <MapPin className="h-5 w-5 text-primary mr-3 mt-0.5" />
                                     <div>
-                                        <div className="font-medium text-gray-900">Address</div>
-                                        <div className="text-gray-600">
+                                        <div className="font-medium text-foreground">Address</div>
+                                        <div className="text-muted-foreground">
                                             123 Event Street
                                             <br />
                                             Clearwater, FL 33755
@@ -191,15 +191,15 @@ export default function ContactPage() {
                             <CardContent>
                                 <div className="space-y-2 text-sm">
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">Monday - Friday</span>
+                                        <span className="text-muted-foreground">Monday - Friday</span>
                                         <span className="font-medium">9:00 AM - 6:00 PM</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">Saturday</span>
+                                        <span className="text-muted-foreground">Saturday</span>
                                         <span className="font-medium">10:00 AM - 4:00 PM</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">Sunday</span>
+                                        <span className="text-muted-foreground">Sunday</span>
                                         <span className="font-medium">Closed</span>
                                     </div>
                                 </div>

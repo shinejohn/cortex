@@ -25,14 +25,14 @@ export default function DowntownGuideLeaderboard({ leaderboard, period, type }: 
 
     const getRankIcon = (rank: number) => {
         if (rank === 1) return <MedalIcon className="h-6 w-6 fill-yellow-400 text-yellow-400" />;
-        if (rank === 2) return <MedalIcon className="h-6 w-6 fill-gray-400 text-gray-400" />;
+        if (rank === 2) return <MedalIcon className="h-6 w-6 fill-gray-400 text-muted-foreground" />;
         if (rank === 3) return <MedalIcon className="h-6 w-6 fill-orange-400 text-orange-400" />;
         return null;
     };
 
     const getRankBadge = (rank: number) => {
         if (rank <= 3) return null;
-        return <div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-purple-900">{rank}</div>;
+        return <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-sm font-bold text-purple-900">{rank}</div>;
     };
 
     const getDisplayValue = (user: (typeof leaderboard)[0]) => {
@@ -70,7 +70,7 @@ export default function DowntownGuideLeaderboard({ leaderboard, period, type }: 
                 <div className="border-b-4 border-purple-600 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600">
                     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
                         <div className="flex items-center gap-4">
-                            <div className="rounded-xl bg-white/20 p-3 backdrop-blur-sm">
+                            <div className="rounded-xl bg-card/20 p-3 backdrop-blur-sm">
                                 <TrophyIcon className="h-10 w-10 text-white" />
                             </div>
                             <div>
@@ -83,11 +83,11 @@ export default function DowntownGuideLeaderboard({ leaderboard, period, type }: 
 
                 <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
                     {/* Filters */}
-                    <div className="mb-6 rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
+                    <div className="mb-6 rounded-xl border-2 border bg-card p-6 shadow-lg">
                         <div className="flex flex-wrap items-center gap-4">
                             <div className="flex items-center gap-2">
-                                <FilterIcon className="h-4 w-4 text-gray-600" />
-                                <span className="text-sm font-medium text-gray-700">Filter:</span>
+                                <FilterIcon className="h-4 w-4 text-muted-foreground" />
+                                <span className="text-sm font-medium text-foreground">Filter:</span>
                             </div>
                             <Select value={type} onValueChange={(value) => handleFilterChange("type", value)}>
                                 <SelectTrigger className="w-40">
@@ -126,7 +126,7 @@ export default function DowntownGuideLeaderboard({ leaderboard, period, type }: 
                                     <div
                                         key={user.id}
                                         className={`flex items-center gap-4 rounded-xl border-2 p-4 shadow-lg transition-all ${
-                                            rank <= 3 ? "border-purple-300 bg-gradient-to-r from-purple-50 to-pink-50" : "border-purple-200 bg-white"
+                                            rank <= 3 ? "border-purple-300 bg-gradient-to-r from-purple-50 to-pink-50" : "border bg-card"
                                         }`}
                                     >
                                         {/* Rank */}
@@ -138,11 +138,11 @@ export default function DowntownGuideLeaderboard({ leaderboard, period, type }: 
                                                 <img
                                                     src={user.avatar}
                                                     alt={user.name}
-                                                    className="h-12 w-12 rounded-full border-2 border-purple-200"
+                                                    className="h-12 w-12 rounded-full border-2 border"
                                                 />
                                             ) : (
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-purple-200 bg-purple-100">
-                                                    <span className="text-lg font-bold text-purple-600">{user.name.charAt(0).toUpperCase()}</span>
+                                                <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border bg-accent">
+                                                    <span className="text-lg font-bold text-primary">{user.name.charAt(0).toUpperCase()}</span>
                                                 </div>
                                             )}
                                         </div>
@@ -151,30 +151,30 @@ export default function DowntownGuideLeaderboard({ leaderboard, period, type }: 
                                         <div className="flex-1">
                                             <Link
                                                 href={route("downtown-guide.profile.show", user.id)}
-                                                className="text-lg font-bold text-gray-900 hover:text-purple-600"
+                                                className="text-lg font-bold text-foreground hover:text-primary"
                                             >
                                                 {user.name}
                                             </Link>
-                                            {user.level && <p className="text-sm text-gray-600">Level {user.level}</p>}
+                                            {user.level && <p className="text-sm text-muted-foreground">Level {user.level}</p>}
                                         </div>
 
                                         {/* Value */}
                                         <div className="text-right">
                                             <div className="flex items-center gap-2">
-                                                <TrendingUpIcon className="h-5 w-5 text-purple-600" />
-                                                <span className="text-2xl font-bold text-purple-600">{displayValue.toLocaleString()}</span>
+                                                <TrendingUpIcon className="h-5 w-5 text-primary" />
+                                                <span className="text-2xl font-bold text-primary">{displayValue.toLocaleString()}</span>
                                             </div>
-                                            <p className="text-xs text-gray-600">{getDisplayLabel()}</p>
+                                            <p className="text-xs text-muted-foreground">{getDisplayLabel()}</p>
                                         </div>
                                     </div>
                                 );
                             })}
                         </div>
                     ) : (
-                        <div className="rounded-xl border-2 border-dashed border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
+                        <div className="rounded-xl border-2 border-dashed border bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
                             <TrophyIcon className="mx-auto h-12 w-12 text-purple-400" />
-                            <p className="mt-4 text-lg font-bold text-gray-900">No leaderboard data</p>
-                            <p className="mt-2 text-sm text-gray-600">Check back later</p>
+                            <p className="mt-4 text-lg font-bold text-foreground">No leaderboard data</p>
+                            <p className="mt-2 text-sm text-muted-foreground">Check back later</p>
                         </div>
                     )}
                 </div>

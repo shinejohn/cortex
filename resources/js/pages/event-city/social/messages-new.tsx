@@ -56,16 +56,16 @@ export default function MessagesNew({ friends }: Props) {
     return (
         <AppLayout>
             <Head title="New Message" />
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-muted/50">
                 <div className="max-w-2xl mx-auto py-8">
-                    <div className="bg-white rounded-lg shadow">
+                    <div className="bg-card rounded-lg shadow">
                         {/* Header */}
-                        <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+                        <div className="p-4 border-b border flex items-center justify-between">
                             <div className="flex items-center">
-                                <Link href="/social/messages" className="mr-4 p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100">
+                                <Link href="/social/messages" className="mr-4 p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-accent">
                                     <ArrowLeftIcon className="h-5 w-5" />
                                 </Link>
-                                <h1 className="text-xl font-bold text-gray-900">New Message</h1>
+                                <h1 className="text-xl font-bold text-foreground">New Message</h1>
                             </div>
                             {selectedFriends.length > 0 && (
                                 <Button onClick={handleStartConversation}>
@@ -76,9 +76,9 @@ export default function MessagesNew({ friends }: Props) {
                         </div>
 
                         {/* Search */}
-                        <div className="p-4 border-b border-gray-200">
+                        <div className="p-4 border-b border">
                             <div className="relative">
-                                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                 <Input
                                     type="text"
                                     placeholder="Search friends..."
@@ -89,7 +89,7 @@ export default function MessagesNew({ friends }: Props) {
                             </div>
                             {selectedFriends.length > 0 && (
                                 <div className="mt-3">
-                                    <p className="text-sm text-gray-600 mb-2">
+                                    <p className="text-sm text-muted-foreground mb-2">
                                         {selectedFriends.length === 1 ? "1 friend selected" : `${selectedFriends.length} friends selected`}
                                     </p>
                                     <div className="flex flex-wrap gap-2">
@@ -125,15 +125,15 @@ export default function MessagesNew({ friends }: Props) {
                                         <button
                                             key={friend.id}
                                             onClick={() => handleFriendToggle(friend.id)}
-                                            className={`w-full p-4 text-left hover:bg-gray-50 transition-colors ${
+                                            className={`w-full p-4 text-left hover:bg-muted/50 transition-colors ${
                                                 selectedFriends.includes(friend.id) ? "bg-primary/10" : ""
                                             }`}
                                         >
                                             <div className="flex items-center">
                                                 <img src={friend.avatar} alt={friend.name} className="h-12 w-12 rounded-full object-cover" />
                                                 <div className="ml-4 flex-1">
-                                                    <h3 className="text-sm font-medium text-gray-900">{friend.name}</h3>
-                                                    <p className="text-sm text-gray-500">{friend.username ? `@${friend.username}` : friend.email}</p>
+                                                    <h3 className="text-sm font-medium text-foreground">{friend.name}</h3>
+                                                    <p className="text-sm text-muted-foreground">{friend.username ? `@${friend.username}` : friend.email}</p>
                                                 </div>
                                                 {selectedFriends.includes(friend.id) && (
                                                     <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
@@ -152,15 +152,15 @@ export default function MessagesNew({ friends }: Props) {
                                 </div>
                             ) : searchQuery ? (
                                 <div className="p-8 text-center">
-                                    <SearchIcon className="h-12 w-12 mx-auto text-gray-400 mb-3" />
-                                    <h3 className="text-lg font-medium text-gray-900 mb-2">No friends found</h3>
-                                    <p className="text-gray-600">Try adjusting your search to find the friend you're looking for.</p>
+                                    <SearchIcon className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+                                    <h3 className="text-lg font-medium text-foreground mb-2">No friends found</h3>
+                                    <p className="text-muted-foreground">Try adjusting your search to find the friend you're looking for.</p>
                                 </div>
                             ) : (
                                 <div className="p-8 text-center">
-                                    <MessageCircleIcon className="h-12 w-12 mx-auto text-gray-400 mb-3" />
-                                    <h3 className="text-lg font-medium text-gray-900 mb-2">No friends to message</h3>
-                                    <p className="text-gray-600 mb-4">You need to add friends before you can start messaging them.</p>
+                                    <MessageCircleIcon className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+                                    <h3 className="text-lg font-medium text-foreground mb-2">No friends to message</h3>
+                                    <p className="text-muted-foreground mb-4">You need to add friends before you can start messaging them.</p>
                                     <Link href="/social/friends">
                                         <Button>
                                             <UserPlusIcon className="h-5 w-5 mr-2" />
@@ -173,8 +173,8 @@ export default function MessagesNew({ friends }: Props) {
 
                         {/* Instructions */}
                         {filteredFriends.length > 0 && (
-                            <div className="p-4 bg-gray-50 border-t border-gray-200">
-                                <p className="text-sm text-gray-600 text-center">
+                            <div className="p-4 bg-muted/50 border-t border">
+                                <p className="text-sm text-muted-foreground text-center">
                                     Select one friend for a direct message, or multiple friends to start a group chat.
                                 </p>
                             </div>

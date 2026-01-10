@@ -132,7 +132,7 @@ export default function VenueShow() {
     };
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-card">
             <SEO
                 type="venue"
                 site="event-city"
@@ -161,14 +161,14 @@ export default function VenueShow() {
                 <div className="absolute bottom-0 left-0 right-0 p-8">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-white">
-                            <Button variant="ghost" onClick={handleBack} className="mb-4 text-white hover:text-gray-200 hover:bg-white/10 p-2">
+                            <Button variant="ghost" onClick={handleBack} className="mb-4 text-white hover:text-gray-200 hover:bg-card/10 p-2">
                                 <ArrowLeft className="h-4 w-4 mr-1" />
                                 Back to Venues
                             </Button>
                             <h1 className="text-4xl font-bold mb-4 flex items-center">
                                 {venue.name}
                                 {venue.verified && (
-                                    <Badge className="ml-2 bg-blue-100 text-blue-800">
+                                    <Badge className="ml-2 bg-accent text-primary">
                                         <CheckCircle className="h-3.5 w-3.5 mr-1" />
                                         Verified
                                     </Badge>
@@ -194,18 +194,18 @@ export default function VenueShow() {
             </div>
 
             {/* Context Bar */}
-            <div className="bg-indigo-50 py-3">
+            <div className="bg-accent/50 py-3">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-wrap items-center justify-between gap-4">
                         <div className="flex items-center text-sm">
                             <Music className="h-4 w-4 text-indigo-500 mr-1" />
                             <span className="font-medium text-gray-800">Popular {venue.venue_type}</span>
                         </div>
-                        <div className="flex items-center text-sm text-gray-700">
-                            <MapPin className="h-4 w-4 text-gray-500 mr-1" />
+                        <div className="flex items-center text-sm text-foreground">
+                            <MapPin className="h-4 w-4 text-muted-foreground mr-1" />
                             {venue.neighborhood}
                         </div>
-                        <div className="flex items-center text-sm text-gray-700">
+                        <div className="flex items-center text-sm text-foreground">
                             <DollarSign className="h-4 w-4 text-green-500 mr-1" />
                             From ${venue.price_per_hour}/hour
                         </div>
@@ -223,7 +223,7 @@ export default function VenueShow() {
                             <CardContent className="p-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     <div>
-                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Pricing</h3>
+                                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Pricing</h3>
                                         <div className="space-y-1">
                                             <div className="flex justify-between">
                                                 <span className="text-sm">Per Hour</span>
@@ -240,28 +240,28 @@ export default function VenueShow() {
                                         </div>
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Venue Type</h3>
+                                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Venue Type</h3>
                                         <Badge variant="secondary">{venue.venue_type}</Badge>
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Capacity</h3>
+                                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Capacity</h3>
                                         <div className="flex items-center">
-                                            <Users className="h-4 w-4 text-gray-400 mr-1" />
+                                            <Users className="h-4 w-4 text-muted-foreground mr-1" />
                                             <p className="text-base font-medium">{venue.capacity} people</p>
                                         </div>
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Response Time</h3>
+                                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Response Time</h3>
                                         <div className="flex items-center">
-                                            <Clock className="h-4 w-4 text-gray-400 mr-1" />
+                                            <Clock className="h-4 w-4 text-muted-foreground mr-1" />
                                             <p className="text-base font-medium">Within {venue.response_time_hours} hours</p>
                                         </div>
                                     </div>
                                 </div>
 
                                 {venue.event_types && venue.event_types.length > 0 && (
-                                    <div className="border-t border-gray-200 pt-6">
-                                        <h3 className="text-sm font-medium text-gray-500 mb-3">Perfect for</h3>
+                                    <div className="border-t border pt-6">
+                                        <h3 className="text-sm font-medium text-muted-foreground mb-3">Perfect for</h3>
                                         <div className="flex flex-wrap gap-2">
                                             {venue.event_types.slice(0, 6).map((type, index) => (
                                                 <Badge key={index} variant="outline">
@@ -307,15 +307,15 @@ export default function VenueShow() {
                                         <CardTitle>About This Venue</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <p className="text-gray-700 leading-relaxed mb-6">
+                                        <p className="text-foreground leading-relaxed mb-6">
                                             {venue.description || "No description available for this venue."}
                                         </p>
 
                                         {venue.events && venue.events.length > 0 && (
                                             <div>
                                                 <div className="flex justify-between items-center mb-4">
-                                                    <h4 className="font-medium text-gray-900">Upcoming Events</h4>
-                                                    <Button variant="ghost" size="sm" className="text-indigo-600">
+                                                    <h4 className="font-medium text-foreground">Upcoming Events</h4>
+                                                    <Button variant="ghost" size="sm" className="text-primary">
                                                         View all <ArrowRight className="h-4 w-4 ml-1" />
                                                     </Button>
                                                 </div>
@@ -324,9 +324,9 @@ export default function VenueShow() {
                                                         <Link
                                                             key={event.id}
                                                             href={`/events/${event.id}`}
-                                                            className="flex items-start hover:bg-gray-50 p-3 -mx-3 rounded-md"
+                                                            className="flex items-start hover:bg-muted/50 p-3 -mx-3 rounded-md"
                                                         >
-                                                            <div className="h-12 w-12 rounded-md overflow-hidden flex-shrink-0 bg-gray-200">
+                                                            <div className="h-12 w-12 rounded-md overflow-hidden flex-shrink-0 bg-muted">
                                                                 <img
                                                                     src={event.image || "/images/event-placeholder.jpg"}
                                                                     alt={event.name}
@@ -334,12 +334,12 @@ export default function VenueShow() {
                                                                 />
                                                             </div>
                                                             <div className="ml-3 flex-1">
-                                                                <h5 className="text-sm font-medium text-gray-900 line-clamp-1">{event.name}</h5>
-                                                                <p className="text-xs text-gray-500 mt-1">
+                                                                <h5 className="text-sm font-medium text-foreground line-clamp-1">{event.name}</h5>
+                                                                <p className="text-xs text-muted-foreground mt-1">
                                                                     {formatEventDate(event.event_date)} • {event.start_time}
                                                                 </p>
                                                                 <div className="mt-1 flex items-center justify-between">
-                                                                    <span className="text-xs text-gray-600">${event.ticket_price}</span>
+                                                                    <span className="text-xs text-muted-foreground">${event.ticket_price}</span>
                                                                     <Button size="sm" variant="ghost" className="h-6 px-2 text-xs">
                                                                         View Event
                                                                     </Button>
@@ -365,12 +365,12 @@ export default function VenueShow() {
                                                 {venue.amenities.map((amenity, index) => (
                                                     <div key={index} className="flex items-center">
                                                         <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                                                        <span className="text-gray-700">{amenity}</span>
+                                                        <span className="text-foreground">{amenity}</span>
                                                     </div>
                                                 ))}
                                             </div>
                                         ) : (
-                                            <p className="text-gray-500">No amenities information available</p>
+                                            <p className="text-muted-foreground">No amenities information available</p>
                                         )}
                                     </CardContent>
                                 </Card>
@@ -395,7 +395,7 @@ export default function VenueShow() {
                                                 ))}
                                             </div>
                                         ) : (
-                                            <p className="text-gray-500">No photos available</p>
+                                            <p className="text-muted-foreground">No photos available</p>
                                         )}
                                     </CardContent>
                                 </Card>
@@ -412,7 +412,7 @@ export default function VenueShow() {
                                     <CardContent>
                                         <div className="flex items-center mb-6">
                                             <div className="text-center mr-8">
-                                                <div className="text-3xl font-bold text-gray-900">
+                                                <div className="text-3xl font-bold text-foreground">
                                                     {venue.average_rating ? Number(venue.average_rating).toFixed(1) : "0.0"}
                                                 </div>
                                                 <div className="flex items-center justify-center mt-1">
@@ -427,21 +427,21 @@ export default function VenueShow() {
                                                         />
                                                     ))}
                                                 </div>
-                                                <div className="text-sm text-gray-500">{venue.total_reviews || 0} reviews</div>
+                                                <div className="text-sm text-muted-foreground">{venue.total_reviews || 0} reviews</div>
                                             </div>
                                             {ratingStats?.by_context && (
                                                 <div className="flex-1">
                                                     <div className="space-y-2">
                                                         {Object.entries(ratingStats.by_context).map(([key, rating]) => (
                                                             <div key={key} className="flex items-center">
-                                                                <span className="w-16 text-xs text-gray-600 capitalize">{key}</span>
-                                                                <div className="flex-1 h-2 bg-gray-200 rounded-full mx-2">
+                                                                <span className="w-16 text-xs text-muted-foreground capitalize">{key}</span>
+                                                                <div className="flex-1 h-2 bg-muted rounded-full mx-2">
                                                                     <div
-                                                                        className="h-2 bg-indigo-600 rounded-full"
+                                                                        className="h-2 bg-primary rounded-full"
                                                                         style={{ width: `${rating ? (Number(rating) / 5) * 100 : 0}%` }}
                                                                     ></div>
                                                                 </div>
-                                                                <span className="text-xs font-medium text-gray-900">
+                                                                <span className="text-xs font-medium text-foreground">
                                                                     {rating ? Number(rating).toFixed(1) : "0.0"}
                                                                 </span>
                                                             </div>
@@ -454,9 +454,9 @@ export default function VenueShow() {
                                         <div className="space-y-4">
                                             {venue.approvedReviews && venue.approvedReviews.length > 0 ? (
                                                 venue.approvedReviews.slice(0, 3).map((review) => (
-                                                    <div key={review.id} className="border-b border-gray-200 pb-4 last:border-b-0">
+                                                    <div key={review.id} className="border-b border pb-4 last:border-b-0">
                                                         <div className="flex items-start">
-                                                            <div className="h-8 w-8 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                                            <div className="h-8 w-8 rounded-full bg-muted overflow-hidden mr-3">
                                                                 <img
                                                                     src={
                                                                         review.user.avatar ||
@@ -468,8 +468,8 @@ export default function VenueShow() {
                                                             </div>
                                                             <div className="flex-1">
                                                                 <div className="flex items-center justify-between">
-                                                                    <h5 className="font-medium text-gray-900">{review.user.name}</h5>
-                                                                    <span className="text-xs text-gray-500">
+                                                                    <h5 className="font-medium text-foreground">{review.user.name}</h5>
+                                                                    <span className="text-xs text-muted-foreground">
                                                                         {new Date(review.created_at).toLocaleDateString()}
                                                                     </span>
                                                                 </div>
@@ -483,13 +483,13 @@ export default function VenueShow() {
                                                                         />
                                                                     ))}
                                                                 </div>
-                                                                <p className="text-sm text-gray-700 mt-2">{review.content}</p>
+                                                                <p className="text-sm text-foreground mt-2">{review.content}</p>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 ))
                                             ) : (
-                                                <p className="text-gray-500">No reviews yet</p>
+                                                <p className="text-muted-foreground">No reviews yet</p>
                                             )}
                                         </div>
                                     </CardContent>
@@ -504,30 +504,30 @@ export default function VenueShow() {
                         <Card className="mb-6">
                             <CardHeader>
                                 <CardTitle className="flex items-center">
-                                    <MapPin className="h-5 w-5 text-gray-500 mr-2" />
+                                    <MapPin className="h-5 w-5 text-muted-foreground mr-2" />
                                     Venue Information
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="flex items-start justify-between">
                                     <div>
-                                        <h4 className="font-medium text-gray-900">{venue.name}</h4>
-                                        <p className="text-sm text-gray-500 mt-1">{venue.address}</p>
-                                        <p className="text-xs text-gray-400">{venue.neighborhood}</p>
+                                        <h4 className="font-medium text-foreground">{venue.name}</h4>
+                                        <p className="text-sm text-muted-foreground mt-1">{venue.address}</p>
+                                        <p className="text-xs text-muted-foreground">{venue.neighborhood}</p>
                                     </div>
                                 </div>
                                 <Separator />
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm text-gray-600">Capacity</span>
+                                        <span className="text-sm text-muted-foreground">Capacity</span>
                                         <span className="font-medium">{venue.capacity} people</span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm text-gray-600">Response time</span>
+                                        <span className="text-sm text-muted-foreground">Response time</span>
                                         <span className="font-medium">~{venue.response_time_hours}h</span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm text-gray-600">Starting price</span>
+                                        <span className="text-sm text-muted-foreground">Starting price</span>
                                         <span className="font-medium">${venue.price_per_hour}/hr</span>
                                     </div>
                                 </div>
@@ -550,13 +550,13 @@ export default function VenueShow() {
                         <Card className="mb-6">
                             <CardHeader>
                                 <CardTitle className="flex items-center">
-                                    <MapPin className="h-5 w-5 text-gray-500 mr-2" />
+                                    <MapPin className="h-5 w-5 text-muted-foreground mr-2" />
                                     Location
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="h-48 bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
-                                    <div className="text-center text-gray-500">
+                                <div className="h-48 bg-muted rounded-lg mb-4 flex items-center justify-center">
+                                    <div className="text-center text-muted-foreground">
                                         <MapPin className="h-8 w-8 mx-auto mb-2" />
                                         <p className="text-sm">Map would be embedded here</p>
                                     </div>
@@ -588,28 +588,28 @@ export default function VenueShow() {
                                         <Link
                                             key={event.id}
                                             href={`/events/${event.id}`}
-                                            className="flex items-start hover:bg-gray-50 p-2 -mx-2 rounded-md"
+                                            className="flex items-start hover:bg-muted/50 p-2 -mx-2 rounded-md"
                                         >
                                             <div className="flex-shrink-0 w-10 text-center">
-                                                <div className="text-sm font-bold text-gray-900">{new Date(event.event_date).getDate()}</div>
-                                                <div className="text-xs text-gray-500">
+                                                <div className="text-sm font-bold text-foreground">{new Date(event.event_date).getDate()}</div>
+                                                <div className="text-xs text-muted-foreground">
                                                     {new Date(event.event_date).toLocaleDateString("en-US", {
                                                         month: "short",
                                                     })}
                                                 </div>
                                             </div>
                                             <div className="ml-3 flex-1">
-                                                <h5 className="text-sm font-medium text-gray-900 line-clamp-1">{event.name}</h5>
-                                                <div className="text-xs text-gray-500 flex items-center mt-1">
+                                                <h5 className="text-sm font-medium text-foreground line-clamp-1">{event.name}</h5>
+                                                <div className="text-xs text-muted-foreground flex items-center mt-1">
                                                     <Clock className="h-3 w-3 mr-1" />
                                                     {event.start_time}
                                                 </div>
-                                                <div className="text-xs text-gray-600 mt-1">${event.ticket_price}</div>
+                                                <div className="text-xs text-muted-foreground mt-1">${event.ticket_price}</div>
                                             </div>
                                         </Link>
                                     ))}
                                     <Separator />
-                                    <Button variant="ghost" size="sm" className="w-full text-indigo-600">
+                                    <Button variant="ghost" size="sm" className="w-full text-primary">
                                         View all events
                                         <ArrowRight className="h-4 w-4 ml-1" />
                                     </Button>
@@ -633,27 +633,27 @@ export default function VenueShow() {
                         <CardContent>
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                                    <label className="block text-sm font-medium text-foreground mb-1">Your Name</label>
                                     <input
                                         type="text"
                                         placeholder="Enter your name"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 border border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                    <label className="block text-sm font-medium text-foreground mb-1">Email Address</label>
                                     <input
                                         type="email"
                                         placeholder="Enter your email"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 border border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                                    <label className="block text-sm font-medium text-foreground mb-1">Message</label>
                                     <textarea
                                         rows={4}
                                         placeholder="What would you like to know about this venue?"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 border border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     ></textarea>
                                 </div>
                             </div>

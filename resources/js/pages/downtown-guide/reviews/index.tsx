@@ -74,11 +74,11 @@ export default function DowntownGuideReviewsIndex({
                         {/* Main Content */}
                         <div className="lg:col-span-3 space-y-6">
                             {/* Filters */}
-                            <div className="rounded-xl border-2 border-purple-200 bg-white p-4 shadow-lg">
+                            <div className="rounded-xl border-2 border bg-card p-4 shadow-lg">
                                 <div className="flex flex-wrap items-center gap-4">
                                     <div className="flex items-center gap-2">
-                                        <FilterIcon className="h-4 w-4 text-gray-600" />
-                                        <span className="text-sm font-medium text-gray-700">Filter:</span>
+                                        <FilterIcon className="h-4 w-4 text-muted-foreground" />
+                                        <span className="text-sm font-medium text-foreground">Filter:</span>
                                     </div>
                                     <Select
                                         value={filters.rating?.toString() || "all"}
@@ -129,10 +129,10 @@ export default function DowntownGuideReviewsIndex({
                                                 disabled={!link.url || link.active}
                                                 className={`rounded-lg px-3 py-2 text-sm font-medium ${
                                                     link.active
-                                                        ? "bg-purple-600 text-white"
+                                                        ? "bg-primary text-white"
                                                         : link.url
-                                                          ? "bg-white text-gray-700 hover:bg-purple-50"
-                                                          : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                                          ? "bg-card text-foreground hover:bg-accent/50"
+                                                          : "bg-muted text-muted-foreground cursor-not-allowed"
                                                 }`}
                                                 dangerouslySetInnerHTML={{ __html: link.label }}
                                             />
@@ -145,10 +145,10 @@ export default function DowntownGuideReviewsIndex({
                         {/* Sidebar */}
                         <div className="space-y-6">
                             {/* Rating Summary */}
-                            <div className="rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
-                                <h3 className="mb-4 text-lg font-bold text-gray-900">Rating Summary</h3>
+                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
+                                <h3 className="mb-4 text-lg font-bold text-foreground">Rating Summary</h3>
                                 <div className="text-center">
-                                    <div className="mb-2 text-4xl font-bold text-purple-600">{averageRating.toFixed(1)}</div>
+                                    <div className="mb-2 text-4xl font-bold text-primary">{averageRating.toFixed(1)}</div>
                                     <div className="mb-4 flex items-center justify-center gap-1">
                                         {[...Array(5)].map((_, i) => (
                                             <StarIcon
@@ -159,7 +159,7 @@ export default function DowntownGuideReviewsIndex({
                                             />
                                         ))}
                                     </div>
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-sm text-muted-foreground">
                                         Based on {reviewCount} {reviewCount === 1 ? "review" : "reviews"}
                                     </p>
                                 </div>
@@ -176,11 +176,11 @@ export default function DowntownGuideReviewsIndex({
                                                     <StarIcon className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                                                 </div>
                                                 <div className="flex-1">
-                                                    <div className="h-2 overflow-hidden rounded-full bg-gray-200">
-                                                        <div className="h-full bg-purple-600 transition-all" style={{ width: `${percentage}%` }} />
+                                                    <div className="h-2 overflow-hidden rounded-full bg-muted">
+                                                        <div className="h-full bg-primary transition-all" style={{ width: `${percentage}%` }} />
                                                     </div>
                                                 </div>
-                                                <span className="text-xs text-gray-600">{count}</span>
+                                                <span className="text-xs text-muted-foreground">{count}</span>
                                             </div>
                                         );
                                     })}
@@ -189,7 +189,7 @@ export default function DowntownGuideReviewsIndex({
 
                             {/* Write Review CTA */}
                             <Link href={route("downtown-guide.reviews.create", business.slug)}>
-                                <Button className="w-full bg-purple-600 hover:bg-purple-700">Write a Review</Button>
+                                <Button className="w-full bg-primary hover:bg-primary">Write a Review</Button>
                             </Link>
                         </div>
                     </div>

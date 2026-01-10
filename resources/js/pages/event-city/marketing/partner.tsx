@@ -15,7 +15,7 @@ export default function Partner() {
     const { auth } = usePage<Props>().props;
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-card">
             <SEO
                 type="page"
                 site="event-city"
@@ -38,17 +38,17 @@ export default function Partner() {
 
             {/* Partnership Types */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Partnership Opportunities</h2>
+                <h2 className="text-3xl font-bold text-foreground text-center mb-12">Partnership Opportunities</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
                     <Card>
                         <CardHeader>
-                            <div className="h-16 w-16 rounded-full bg-indigo-100 flex items-center justify-center mb-4">
-                                <Users className="h-8 w-8 text-indigo-600" />
+                            <div className="h-16 w-16 rounded-full bg-accent flex items-center justify-center mb-4">
+                                <Users className="h-8 w-8 text-primary" />
                             </div>
                             <CardTitle>Venue Partners</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-gray-600 mb-4">Connect your venue with our platform and reach more event organizers</p>
+                            <p className="text-muted-foreground mb-4">Connect your venue with our platform and reach more event organizers</p>
                             <ul className="space-y-2 mb-6">
                                 <li className="flex items-start">
                                     <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
@@ -68,13 +68,13 @@ export default function Partner() {
                     </Card>
                     <Card>
                         <CardHeader>
-                            <div className="h-16 w-16 rounded-full bg-purple-100 flex items-center justify-center mb-4">
-                                <TrendingUp className="h-8 w-8 text-purple-600" />
+                            <div className="h-16 w-16 rounded-full bg-accent flex items-center justify-center mb-4">
+                                <TrendingUp className="h-8 w-8 text-primary" />
                             </div>
                             <CardTitle>Technology Partners</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-gray-600 mb-4">Integrate your services with our platform and expand your reach</p>
+                            <p className="text-muted-foreground mb-4">Integrate your services with our platform and expand your reach</p>
                             <ul className="space-y-2 mb-6">
                                 <li className="flex items-start">
                                     <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
@@ -100,7 +100,7 @@ export default function Partner() {
                             <CardTitle>Media Partners</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-gray-600 mb-4">Collaborate on content and reach new audiences together</p>
+                            <p className="text-muted-foreground mb-4">Collaborate on content and reach new audiences together</p>
                             <ul className="space-y-2 mb-6">
                                 <li className="flex items-start">
                                     <CheckCircle className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
@@ -121,35 +121,35 @@ export default function Partner() {
                 </div>
 
                 {/* Benefits */}
-                <div className="bg-gray-50 rounded-lg p-8 mb-16">
-                    <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">Partnership Benefits</h2>
+                <div className="bg-muted/50 rounded-lg p-8 mb-16">
+                    <h2 className="text-3xl font-bold text-foreground text-center mb-8">Partnership Benefits</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="flex items-start">
                             <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-0.5" />
                             <div>
-                                <h3 className="font-semibold text-gray-900 mb-1">Dedicated Support</h3>
-                                <p className="text-gray-600">Get dedicated account management and priority support</p>
+                                <h3 className="font-semibold text-foreground mb-1">Dedicated Support</h3>
+                                <p className="text-muted-foreground">Get dedicated account management and priority support</p>
                             </div>
                         </div>
                         <div className="flex items-start">
                             <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-0.5" />
                             <div>
-                                <h3 className="font-semibold text-gray-900 mb-1">Marketing Resources</h3>
-                                <p className="text-gray-600">Access to marketing materials and co-branded assets</p>
+                                <h3 className="font-semibold text-foreground mb-1">Marketing Resources</h3>
+                                <p className="text-muted-foreground">Access to marketing materials and co-branded assets</p>
                             </div>
                         </div>
                         <div className="flex items-start">
                             <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-0.5" />
                             <div>
-                                <h3 className="font-semibold text-gray-900 mb-1">Revenue Sharing</h3>
-                                <p className="text-gray-600">Earn revenue through referrals and partnerships</p>
+                                <h3 className="font-semibold text-foreground mb-1">Revenue Sharing</h3>
+                                <p className="text-muted-foreground">Earn revenue through referrals and partnerships</p>
                             </div>
                         </div>
                         <div className="flex items-start">
                             <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-0.5" />
                             <div>
-                                <h3 className="font-semibold text-gray-900 mb-1">Early Access</h3>
-                                <p className="text-gray-600">Be the first to access new features and opportunities</p>
+                                <h3 className="font-semibold text-foreground mb-1">Early Access</h3>
+                                <p className="text-muted-foreground">Be the first to access new features and opportunities</p>
                             </div>
                         </div>
                     </div>
@@ -157,8 +157,8 @@ export default function Partner() {
 
                 {/* CTA */}
                 <div className="text-center">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-4">Ready to Partner With Us?</h2>
-                    <p className="text-xl text-gray-600 mb-8">Let's work together to create amazing experiences for your community</p>
+                    <h2 className="text-3xl font-bold text-foreground mb-4">Ready to Partner With Us?</h2>
+                    <p className="text-xl text-muted-foreground mb-8">Let's work together to create amazing experiences for your community</p>
                     <Button size="lg">
                         Contact Partnership Team
                         <ArrowRight className="ml-2 h-5 w-5" />

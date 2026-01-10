@@ -161,7 +161,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
         if (!hasTickets) {
             return {
                 text: "No Tickets Required",
-                bgColor: "bg-gray-100",
+                bgColor: "bg-muted",
                 textColor: "text-gray-800",
             };
         }
@@ -171,8 +171,8 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
         if (totalAvailable === 0) {
             return {
                 text: "Sold Out",
-                bgColor: "bg-red-100",
-                textColor: "text-red-800",
+                bgColor: "bg-destructive/10",
+                textColor: "text-destructive",
             };
         }
 
@@ -182,8 +182,8 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
         if (percentSold > 90) {
             return {
                 text: "Almost Sold Out",
-                bgColor: "bg-red-100",
-                textColor: "text-red-800",
+                bgColor: "bg-destructive/10",
+                textColor: "text-destructive",
             };
         }
 
@@ -197,8 +197,8 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
 
         return {
             text: "Tickets Available",
-            bgColor: "bg-indigo-100",
-            textColor: "text-indigo-800",
+            bgColor: "bg-accent",
+            textColor: "text-primary/80",
         };
     };
 
@@ -222,7 +222,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
     };
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-card">
             <SEO
                 type="event"
                 site="event-city"
@@ -282,7 +282,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
             </div>
 
             {/* Context Bar */}
-            <div className="bg-indigo-50 py-3">
+            <div className="bg-accent/50 py-3">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-wrap items-center justify-between gap-4">
                         <div className="flex items-center text-sm">
@@ -290,13 +290,13 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                             <span className="font-medium text-gray-800">Popular in {event.category}</span>
                         </div>
                         {event.venue && (
-                            <div className="flex items-center text-sm text-gray-700">
-                                <MapPin className="h-4 w-4 text-gray-500 mr-1" />
+                            <div className="flex items-center text-sm text-foreground">
+                                <MapPin className="h-4 w-4 text-muted-foreground mr-1" />
                                 {event.venue.neighborhood}
                             </div>
                         )}
                         {event.weather && (
-                            <div className="flex items-center text-sm text-gray-700">
+                            <div className="flex items-center text-sm text-foreground">
                                 {event.weather.icon ? (
                                     <img
                                         src={`https://openweathermap.org/img/wn/${event.weather.icon}@2x.png`}
@@ -308,7 +308,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                 ) : event.weather.condition === "Rain" ? (
                                     <CloudRain className="h-4 w-4 text-blue-500 mr-1" />
                                 ) : (
-                                    <Cloud className="h-4 w-4 text-gray-500 mr-1" />
+                                    <Cloud className="h-4 w-4 text-muted-foreground mr-1" />
                                 )}
                                 <span>
                                     {event.weather.temperature ? `${Math.round(event.weather.temperature)}°F` : "Weather info"}
@@ -330,7 +330,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                             <CardContent className="p-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     <div>
-                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Price</h3>
+                                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Price</h3>
                                         <div className="flex flex-wrap gap-2">
                                             {event.is_free ? (
                                                 <span className="text-lg font-semibold text-green-600">Free</span>
@@ -342,19 +342,19 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                         </div>
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Category</h3>
+                                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Category</h3>
                                         <Badge variant="secondary">{event.category}</Badge>
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-medium text-gray-500 mb-1">Duration</h3>
+                                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Duration</h3>
                                         <div className="flex items-center">
-                                            <Clock className="h-4 w-4 text-gray-400 mr-1" />
+                                            <Clock className="h-4 w-4 text-muted-foreground mr-1" />
                                             <p className="text-base font-medium">3 hours</p>
                                         </div>
                                     </div>
                                     {event.badges && event.badges.length > 0 && (
                                         <div>
-                                            <h3 className="text-sm font-medium text-gray-500 mb-1">Badges</h3>
+                                            <h3 className="text-sm font-medium text-muted-foreground mb-1">Badges</h3>
                                             <div className="flex flex-wrap gap-2">
                                                 {event.badges.slice(0, 3).map((badge, index) => (
                                                     <Badge key={index} variant="outline">
@@ -369,7 +369,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                 {event.performer && (
                                     <Link
                                         href={`/performers/${event.performer.id}`}
-                                        className="flex items-center justify-between border-t border-gray-200 pt-6 hover:bg-gray-50 -mx-6 -mb-6 px-6 pb-6 transition-colors"
+                                        className="flex items-center justify-between border-t border pt-6 hover:bg-muted/50 -mx-6 -mb-6 px-6 pb-6 transition-colors"
                                     >
                                         <div className="flex items-center">
                                             <div className="h-10 w-10 rounded-full overflow-hidden mr-3">
@@ -383,14 +383,14 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                                 />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-medium text-gray-900">Performer</p>
+                                                <p className="text-sm font-medium text-foreground">Performer</p>
                                                 <div className="flex items-center">
-                                                    <span className="text-indigo-600 hover:text-indigo-800 font-medium">{event.performer.name}</span>
+                                                    <span className="text-primary hover:text-primary/80 font-medium">{event.performer.name}</span>
                                                     {event.performer.verified && <CheckCircle className="h-4 w-4 text-blue-500 ml-1" />}
                                                 </div>
                                             </div>
                                         </div>
-                                        <ArrowRight className="h-5 w-5 text-gray-400" />
+                                        <ArrowRight className="h-5 w-5 text-muted-foreground" />
                                     </Link>
                                 )}
                             </CardContent>
@@ -405,7 +405,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                             <Ticket className={`h-5 w-5 ${ticketStatus.textColor} mr-2`} />
                                             <div>
                                                 <h3 className={`font-medium ${ticketStatus.textColor}`}>{ticketStatus.text}</h3>
-                                                <p className="text-sm text-gray-700 mt-1">
+                                                <p className="text-sm text-foreground mt-1">
                                                     {event.is_free
                                                         ? "This is a free event, but registration is required."
                                                         : `Prices from $${Math.min(...event.ticket_plans.map((plan) => plan.price))}`}
@@ -493,7 +493,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                         <CardTitle>About This Event</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <p className="text-gray-700 leading-relaxed">
+                                        <p className="text-foreground leading-relaxed">
                                             {event.description || "No description available for this event."}
                                         </p>
                                     </CardContent>
@@ -508,10 +508,10 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                     <CardContent>
                                         {event.venue ? (
                                             <div>
-                                                <h4 className="font-medium text-gray-900 mb-2">{event.venue.name}</h4>
-                                                <p className="text-gray-600 mb-4">{event.venue.address}</p>
-                                                <div className="h-64 bg-gray-200 rounded-lg mb-4">
-                                                    <div className="w-full h-full flex items-center justify-center text-gray-500">
+                                                <h4 className="font-medium text-foreground mb-2">{event.venue.name}</h4>
+                                                <p className="text-muted-foreground mb-4">{event.venue.address}</p>
+                                                <div className="h-64 bg-muted rounded-lg mb-4">
+                                                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                                                         Map placeholder
                                                     </div>
                                                 </div>
@@ -526,7 +526,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                                 </Button>
                                             </div>
                                         ) : (
-                                            <p className="text-gray-500">Venue information not available</p>
+                                            <p className="text-muted-foreground">Venue information not available</p>
                                         )}
                                     </CardContent>
                                 </Card>
@@ -544,15 +544,15 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                                     <div key={plan.id} className="border rounded-lg p-4">
                                                         <div className="flex justify-between items-start mb-2">
                                                             <div>
-                                                                <h4 className="font-medium text-gray-900">{plan.name}</h4>
-                                                                <p className="text-sm text-gray-600 mt-1">{plan.description}</p>
+                                                                <h4 className="font-medium text-foreground">{plan.name}</h4>
+                                                                <p className="text-sm text-muted-foreground mt-1">{plan.description}</p>
                                                             </div>
-                                                            <span className="font-bold text-lg text-gray-900">
+                                                            <span className="font-bold text-lg text-foreground">
                                                                 {plan.price === 0 ? "Free" : `$${plan.price}`}
                                                             </span>
                                                         </div>
                                                         <div className="flex items-center justify-between mt-3">
-                                                            <span className="text-sm text-gray-500">
+                                                            <span className="text-sm text-muted-foreground">
                                                                 {plan.available_quantity} of {plan.max_quantity} available
                                                             </span>
                                                             <Button onClick={handleGetTickets} size="sm">
@@ -570,7 +570,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                         ) : (
                                             <div className="text-center py-8">
                                                 <Ticket className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                                                <p className="text-gray-500">Tickets will be available soon</p>
+                                                <p className="text-muted-foreground">Tickets will be available soon</p>
                                             </div>
                                         )}
                                     </CardContent>
@@ -598,15 +598,15 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                                     </div>
                                                     <div className="flex-1">
                                                         <div className="flex items-center mb-2">
-                                                            <h4 className="font-medium text-gray-900 text-lg">{event.performer.name}</h4>
+                                                            <h4 className="font-medium text-foreground text-lg">{event.performer.name}</h4>
                                                             {event.performer.verified && <CheckCircle className="h-5 w-5 text-blue-500 ml-2" />}
                                                         </div>
-                                                        <p className="text-gray-700 leading-relaxed">
+                                                        <p className="text-foreground leading-relaxed">
                                                             {event.performer.bio || "No performer information available."}
                                                         </p>
                                                         <Link
                                                             href={`/performers/${event.performer.id}`}
-                                                            className="text-indigo-600 hover:text-indigo-800 text-sm mt-2 inline-flex items-center"
+                                                            className="text-primary hover:text-primary/80 text-sm mt-2 inline-flex items-center"
                                                         >
                                                             View Performer Profile
                                                             <ArrowRight className="h-4 w-4 ml-1" />
@@ -615,7 +615,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                                 </div>
                                             </div>
                                         ) : (
-                                            <p className="text-gray-500">Lineup information will be announced soon.</p>
+                                            <p className="text-muted-foreground">Lineup information will be announced soon.</p>
                                         )}
                                     </CardContent>
                                 </Card>
@@ -629,7 +629,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                     <CardContent>
                                         <div className="text-center py-8">
                                             <Users className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                                            <p className="text-gray-500 mb-4">No reviews yet</p>
+                                            <p className="text-muted-foreground mb-4">No reviews yet</p>
                                             {auth.user && <Button variant="outline">Write a Review</Button>}
                                         </div>
                                     </CardContent>
@@ -644,11 +644,11 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                     <CardContent>
                                         <div className="text-center py-8">
                                             <Users className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                                            <p className="text-gray-500 mb-4">Start a discussion about this event</p>
+                                            <p className="text-muted-foreground mb-4">Start a discussion about this event</p>
                                             {auth.user ? (
                                                 <Button variant="outline">Start Discussion</Button>
                                             ) : (
-                                                <p className="text-sm text-gray-400">Please log in to participate in discussions</p>
+                                                <p className="text-sm text-muted-foreground">Please log in to participate in discussions</p>
                                             )}
                                         </div>
                                     </CardContent>
@@ -672,13 +672,13 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                     {event.ticket_plans.map((plan) => (
                                         <div key={plan.id} className="flex justify-between items-start">
                                             <div>
-                                                <h4 className="font-medium text-gray-900">{plan.name}</h4>
-                                                <p className="text-sm text-gray-500">{plan.description}</p>
-                                                <p className="text-xs text-gray-400 mt-1">
+                                                <h4 className="font-medium text-foreground">{plan.name}</h4>
+                                                <p className="text-sm text-muted-foreground">{plan.description}</p>
+                                                <p className="text-xs text-muted-foreground mt-1">
                                                     {plan.available_quantity} of {plan.max_quantity} available
                                                 </p>
                                             </div>
-                                            <span className="font-bold text-gray-900">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
+                                            <span className="font-bold text-foreground">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
                                         </div>
                                     ))}
                                     <Separator />
@@ -694,18 +694,18 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                             <Card className="mb-6">
                                 <CardHeader>
                                     <CardTitle className="flex items-center">
-                                        <MapPin className="h-5 w-5 text-gray-500 mr-2" />
+                                        <MapPin className="h-5 w-5 text-muted-foreground mr-2" />
                                         Venue Location
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="h-48 bg-gray-200 rounded-lg mb-4">
-                                        <div className="w-full h-full flex items-center justify-center text-gray-500">Map placeholder</div>
+                                    <div className="h-48 bg-muted rounded-lg mb-4">
+                                        <div className="w-full h-full flex items-center justify-center text-muted-foreground">Map placeholder</div>
                                     </div>
                                     <div className="flex items-start justify-between">
                                         <div>
-                                            <h4 className="font-medium text-gray-900">{event.venue.name}</h4>
-                                            <p className="text-sm text-gray-500">{event.venue.address}</p>
+                                            <h4 className="font-medium text-foreground">{event.venue.name}</h4>
+                                            <p className="text-sm text-muted-foreground">{event.venue.address}</p>
                                         </div>
                                         <Button variant="outline" size="sm" asChild>
                                             <a
@@ -729,7 +729,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                         <CardTitle>Similar Events</CardTitle>
                                         <Link
                                             href={`/events?category=${event.category}`}
-                                            className="text-sm text-indigo-600 hover:text-indigo-800 flex items-center"
+                                            className="text-sm text-primary hover:text-primary/80 flex items-center"
                                         >
                                             View all
                                             <ArrowRight className="h-4 w-4 ml-1" />
@@ -741,9 +741,9 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                         <Link
                                             key={similarEvent.id}
                                             href={`/events/${similarEvent.id}`}
-                                            className="flex items-start hover:bg-gray-50 p-2 -mx-2 rounded-md"
+                                            className="flex items-start hover:bg-muted/50 p-2 -mx-2 rounded-md"
                                         >
-                                            <div className="h-14 w-14 rounded-md overflow-hidden flex-shrink-0 bg-gray-200">
+                                            <div className="h-14 w-14 rounded-md overflow-hidden flex-shrink-0 bg-muted">
                                                 <img
                                                     src={
                                                         similarEvent.image ||
@@ -754,15 +754,15 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                                 />
                                             </div>
                                             <div className="ml-3">
-                                                <h4 className="text-sm font-medium text-gray-900 line-clamp-1">{similarEvent.title}</h4>
-                                                <p className="text-xs text-gray-500 line-clamp-1">
+                                                <h4 className="text-sm font-medium text-foreground line-clamp-1">{similarEvent.title}</h4>
+                                                <p className="text-xs text-muted-foreground line-clamp-1">
                                                     {formatEventDate(similarEvent.date)} • {similarEvent.venue}
                                                 </p>
                                                 <div className="mt-1 flex items-center">
                                                     <Badge variant="outline" className="text-xs">
                                                         {similarEvent.category}
                                                     </Badge>
-                                                    <span className="ml-2 text-xs text-gray-500">{similarEvent.price}</span>
+                                                    <span className="ml-2 text-xs text-muted-foreground">{similarEvent.price}</span>
                                                 </div>
                                             </div>
                                         </Link>

@@ -74,7 +74,7 @@ export default function BusinessShow({
                 <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
             </Head>
 
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-muted/50">
                 {/* Hero Section */}
                 <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -136,7 +136,7 @@ export default function BusinessShow({
                 </div>
 
                 {/* Tabs Navigation */}
-                <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+                <div className="bg-card border-b border sticky top-0 z-10">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <nav className="flex space-x-8 overflow-x-auto">
                             {tabs.map((tab) => (
@@ -145,8 +145,8 @@ export default function BusinessShow({
                                     href={`/business/${business.slug}/${tab}`}
                                     className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                                         activeTab === tab
-                                            ? "border-blue-500 text-blue-600"
-                                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                            ? "border-blue-500 text-primary"
+                                            : "border-transparent text-muted-foreground hover:text-foreground hover:border"
                                     }`}
                                 >
                                     {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -162,9 +162,9 @@ export default function BusinessShow({
                         {/* Main Content Area */}
                         <div className="lg:col-span-2">
                             {activeTab === "overview" && (
-                                <div className="bg-white rounded-lg shadow p-6">
+                                <div className="bg-card rounded-lg shadow p-6">
                                     <h2 className="text-2xl font-bold mb-4">About {business.name}</h2>
-                                    {business.description && <p className="text-gray-700 mb-4">{business.description}</p>}
+                                    {business.description && <p className="text-foreground mb-4">{business.description}</p>}
                                     {crossPlatformContent?.articles && crossPlatformContent.articles.length > 0 && (
                                         <div className="mt-6">
                                             <h3 className="text-xl font-semibold mb-3">Related Articles</h3>
@@ -173,10 +173,10 @@ export default function BusinessShow({
                                                     <Link
                                                         key={article.id}
                                                         href={article.url}
-                                                        className="block p-3 border border-gray-200 rounded hover:bg-gray-50"
+                                                        className="block p-3 border border rounded hover:bg-muted/50"
                                                     >
                                                         <h4 className="font-semibold">{article.title}</h4>
-                                                        <p className="text-sm text-gray-600">{article.excerpt}</p>
+                                                        <p className="text-sm text-muted-foreground">{article.excerpt}</p>
                                                     </Link>
                                                 ))}
                                             </div>
@@ -186,14 +186,14 @@ export default function BusinessShow({
                             )}
 
                             {activeTab === "reviews" && (
-                                <div className="bg-white rounded-lg shadow p-6">
+                                <div className="bg-card rounded-lg shadow p-6">
                                     <h2 className="text-2xl font-bold mb-4">Reviews</h2>
-                                    <p className="text-gray-600">Reviews will be displayed here.</p>
+                                    <p className="text-muted-foreground">Reviews will be displayed here.</p>
                                 </div>
                             )}
 
                             {activeTab === "photos" && (
-                                <div className="bg-white rounded-lg shadow p-6">
+                                <div className="bg-card rounded-lg shadow p-6">
                                     <h2 className="text-2xl font-bold mb-4">Photos</h2>
                                     {business.images && business.images.length > 0 ? (
                                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -207,47 +207,47 @@ export default function BusinessShow({
                                             ))}
                                         </div>
                                     ) : (
-                                        <p className="text-gray-600">No photos available.</p>
+                                        <p className="text-muted-foreground">No photos available.</p>
                                     )}
                                 </div>
                             )}
 
                             {activeTab === "events" && crossPlatformContent?.events && (
-                                <div className="bg-white rounded-lg shadow p-6">
+                                <div className="bg-card rounded-lg shadow p-6">
                                     <h2 className="text-2xl font-bold mb-4">Upcoming Events</h2>
                                     {crossPlatformContent.events.length > 0 ? (
                                         <div className="space-y-4">
                                             {crossPlatformContent.events.map((event: any) => (
-                                                <div key={event.id} className="border border-gray-200 rounded p-4">
+                                                <div key={event.id} className="border border rounded p-4">
                                                     <h3 className="font-semibold text-lg">{event.title}</h3>
-                                                    <p className="text-sm text-gray-600">{event.date}</p>
-                                                    <p className="text-gray-700 mt-2">{event.description}</p>
+                                                    <p className="text-sm text-muted-foreground">{event.date}</p>
+                                                    <p className="text-foreground mt-2">{event.description}</p>
                                                 </div>
                                             ))}
                                         </div>
                                     ) : (
-                                        <p className="text-gray-600">No upcoming events.</p>
+                                        <p className="text-muted-foreground">No upcoming events.</p>
                                     )}
                                 </div>
                             )}
 
                             {activeTab === "coupons" && crossPlatformContent?.coupons && (
-                                <div className="bg-white rounded-lg shadow p-6">
+                                <div className="bg-card rounded-lg shadow p-6">
                                     <h2 className="text-2xl font-bold mb-4">Coupons & Deals</h2>
                                     {crossPlatformContent.coupons.length > 0 ? (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             {crossPlatformContent.coupons.map((coupon: any) => (
-                                                <div key={coupon.id} className="border border-gray-200 rounded p-4">
+                                                <div key={coupon.id} className="border border rounded p-4">
                                                     <h3 className="font-semibold">{coupon.title}</h3>
-                                                    <p className="text-sm text-gray-600">{coupon.description}</p>
-                                                    <button className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                                    <p className="text-sm text-muted-foreground">{coupon.description}</p>
+                                                    <button className="mt-3 px-4 py-2 bg-primary text-white rounded hover:bg-primary">
                                                         Get Deal
                                                     </button>
                                                 </div>
                                             ))}
                                         </div>
                                     ) : (
-                                        <p className="text-gray-600">No coupons available.</p>
+                                        <p className="text-muted-foreground">No coupons available.</p>
                                     )}
                                 </div>
                             )}
@@ -255,27 +255,27 @@ export default function BusinessShow({
 
                         {/* Sidebar */}
                         <div className="lg:col-span-1">
-                            <div className="bg-white rounded-lg shadow p-6 mb-6">
+                            <div className="bg-card rounded-lg shadow p-6 mb-6">
                                 <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
                                 {business.phone && (
-                                    <p className="text-gray-700 mb-2">
+                                    <p className="text-foreground mb-2">
                                         <strong>Phone:</strong> {business.phone}
                                     </p>
                                 )}
                                 {business.email && (
-                                    <p className="text-gray-700 mb-2">
+                                    <p className="text-foreground mb-2">
                                         <strong>Email:</strong> {business.email}
                                     </p>
                                 )}
                                 {business.address && (
-                                    <p className="text-gray-700">
+                                    <p className="text-foreground">
                                         <strong>Address:</strong> {business.address}, {business.city}, {business.state}
                                     </p>
                                 )}
                             </div>
 
                             {/* Cross-Platform Links */}
-                            <div className="bg-white rounded-lg shadow p-6 mb-6">
+                            <div className="bg-card rounded-lg shadow p-6 mb-6">
                                 <h3 className="text-lg font-semibold mb-4">Also Available On</h3>
                                 <div className="space-y-2">
                                     {Object.entries(communityLinks).map(([key, link]) => (
@@ -284,7 +284,7 @@ export default function BusinessShow({
                                             href={link.url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="block text-blue-600 hover:text-blue-800 text-sm"
+                                            className="block text-primary hover:text-primary text-sm"
                                         >
                                             {link.label}
                                         </a>
@@ -294,17 +294,17 @@ export default function BusinessShow({
 
                             {/* Related Businesses */}
                             {relatedBusinesses && relatedBusinesses.length > 0 && (
-                                <div className="bg-white rounded-lg shadow p-6">
+                                <div className="bg-card rounded-lg shadow p-6">
                                     <h3 className="text-lg font-semibold mb-4">Related Businesses</h3>
                                     <div className="space-y-3">
                                         {relatedBusinesses.map((related) => (
                                             <Link
                                                 key={related.id}
                                                 href={`/business/${related.slug}`}
-                                                className="block p-3 border border-gray-200 rounded hover:bg-gray-50"
+                                                className="block p-3 border border rounded hover:bg-muted/50"
                                             >
                                                 <h4 className="font-semibold">{related.name}</h4>
-                                                <p className="text-sm text-gray-600">{related.address}</p>
+                                                <p className="text-sm text-muted-foreground">{related.address}</p>
                                             </Link>
                                         ))}
                                     </div>
@@ -318,8 +318,8 @@ export default function BusinessShow({
                 {aiServices.enabled && aiServices.chat_enabled && (
                     <>
                         {chatOpen && (
-                            <div className="fixed bottom-20 right-4 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
-                                <div className="bg-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
+                            <div className="fixed bottom-20 right-4 w-96 bg-card rounded-lg shadow-xl border border z-50">
+                                <div className="bg-primary text-white p-4 rounded-t-lg flex justify-between items-center">
                                     <h3 className="font-semibold">Chat with {business.name}</h3>
                                     <button onClick={() => setChatOpen(false)} className="text-white hover:text-gray-200">
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -332,7 +332,7 @@ export default function BusinessShow({
                                         <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                                             <div
                                                 className={`max-w-xs p-3 rounded-lg ${
-                                                    msg.role === "user" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-800"
+                                                    msg.role === "user" ? "bg-primary text-white" : "bg-muted text-gray-800"
                                                 }`}
                                             >
                                                 {msg.content}
@@ -340,20 +340,20 @@ export default function BusinessShow({
                                         </div>
                                     ))}
                                 </div>
-                                <form onSubmit={handleChatSubmit} className="p-4 border-t border-gray-200">
+                                <form onSubmit={handleChatSubmit} className="p-4 border-t border">
                                     <div className="flex space-x-2">
                                         <input
                                             type="text"
                                             value={data.message}
                                             onChange={(e) => setData("message", e.target.value)}
                                             placeholder="Type your message..."
-                                            className="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="flex-1 border border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             disabled={processing}
                                         />
                                         <button
                                             type="submit"
                                             disabled={processing}
-                                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                                            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary disabled:opacity-50"
                                         >
                                             Send
                                         </button>
@@ -363,7 +363,7 @@ export default function BusinessShow({
                         )}
                         <button
                             onClick={() => setChatOpen(!chatOpen)}
-                            className="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 z-50"
+                            className="fixed bottom-4 right-4 bg-primary text-white p-4 rounded-full shadow-lg hover:bg-primary z-50"
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path

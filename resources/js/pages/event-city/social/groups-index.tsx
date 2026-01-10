@@ -87,19 +87,19 @@ export default function GroupsIndex({ my_groups, suggested_groups }: Props) {
     return (
         <AppLayout>
             <Head title="Groups" />
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-muted/50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     {/* Page header */}
                     <div className="mb-6">
-                        <h1 className="text-2xl font-bold text-gray-900">Groups</h1>
-                        <p className="text-gray-600">Connect with people who share your interests</p>
+                        <h1 className="text-2xl font-bold text-foreground">Groups</h1>
+                        <p className="text-muted-foreground">Connect with people who share your interests</p>
                     </div>
 
                     {/* Main content */}
                     <div className="flex flex-col md:flex-row gap-6">
                         {/* Left sidebar */}
                         <div className="md:w-1/4">
-                            <div className="bg-white rounded-lg shadow mb-6">
+                            <div className="bg-card rounded-lg shadow mb-6">
                                 <div className="p-4">
                                     <Link
                                         href="/social/groups/create"
@@ -109,24 +109,24 @@ export default function GroupsIndex({ my_groups, suggested_groups }: Props) {
                                         Create New Group
                                     </Link>
                                 </div>
-                                <div className="border-t border-gray-200">
+                                <div className="border-t border">
                                     <nav className="p-2">
                                         <button
                                             onClick={() => setActiveTab("my-groups")}
                                             className={`flex items-center w-full px-3 py-2 text-left rounded-md ${
-                                                activeTab === "my-groups" ? "bg-primary/10 text-primary" : "text-gray-700 hover:bg-gray-50"
+                                                activeTab === "my-groups" ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted/50"
                                             }`}
                                         >
                                             <UsersIcon className="h-5 w-5 mr-3" />
                                             <span className="font-medium">My Groups</span>
-                                            <span className="ml-auto bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs">
+                                            <span className="ml-auto bg-muted text-muted-foreground px-2 py-0.5 rounded-full text-xs">
                                                 {my_groups.length}
                                             </span>
                                         </button>
                                         <button
                                             onClick={() => setActiveTab("discover")}
                                             className={`flex items-center w-full px-3 py-2 text-left rounded-md ${
-                                                activeTab === "discover" ? "bg-primary/10 text-primary" : "text-gray-700 hover:bg-gray-50"
+                                                activeTab === "discover" ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted/50"
                                             }`}
                                         >
                                             <GlobeIcon className="h-5 w-5 mr-3" />
@@ -137,9 +137,9 @@ export default function GroupsIndex({ my_groups, suggested_groups }: Props) {
                             </div>
 
                             {/* Categories filter */}
-                            <div className="bg-white rounded-lg shadow">
-                                <div className="p-4 border-b border-gray-200">
-                                    <h3 className="font-medium text-gray-900">Categories</h3>
+                            <div className="bg-card rounded-lg shadow">
+                                <div className="p-4 border-b border">
+                                    <h3 className="font-medium text-foreground">Categories</h3>
                                 </div>
                                 <div className="p-4 max-h-80 overflow-y-auto">
                                     <div className="space-y-2">
@@ -150,7 +150,7 @@ export default function GroupsIndex({ my_groups, suggested_groups }: Props) {
                                                 className={`flex items-center w-full px-3 py-2 text-left rounded-md ${
                                                     selectedCategory === category
                                                         ? "bg-primary/10 text-primary font-medium"
-                                                        : "text-gray-700 hover:bg-gray-50"
+                                                        : "text-foreground hover:bg-muted/50"
                                                 }`}
                                             >
                                                 {category}
@@ -164,10 +164,10 @@ export default function GroupsIndex({ my_groups, suggested_groups }: Props) {
                         {/* Main content area */}
                         <div className="md:w-3/4">
                             {/* Search and filter */}
-                            <div className="bg-white rounded-lg shadow mb-6 p-4">
+                            <div className="bg-card rounded-lg shadow mb-6 p-4">
                                 <div className="flex flex-col sm:flex-row gap-4">
                                     <div className="relative flex-grow">
-                                        <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                        <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                         <Input
                                             type="text"
                                             placeholder="Search groups"
@@ -249,10 +249,10 @@ export default function GroupsIndex({ my_groups, suggested_groups }: Props) {
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="bg-white rounded-lg shadow p-8 text-center">
-                                            <UsersIcon className="h-12 w-12 mx-auto text-gray-400" />
-                                            <h3 className="mt-2 text-lg font-medium text-gray-900">No groups found</h3>
-                                            <p className="mt-1 text-gray-500">You haven't joined any groups yet or none match your search.</p>
+                                        <div className="bg-card rounded-lg shadow p-8 text-center">
+                                            <UsersIcon className="h-12 w-12 mx-auto text-muted-foreground" />
+                                            <h3 className="mt-2 text-lg font-medium text-foreground">No groups found</h3>
+                                            <p className="mt-1 text-muted-foreground">You haven't joined any groups yet or none match your search.</p>
                                             <div className="mt-6">
                                                 <Button onClick={() => setActiveTab("discover")}>Discover Groups</Button>
                                             </div>

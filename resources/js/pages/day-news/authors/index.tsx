@@ -51,11 +51,11 @@ export default function AuthorsIndex() {
     const getTierColor = (tier: string | null) => {
         switch (tier) {
             case "platinum":
-                return "bg-purple-100 text-purple-700";
+                return "bg-accent text-primary";
             case "gold":
                 return "bg-yellow-100 text-yellow-700";
             case "silver":
-                return "bg-gray-100 text-gray-700";
+                return "bg-muted text-foreground";
             default:
                 return "bg-orange-100 text-orange-700";
         }

@@ -64,7 +64,7 @@ export default function CalendarDashboard() {
     const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             <SEO
                 type="page"
                 site="event-city"
@@ -75,7 +75,7 @@ export default function CalendarDashboard() {
             <Header auth={auth} />
 
             {/* Header */}
-            <div className="bg-indigo-700 text-white">
+            <div className="bg-primary text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                         <div>
@@ -85,7 +85,7 @@ export default function CalendarDashboard() {
                         <div className="mt-4 md:mt-0">
                             <Button
                                 variant="outline"
-                                className="bg-white text-indigo-700 hover:bg-indigo-50"
+                                className="bg-card text-primary hover:bg-accent/50"
                                 onClick={() => router.visit("/events/create")}
                             >
                                 <Plus className="h-5 w-5 mr-2" />
@@ -124,7 +124,7 @@ export default function CalendarDashboard() {
                             <div className="mt-6">
                                 <div className="grid grid-cols-7 gap-1 mb-2">
                                     {weekDays.map((day) => (
-                                        <div key={day} className="text-center text-sm font-medium text-gray-700 py-2">
+                                        <div key={day} className="text-center text-sm font-medium text-foreground py-2">
                                             {day}
                                         </div>
                                     ))}
@@ -141,25 +141,25 @@ export default function CalendarDashboard() {
                                         return (
                                             <div
                                                 key={day}
-                                                className={`aspect-square border border-gray-200 rounded p-1 ${
-                                                    isToday ? "bg-indigo-50 border-indigo-300" : "bg-white"
+                                                className={`aspect-square border border rounded p-1 ${
+                                                    isToday ? "bg-accent/50 border-primary/30" : "bg-card"
                                                 }`}
                                             >
-                                                <div className={`text-sm font-medium mb-1 ${isToday ? "text-indigo-700" : "text-gray-900"}`}>
+                                                <div className={`text-sm font-medium mb-1 ${isToday ? "text-primary" : "text-foreground"}`}>
                                                     {day}
                                                 </div>
                                                 <div className="space-y-1">
                                                     {dayEvents.slice(0, 2).map((event) => (
                                                         <div
                                                             key={event.id}
-                                                            className="text-xs p-1 rounded bg-indigo-100 text-indigo-800 truncate cursor-pointer hover:bg-indigo-200"
+                                                            className="text-xs p-1 rounded bg-accent text-primary/80 truncate cursor-pointer hover:bg-accent/80"
                                                             onClick={() => router.visit(`/events/${event.id}`)}
                                                         >
                                                             {event.title}
                                                         </div>
                                                     ))}
                                                     {dayEvents.length > 2 && (
-                                                        <div className="text-xs text-gray-500">+{dayEvents.length - 2} more</div>
+                                                        <div className="text-xs text-muted-foreground">+{dayEvents.length - 2} more</div>
                                                     )}
                                                 </div>
                                             </div>
@@ -171,13 +171,13 @@ export default function CalendarDashboard() {
 
                         {viewMode === "week" && (
                             <div className="mt-6">
-                                <p className="text-gray-600">Week view will be displayed here</p>
+                                <p className="text-muted-foreground">Week view will be displayed here</p>
                             </div>
                         )}
 
                         {viewMode === "day" && (
                             <div className="mt-6">
-                                <p className="text-gray-600">Day view will be displayed here</p>
+                                <p className="text-muted-foreground">Day view will be displayed here</p>
                             </div>
                         )}
                     </CardContent>
@@ -193,17 +193,17 @@ export default function CalendarDashboard() {
                             {events.slice(0, 10).map((event) => (
                                 <div
                                     key={event.id}
-                                    className="flex items-start gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer"
+                                    className="flex items-start gap-4 p-4 border border rounded-lg hover:bg-muted/50 cursor-pointer"
                                     onClick={() => router.visit(`/events/${event.id}`)}
                                 >
                                     <div className="flex-shrink-0">
-                                        <div className="h-12 w-12 rounded-lg bg-indigo-100 flex items-center justify-center">
-                                            <CalendarIcon className="h-6 w-6 text-indigo-600" />
+                                        <div className="h-12 w-12 rounded-lg bg-accent flex items-center justify-center">
+                                            <CalendarIcon className="h-6 w-6 text-primary" />
                                         </div>
                                     </div>
                                     <div className="flex-1">
-                                        <h3 className="font-semibold text-gray-900">{event.title}</h3>
-                                        <div className="mt-1 flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                                        <h3 className="font-semibold text-foreground">{event.title}</h3>
+                                        <div className="mt-1 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                             <div className="flex items-center">
                                                 <Clock className="h-4 w-4 mr-1" />
                                                 {new Date(event.event_date).toLocaleDateString()} {event.start_time}

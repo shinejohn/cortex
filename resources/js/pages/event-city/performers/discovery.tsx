@@ -55,7 +55,7 @@ export default function PerformerDiscovery() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             <SEO
                 type="page"
                 site="event-city"
@@ -66,7 +66,7 @@ export default function PerformerDiscovery() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-purple-700 text-white py-12">
+            <div className="bg-primary text-white py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h1 className="text-4xl font-bold mb-4">Discover Performers</h1>
                     <p className="text-xl text-purple-100">Find the perfect talent for your event</p>
@@ -74,11 +74,11 @@ export default function PerformerDiscovery() {
             </div>
 
             {/* Search and Filters */}
-            <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+            <div className="bg-card border-b border sticky top-0 z-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
                         <div className="flex-1 relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                             <Input
                                 type="text"
                                 placeholder="Search performers, genres, or locations..."
@@ -115,14 +115,14 @@ export default function PerformerDiscovery() {
 
                     {/* Filter Panel */}
                     {showFilters && (
-                        <div className="mt-4 pt-4 border-t border-gray-200">
+                        <div className="mt-4 pt-4 border-t border">
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Genre</label>
+                                    <label className="block text-sm font-medium text-foreground mb-1">Genre</label>
                                     <select
                                         value={filters.genre || ""}
                                         onChange={(e) => handleFilterChange("genre", e.target.value)}
-                                        className="w-full border-gray-300 rounded-md"
+                                        className="w-full border rounded-md"
                                     >
                                         <option value="">All Genres</option>
                                         <option value="rock">Rock</option>
@@ -133,7 +133,7 @@ export default function PerformerDiscovery() {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                    <label className="block text-sm font-medium text-foreground mb-1">Location</label>
                                     <Input
                                         type="text"
                                         placeholder="City, State"
@@ -142,11 +142,11 @@ export default function PerformerDiscovery() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Price Range</label>
+                                    <label className="block text-sm font-medium text-foreground mb-1">Price Range</label>
                                     <select
                                         value={filters.price_range || ""}
                                         onChange={(e) => handleFilterChange("price_range", e.target.value)}
-                                        className="w-full border-gray-300 rounded-md"
+                                        className="w-full border rounded-md"
                                     >
                                         <option value="">Any Price</option>
                                         <option value="$">$ (Under $200)</option>
@@ -156,11 +156,11 @@ export default function PerformerDiscovery() {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Availability</label>
+                                    <label className="block text-sm font-medium text-foreground mb-1">Availability</label>
                                     <select
                                         value={filters.availability || ""}
                                         onChange={(e) => handleFilterChange("availability", e.target.value)}
-                                        className="w-full border-gray-300 rounded-md"
+                                        className="w-full border rounded-md"
                                     >
                                         <option value="">Any Time</option>
                                         <option value="tonight">Tonight</option>
@@ -178,8 +178,8 @@ export default function PerformerDiscovery() {
             {/* Results */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="flex items-center justify-between mb-6">
-                    <p className="text-gray-600">
-                        Found <span className="font-semibold text-gray-900">{performers.length}</span> performers
+                    <p className="text-muted-foreground">
+                        Found <span className="font-semibold text-foreground">{performers.length}</span> performers
                     </p>
                 </div>
 
@@ -196,7 +196,7 @@ export default function PerformerDiscovery() {
                                 </div>
                                 <CardContent className="p-6">
                                     <div className="flex items-start justify-between mb-2">
-                                        <h3 className="text-lg font-semibold text-gray-900">{performer.name}</h3>
+                                        <h3 className="text-lg font-semibold text-foreground">{performer.name}</h3>
                                         {performer.is_touring && (
                                             <Badge variant="default" className="bg-green-500">
                                                 <TrendingUp className="h-3 w-3 mr-1" />
@@ -204,7 +204,7 @@ export default function PerformerDiscovery() {
                                             </Badge>
                                         )}
                                     </div>
-                                    <p className="text-sm text-gray-600 mb-2">{performer.category}</p>
+                                    <p className="text-sm text-muted-foreground mb-2">{performer.category}</p>
                                     <div className="flex flex-wrap gap-1 mb-3">
                                         {performer.genres.slice(0, 3).map((genre) => (
                                             <Badge key={genre} variant="outline" className="text-xs">
@@ -212,7 +212,7 @@ export default function PerformerDiscovery() {
                                             </Badge>
                                         ))}
                                     </div>
-                                    <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                                    <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
                                         <div className="flex items-center">
                                             <MapPin className="h-4 w-4 mr-1" />
                                             {performer.location}
@@ -223,7 +223,7 @@ export default function PerformerDiscovery() {
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-lg font-semibold text-gray-900">{performer.price_range}</span>
+                                        <span className="text-lg font-semibold text-foreground">{performer.price_range}</span>
                                         <Button onClick={() => router.visit(`/performers/${performer.id}`)}>View Profile</Button>
                                     </div>
                                 </CardContent>
@@ -249,8 +249,8 @@ export default function PerformerDiscovery() {
                                         <div className="flex-1">
                                             <div className="flex items-start justify-between mb-2">
                                                 <div>
-                                                    <h3 className="text-xl font-semibold text-gray-900">{performer.name}</h3>
-                                                    <p className="text-sm text-gray-600">{performer.category}</p>
+                                                    <h3 className="text-xl font-semibold text-foreground">{performer.name}</h3>
+                                                    <p className="text-sm text-muted-foreground">{performer.category}</p>
                                                 </div>
                                                 {performer.is_touring && (
                                                     <Badge variant="default" className="bg-green-500">
@@ -266,7 +266,7 @@ export default function PerformerDiscovery() {
                                                     </Badge>
                                                 ))}
                                             </div>
-                                            <div className="flex items-center gap-6 text-sm text-gray-600 mb-4">
+                                            <div className="flex items-center gap-6 text-sm text-muted-foreground mb-4">
                                                 <div className="flex items-center">
                                                     <MapPin className="h-4 w-4 mr-1" />
                                                     {performer.location}
@@ -281,7 +281,7 @@ export default function PerformerDiscovery() {
                                                 </div>
                                             </div>
                                             <div className="flex items-center justify-between">
-                                                <span className="text-lg font-semibold text-gray-900">{performer.price_range}</span>
+                                                <span className="text-lg font-semibold text-foreground">{performer.price_range}</span>
                                                 <Button onClick={() => router.visit(`/performers/${performer.id}`)}>View Profile</Button>
                                             </div>
                                         </div>

@@ -56,7 +56,7 @@ export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: D
                     <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
                     <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
                         <div className="flex items-center gap-4">
-                            <div className="rounded-xl bg-white/20 p-3 backdrop-blur-sm">
+                            <div className="rounded-xl bg-card/20 p-3 backdrop-blur-sm">
                                 <TagIcon className="h-10 w-10 text-white" />
                             </div>
                             <div>
@@ -69,10 +69,10 @@ export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: D
 
                 <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                     {/* Search & Filters */}
-                    <div className="mb-6 rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg">
+                    <div className="mb-6 rounded-xl border-2 border bg-card p-6 shadow-lg">
                         <div className="flex gap-4">
                             <div className="relative flex-1">
-                                <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                                <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                 <Input
                                     type="text"
                                     placeholder="Search deals and coupons..."
@@ -82,7 +82,7 @@ export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: D
                                     className="pl-10"
                                 />
                             </div>
-                            <Button onClick={handleSearch} className="bg-purple-600 hover:bg-purple-700">
+                            <Button onClick={handleSearch} className="bg-primary hover:bg-primary">
                                 <FilterIcon className="mr-2 h-4 w-4" />
                                 Search
                             </Button>
@@ -91,15 +91,15 @@ export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: D
 
                     {/* Tabs */}
                     <Tabs defaultValue="all" className="w-full">
-                        <TabsList className="grid w-full grid-cols-3 bg-purple-50">
-                            <TabsTrigger value="all" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                        <TabsList className="grid w-full grid-cols-3 bg-accent/50">
+                            <TabsTrigger value="all" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                                 All ({coupons.length + deals.length})
                             </TabsTrigger>
-                            <TabsTrigger value="deals" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                            <TabsTrigger value="deals" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                                 <SparklesIcon className="mr-2 h-4 w-4" />
                                 Deals ({deals.length})
                             </TabsTrigger>
-                            <TabsTrigger value="coupons" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+                            <TabsTrigger value="coupons" className="data-[state=active]:bg-primary data-[state=active]:text-white">
                                 <TagIcon className="mr-2 h-4 w-4" />
                                 Coupons ({coupons.length})
                             </TabsTrigger>
@@ -112,7 +112,7 @@ export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: D
                                     <Link
                                         key={deal.id}
                                         href={route("downtown-guide.coupons.show", deal.slug)}
-                                        className="group rounded-xl border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50 p-6 shadow-lg transition-all hover:border-purple-400 hover:shadow-xl"
+                                        className="group rounded-xl border-2 border bg-gradient-to-r from-purple-50 to-pink-50 p-6 shadow-lg transition-all hover:border-purple-400 hover:shadow-xl"
                                     >
                                         {deal.image && (
                                             <div className="mb-4 aspect-video w-full overflow-hidden rounded-lg">
@@ -124,12 +124,12 @@ export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: D
                                             </div>
                                         )}
                                         <div className="mb-2 flex items-center gap-2">
-                                            <SparklesIcon className="h-5 w-5 text-purple-600" />
-                                            <span className="text-xs font-bold text-purple-600">DEAL</span>
+                                            <SparklesIcon className="h-5 w-5 text-primary" />
+                                            <span className="text-xs font-bold text-primary">DEAL</span>
                                         </div>
-                                        <h3 className="mb-2 text-lg font-bold text-gray-900">{deal.title}</h3>
-                                        {deal.description && <p className="mb-4 line-clamp-2 text-sm text-gray-600">{deal.description}</p>}
-                                        {deal.business_name && <p className="text-sm font-medium text-purple-600">{deal.business_name}</p>}
+                                        <h3 className="mb-2 text-lg font-bold text-foreground">{deal.title}</h3>
+                                        {deal.description && <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{deal.description}</p>}
+                                        {deal.business_name && <p className="text-sm font-medium text-primary">{deal.business_name}</p>}
                                     </Link>
                                 ))}
 
@@ -138,7 +138,7 @@ export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: D
                                     <Link
                                         key={coupon.id}
                                         href={route("downtown-guide.coupons.show", coupon.slug)}
-                                        className="group rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg transition-all hover:border-purple-400 hover:shadow-xl"
+                                        className="group rounded-xl border-2 border bg-card p-6 shadow-lg transition-all hover:border-purple-400 hover:shadow-xl"
                                     >
                                         {coupon.image && (
                                             <div className="mb-4 aspect-video w-full overflow-hidden rounded-lg">
@@ -150,17 +150,17 @@ export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: D
                                             </div>
                                         )}
                                         <div className="mb-2 flex items-center gap-2">
-                                            <TagIcon className="h-5 w-5 text-purple-600" />
-                                            <span className="text-xs font-bold text-purple-600">COUPON</span>
+                                            <TagIcon className="h-5 w-5 text-primary" />
+                                            <span className="text-xs font-bold text-primary">COUPON</span>
                                         </div>
-                                        <h3 className="mb-2 text-lg font-bold text-gray-900">{coupon.title}</h3>
-                                        {coupon.description && <p className="mb-4 line-clamp-2 text-sm text-gray-600">{coupon.description}</p>}
+                                        <h3 className="mb-2 text-lg font-bold text-foreground">{coupon.title}</h3>
+                                        {coupon.description && <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{coupon.description}</p>}
                                         {coupon.code && (
-                                            <div className="mb-2 rounded-lg bg-purple-100 p-2 text-center">
+                                            <div className="mb-2 rounded-lg bg-accent p-2 text-center">
                                                 <p className="font-mono text-lg font-bold text-purple-900">{coupon.code}</p>
                                             </div>
                                         )}
-                                        {coupon.business_name && <p className="text-sm font-medium text-purple-600">{coupon.business_name}</p>}
+                                        {coupon.business_name && <p className="text-sm font-medium text-primary">{coupon.business_name}</p>}
                                     </Link>
                                 ))}
                             </div>
@@ -173,7 +173,7 @@ export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: D
                                         <Link
                                             key={deal.id}
                                             href={route("downtown-guide.coupons.show", deal.slug)}
-                                            className="group rounded-xl border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50 p-6 shadow-lg transition-all hover:border-purple-400 hover:shadow-xl"
+                                            className="group rounded-xl border-2 border bg-gradient-to-r from-purple-50 to-pink-50 p-6 shadow-lg transition-all hover:border-purple-400 hover:shadow-xl"
                                         >
                                             {deal.image && (
                                                 <div className="mb-4 aspect-video w-full overflow-hidden rounded-lg">
@@ -185,18 +185,18 @@ export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: D
                                                 </div>
                                             )}
                                             <div className="mb-2 flex items-center gap-2">
-                                                <SparklesIcon className="h-5 w-5 text-purple-600" />
-                                                <span className="text-xs font-bold text-purple-600">DEAL</span>
+                                                <SparklesIcon className="h-5 w-5 text-primary" />
+                                                <span className="text-xs font-bold text-primary">DEAL</span>
                                             </div>
-                                            <h3 className="mb-2 text-lg font-bold text-gray-900">{deal.title}</h3>
-                                            {deal.description && <p className="mb-4 line-clamp-2 text-sm text-gray-600">{deal.description}</p>}
-                                            {deal.business_name && <p className="text-sm font-medium text-purple-600">{deal.business_name}</p>}
+                                            <h3 className="mb-2 text-lg font-bold text-foreground">{deal.title}</h3>
+                                            {deal.description && <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{deal.description}</p>}
+                                            {deal.business_name && <p className="text-sm font-medium text-primary">{deal.business_name}</p>}
                                         </Link>
                                     ))
                                 ) : (
-                                    <div className="col-span-full rounded-xl border-2 border-dashed border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
+                                    <div className="col-span-full rounded-xl border-2 border-dashed border bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
                                         <SparklesIcon className="mx-auto h-12 w-12 text-purple-400" />
-                                        <p className="mt-4 text-lg font-bold text-gray-900">No deals available</p>
+                                        <p className="mt-4 text-lg font-bold text-foreground">No deals available</p>
                                     </div>
                                 )}
                             </div>
@@ -209,7 +209,7 @@ export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: D
                                         <Link
                                             key={coupon.id}
                                             href={route("downtown-guide.coupons.show", coupon.slug)}
-                                            className="group rounded-xl border-2 border-purple-200 bg-white p-6 shadow-lg transition-all hover:border-purple-400 hover:shadow-xl"
+                                            className="group rounded-xl border-2 border bg-card p-6 shadow-lg transition-all hover:border-purple-400 hover:shadow-xl"
                                         >
                                             {coupon.image && (
                                                 <div className="mb-4 aspect-video w-full overflow-hidden rounded-lg">
@@ -221,23 +221,23 @@ export default function DowntownGuideCouponsIndex({ coupons, deals, filters }: D
                                                 </div>
                                             )}
                                             <div className="mb-2 flex items-center gap-2">
-                                                <TagIcon className="h-5 w-5 text-purple-600" />
-                                                <span className="text-xs font-bold text-purple-600">COUPON</span>
+                                                <TagIcon className="h-5 w-5 text-primary" />
+                                                <span className="text-xs font-bold text-primary">COUPON</span>
                                             </div>
-                                            <h3 className="mb-2 text-lg font-bold text-gray-900">{coupon.title}</h3>
-                                            {coupon.description && <p className="mb-4 line-clamp-2 text-sm text-gray-600">{coupon.description}</p>}
+                                            <h3 className="mb-2 text-lg font-bold text-foreground">{coupon.title}</h3>
+                                            {coupon.description && <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{coupon.description}</p>}
                                             {coupon.code && (
-                                                <div className="mb-2 rounded-lg bg-purple-100 p-2 text-center">
+                                                <div className="mb-2 rounded-lg bg-accent p-2 text-center">
                                                     <p className="font-mono text-lg font-bold text-purple-900">{coupon.code}</p>
                                                 </div>
                                             )}
-                                            {coupon.business_name && <p className="text-sm font-medium text-purple-600">{coupon.business_name}</p>}
+                                            {coupon.business_name && <p className="text-sm font-medium text-primary">{coupon.business_name}</p>}
                                         </Link>
                                     ))
                                 ) : (
-                                    <div className="col-span-full rounded-xl border-2 border-dashed border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
+                                    <div className="col-span-full rounded-xl border-2 border-dashed border bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
                                         <TagIcon className="mx-auto h-12 w-12 text-purple-400" />
-                                        <p className="mt-4 text-lg font-bold text-gray-900">No coupons available</p>
+                                        <p className="mt-4 text-lg font-bold text-foreground">No coupons available</p>
                                     </div>
                                 )}
                             </div>

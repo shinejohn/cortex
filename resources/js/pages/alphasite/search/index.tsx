@@ -47,9 +47,9 @@ export default function SearchIndex({ query, results, suggestions }: Props) {
                 <title>Search - AlphaSite</title>
             </Head>
 
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-muted/50">
                 {/* Search Bar */}
-                <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+                <div className="bg-card border-b border sticky top-0 z-10">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                         <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
                             <div className="flex space-x-4">
@@ -58,9 +58,9 @@ export default function SearchIndex({ query, results, suggestions }: Props) {
                                     value={data.q}
                                     onChange={(e) => setData("q", e.target.value)}
                                     placeholder="Search businesses, industries, communities..."
-                                    className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="flex-1 border border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
-                                <button type="submit" className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                <button type="submit" className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary">
                                     Search
                                 </button>
                             </div>
@@ -83,11 +83,11 @@ export default function SearchIndex({ query, results, suggestions }: Props) {
                                             <Link
                                                 key={business.id}
                                                 href={`/business/${business.slug}`}
-                                                className="bg-white rounded-lg shadow p-4 hover:shadow-lg transition"
+                                                className="bg-card rounded-lg shadow p-4 hover:shadow-lg transition"
                                             >
                                                 <h4 className="font-semibold mb-1">{business.name}</h4>
                                                 {business.address && (
-                                                    <p className="text-sm text-gray-600">
+                                                    <p className="text-sm text-muted-foreground">
                                                         {business.city}, {business.state}
                                                     </p>
                                                 )}
@@ -106,7 +106,7 @@ export default function SearchIndex({ query, results, suggestions }: Props) {
                                             <Link
                                                 key={industry.id}
                                                 href={`/industry/${industry.slug}`}
-                                                className="bg-white rounded-lg shadow p-4 hover:shadow-lg transition text-center"
+                                                className="bg-card rounded-lg shadow p-4 hover:shadow-lg transition text-center"
                                             >
                                                 {industry.name}
                                             </Link>
@@ -124,10 +124,10 @@ export default function SearchIndex({ query, results, suggestions }: Props) {
                                             <Link
                                                 key={community.id}
                                                 href={`/community/${community.slug}`}
-                                                className="bg-white rounded-lg shadow p-4 hover:shadow-lg transition"
+                                                className="bg-card rounded-lg shadow p-4 hover:shadow-lg transition"
                                             >
                                                 <h4 className="font-semibold">{community.name}</h4>
-                                                <p className="text-sm text-gray-600">
+                                                <p className="text-sm text-muted-foreground">
                                                     {community.city}, {community.state}
                                                 </p>
                                             </Link>
@@ -141,7 +141,7 @@ export default function SearchIndex({ query, results, suggestions }: Props) {
                                 (!results.industries || results.industries.length === 0) &&
                                 (!results.communities || results.communities.length === 0) && (
                                     <div className="text-center py-12">
-                                        <p className="text-gray-600 text-lg">No results found for "{query}"</p>
+                                        <p className="text-muted-foreground text-lg">No results found for "{query}"</p>
                                     </div>
                                 )}
                         </div>
@@ -159,7 +159,7 @@ export default function SearchIndex({ query, results, suggestions }: Props) {
                                             setData("q", suggestion);
                                             get("/search", { preserveState: true });
                                         }}
-                                        className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200"
+                                        className="px-4 py-2 bg-muted text-foreground rounded-full hover:bg-muted"
                                     >
                                         {suggestion}
                                     </button>

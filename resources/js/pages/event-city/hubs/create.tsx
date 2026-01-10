@@ -91,7 +91,7 @@ export default function HubCreate() {
                                     className={errors.name ? "border-red-500" : ""}
                                 />
                                 {errors.name && (
-                                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                                    <p className="mt-1 text-sm text-destructive flex items-center">
                                         <AlertCircle className="h-4 w-4 mr-1" />
                                         {errors.name}
                                     </p>
@@ -101,7 +101,7 @@ export default function HubCreate() {
                             <div>
                                 <Label htmlFor="slug">URL Slug *</Label>
                                 <div className="flex">
-                                    <span className="inline-flex items-center px-3 py-2 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                                    <span className="inline-flex items-center px-3 py-2 rounded-l-md border border-r-0 border bg-muted/50 text-muted-foreground text-sm">
                                         hub/
                                     </span>
                                     <Input
@@ -111,12 +111,12 @@ export default function HubCreate() {
                                         placeholder="jazz-lovers-community"
                                         className={`rounded-none ${errors.slug ? "border-red-500" : ""}`}
                                     />
-                                    <span className="inline-flex items-center px-3 py-2 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                                    <span className="inline-flex items-center px-3 py-2 rounded-r-md border border-l-0 border bg-muted/50 text-muted-foreground text-sm">
                                         .com
                                     </span>
                                 </div>
                                 {errors.slug && (
-                                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                                    <p className="mt-1 text-sm text-destructive flex items-center">
                                         <AlertCircle className="h-4 w-4 mr-1" />
                                         {errors.slug}
                                     </p>
@@ -143,7 +143,7 @@ export default function HubCreate() {
                                     </SelectContent>
                                 </Select>
                                 {errors.category && (
-                                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                                    <p className="mt-1 text-sm text-destructive flex items-center">
                                         <AlertCircle className="h-4 w-4 mr-1" />
                                         {errors.category}
                                     </p>
@@ -180,18 +180,18 @@ export default function HubCreate() {
                             <CardTitle>Hub Preview</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-gray-600 mb-6">Review your hub before publishing. You can go back to any section to make changes.</p>
-                            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden border border-gray-200 p-8">
+                            <p className="text-muted-foreground mb-6">Review your hub before publishing. You can go back to any section to make changes.</p>
+                            <div className="aspect-video bg-muted rounded-lg overflow-hidden border border p-8">
                                 <div className="text-center">
                                     <h3 className="text-2xl font-bold mb-2">{data.name || "Hub Name"}</h3>
-                                    <p className="text-gray-600">{data.description || "Hub description"}</p>
+                                    <p className="text-muted-foreground">{data.description || "Hub description"}</p>
                                 </div>
                             </div>
                             <div className="mt-8">
                                 <Button onClick={handleSubmit} disabled={processing} className="w-full">
                                     {processing ? "Publishing..." : "Publish Hub"}
                                 </Button>
-                                <p className="mt-2 text-sm text-gray-500 text-center">Publishing will make your hub visible to the public.</p>
+                                <p className="mt-2 text-sm text-muted-foreground text-center">Publishing will make your hub visible to the public.</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -203,7 +203,7 @@ export default function HubCreate() {
                             <CardTitle>{activeStep.charAt(0).toUpperCase() + activeStep.slice(1)}</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-gray-600">This section is coming soon.</p>
+                            <p className="text-muted-foreground">This section is coming soon.</p>
                         </CardContent>
                     </Card>
                 );
@@ -211,7 +211,7 @@ export default function HubCreate() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-muted/50">
             <SEO
                 type="page"
                 site="event-city"
@@ -222,15 +222,15 @@ export default function HubCreate() {
             <Header auth={auth} />
 
             {/* Header */}
-            <div className="bg-white border-b border-gray-200">
+            <div className="bg-card border-b border">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center">
-                            <Button variant="ghost" onClick={() => router.visit("/hubs")} className="text-gray-500 hover:text-gray-700">
+                            <Button variant="ghost" onClick={() => router.visit("/hubs")} className="text-muted-foreground hover:text-foreground">
                                 <ChevronLeft className="h-5 w-5 mr-1" />
                                 Back to Hubs
                             </Button>
-                            <h1 className="ml-6 text-xl font-bold text-gray-900">Create New Hub</h1>
+                            <h1 className="ml-6 text-xl font-bold text-foreground">Create New Hub</h1>
                         </div>
                         <div className="flex items-center space-x-3">
                             <Button variant="outline" onClick={() => setShowPreview(!showPreview)}>
@@ -255,7 +255,7 @@ export default function HubCreate() {
                                             key={step}
                                             onClick={() => setActiveStep(step)}
                                             className={`w-full text-left px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                                                activeStep === step ? "bg-indigo-100 text-indigo-700" : "text-gray-600 hover:bg-gray-100"
+                                                activeStep === step ? "bg-accent text-primary" : "text-muted-foreground hover:bg-accent"
                                             }`}
                                         >
                                             {index + 1}. {step.charAt(0).toUpperCase() + step.slice(1)}
@@ -307,13 +307,13 @@ export default function HubCreate() {
                                     <CardTitle>Preview</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden border border-gray-200 p-4">
+                                    <div className="aspect-video bg-muted rounded-lg overflow-hidden border border p-4">
                                         <div className="text-center">
                                             <h3 className="text-lg font-bold mb-2">{data.name || "Hub Name"}</h3>
-                                            <p className="text-sm text-gray-600">{data.description || "Hub description"}</p>
+                                            <p className="text-sm text-muted-foreground">{data.description || "Hub description"}</p>
                                         </div>
                                     </div>
-                                    <p className="mt-3 text-sm text-gray-500">
+                                    <p className="mt-3 text-sm text-muted-foreground">
                                         This is a simplified preview. Some features may appear different in the final version.
                                     </p>
                                 </CardContent>

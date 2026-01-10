@@ -35,7 +35,7 @@ export default function SuccessStories() {
     const regularStories = stories.filter((s) => !s.featured);
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-card">
             <SEO
                 type="page"
                 site="event-city"
@@ -58,7 +58,7 @@ export default function SuccessStories() {
             {/* Featured Stories */}
             {featuredStories.length > 0 && (
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-8">Featured Stories</h2>
+                    <h2 className="text-3xl font-bold text-foreground mb-8">Featured Stories</h2>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {featuredStories.map((story) => (
                             <Card key={story.id} className="overflow-hidden">
@@ -75,7 +75,7 @@ export default function SuccessStories() {
                                     <div className="flex items-center gap-2 mb-2">
                                         <Badge variant="default">{story.category}</Badge>
                                     </div>
-                                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{story.title}</h3>
+                                    <h3 className="text-2xl font-bold text-foreground mb-2">{story.title}</h3>
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className="flex items-center">
                                             <img
@@ -87,30 +87,30 @@ export default function SuccessStories() {
                                                 className="h-10 w-10 rounded-full mr-2"
                                             />
                                             <div>
-                                                <p className="font-semibold text-gray-900">{story.author}</p>
-                                                <p className="text-sm text-gray-600">{story.author_role}</p>
+                                                <p className="font-semibold text-foreground">{story.author}</p>
+                                                <p className="text-sm text-muted-foreground">{story.author_role}</p>
                                             </div>
                                         </div>
                                     </div>
-                                    <p className="text-gray-700 mb-4 line-clamp-3">{story.content}</p>
+                                    <p className="text-foreground mb-4 line-clamp-3">{story.content}</p>
                                     {story.metrics && (
-                                        <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200">
+                                        <div className="grid grid-cols-3 gap-4 pt-4 border-t border">
                                             {story.metrics.events_booked && (
                                                 <div>
-                                                    <p className="text-2xl font-bold text-purple-600">{story.metrics.events_booked}</p>
-                                                    <p className="text-sm text-gray-600">Events Booked</p>
+                                                    <p className="text-2xl font-bold text-primary">{story.metrics.events_booked}</p>
+                                                    <p className="text-sm text-muted-foreground">Events Booked</p>
                                                 </div>
                                             )}
                                             {story.metrics.revenue_increase && (
                                                 <div>
                                                     <p className="text-2xl font-bold text-green-600">{story.metrics.revenue_increase}</p>
-                                                    <p className="text-sm text-gray-600">Revenue Increase</p>
+                                                    <p className="text-sm text-muted-foreground">Revenue Increase</p>
                                                 </div>
                                             )}
                                             {story.metrics.audience_growth && (
                                                 <div>
-                                                    <p className="text-2xl font-bold text-blue-600">{story.metrics.audience_growth}</p>
-                                                    <p className="text-sm text-gray-600">Audience Growth</p>
+                                                    <p className="text-2xl font-bold text-primary">{story.metrics.audience_growth}</p>
+                                                    <p className="text-sm text-muted-foreground">Audience Growth</p>
                                                 </div>
                                             )}
                                         </div>
@@ -123,9 +123,9 @@ export default function SuccessStories() {
             )}
 
             {/* All Stories */}
-            <div className="bg-gray-50 py-12">
+            <div className="bg-muted/50 py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-8">All Stories</h2>
+                    <h2 className="text-3xl font-bold text-foreground mb-8">All Stories</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {regularStories.map((story) => (
                             <Card key={story.id} className="hover:shadow-lg transition-shadow">
@@ -142,7 +142,7 @@ export default function SuccessStories() {
                                     <Badge variant="outline" className="mb-2">
                                         {story.category}
                                     </Badge>
-                                    <h3 className="text-xl font-bold text-gray-900 mb-2">{story.title}</h3>
+                                    <h3 className="text-xl font-bold text-foreground mb-2">{story.title}</h3>
                                     <div className="flex items-center gap-2 mb-3">
                                         <img
                                             src={
@@ -153,11 +153,11 @@ export default function SuccessStories() {
                                             className="h-8 w-8 rounded-full"
                                         />
                                         <div>
-                                            <p className="text-sm font-semibold text-gray-900">{story.author}</p>
-                                            <p className="text-xs text-gray-600">{story.author_role}</p>
+                                            <p className="text-sm font-semibold text-foreground">{story.author}</p>
+                                            <p className="text-xs text-muted-foreground">{story.author_role}</p>
                                         </div>
                                     </div>
-                                    <p className="text-gray-700 line-clamp-3">{story.content}</p>
+                                    <p className="text-foreground line-clamp-3">{story.content}</p>
                                 </CardContent>
                             </Card>
                         ))}
@@ -166,11 +166,11 @@ export default function SuccessStories() {
             </div>
 
             {/* CTA Section */}
-            <div className="bg-purple-700 text-white py-16">
+            <div className="bg-primary text-white py-16">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-3xl font-bold mb-4">Share Your Success Story</h2>
                     <p className="text-xl text-purple-100 mb-8">Have a success story to share? We'd love to hear from you!</p>
-                    <Button size="lg" variant="outline" className="bg-white text-purple-700 hover:bg-purple-50">
+                    <Button size="lg" variant="outline" className="bg-card text-primary hover:bg-accent/50">
                         Submit Your Story
                     </Button>
                 </div>
