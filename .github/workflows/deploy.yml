@@ -127,7 +127,23 @@ jobs:
         continue-on-error: true
         run: |
           php artisan config:clear
-          php -d memory_limit=512M ./vendor/bin/pest --colors=always || echo "⚠️  Some tests failed (non-blocking - deployment will continue)"
+          
+          # Run tests and capture exit code
+          php -d memory_limit=512M ./vendor/bin/pest --colors=always || TEST_EXIT=$?
+          
+          if [ "${TEST_EXIT:-0}" != "0" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "## ⚠️ Tests Failed (Non-Blocking)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Some tests failed, but deployment will continue." >> $GITHUB_STEP_SUMMARY
+            echo "Review test output above for details." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Note**: Tests are non-blocking to allow deployments even with test failures." >> $GITHUB_STEP_SUMMARY
+            echo "Fix failing tests in a follow-up commit." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "## ✅ All Tests Passed" >> $GITHUB_STEP_SUMMARY
+          fi
 
   build-and-push:
     name: Build and Push Docker Images
@@ -256,13 +272,72 @@ jobs:
         run: |
           REPO_NAME="fibonacco/${{ env.ENV }}/$SERVICE_NAME"
           echo "Verifying image exists in ECR..."
+          
+          # Wait a moment for ECR to index
+          sleep 5
+          
+          # Check image exists with commit SHA tag
+          IMAGE_EXISTS=$(aws ecr describe-images \
+            --repository-name "$REPO_NAME" \
+            --region ${{ env.AWS_REGION }} \
+            --image-ids imageTag=${{ github.sha }} \
+            --query 'length(imageDetails)' \
+            --output text 2>/dev/null || echo "0")
+          
+          # Also check latest tag
+          LATEST_EXISTS=$(aws ecr describe-images \
+            --repository-name "$REPO_NAME" \
+            --region ${{ env.AWS_REGION }} \
+            --image-ids imageTag=latest \
+            --query 'length(imageDetails)' \
+            --output text 2>/dev/null || echo "0")
+          
+          if [ "$IMAGE_EXISTS" = "0" ] && [ "$LATEST_EXISTS" = "0" ]; then
+            echo "❌ Image not found in ECR after push!"
+            echo "Repository: $REPO_NAME"
+            echo "Expected tags: ${{ github.sha }}, latest"
+            echo ""
+            echo "## ❌ Build Verification Failed: $SERVICE_NAME" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Service**: $SERVICE_NAME" >> $GITHUB_STEP_SUMMARY
+            echo "**Repository**: $REPO_NAME" >> $GITHUB_STEP_SUMMARY
+            echo "**Expected Tag**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Image was not found in ECR. Check build logs above." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          
+          echo "✅ Image verified in ECR"
           aws ecr describe-images \
             --repository-name "$REPO_NAME" \
             --region ${{ env.AWS_REGION }} \
             --image-ids imageTag=${{ github.sha }} \
-            && echo "✅ Image verified in ECR" || {
-              echo "⚠️  Image not immediately visible (may take a moment)"
-            }
+            --query 'imageDetails[0].{Pushed:imagePushedAt,Size:imageSizeInBytes}' \
+            --output table || aws ecr describe-images \
+            --repository-name "$REPO_NAME" \
+            --region ${{ env.AWS_REGION }} \
+            --image-ids imageTag=latest \
+            --query 'imageDetails[0].{Pushed:imagePushedAt,Size:imageSizeInBytes}' \
+            --output table
+      
+      - name: Build Failure Report
+        if: failure()
+        env:
+          SERVICE_NAME: ${{ matrix.service.name }}
+        run: |
+          echo "## ❌ Build Failed: $SERVICE_NAME" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Service**: $SERVICE_NAME" >> $GITHUB_STEP_SUMMARY
+          echo "**Dockerfile**: ${{ matrix.service.dockerfile }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check build logs above for details." >> $GITHUB_STEP_SUMMARY
+          
+          # Special message for golocalvoices
+          if [ "$SERVICE_NAME" = "golocalvoices" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ **CRITICAL**: golocalvoices build failed. This service has 167 failed tasks waiting for an image." >> $GITHUB_STEP_SUMMARY
+          fi
 
   deploy:
     name: Deploy to ECS
@@ -419,26 +494,73 @@ jobs:
         run: |
           echo "Verifying deployment health..."
           
-          RUNNING=$(aws ecs describe-services \
+          MAX_ATTEMPTS=30
+          ATTEMPT=0
+          
+          while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+            RUNNING=$(aws ecs describe-services \
+              --cluster ${{ env.CLUSTER_NAME }} \
+              --services "$SERVICE_NAME" \
+              --region ${{ env.AWS_REGION }} \
+              --query 'services[0].runningCount' \
+              --output text 2>/dev/null || echo "0")
+            
+            DESIRED=$(aws ecs describe-services \
+              --cluster ${{ env.CLUSTER_NAME }} \
+              --services "$SERVICE_NAME" \
+              --region ${{ env.AWS_REGION }} \
+              --query 'services[0].desiredCount' \
+              --output text 2>/dev/null || echo "0")
+            
+            echo "Attempt $((ATTEMPT+1))/$MAX_ATTEMPTS: Running=$RUNNING, Desired=$DESIRED"
+            
+            if [ "$RUNNING" = "$DESIRED" ] && [ "$RUNNING" != "0" ]; then
+              echo "✅ Deployment healthy: $RUNNING/$DESIRED tasks running"
+              
+              # Special success message for golocalvoices
+              if [ "${{ matrix.service }}" = "golocalvoices" ]; then
+                echo "" >> $GITHUB_STEP_SUMMARY
+                echo "## ✅ golocalvoices Service Fixed!" >> $GITHUB_STEP_SUMMARY
+                echo "" >> $GITHUB_STEP_SUMMARY
+                echo "The golocalvoices service is now running successfully." >> $GITHUB_STEP_SUMMARY
+                echo "This resolves the 167 failed task attempts." >> $GITHUB_STEP_SUMMARY
+              fi
+              
+              exit 0
+            fi
+            
+            sleep 10
+            ATTEMPT=$((ATTEMPT+1))
+          done
+          
+          # If we get here, service didn't become healthy
+          echo "⚠️  Service did not reach healthy state within timeout"
+          echo "Current status: Running=$RUNNING, Desired=$DESIRED"
+          
+          # Get recent events for debugging
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## ⚠️ Service Health Warning: $SERVICE_NAME" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status**: Running=$RUNNING, Desired=$DESIRED" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Recent Events**:" >> $GITHUB_STEP_SUMMARY
+          aws ecs describe-services \
             --cluster ${{ env.CLUSTER_NAME }} \
             --services "$SERVICE_NAME" \
             --region ${{ env.AWS_REGION }} \
-            --query 'services[0].runningCount' \
-            --output text 2>/dev/null || echo "0")
+            --query 'services[0].events[0:3].message' \
+            --output text | sed 's/^/- /' >> $GITHUB_STEP_SUMMARY || echo "- Unable to fetch events" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check ECS console: https://console.aws.amazon.com/ecs/v2/clusters/${{ env.CLUSTER_NAME }}/services/$SERVICE_NAME/details?region=${{ env.AWS_REGION }}" >> $GITHUB_STEP_SUMMARY
           
-          DESIRED=$(aws ecs describe-services \
-            --cluster ${{ env.CLUSTER_NAME }} \
-            --services "$SERVICE_NAME" \
-            --region ${{ env.AWS_REGION }} \
-            --query 'services[0].desiredCount' \
-            --output text 2>/dev/null || echo "0")
-          
-          if [ "$RUNNING" = "$DESIRED" ] && [ "$RUNNING" != "0" ]; then
-            echo "✅ Deployment healthy: $RUNNING/$DESIRED tasks running"
-          else
-            echo "⚠️  Deployment may not be healthy: $RUNNING/$DESIRED tasks running"
-            echo "⚠️  Check ECS console for details"
+          # For golocalvoices, this is critical - fail the job
+          if [ "${{ matrix.service }}" = "golocalvoices" ]; then
+            echo "❌ CRITICAL: golocalvoices service failed to start!"
+            exit 1
           fi
+          
+          # For other services, warn but don't fail
+          exit 0
 
       - name: Deployment Summary
         if: always()
