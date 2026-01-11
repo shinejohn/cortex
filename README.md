@@ -54,11 +54,40 @@ php artisan test --testsuite=Unit
 
 ### Development
 
+**⚠️ Important:** This is a multi-domain application. You need Laravel Herd or Valet to run all sites locally.
+
+#### Quick Setup (Recommended - Laravel Herd)
+
 ```bash
+# Install Herd (macOS)
+brew install herd-php/herd/herd
+
+# Link your project
+herd link multisite
+
+# Configure domains in .env
+GOEVENTCITY_DOMAIN=goeventcity.test
+DAYNEWS_DOMAIN=daynews.test
+DOWNTOWNGUIDE_DOMAIN=downtownguide.test
+LOCAL_VOICES_DOMAIN=golocalvoices.test
+ALPHASITE_DOMAIN=alphasite.test
+
 # Start development server
 composer dev
 
-# Or with SSR
+# Access sites:
+# http://goeventcity.test
+# http://daynews.test
+# http://downtownguide.test
+# http://golocalvoices.test
+# http://alphasite.test
+```
+
+**Note:** `php artisan serve` only serves one domain. See [LOCAL_DEVELOPMENT_SETUP.md](LOCAL_DEVELOPMENT_SETUP.md) for complete setup instructions.
+
+#### With SSR
+
+```bash
 composer dev:ssr
 ```
 
