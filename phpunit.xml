@@ -11,6 +11,13 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
+        <testsuite name="Critical">
+            <directory>tests/Feature</directory>
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Quarantine">
+            <directory>tests/Quarantine</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>
@@ -30,5 +37,10 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
+        <!-- Stripe test key (test mode - safe to commit) -->
+        <env name="STRIPE_SECRET" value="sk_test_00000000000000000000000000000000000000000000000000000000000000000000"/>
+        <env name="STRIPE_KEY" value="pk_test_00000000000000000000000000000000000000000000000000000000000000000000"/>
+        <!-- Disable Vite manifest checks in tests -->
+        <env name="VITE_APP_NAME" value="Laravel"/>
     </php>
 </phpunit>

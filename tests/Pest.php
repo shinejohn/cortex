@@ -31,6 +31,9 @@ uses()->beforeEach(function () {
         'app.env' => 'testing',
         'app.debug' => true,
     ]);
+    
+    // Create fake Vite manifest for tests that hit frontend routes
+    \Tests\Helpers\ViteHelper::createFakeManifest();
 })->in('Feature', 'Unit');
 
 /*

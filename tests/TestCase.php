@@ -17,6 +17,9 @@ abstract class TestCase extends BaseTestCase
             config(['app.key' => 'base64:'.base64_encode(random_bytes(32))]);
         }
         
+        // Create fake Vite manifest for tests
+        \Tests\Helpers\ViteHelper::createFakeManifest();
+        
         // Prevent accidental external HTTP calls in tests
         Http::preventStrayRequests();
         
