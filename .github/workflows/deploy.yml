@@ -368,13 +368,26 @@ jobs:
             exit 1
           fi
           
-          # Check for any errors related to tags or push
-          if grep -qi "tag.*error\|error.*tag\|failed.*push\|push.*failed\|denied\|unauthorized\|access.*denied" /tmp/docker-build.log; then
+          # Check for actual push-related errors (not compilation output)
+          # Look for specific error patterns that indicate push failures
+          PUSH_ERRORS=$(grep -iE "(failed to push|push failed|error.*pushing|error.*push|denied.*push|unauthorized.*push|access.*denied.*push|failed.*tag|tag.*failed.*push|ecr.*error|docker.*push.*error)" /tmp/docker-build.log | grep -vE "(\.c|\.lo|\.o|\.h|collator|common_error|intl_error)" || echo "")
+          
+          if [ -n "$PUSH_ERRORS" ]; then
             echo ""
-            echo "❌ ERROR: Found push errors in build log:"
-            grep -i "tag.*error\|error.*tag\|failed.*push\|push.*failed\|denied\|unauthorized\|access.*denied" /tmp/docker-build.log | tail -10
+            echo "❌ ERROR: Found actual push errors in build log:"
+            echo "$PUSH_ERRORS" | tail -10
             echo ""
             echo "This indicates the push failed. The build succeeded but the image was not pushed to ECR."
+            exit 1
+          fi
+          
+          # Also check for ECR authentication errors specifically
+          ECR_AUTH_ERRORS=$(grep -iE "(no basic auth credentials|unauthorized|authentication.*required|ecr.*login.*failed)" /tmp/docker-build.log || echo "")
+          
+          if [ -n "$ECR_AUTH_ERRORS" ]; then
+            echo ""
+            echo "❌ ERROR: ECR authentication failed!"
+            echo "$ECR_AUTH_ERRORS" | tail -5
             exit 1
           fi
           
