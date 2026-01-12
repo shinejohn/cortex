@@ -305,13 +305,36 @@ jobs:
           echo "=== Analyzing push status from build logs ==="
           
           # Check if build logs show both tags being pushed
-          PUSH_SUCCESS_COUNT=$(grep -i "pushing\|pushed\|successfully pushed" /tmp/docker-build.log | grep -E "($IMAGE_TAG|latest|fibonacco/$ENV/$SERVICE_NAME)" | wc -l || echo "0")
+          # Look for actual push success messages, not just "pushing"
+          PUSH_MESSAGES=$(grep -i "pushing\|pushed\|successfully pushed\|pushing manifest" /tmp/docker-build.log | grep -E "($IMAGE_TAG|latest|fibonacco/$ENV/$SERVICE_NAME)" || echo "")
+          PUSH_SUCCESS_COUNT=$(echo "$PUSH_MESSAGES" | wc -l || echo "0")
           
-          if [ "$PUSH_SUCCESS_COUNT" -gt "0" ]; then
-            echo "✅ Found push activity in logs ($PUSH_SUCCESS_COUNT lines)"
+          # Also check for explicit push completion
+          PUSH_COMPLETE=$(grep -i "pushed\|successfully\|manifest.*pushed" /tmp/docker-build.log | grep -E "($IMAGE_TAG|latest)" | wc -l || echo "0")
+          
+          if [ "$PUSH_SUCCESS_COUNT" -gt "0" ] || [ "$PUSH_COMPLETE" -gt "0" ]; then
+            echo "✅ Found push activity in logs"
+            echo "  - Push messages found: $PUSH_SUCCESS_COUNT"
+            echo "  - Push completions found: $PUSH_COMPLETE"
             echo ""
             echo "=== Tag push activity in logs ==="
-            grep -i "pushing\|pushed\|successfully pushed" /tmp/docker-build.log | grep -E "($IMAGE_TAG|latest|fibonacco/$ENV/$SERVICE_NAME)" | tail -10 || echo "Could not find tag push messages"
+            if [ -n "$PUSH_MESSAGES" ]; then
+              echo "$PUSH_MESSAGES" | tail -10
+            else
+              grep -i "pushing\|pushed\|successfully pushed\|pushing manifest" /tmp/docker-build.log | tail -10 || echo "Could not find tag push messages"
+            fi
+            
+            # Verify we see BOTH tags being pushed
+            COMMIT_TAG_PUSHED=$(echo "$PUSH_MESSAGES" | grep -c "$IMAGE_TAG" || echo "0")
+            LATEST_TAG_PUSHED=$(echo "$PUSH_MESSAGES" | grep -c "latest" || echo "0")
+            
+            if [ "$COMMIT_TAG_PUSHED" = "0" ] || [ "$LATEST_TAG_PUSHED" = "0" ]; then
+              echo ""
+              echo "⚠️  WARNING: Not all tags show push activity!"
+              echo "  - Commit SHA tag ($IMAGE_TAG): $COMMIT_TAG_PUSHED push messages"
+              echo "  - Latest tag: $LATEST_TAG_PUSHED push messages"
+              echo "  This might indicate a partial push failure."
+            fi
           else
             echo "❌ CRITICAL: No push activity found in build logs!"
             echo "The build completed but no push occurred. This indicates a serious issue."
