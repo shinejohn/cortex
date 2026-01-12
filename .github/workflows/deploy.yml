@@ -271,19 +271,19 @@ jobs:
           
           # Build and push with explicit output capture
           echo "Starting Docker buildx build and push..."
-          set +o pipefail
+          
+          # Capture exit code properly when piping
           docker buildx build \
             --platform linux/amd64 \
-            --file $DOCKERFILE \
-            --tag $ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:$IMAGE_TAG \
-            --tag $ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:latest \
+            --file "$DOCKERFILE" \
+            --tag "$ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:$IMAGE_TAG" \
+            --tag "$ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:latest" \
             --push \
             --progress=plain \
             --no-cache \
             . 2>&1 | tee /tmp/docker-build.log
           
           BUILD_EXIT_CODE=${PIPESTATUS[0]}
-          set -o pipefail
           
           if [ "$BUILD_EXIT_CODE" != "0" ]; then
             echo ""
