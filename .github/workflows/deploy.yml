@@ -273,7 +273,7 @@ jobs:
           # Build and push with explicit output capture
           echo "Starting Docker buildx build and push..."
           
-          # Capture exit code properly when piping
+          # Use a simpler approach: run command and capture exit code
           docker buildx build \
             --platform linux/amd64 \
             --file "$DOCKERFILE" \
@@ -282,9 +282,12 @@ jobs:
             --push \
             --progress=plain \
             --no-cache \
-            . 2>&1 | tee /tmp/docker-build.log
+            . > /tmp/docker-build.log 2>&1
           
-          BUILD_EXIT_CODE=${PIPESTATUS[0]}
+          BUILD_EXIT_CODE=$?
+          
+          # Also save output to console
+          cat /tmp/docker-build.log
           
           if [ "$BUILD_EXIT_CODE" != "0" ]; then
             echo ""
