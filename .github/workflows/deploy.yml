@@ -267,6 +267,7 @@ jobs:
           
           # Build and push with explicit output capture
           echo "Starting Docker buildx build and push..."
+          set +o pipefail
           docker buildx build \
             --platform linux/amd64 \
             --file $DOCKERFILE \
@@ -278,6 +279,7 @@ jobs:
             . 2>&1 | tee /tmp/docker-build.log
           
           BUILD_EXIT_CODE=${PIPESTATUS[0]}
+          set -o pipefail
           
           if [ "$BUILD_EXIT_CODE" != "0" ]; then
             echo ""
