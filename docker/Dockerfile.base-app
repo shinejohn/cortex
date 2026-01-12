@@ -1,7 +1,40 @@
-# Base Laravel Application Dockerfile
-# Used for Horizon (queue worker) and Scheduler
+# Web Application Dockerfile
+# Used for GoEventCity, Day.News, Downtown Guide, AlphaSite
 
-FROM php:8.4-fpm-alpine
+# Stage 1: Build frontend assets
+FROM public.ecr.aws/docker/library/node:20-alpine AS frontend-builder
+
+WORKDIR /app
+
+# Install PHP and Composer for Ziggy route generation
+RUN apk add --no-cache php php-json php-mbstring php-xml php-tokenizer
+
+# Copy Composer files first to install Ziggy
+COPY composer.json composer.lock ./
+
+# Install Composer
+COPY --from=public.ecr.aws/docker/library/composer:latest /usr/bin/composer /usr/bin/composer
+
+# Install only Ziggy (needed for frontend build)
+RUN composer install --no-dev --no-scripts --no-autoloader --quiet || { \
+    echo "⚠️  Composer install failed, continuing without vendor..."; \
+    mkdir -p vendor/tightenco/ziggy; \
+    }
+
+# Copy package files
+COPY package*.json ./
+
+# Install Node dependencies
+RUN npm ci
+
+# Copy application source
+COPY . .
+
+# Build frontend assets
+RUN npm run build
+
+# Stage 2: PHP application
+FROM public.ecr.aws/docker/library/php:8.4-fpm-alpine
 
 # Install system dependencies
 RUN apk add --no-cache \
@@ -14,7 +47,11 @@ RUN apk add --no-cache \
     postgresql-dev \
     oniguruma-dev \
     icu-dev \
+    nginx \
     supervisor \
+    autoconf \
+    g++ \
+    make \
     && docker-php-ext-install \
     pdo \
     pdo_pgsql \
@@ -25,13 +62,18 @@ RUN apk add --no-cache \
     gd \
     zip \
     opcache \
-    intl
+    intl \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    # Redis extension installed for Laravel cache/session/queue
 
 # Configure PHP
-RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini
+RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini && \
+    echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini
 
 # Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=public.ecr.aws/docker/library/composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www/html
@@ -45,20 +87,31 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 # Copy application files
 COPY . .
 
-# Run composer scripts
+# Copy built frontend assets from builder stage
+COPY --from=frontend-builder /app/public/build ./public/build
+
+# Run composer scripts (post-install)
 RUN composer dump-autoload --optimize
+
+# Copy nginx configuration
+COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
+
+# Copy supervisor configuration
+COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 755 /var/www/html/storage && \
-    chmod -R 755 /var/www/html/bootstrap/cache
+    chmod -R 755 /var/www/html/bootstrap/cache && \
+    mkdir -p /var/log/supervisor && \
+    chown -R www-data:www-data /var/log/supervisor
 
-# Health check for Horizon
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD php artisan horizon:status || exit 1
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:8000/healthcheck || exit 1
 
-# Default command (override in ECS task definition)
-# For Horizon: CMD ["php", "artisan", "horizon"]
-# For Scheduler: CMD ["php", "artisan", "schedule:work"]
-CMD ["php", "artisan", "horizon"]
+# Expose port
+EXPOSE 8000
 
+# Start services via supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
