@@ -177,6 +177,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Verify Dockerfile Exists
+        shell: bash
         run: |
           if [ ! -f "${{ matrix.service.dockerfile }}" ]; then
             echo "❌ Dockerfile not found: ${{ matrix.service.dockerfile }}"
