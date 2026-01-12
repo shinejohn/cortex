@@ -280,6 +280,7 @@ jobs:
           echo "Starting Docker buildx build and push..."
           
           # Build and capture output - ensure errors are visible
+          echo "Starting Docker build..."
           docker buildx build \
             --platform linux/amd64 \
             --file "$DOCKERFILE" \
@@ -288,9 +289,15 @@ jobs:
             --push \
             --progress=plain \
             --no-cache \
-            . 2>&1 | tee /tmp/docker-build.log || true
+            . > /tmp/docker-build.log 2>&1
           
-          BUILD_EXIT_CODE=${PIPESTATUS[0]}
+          BUILD_EXIT_CODE=$?
+          
+          # Always show the output
+          echo "=== DOCKER BUILD OUTPUT ==="
+          cat /tmp/docker-build.log
+          echo "=== END OF BUILD OUTPUT ==="
+          echo ""
           
           echo ""
           echo "=== BUILD COMPLETED WITH EXIT CODE: $BUILD_EXIT_CODE ==="
