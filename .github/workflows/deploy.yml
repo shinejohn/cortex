@@ -261,6 +261,9 @@ jobs:
           echo "Pushing with tags:"
           echo "  - $ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:$IMAGE_TAG"
           echo "  - $ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:latest"
+          echo ""
+          echo "Note: Docker Buildx will push both tags. If only 'latest' appears in ECR,"
+          echo "check the build logs below for any tag push errors."
           
           docker buildx build \
             --platform linux/amd64 \
@@ -297,7 +300,23 @@ jobs:
           echo ""
           echo "✅ Docker buildx command completed successfully"
           echo ""
-          echo "Verifying both tags were pushed..."
+          echo "Checking build logs for tag push confirmation..."
+          
+          # Check if build logs show both tags being pushed
+          if grep -q "pushing\|pushed" /tmp/docker-build.log; then
+            echo "=== Tag push activity in logs ==="
+            grep -i "pushing\|pushed" /tmp/docker-build.log | grep -E "($IMAGE_TAG|latest)" | tail -10 || echo "Could not find tag push messages"
+          fi
+          
+          # Check for any errors related to tags
+          if grep -qi "tag.*error\|error.*tag\|failed.*push\|push.*failed" /tmp/docker-build.log; then
+            echo ""
+            echo "⚠️  WARNING: Found potential tag push errors in build log:"
+            grep -i "tag.*error\|error.*tag\|failed.*push\|push.*failed" /tmp/docker-build.log | tail -5
+          fi
+          
+          echo ""
+          echo "Verifying both tags were pushed to ECR..."
           
           # Quick check that both tags exist in ECR (wait a moment for indexing)
           sleep 5
@@ -320,6 +339,19 @@ jobs:
           if [ "$COMMIT_TAG_EXISTS" = "0" ]; then
             echo "⚠️  WARNING: Commit SHA tag ($IMAGE_TAG) not found in ECR immediately after push"
             echo "This might be an ECR indexing delay. Will verify again in verification step."
+            echo ""
+            echo "Checking if 'latest' tag points to a recent image..."
+            LATEST_PUSHED=$(aws ecr describe-images \
+              --repository-name "$REPO_NAME" \
+              --region ${{ env.AWS_REGION }} \
+              --image-ids imageTag=latest \
+              --query 'imageDetails[0].imagePushedAt' \
+              --output text 2>/dev/null || echo "")
+            if [ -n "$LATEST_PUSHED" ]; then
+              echo "Latest tag pushed at: $LATEST_PUSHED"
+              # Check if it's recent (within last hour)
+              echo "If this is recent, the commit SHA tag might be missing due to ECR indexing delay."
+            fi
           else
             echo "✅ Commit SHA tag verified: $IMAGE_TAG"
           fi
