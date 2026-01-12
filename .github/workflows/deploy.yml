@@ -482,6 +482,11 @@ jobs:
           
           echo ""
           echo "✅ Image built and pushed successfully!"
+          
+          # Save push detection results for verification step
+          echo "PUSH_ACTIVITY_DETECTED=$([ "$PUSH_SUCCESS_COUNT" -gt "0" ] || [ "$PUSH_COMPLETE" -gt "0" ]; echo $?)" >> $GITHUB_ENV
+          echo "COMMIT_TAG_PUSHED_COUNT=$COMMIT_TAG_PUSHED" >> $GITHUB_ENV
+          echo "LATEST_TAG_PUSHED_COUNT=$LATEST_TAG_PUSHED" >> $GITHUB_ENV
 
       - name: Verify Image Push
         env:
