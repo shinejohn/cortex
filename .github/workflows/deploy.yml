@@ -257,6 +257,10 @@ jobs:
           
           echo "Building and pushing Docker image..."
           echo "This may take several minutes..."
+          echo ""
+          echo "Pushing with tags:"
+          echo "  - $ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:$IMAGE_TAG"
+          echo "  - $ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:latest"
           
           docker buildx build \
             --platform linux/amd64 \
@@ -290,9 +294,45 @@ jobs:
               exit 1
             }
           
-          echo "✅ Image built and pushed successfully!"
+          echo ""
+          echo "✅ Docker buildx command completed successfully"
+          echo ""
+          echo "Verifying both tags were pushed..."
           
-          echo "✅ Image built and pushed successfully"
+          # Quick check that both tags exist in ECR (wait a moment for indexing)
+          sleep 5
+          REPO_NAME="fibonacco/$ENV/$SERVICE_NAME"
+          
+          COMMIT_TAG_EXISTS=$(aws ecr describe-images \
+            --repository-name "$REPO_NAME" \
+            --region ${{ env.AWS_REGION }} \
+            --image-ids imageTag="$IMAGE_TAG" \
+            --query 'length(imageDetails)' \
+            --output text 2>/dev/null || echo "0")
+          
+          LATEST_TAG_EXISTS=$(aws ecr describe-images \
+            --repository-name "$REPO_NAME" \
+            --region ${{ env.AWS_REGION }} \
+            --image-ids imageTag=latest \
+            --query 'length(imageDetails)' \
+            --output text 2>/dev/null || echo "0")
+          
+          if [ "$COMMIT_TAG_EXISTS" = "0" ]; then
+            echo "⚠️  WARNING: Commit SHA tag ($IMAGE_TAG) not found in ECR immediately after push"
+            echo "This might be an ECR indexing delay. Will verify again in verification step."
+          else
+            echo "✅ Commit SHA tag verified: $IMAGE_TAG"
+          fi
+          
+          if [ "$LATEST_TAG_EXISTS" = "0" ]; then
+            echo "⚠️  WARNING: Latest tag not found in ECR immediately after push"
+            echo "This might be an ECR indexing delay. Will verify again in verification step."
+          else
+            echo "✅ Latest tag verified"
+          fi
+          
+          echo ""
+          echo "✅ Image built and pushed successfully!"
 
       - name: Verify Image Push
         env:
