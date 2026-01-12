@@ -502,6 +502,16 @@ jobs:
           echo "Verifying image exists in ECR..."
           echo "Repository: $REPO_NAME"
           echo "Expected tags: $COMMIT_TAG, latest"
+          echo ""
+          echo "=== Build Step Summary ==="
+          if [ -n "${PUSH_ACTIVITY_DETECTED:-}" ]; then
+            echo "Push activity detected: $PUSH_ACTIVITY_DETECTED"
+            echo "Commit tag push messages: ${COMMIT_TAG_PUSHED_COUNT:-0}"
+            echo "Latest tag push messages: ${LATEST_TAG_PUSHED_COUNT:-0}"
+          else
+            echo "⚠️  Build step summary not available (this shouldn't happen)"
+          fi
+          echo ""
           
           # Wait longer for ECR to index (sometimes takes 10-15 seconds)
           echo "Waiting for ECR to index images..."
