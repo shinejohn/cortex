@@ -152,6 +152,7 @@ jobs:
     runs-on: ubuntu-latest
     
     strategy:
+      fail-fast: false  # Don't cancel other builds if one fails
       matrix:
         service:
           - name: base-app
