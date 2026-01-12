@@ -10,7 +10,6 @@ WORKDIR /app
 RUN apk add --no-cache php php-json php-mbstring php-xml php-tokenizer
 
 # Copy Composer files first to install Ziggy
-COPY -from=public.ecr.aws/docker/lib /usr/bin/compose
 
 
 # Install Composer
@@ -35,7 +34,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: PHP application
-FROM FROM public.ecr.aws/docker/library/php:8.4-fpm-alpine
+FROM public.ecr.aws/docker/library/php:8.4-fpm-alpine
 
 # Install system dependencies
 RUN apk add --no-cache \
@@ -74,7 +73,7 @@ RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini && \
     echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini
 
 # Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=public.ecr.aws/docker/library/composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www/html
