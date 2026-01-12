@@ -2,3 +2,6 @@ config:
   aws:region: us-east-1
   fibonacco-infrastructure:backend:
     url: cloud://
+  fibonacco-infrastructure:aws_account_id: "195430954683"
+  fibonacco-infrastructure:github_token:
+    secure: AAABAOpE2aj7oK6US6EXMT8b0riXNH5QriFQ8YoLhr87Y1x/Xs8Cnq1d6vPmTYUwoTvhuBinCRDDxxhtBcLzDFTP44Sj1TP8

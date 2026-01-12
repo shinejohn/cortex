@@ -17,6 +17,7 @@ Open: **https://github.com/settings/tokens**
 - **Scopes**: 
   - ✅ Check **`repo`** (Full control of private repositories)
     - This includes: `repo:status`, `repo_deployment`, `public_repo`, `repo:invite`, `security_events`
+    - **Also includes**: `write:repo_hook` and `read:repo_hook` (needed for CodePipeline webhooks)
 
 ### 4. Generate Token
 - Click **"Generate token"** at the bottom
