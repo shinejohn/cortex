@@ -213,7 +213,7 @@ for service in services:
         ),
         source=aws.codebuild.ProjectSourceArgs(
             type="CODEPIPELINE",
-            buildspec=f"""version: 0.2
+            buildspec="""version: 0.2
 phases:
   pre_build:
     commands:
