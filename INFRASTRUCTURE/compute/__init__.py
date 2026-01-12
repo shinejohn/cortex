@@ -11,7 +11,8 @@ Exports:
 
 from .cluster import cluster, ecs_security_group
 from .services import ssr_service, horizon_service
-from .lambda_test_runner import test_runner_lambda
+# Temporarily disabled - Lambda image doesn't exist in ECR yet
+# from .lambda_test_runner import test_runner_lambda
 
-__all__ = ["cluster", "ecs_security_group", "ssr_service", "horizon_service", "test_runner_lambda"]
+__all__ = ["cluster", "ecs_security_group", "ssr_service", "horizon_service"]  # "test_runner_lambda"]
 
