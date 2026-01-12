@@ -655,12 +655,13 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Verify AWS Connectivity
+        shell: bash
         run: |
           echo "Testing AWS connectivity..."
-          aws sts get-caller-identity || {
+          if ! aws sts get-caller-identity; then
             echo "❌ AWS credentials invalid"
             exit 1
-          }
+          fi
           echo "✅ AWS connectivity verified"
 
       - name: Verify ECS Cluster Exists
