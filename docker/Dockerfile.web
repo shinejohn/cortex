@@ -16,8 +16,10 @@ COPY composer.json composer.lock ./
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Install only Ziggy (needed for frontend build)
-RUN composer install --no-dev --no-scripts --no-autoloader --quiet || \
-    (echo "⚠️  Composer install failed, continuing without vendor..." && mkdir -p vendor/tightenco/ziggy)
+RUN composer install --no-dev --no-scripts --no-autoloader --quiet || { \
+    echo "⚠️  Composer install failed, continuing without vendor..."; \
+    mkdir -p vendor/tightenco/ziggy; \
+    }
 
 # Copy package files
 COPY package*.json ./
