@@ -2,6 +2,7 @@
 # Used for GoEventCity, Day.News, Downtown Guide, AlphaSite
 
 # Stage 1: Build frontend assets
+# Using public.ecr.aws to avoid Docker Hub rate limits
 FROM public.ecr.aws/docker/library/node:20-alpine AS frontend-builder
 
 WORKDIR /app
