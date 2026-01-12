@@ -409,7 +409,6 @@ jobs:
           
           if [ "$COMMIT_TAG_EXISTS" = "0" ]; then
             echo "⚠️  WARNING: Commit SHA tag ($IMAGE_TAG) not found in ECR immediately after push"
-            echo "This might be an ECR indexing delay. Will verify again in verification step."
             echo ""
             echo "Checking if 'latest' tag points to a recent image..."
             LATEST_PUSHED=$(aws ecr describe-images \
@@ -418,10 +417,35 @@ jobs:
               --image-ids imageTag=latest \
               --query 'imageDetails[0].imagePushedAt' \
               --output text 2>/dev/null || echo "")
+            
             if [ -n "$LATEST_PUSHED" ]; then
               echo "Latest tag pushed at: $LATEST_PUSHED"
-              # Check if it's recent (within last hour)
-              echo "If this is recent, the commit SHA tag might be missing due to ECR indexing delay."
+              
+              # Check if it's recent (within last 5 minutes)
+              LATEST_TIMESTAMP=$(date -d "$LATEST_PUSHED" +%s 2>/dev/null || echo "0")
+              CURRENT_TIMESTAMP=$(date +%s)
+              TIME_DIFF=$((CURRENT_TIMESTAMP - LATEST_TIMESTAMP))
+              
+              if [ "$TIME_DIFF" -gt 300 ]; then
+                echo ""
+                echo "❌ CRITICAL: 'latest' tag is OLD (pushed $TIME_DIFF seconds ago)"
+                echo "This indicates the build did NOT push a new image!"
+                echo "The commit SHA tag is missing AND 'latest' is stale."
+                echo ""
+                echo "This suggests:"
+                echo "1. Build completed but push failed silently"
+                echo "2. Build didn't actually push new images"
+                echo "3. Docker Buildx push failed for both tags"
+                echo ""
+                echo "Failing build - this is not acceptable."
+                exit 1
+              else
+                echo "Latest tag is recent (pushed $TIME_DIFF seconds ago)"
+                echo "This might be an ECR indexing delay for commit SHA tag."
+                echo "Will verify again in verification step."
+              fi
+            else
+              echo "⚠️  'latest' tag also not found - this is very suspicious"
             fi
           else
             echo "✅ Commit SHA tag verified: $IMAGE_TAG"
