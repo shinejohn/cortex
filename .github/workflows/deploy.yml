@@ -279,7 +279,8 @@ jobs:
           # Build and push with explicit output capture
           echo "Starting Docker buildx build and push..."
           
-          # Use a simpler approach: run command and capture exit code
+          # Build and capture output - ensure errors are visible
+          set +e  # Don't exit on error immediately
           docker buildx build \
             --platform linux/amd64 \
             --file "$DOCKERFILE" \
@@ -288,32 +289,35 @@ jobs:
             --push \
             --progress=plain \
             --no-cache \
-            . > /tmp/docker-build.log 2>&1
+            . 2>&1 | tee /tmp/docker-build.log
           
-          BUILD_EXIT_CODE=$?
+          BUILD_EXIT_CODE=${PIPESTATUS[0]}
+          set -e  # Re-enable exit on error
           
-          # Also save output to console
-          cat /tmp/docker-build.log
+          echo ""
+          echo "=== BUILD COMPLETED WITH EXIT CODE: $BUILD_EXIT_CODE ==="
+          echo ""
           
           if [ "$BUILD_EXIT_CODE" != "0" ]; then
-            echo ""
             echo "❌ Docker build/push failed with exit code: $BUILD_EXIT_CODE"
             echo ""
-            echo "=== LAST 100 LINES OF BUILD OUTPUT ==="
-            tail -100 /tmp/docker-build.log || echo "Could not read build log"
+            echo "=== FULL BUILD LOG (last 200 lines) ==="
+            tail -200 /tmp/docker-build.log || echo "Could not read build log"
             echo ""
-            echo "=== ERROR SUMMARY (last 30 error lines) ==="
-            grep -i "error\|failed\|cannot\|not found\|fatal" /tmp/docker-build.log | tail -30 || echo "No specific errors found in log"
+            echo "=== ERROR LINES ==="
+            grep -i "error\|failed\|cannot\|not found\|fatal\|denied\|unauthorized" /tmp/docker-build.log | tail -50 || echo "No error patterns found"
             echo ""
             echo "=== CHECKING WHICH STAGE FAILED ==="
-            if grep -q "frontend-builder" /tmp/docker-build.log && grep -q "ERROR" /tmp/docker-build.log; then
+            if grep -qi "frontend-builder\|npm\|node\|vite" /tmp/docker-build.log; then
               echo "⚠️  Failure appears to be in frontend build stage"
-              grep -A 5 -B 5 "frontend-builder\|npm\|node" /tmp/docker-build.log | tail -20
-            elif grep -q "composer\|php" /tmp/docker-build.log && grep -q "ERROR" /tmp/docker-build.log; then
+              grep -i -A 10 -B 5 "frontend-builder\|npm\|node\|vite\|error\|failed" /tmp/docker-build.log | tail -30
+            elif grep -qi "composer\|php" /tmp/docker-build.log; then
               echo "⚠️  Failure appears to be in PHP/Composer stage"
-              grep -A 5 -B 5 "composer\|php" /tmp/docker-build.log | tail -20
+              grep -i -A 10 -B 5 "composer\|php\|error\|failed" /tmp/docker-build.log | tail -30
             else
-              echo "⚠️  Could not determine failure stage - check full log above"
+              echo "⚠️  Could not determine failure stage"
+              echo "Last 50 lines of output:"
+              tail -50 /tmp/docker-build.log
             fi
             exit 1
           fi
