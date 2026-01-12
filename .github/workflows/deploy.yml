@@ -248,6 +248,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
           SERVICE_NAME: ${{ matrix.service.name }}
           DOCKERFILE: ${{ matrix.service.dockerfile }}
+        shell: bash
         run: |
           echo "Building Docker image..."
           echo "Registry: $ECR_REGISTRY"
