@@ -10,7 +10,7 @@ WORKDIR /app
 RUN apk add --no-cache php php-json php-mbstring php-xml php-tokenizer
 
 # Copy Composer files first to install Ziggy
-
+COPY composer.json composer.lock ./
 
 # Install Composer
 COPY --from=public.ecr.aws/docker/lib /usr/bin/composer
