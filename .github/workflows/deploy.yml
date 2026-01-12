@@ -302,6 +302,21 @@ jobs:
           echo ""
           echo "✅ Docker buildx command completed successfully"
           echo ""
+          echo "=== Verifying build log exists and is readable ==="
+          if [ ! -f /tmp/docker-build.log ]; then
+            echo "❌ ERROR: Build log file not found!"
+            exit 1
+          fi
+          
+          BUILD_LOG_SIZE=$(wc -l < /tmp/docker-build.log || echo "0")
+          echo "Build log contains $BUILD_LOG_SIZE lines"
+          
+          if [ "$BUILD_LOG_SIZE" = "0" ]; then
+            echo "❌ ERROR: Build log is empty!"
+            exit 1
+          fi
+          
+          echo ""
           echo "=== Analyzing push status from build logs ==="
           
           # Check if build logs show both tags being pushed
