@@ -204,6 +204,7 @@ jobs:
           aws sts get-caller-identity
 
       - name: Verify ECR Repository
+        shell: bash
         env:
           SERVICE_NAME: ${{ matrix.service.name }}
         run: |
@@ -215,12 +216,16 @@ jobs:
           else
             echo "⚠️  ECR repository not found: $REPO_NAME (will be created if permissions allow)"
             # Try to create it
-            aws ecr create-repository \
+            if aws ecr create-repository \
               --repository-name "$REPO_NAME" \
               --region ${{ env.AWS_REGION }} \
               --image-scanning-configuration scanOnPush=true \
               --image-tag-mutability MUTABLE \
-              2>/dev/null && echo "✅ Repository created" || echo "⚠️  Could not create repository (may need manual creation)"
+              2>/dev/null; then
+              echo "✅ Repository created"
+            else
+              echo "⚠️  Could not create repository (may need manual creation)"
+            fi
           fi
 
       - name: Login to Amazon ECR
