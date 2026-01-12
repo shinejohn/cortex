@@ -369,9 +369,9 @@ jobs:
           fi
           
           # Check for actual push-related errors (not compilation output)
-          # Only match lines that contain BOTH error-related words AND push/ecr/docker/tag context
-          # This avoids false positives from compilation files like collator_error.c
-          PUSH_ERRORS=$(grep -iE "(failed.*push|push.*failed|error.*pushing|error.*push.*tag|denied.*push|unauthorized.*push|access.*denied.*push|failed.*tag.*push|tag.*failed.*push|ecr.*error|docker.*push.*error|pushing.*error|push.*denied|push.*unauthorized)" /tmp/docker-build.log | grep -vE "(\.c|\.lo|\.o|\.h|collator_error|common_error|intl_error|\.dep|\.la)" || echo "")
+          # Only match lines that contain push/ecr/docker context AND error/failed/denied
+          # Exclude compilation files aggressively
+          PUSH_ERRORS=$(grep -iE "(push.*failed|failed.*push|push.*error|error.*push|push.*denied|denied.*push|push.*unauthorized|unauthorized.*push|ecr.*failed|ecr.*error|ecr.*denied|docker.*push.*failed|docker.*push.*error)" /tmp/docker-build.log | grep -vE "(\.c|\.lo|\.o|\.h|\.dep|\.la|collator|common_error|intl_error|ext/intl|ext/pdo|ext/mbstring|ext/gd|ext/zip|ext/opcache)" || echo "")
           
           if [ -n "$PUSH_ERRORS" ]; then
             echo ""
