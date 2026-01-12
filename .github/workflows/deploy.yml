@@ -265,7 +265,9 @@ jobs:
           echo "Note: Docker Buildx will push both tags. If only 'latest' appears in ECR,"
           echo "check the build logs below for any tag push errors."
           
-          docker buildx build \
+          # Build and push with explicit output capture
+          echo "Starting Docker buildx build and push..."
+          if ! docker buildx build \
             --platform linux/amd64 \
             --file $DOCKERFILE \
             --tag $ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:$IMAGE_TAG \
@@ -273,7 +275,7 @@ jobs:
             --push \
             --progress=plain \
             --no-cache \
-            . 2>&1 | tee /tmp/docker-build.log || {
+            . 2>&1 | tee /tmp/docker-build.log; then
               BUILD_EXIT_CODE=$?
               echo ""
               echo "❌ Docker build/push failed with exit code: $BUILD_EXIT_CODE"
@@ -311,10 +313,21 @@ jobs:
             echo "=== Tag push activity in logs ==="
             grep -i "pushing\|pushed\|successfully pushed" /tmp/docker-build.log | grep -E "($IMAGE_TAG|latest|fibonacco/$ENV/$SERVICE_NAME)" | tail -10 || echo "Could not find tag push messages"
           else
-            echo "⚠️  WARNING: No push activity found in build logs!"
-            echo "This might indicate the push failed silently."
+            echo "❌ CRITICAL: No push activity found in build logs!"
+            echo "The build completed but no push occurred. This indicates a serious issue."
             echo ""
-            echo "Checking for push-related errors..."
+            echo "Checking build log for clues..."
+            echo ""
+            echo "=== Last 50 lines of build log ==="
+            tail -50 /tmp/docker-build.log
+            echo ""
+            echo "=== Checking for build completion markers ==="
+            if grep -q "DONE\|successfully\|completed" /tmp/docker-build.log; then
+              echo "Build appears to have completed, but push didn't happen."
+            fi
+            echo ""
+            echo "❌ FAILING: Build completed but push did not occur"
+            exit 1
           fi
           
           # Check for any errors related to tags or push
