@@ -392,14 +392,6 @@ jobs:
             exit 1
           fi
           
-          # If no push activity AND no push errors, that's the real problem
-          if [ "$PUSH_SUCCESS_COUNT" = "0" ] && [ "$PUSH_COMPLETE" = "0" ]; then
-            echo ""
-            echo "⚠️  No push activity detected, but no push errors found either."
-            echo "This suggests the build completed but push never started."
-            echo "Checking if this is a Docker Buildx issue..."
-          fi
-          
           # Check for ECR authentication errors
           if grep -qi "no basic auth credentials\|unauthorized\|authentication required" /tmp/docker-build.log; then
             echo ""
