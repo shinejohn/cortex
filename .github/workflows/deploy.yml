@@ -300,19 +300,39 @@ jobs:
           echo ""
           echo "✅ Docker buildx command completed successfully"
           echo ""
-          echo "Checking build logs for tag push confirmation..."
+          echo "=== Analyzing push status from build logs ==="
           
           # Check if build logs show both tags being pushed
-          if grep -q "pushing\|pushed" /tmp/docker-build.log; then
+          PUSH_SUCCESS_COUNT=$(grep -i "pushing\|pushed\|successfully pushed" /tmp/docker-build.log | grep -E "($IMAGE_TAG|latest|fibonacco/$ENV/$SERVICE_NAME)" | wc -l || echo "0")
+          
+          if [ "$PUSH_SUCCESS_COUNT" -gt "0" ]; then
+            echo "✅ Found push activity in logs ($PUSH_SUCCESS_COUNT lines)"
+            echo ""
             echo "=== Tag push activity in logs ==="
-            grep -i "pushing\|pushed" /tmp/docker-build.log | grep -E "($IMAGE_TAG|latest)" | tail -10 || echo "Could not find tag push messages"
+            grep -i "pushing\|pushed\|successfully pushed" /tmp/docker-build.log | grep -E "($IMAGE_TAG|latest|fibonacco/$ENV/$SERVICE_NAME)" | tail -10 || echo "Could not find tag push messages"
+          else
+            echo "⚠️  WARNING: No push activity found in build logs!"
+            echo "This might indicate the push failed silently."
+            echo ""
+            echo "Checking for push-related errors..."
           fi
           
-          # Check for any errors related to tags
-          if grep -qi "tag.*error\|error.*tag\|failed.*push\|push.*failed" /tmp/docker-build.log; then
+          # Check for any errors related to tags or push
+          if grep -qi "tag.*error\|error.*tag\|failed.*push\|push.*failed\|denied\|unauthorized\|access.*denied" /tmp/docker-build.log; then
             echo ""
-            echo "⚠️  WARNING: Found potential tag push errors in build log:"
-            grep -i "tag.*error\|error.*tag\|failed.*push\|push.*failed" /tmp/docker-build.log | tail -5
+            echo "❌ ERROR: Found push errors in build log:"
+            grep -i "tag.*error\|error.*tag\|failed.*push\|push.*failed\|denied\|unauthorized\|access.*denied" /tmp/docker-build.log | tail -10
+            echo ""
+            echo "This indicates the push failed. The build succeeded but the image was not pushed to ECR."
+            exit 1
+          fi
+          
+          # Check for ECR authentication errors
+          if grep -qi "no basic auth credentials\|unauthorized\|authentication required" /tmp/docker-build.log; then
+            echo ""
+            echo "❌ ERROR: ECR authentication failed!"
+            grep -i "no basic auth credentials\|unauthorized\|authentication required" /tmp/docker-build.log | tail -5
+            exit 1
           fi
           
           echo ""
