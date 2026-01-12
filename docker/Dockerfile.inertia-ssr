@@ -94,6 +94,13 @@ COPY --from=frontend-builder /app/public/build ./public/build
 # Run composer scripts (post-install)
 RUN composer dump-autoload --optimize
 
+# Build SSR bundle (show full error output if it fails)
+RUN npm run build:ssr || { \
+    echo "❌ npm run build:ssr failed! Showing full error:"; \
+    npm run build:ssr 2>&1 | head -100; \
+    exit 1; \
+    }
+
 # Copy nginx configuration
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
 

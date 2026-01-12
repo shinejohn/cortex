@@ -40,8 +40,8 @@ RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini && \
     echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini && \
     echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini
 
-# Install Composer
-COPY --from=public.ecr.aws/docker/library/composer:latest /usr/bin/composer /usr/bin/composer
+# Install Composer directly (ECR Public Gallery doesn't have composer image)
+RUN curl -fsSL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
 # Set working directory
 WORKDIR /var/www/html
