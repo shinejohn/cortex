@@ -255,31 +255,9 @@ jobs:
           echo "Dockerfile: $DOCKERFILE"
           echo "Tag: $IMAGE_TAG"
           
-          # Build Docker image (without push first to see if build succeeds)
-          echo "Step 1: Building Docker image..."
-          docker buildx build \
-            --platform linux/amd64 \
-            --file $DOCKERFILE \
-            --tag $ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:$IMAGE_TAG \
-            --tag $ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:latest \
-            --load \
-            --progress=plain \
-            --no-cache \
-            . 2>&1 | tee /tmp/docker-build.log || {
-              echo "❌ Docker BUILD failed!"
-              echo ""
-              echo "=== LAST 100 LINES OF BUILD OUTPUT ==="
-              tail -100 /tmp/docker-build.log || echo "Could not read build log"
-              echo ""
-              echo "=== ERROR SUMMARY ==="
-              grep -i "error\|failed\|cannot\|not found" /tmp/docker-build.log | tail -20 || echo "No specific errors found in log"
-              exit 1
-            }
+          echo "Building and pushing Docker image..."
+          echo "This may take several minutes..."
           
-          echo "✅ Docker build succeeded!"
-          
-          # Step 2: Push to ECR
-          echo "Step 2: Pushing image to ECR..."
           docker buildx build \
             --platform linux/amd64 \
             --file $DOCKERFILE \
@@ -287,17 +265,32 @@ jobs:
             --tag $ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:latest \
             --push \
             --progress=plain \
-            . 2>&1 | tee /tmp/docker-push.log || {
-              echo "❌ Docker PUSH failed!"
+            --no-cache \
+            . 2>&1 | tee /tmp/docker-build.log || {
+              BUILD_EXIT_CODE=$?
               echo ""
-              echo "=== LAST 50 LINES OF PUSH OUTPUT ==="
-              tail -50 /tmp/docker-push.log || echo "Could not read push log"
+              echo "❌ Docker build/push failed with exit code: $BUILD_EXIT_CODE"
               echo ""
-              echo "Build succeeded but push failed. Check ECR permissions."
+              echo "=== LAST 100 LINES OF BUILD OUTPUT ==="
+              tail -100 /tmp/docker-build.log || echo "Could not read build log"
+              echo ""
+              echo "=== ERROR SUMMARY (last 30 error lines) ==="
+              grep -i "error\|failed\|cannot\|not found\|fatal" /tmp/docker-build.log | tail -30 || echo "No specific errors found in log"
+              echo ""
+              echo "=== CHECKING WHICH STAGE FAILED ==="
+              if grep -q "frontend-builder" /tmp/docker-build.log && grep -q "ERROR" /tmp/docker-build.log; then
+                echo "⚠️  Failure appears to be in frontend build stage"
+                grep -A 5 -B 5 "frontend-builder\|npm\|node" /tmp/docker-build.log | tail -20
+              elif grep -q "composer\|php" /tmp/docker-build.log && grep -q "ERROR" /tmp/docker-build.log; then
+                echo "⚠️  Failure appears to be in PHP/Composer stage"
+                grep -A 5 -B 5 "composer\|php" /tmp/docker-build.log | tail -20
+              else
+                echo "⚠️  Could not determine failure stage - check full log above"
+              fi
               exit 1
             }
           
-          echo "✅ Image pushed to ECR successfully!"
+          echo "✅ Image built and pushed successfully!"
           
           echo "✅ Image built and pushed successfully"
 
