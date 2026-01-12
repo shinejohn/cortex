@@ -8,18 +8,21 @@ FROM public.ecr.aws/docker/library/node:20-alpine AS frontend-builder
 WORKDIR /app
 
 # Install PHP and Composer for Ziggy route generation
-RUN apk add --no-cache php php-json php-mbstring php-xml php-tokenizer
+RUN apk add --no-cache php php-json php-mbstring php-xml php-tokenizer php-phar curl
 
 # Copy Composer files first to install Ziggy
 COPY composer.json composer.lock ./
 
-# Install Composer
-COPY --from=public.ecr.aws/docker/library/composer:latest /usr/bin/composer /usr/bin/composer
+# Install Composer directly (ECR Public Gallery doesn't have composer image)
+RUN curl -fsSL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
 # Install only Ziggy (needed for frontend build)
-RUN composer install --no-dev --no-scripts --no-autoloader --quiet || { \
-    echo "⚠️  Composer install failed, continuing without vendor..."; \
-    mkdir -p vendor/tightenco/ziggy; \
+RUN composer install --no-dev --no-scripts --no-autoloader --quiet && \
+    echo "✅ Composer install succeeded" && \
+    ls -la vendor/tightenco/ziggy || { \
+    echo "❌ Composer install failed!"; \
+    composer install --no-dev --no-scripts --no-autoloader --verbose; \
+    exit 1; \
     }
 
 # Copy package files
@@ -31,13 +34,17 @@ RUN npm ci
 # Copy application source
 COPY . .
 
-# Build frontend assets
-RUN npm run build
+# Build frontend assets (show errors if build fails)
+RUN npm run build || { \
+    echo "❌ npm build failed! Showing error:"; \
+    npm run build 2>&1; \
+    exit 1; \
+    }
 
 # Stage 2: PHP application
 FROM public.ecr.aws/docker/library/php:8.4-fpm-alpine
 
-# Install system dependencies
+# Install system dependencies (including Node.js for SSR build)
 RUN apk add --no-cache \
     git \
     curl \
@@ -53,6 +60,8 @@ RUN apk add --no-cache \
     autoconf \
     g++ \
     make \
+    nodejs \
+    npm \
     && docker-php-ext-install \
     pdo \
     pdo_pgsql \
@@ -73,8 +82,8 @@ RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini && \
     echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini && \
     echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini
 
-# Install Composer
-COPY --from=public.ecr.aws/docker/library/composer:latest /usr/bin/composer /usr/bin/composer
+# Install Composer directly (ECR Public Gallery doesn't have composer image)
+RUN curl -fsSL https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
 # Set working directory
 WORKDIR /var/www/html
@@ -90,6 +99,9 @@ COPY . .
 
 # Copy built frontend assets from builder stage
 COPY --from=frontend-builder /app/public/build ./public/build
+
+# Install npm dependencies for SSR build (need dev dependencies for build tools)
+RUN npm ci
 
 # Run composer scripts (post-install)
 RUN composer dump-autoload --optimize
