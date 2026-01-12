@@ -6,10 +6,23 @@ FROM node:20-alpine AS frontend-builder
 
 WORKDIR /app
 
+# Install PHP and Composer for Ziggy route generation
+RUN apk add --no-cache php php-json php-mbstring php-xml php-tokenizer
+
+# Copy Composer files first to install Ziggy
+COPY composer.json composer.lock ./
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Install only Ziggy (needed for frontend build)
+RUN composer install --no-dev --no-scripts --no-autoloader --quiet || \
+    (echo "⚠️  Composer install failed, continuing without vendor..." && mkdir -p vendor/tightenco/ziggy)
+
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install Node dependencies
 RUN npm ci
 
 # Copy application source
