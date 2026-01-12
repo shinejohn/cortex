@@ -63,10 +63,45 @@ jobs:
       - name: Install Pulumi CLI
         uses: pulumi/actions@v5
 
-      - name: Set up Pulumi
-        working-directory: INFRASTRUCTURE
+      - name: Login to Pulumi Cloud
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
         run: |
-          pulumi stack select dev || pulumi stack init dev
+          if [ -z "$PULUMI_ACCESS_TOKEN" ]; then
+            echo "❌ ERROR: PULUMI_ACCESS_TOKEN secret is not set"
+            echo "Please create a Pulumi access token at: https://app.pulumi.com/account/tokens"
+            echo "Then add it to GitHub Secrets as PULUMI_ACCESS_TOKEN"
+            exit 1
+          fi
+          pulumi login
+
+      - name: Set up Pulumi stack
+        working-directory: INFRASTRUCTURE
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_ORG: shinejohn
+        run: |
+          # Organization and stack from PULUMI_SETUP.md
+          ORG_NAME="shinejohn"
+          PROJECT_NAME="fibonacco-infrastructure"
+          STACK_NAME="dev"
+          
+          echo "Checking for stack: $ORG_NAME/$PROJECT_NAME/$STACK_NAME"
+          
+          # Try to select the stack
+          if pulumi stack select "$ORG_NAME/$PROJECT_NAME/$STACK_NAME" 2>/dev/null; then
+            echo "✅ Stack exists: $ORG_NAME/$PROJECT_NAME/$STACK_NAME"
+          else
+            echo "⚠️  Stack not found, creating: $STACK_NAME"
+            pulumi stack init "$STACK_NAME" --secrets-provider passphrase || {
+              echo "❌ Failed to create stack"
+              echo "Make sure the project is initialized in Pulumi Cloud"
+              exit 1
+            }
+          fi
+          
+          # Verify stack selection
+          pulumi stack select "$ORG_NAME/$PROJECT_NAME/$STACK_NAME" || pulumi stack select "$STACK_NAME"
 
       - name: Preview changes
         if: github.event.inputs.action == 'preview' || github.event_name == 'push'
