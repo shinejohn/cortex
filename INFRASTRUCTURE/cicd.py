@@ -176,9 +176,9 @@ for service in services:
         name=f"{project_name}-{env}-{service_name}-build",
         description=f"Build Docker image for {service_name}",
         service_role=codebuild_role.arn,
-        artifacts=aws.codebuild.ProjectArtifactsArgs(
-            type="NO_ARTIFACTS",
-        ),
+            artifacts=aws.codebuild.ProjectArtifactsArgs(
+                type="CODEPIPELINE",
+            ),
         environment=aws.codebuild.ProjectEnvironmentArgs(
             type="LINUX_CONTAINER",
             image="aws/codebuild/standard:7.0",
@@ -315,6 +315,27 @@ pipeline = aws.codepipeline.Pipeline(
                     },
                 )
                 for service_name, project in codebuild_projects.items()
+            ],
+        ),
+        # Deploy Stage - ECS for web services only (not base-app or inertia-ssr)
+        aws.codepipeline.PipelineStageArgs(
+            name="Deploy",
+            actions=[
+                aws.codepipeline.PipelineStageActionArgs(
+                    name=f"Deploy-{service_name}",
+                    category="Deploy",
+                    owner="AWS",
+                    provider="ECS",
+                    version="1",
+                    input_artifacts=[f"{service_name}_output"],
+                    configuration={
+                        "ClusterName": f"{project_name}-{env}",
+                        "ServiceName": f"{project_name}-{env}-{service_name}",
+                        "FileName": f"{service_name}_output::imagedefinitions.json",
+                    },
+                )
+                for service_name in codebuild_projects.keys()
+                if service_name not in ["base-app", "inertia-ssr"]  # Only deploy web services
             ],
         ),
     ],
