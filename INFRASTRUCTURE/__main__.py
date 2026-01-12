@@ -114,6 +114,13 @@ from automation import auto_remediation_lambda, capacity_warning_rule
 pulumi.log.info("✓ Automation configured")
 
 # =============================================================================
+# 8. CI/CD (CodePipeline & CodeBuild)
+# =============================================================================
+from cicd import pipeline, codebuild_projects
+
+pulumi.log.info("✓ CI/CD configured")
+
+# =============================================================================
 # SUMMARY EXPORTS
 # =============================================================================
 # Export individual values instead of nested dict to avoid serialization issues
