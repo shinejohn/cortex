@@ -2,7 +2,7 @@
 # Used for GoEventCity, Day.News, Downtown Guide, AlphaSite
 
 # Stage 1: Build frontend assets
-FROM node:20-alpine AS frontend-builder
+FROM public.ecr.aws/docker/library/node:20-alpine AS frontend-builder
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ RUN apk add --no-cache php php-json php-mbstring php-xml php-tokenizer
 COPY composer.json composer.lock ./
 
 # Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=public.ecr.aws/docker/lib /usr/bin/composer
 
 # Install only Ziggy (needed for frontend build)
 RUN composer install --no-dev --no-scripts --no-autoloader --quiet || { \
@@ -34,7 +34,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: PHP application
-FROM php:8.4-fpm-alpine
+FROM FROM public.ecr.aws/docker/library/php:8.4-fpm-alpine
 
 # Install system dependencies
 RUN apk add --no-cache \
