@@ -1,39 +1,7 @@
 # Web Application Dockerfile
 # Used for GoEventCity, Day.News, Downtown Guide, AlphaSite
 
-# Stage 1: Build frontend assets
-FROM public.ecr.aws/docker/library/node:20-alpine AS frontend-builder
-
-WORKDIR /app
-
-# Install PHP and Composer for Ziggy route generation
-RUN apk add --no-cache php php-json php-mbstring php-xml php-tokenizer
-
-# Copy Composer files first to install Ziggy
-COPY composer.json composer.lock ./
-
-# Install Composer
-COPY --from=public.ecr.aws/docker/library/composer:latest /usr/bin/composer /usr/bin/composer
-
-# Install only Ziggy (needed for frontend build)
-RUN composer install --no-dev --no-scripts --no-autoloader --quiet || { \
-    echo "⚠️  Composer install failed, continuing without vendor..."; \
-    mkdir -p vendor/tightenco/ziggy; \
-    }
-
-# Copy package files
-COPY package*.json ./
-
-# Install Node dependencies
-RUN npm ci
-
-# Copy application source
-COPY . .
-
-# Build frontend assets
-RUN npm run build
-
-# Stage 2: PHP application
+# Using public.ecr.aws to avoid Docker Hub rate limits
 FROM public.ecr.aws/docker/library/php:8.4-fpm-alpine
 
 # Install system dependencies

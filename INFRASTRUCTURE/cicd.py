@@ -239,6 +239,8 @@ phases:
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - echo "ECR login successful"
+      - echo "Logging in to Docker Hub (to avoid rate limits)..."
+      - echo "$DOCKERHUB_PASSWORD" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin || echo "WARNING: Docker Hub login failed, may hit rate limits"
       - echo "Build started on `date`"
       - echo "Checking Dockerfile exists..."
       - ls -la $DOCKERFILE || echo "WARNING: Dockerfile not found at $DOCKERFILE"
