@@ -297,7 +297,7 @@ jobs:
                 echo "⚠️  Could not determine failure stage - check full log above"
               fi
               exit 1
-            }
+          fi
           
           echo ""
           echo "✅ Docker buildx command completed successfully"
