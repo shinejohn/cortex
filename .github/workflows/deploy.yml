@@ -369,8 +369,9 @@ jobs:
           fi
           
           # Check for actual push-related errors (not compilation output)
-          # Look for specific error patterns that indicate push failures
-          PUSH_ERRORS=$(grep -iE "(failed to push|push failed|error.*pushing|error.*push|denied.*push|unauthorized.*push|access.*denied.*push|failed.*tag|tag.*failed.*push|ecr.*error|docker.*push.*error)" /tmp/docker-build.log | grep -vE "(\.c|\.lo|\.o|\.h|collator|common_error|intl_error)" || echo "")
+          # Only match lines that contain BOTH error-related words AND push/ecr/docker/tag context
+          # This avoids false positives from compilation files like collator_error.c
+          PUSH_ERRORS=$(grep -iE "(failed.*push|push.*failed|error.*pushing|error.*push.*tag|denied.*push|unauthorized.*push|access.*denied.*push|failed.*tag.*push|tag.*failed.*push|ecr.*error|docker.*push.*error|pushing.*error|push.*denied|push.*unauthorized)" /tmp/docker-build.log | grep -vE "(\.c|\.lo|\.o|\.h|collator_error|common_error|intl_error|\.dep|\.la)" || echo "")
           
           if [ -n "$PUSH_ERRORS" ]; then
             echo ""
@@ -381,14 +382,22 @@ jobs:
             exit 1
           fi
           
-          # Also check for ECR authentication errors specifically
-          ECR_AUTH_ERRORS=$(grep -iE "(no basic auth credentials|unauthorized|authentication.*required|ecr.*login.*failed)" /tmp/docker-build.log || echo "")
+          # Also check for ECR authentication errors specifically (must contain auth/credential context)
+          ECR_AUTH_ERRORS=$(grep -iE "(no basic auth credentials|unauthorized.*ecr|authentication.*required.*ecr|ecr.*login.*failed|ecr.*unauthorized|ecr.*denied|docker.*login.*failed)" /tmp/docker-build.log || echo "")
           
           if [ -n "$ECR_AUTH_ERRORS" ]; then
             echo ""
             echo "❌ ERROR: ECR authentication failed!"
             echo "$ECR_AUTH_ERRORS" | tail -5
             exit 1
+          fi
+          
+          # If no push activity AND no push errors, that's the real problem
+          if [ "$PUSH_SUCCESS_COUNT" = "0" ] && [ "$PUSH_COMPLETE" = "0" ]; then
+            echo ""
+            echo "⚠️  No push activity detected, but no push errors found either."
+            echo "This suggests the build completed but push never started."
+            echo "Checking if this is a Docker Buildx issue..."
           fi
           
           # Check for ECR authentication errors
