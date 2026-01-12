@@ -73,7 +73,7 @@ jobs:
             echo "Then add it to GitHub Secrets as PULUMI_ACCESS_TOKEN"
             exit 1
           fi
-          pulumi login
+          echo "$PULUMI_ACCESS_TOKEN" | pulumi login
 
       - name: Set up Pulumi stack
         working-directory: INFRASTRUCTURE
