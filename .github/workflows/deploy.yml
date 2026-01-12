@@ -261,7 +261,14 @@ jobs:
             --tag $ECR_REGISTRY/fibonacco/$ENV/$SERVICE_NAME:latest \
             --push \
             --progress=plain \
-            .
+            --no-cache \
+            . 2>&1 | tee /tmp/docker-build.log || {
+              echo "❌ Docker build failed!"
+              echo ""
+              echo "Last 50 lines of build output:"
+              tail -50 /tmp/docker-build.log || echo "Could not read build log"
+              exit 1
+            }
           
           echo "✅ Image built and pushed successfully"
 
