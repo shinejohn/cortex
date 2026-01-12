@@ -300,20 +300,36 @@ jobs:
           SERVICE_NAME: ${{ matrix.service.name }}
         run: |
           REPO_NAME="fibonacco/${{ env.ENV }}/$SERVICE_NAME"
+          COMMIT_TAG="${{ github.sha }}"
           echo "Verifying image exists in ECR..."
+          echo "Repository: $REPO_NAME"
+          echo "Expected tags: $COMMIT_TAG, latest"
           
-          # Wait a moment for ECR to index
-          sleep 5
+          # Wait longer for ECR to index (sometimes takes 10-15 seconds)
+          echo "Waiting for ECR to index images..."
+          sleep 10
           
-          # Check image exists with commit SHA tag
+          # List all images first to see what's actually there
+          echo ""
+          echo "=== Current images in ECR ==="
+          aws ecr describe-images \
+            --repository-name "$REPO_NAME" \
+            --region ${{ env.AWS_REGION }} \
+            --query 'imageDetails[*].{Tags:imageTags[0],Pushed:imagePushedAt,Size:imageSizeInBytes}' \
+            --output table 2>/dev/null || echo "Could not list images"
+          
+          # Check commit SHA tag
+          echo ""
+          echo "Checking for commit SHA tag: $COMMIT_TAG"
           IMAGE_EXISTS=$(aws ecr describe-images \
             --repository-name "$REPO_NAME" \
             --region ${{ env.AWS_REGION }} \
-            --image-ids imageTag=${{ github.sha }} \
+            --image-ids imageTag="$COMMIT_TAG" \
             --query 'length(imageDetails)' \
             --output text 2>/dev/null || echo "0")
           
-          # Also check latest tag
+          # Check latest tag
+          echo "Checking for latest tag..."
           LATEST_EXISTS=$(aws ecr describe-images \
             --repository-name "$REPO_NAME" \
             --region ${{ env.AWS_REGION }} \
@@ -321,33 +337,69 @@ jobs:
             --query 'length(imageDetails)' \
             --output text 2>/dev/null || echo "0")
           
-          if [ "$IMAGE_EXISTS" = "0" ] && [ "$LATEST_EXISTS" = "0" ]; then
+          # If commit tag missing but latest exists, that's a problem
+          if [ "$IMAGE_EXISTS" = "0" ] && [ "$LATEST_EXISTS" != "0" ]; then
+            echo ""
+            echo "⚠️  WARNING: Image exists with 'latest' tag but NOT with commit SHA tag!"
+            echo "This suggests the build was interrupted or only one tag was pushed."
+            echo ""
+            echo "Checking if 'latest' points to a recent image..."
+            LATEST_PUSHED=$(aws ecr describe-images \
+              --repository-name "$REPO_NAME" \
+              --region ${{ env.AWS_REGION }} \
+              --image-ids imageTag=latest \
+              --query 'imageDetails[0].imagePushedAt' \
+              --output text 2>/dev/null || echo "")
+            
+            if [ -n "$LATEST_PUSHED" ]; then
+              echo "Latest image pushed at: $LATEST_PUSHED"
+              echo "This might be acceptable if 'latest' is the correct image."
+              echo "However, commit SHA tag is preferred for traceability."
+            fi
+            
+            # For critical services, fail; for others, warn but continue
+            if [ "$SERVICE_NAME" = "golocalvoices" ]; then
+              echo "❌ CRITICAL: golocalvoices must have commit SHA tag!"
+              echo "## ❌ Build Verification Failed: $SERVICE_NAME" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "**Service**: $SERVICE_NAME" >> $GITHUB_STEP_SUMMARY
+              echo "**Repository**: $REPO_NAME" >> $GITHUB_STEP_SUMMARY
+              echo "**Issue**: Image exists with 'latest' tag but missing commit SHA tag \`$COMMIT_TAG\`" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "This suggests the build was interrupted before both tags were pushed." >> $GITHUB_STEP_SUMMARY
+              exit 1
+            else
+              echo "⚠️  Continuing with 'latest' tag only (not ideal but acceptable)"
+            fi
+          elif [ "$IMAGE_EXISTS" = "0" ] && [ "$LATEST_EXISTS" = "0" ]; then
+            echo ""
             echo "❌ Image not found in ECR after push!"
-            echo "Repository: $REPO_NAME"
-            echo "Expected tags: ${{ github.sha }}, latest"
+            echo "Neither commit SHA tag nor 'latest' tag found."
             echo ""
             echo "## ❌ Build Verification Failed: $SERVICE_NAME" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "**Service**: $SERVICE_NAME" >> $GITHUB_STEP_SUMMARY
             echo "**Repository**: $REPO_NAME" >> $GITHUB_STEP_SUMMARY
-            echo "**Expected Tag**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+            echo "**Expected Tags**: $COMMIT_TAG, latest" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "Image was not found in ECR. Check build logs above." >> $GITHUB_STEP_SUMMARY
             exit 1
+          else
+            echo ""
+            echo "✅ Image verified in ECR"
+            if [ "$IMAGE_EXISTS" != "0" ]; then
+              echo "✅ Commit SHA tag found: $COMMIT_TAG"
+              aws ecr describe-images \
+                --repository-name "$REPO_NAME" \
+                --region ${{ env.AWS_REGION }} \
+                --image-ids imageTag="$COMMIT_TAG" \
+                --query 'imageDetails[0].{Pushed:imagePushedAt,Size:imageSizeInBytes}' \
+                --output table 2>/dev/null || echo "Could not describe image"
+            fi
+            if [ "$LATEST_EXISTS" != "0" ]; then
+              echo "✅ Latest tag found"
+            fi
           fi
-          
-          echo "✅ Image verified in ECR"
-          aws ecr describe-images \
-            --repository-name "$REPO_NAME" \
-            --region ${{ env.AWS_REGION }} \
-            --image-ids imageTag=${{ github.sha }} \
-            --query 'imageDetails[0].{Pushed:imagePushedAt,Size:imageSizeInBytes}' \
-            --output table || aws ecr describe-images \
-            --repository-name "$REPO_NAME" \
-            --region ${{ env.AWS_REGION }} \
-            --image-ids imageTag=latest \
-            --query 'imageDetails[0].{Pushed:imagePushedAt,Size:imageSizeInBytes}' \
-            --output table
       
       - name: Build Failure Report
         if: failure()
