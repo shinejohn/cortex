@@ -252,6 +252,7 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
           SERVICE_NAME: ${{ matrix.service.name }}
           DOCKERFILE: ${{ matrix.service.dockerfile }}
+          ENV: ${{ env.ENV }}
         shell: bash
         run: |
           echo "Building Docker image..."
