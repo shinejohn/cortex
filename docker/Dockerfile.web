@@ -13,7 +13,7 @@ RUN apk add --no-cache php php-json php-mbstring php-xml php-tokenizer
 COPY composer.json composer.lock ./
 
 # Install Composer
-COPY --from=public.ecr.aws/docker/lib /usr/bin/composer
+COPY --from=public.ecr.aws/docker/library/composer:latest /usr/bin/composer /usr/bin/composer
 
 # Install only Ziggy (needed for frontend build)
 RUN composer install --no-dev --no-scripts --no-autoloader --quiet || { \
