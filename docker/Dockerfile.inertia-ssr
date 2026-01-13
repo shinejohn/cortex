@@ -53,7 +53,7 @@ RUN npm run build || { \
 # Stage 2: PHP application
 FROM public.ecr.aws/docker/library/php:8.4-fpm-alpine
 
-# Install system dependencies (including Node.js for SSR build)
+# Install system dependencies (including Node.js for SSR build and composer)
 RUN apk add --no-cache \
     git \
     curl \
@@ -71,6 +71,7 @@ RUN apk add --no-cache \
     make \
     nodejs \
     npm \
+    composer \
     && docker-php-ext-install \
     pdo \
     pdo_pgsql \
@@ -91,11 +92,8 @@ RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini && \
     echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini && \
     echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini
 
-# Install Composer directly (ECR Public Gallery doesn't have composer image)
-RUN curl -fsSL https://getcomposer.org/installer -o /tmp/composer-setup.php && \
-    php /tmp/composer-setup.php --install-dir=/usr/bin --filename=composer && \
-    rm /tmp/composer-setup.php && \
-    composer --version || { echo "❌ Composer installation failed!"; exit 1; }
+# Verify composer is installed
+RUN composer --version || { echo "❌ Composer not found!"; exit 1; }
 
 # Set working directory
 WORKDIR /var/www/html
