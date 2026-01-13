@@ -9,7 +9,7 @@ WORKDIR /app
 
 # Install PHP and Composer for Ziggy route generation
 # Install composer via Alpine package manager (more reliable than installer script)
-# Install all PHP extensions required by Composer
+# Only install essential PHP extensions - we use --ignore-platform-reqs for composer install
 RUN apk add --no-cache \
     php \
     php-json \
@@ -19,12 +19,6 @@ RUN apk add --no-cache \
     php-phar \
     php-openssl \
     php-zlib \
-    php-intl \
-    php-pcntl \
-    php-dom \
-    php-simplexml \
-    php-session \
-    php-fileinfo \
     curl \
     composer
 
@@ -43,11 +37,12 @@ RUN composer --version || { \
     }
 
 # Install only Ziggy (needed for frontend build)
-RUN composer install --no-dev --no-scripts --no-autoloader --quiet && \
+# Use --ignore-platform-reqs since we only need Ziggy files, not to run PHP code
+RUN composer install --no-dev --no-scripts --no-autoloader --ignore-platform-reqs --quiet && \
     echo "✅ Composer install succeeded" && \
     ls -la vendor/tightenco/ziggy || { \
     echo "❌ Composer install failed!"; \
-    composer install --no-dev --no-scripts --no-autoloader --verbose; \
+    composer install --no-dev --no-scripts --no-autoloader --ignore-platform-reqs --verbose; \
     exit 1; \
     }
 
