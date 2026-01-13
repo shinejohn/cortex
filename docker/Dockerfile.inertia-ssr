@@ -103,7 +103,8 @@ RUN apk add --no-cache \
     fileinfo \
     session \
     && pecl install redis \
-    && docker-php-ext-enable redis
+    && docker-php-ext-enable redis \
+    && docker-php-ext-enable session fileinfo pcntl
     # Redis extension installed for Laravel cache/session/queue
 
 # Verify PHP extensions are installed and enabled
