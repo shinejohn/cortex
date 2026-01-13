@@ -8,26 +8,20 @@ FROM public.ecr.aws/docker/library/node:20-alpine AS frontend-builder
 WORKDIR /app
 
 # Install PHP and Composer for Ziggy route generation
-RUN apk add --no-cache php php-json php-mbstring php-xml php-tokenizer php-phar curl
+# Install composer via Alpine package manager (more reliable than installer script)
+RUN apk add --no-cache php php-json php-mbstring php-xml php-tokenizer php-phar php-openssl php-zlib curl composer
 
 # Copy Composer files first to install Ziggy
 COPY composer.json composer.lock ./
 
-# Install Composer directly (ECR Public Gallery doesn't have composer image)
-RUN php -v && \
-    echo "Downloading composer installer..." && \
-    curl -fsSL https://getcomposer.org/installer -o /tmp/composer-setup.php && \
-    echo "Running composer installer..." && \
-    php /tmp/composer-setup.php --install-dir=/usr/bin --filename=composer 2>&1 && \
-    echo "Cleaning up..." && \
-    rm /tmp/composer-setup.php && \
-    echo "Verifying composer..." && \
-    composer --version || { \
-        echo "❌ Composer installation failed!"; \
+# Verify composer is installed
+RUN composer --version || { \
+        echo "❌ Composer not found!"; \
         echo "PHP version:"; \
         php -v; \
         echo "PHP extensions:"; \
         php -m; \
+        which composer || echo "composer not in PATH"; \
         exit 1; \
     }
 
