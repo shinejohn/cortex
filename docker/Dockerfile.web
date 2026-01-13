@@ -102,17 +102,27 @@ RUN apk add --no-cache \
     fileinfo \
     session \
     && pecl install redis \
-    && docker-php-ext-enable redis \
-    && docker-php-ext-enable session fileinfo pcntl
+    && docker-php-ext-enable redis
     # Redis extension installed for Laravel cache/session/queue
 
-# Verify PHP extensions are installed and enabled
-RUN php -m | grep -E "(simplexml|intl|session|pcntl|fileinfo|dom|xml|redis)" || { \
-    echo "❌ Missing PHP extensions!"; \
-    echo "Installed extensions:"; \
-    php -m; \
-    exit 1; \
-    }
+# Enable core PHP extensions that might not be enabled by default
+RUN docker-php-ext-enable session fileinfo pcntl simplexml dom xml intl 2>/dev/null || true
+
+# Verify PHP extensions are installed and enabled BEFORE composer
+RUN echo "=== Checking PHP extensions ===" && \
+    php -m && \
+    echo "" && \
+    echo "=== Required extensions check ===" && \
+    php -m | grep -E "(simplexml|intl|session|pcntl|fileinfo|dom|xml|redis)" || { \
+        echo "❌ Missing PHP extensions!"; \
+        echo "Installed extensions:"; \
+        php -m; \
+        echo ""; \
+        echo "PHP ini files:"; \
+        php --ini; \
+        exit 1; \
+    } && \
+    echo "✅ All required extensions are loaded"
 
 # Configure PHP
 RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini && \
