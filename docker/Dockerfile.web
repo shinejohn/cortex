@@ -61,7 +61,6 @@ RUN apk add --no-cache \
     autoconf \
     g++ \
     make \
-    redis-dev \
     && docker-php-ext-install \
     pdo \
     pdo_pgsql \
