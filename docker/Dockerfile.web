@@ -99,14 +99,16 @@ RUN apk add --no-cache \
     xml \
     dom \
     simplexml \
-    fileinfo \
-    session \
     && pecl install redis \
     && docker-php-ext-enable redis
     # Redis extension installed for Laravel cache/session/queue
 
 # Enable core PHP extensions that might not be enabled by default
-RUN docker-php-ext-enable session fileinfo pcntl simplexml dom xml intl 2>/dev/null || true
+# Some extensions are built-in and need to be enabled via ini files
+RUN docker-php-ext-enable session fileinfo pcntl simplexml dom xml intl 2>/dev/null || true && \
+    echo "extension=session" > /usr/local/etc/php/conf.d/docker-php-ext-session.ini 2>/dev/null || true && \
+    echo "extension=fileinfo" > /usr/local/etc/php/conf.d/docker-php-ext-fileinfo.ini 2>/dev/null || true && \
+    echo "extension=pcntl" > /usr/local/etc/php/conf.d/docker-php-ext-pcntl.ini 2>/dev/null || true
 
 # Verify PHP extensions are installed and enabled BEFORE composer
 RUN echo "=== Checking PHP extensions ===" && \
