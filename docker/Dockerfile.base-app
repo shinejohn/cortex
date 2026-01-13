@@ -15,6 +15,7 @@ RUN apk add --no-cache \
     postgresql-dev \
     oniguruma-dev \
     icu-dev \
+    libxml2-dev \
     nginx \
     supervisor \
     autoconf \
