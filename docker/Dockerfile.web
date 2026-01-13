@@ -9,7 +9,24 @@ WORKDIR /app
 
 # Install PHP and Composer for Ziggy route generation
 # Install composer via Alpine package manager (more reliable than installer script)
-RUN apk add --no-cache php php-json php-mbstring php-xml php-tokenizer php-phar php-openssl php-zlib curl composer
+# Install all PHP extensions required by Composer
+RUN apk add --no-cache \
+    php \
+    php-json \
+    php-mbstring \
+    php-xml \
+    php-tokenizer \
+    php-phar \
+    php-openssl \
+    php-zlib \
+    php-intl \
+    php-pcntl \
+    php-dom \
+    php-simplexml \
+    php-session \
+    php-fileinfo \
+    curl \
+    composer
 
 # Copy Composer files first to install Ziggy
 COPY composer.json composer.lock ./
