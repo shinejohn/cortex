@@ -58,9 +58,6 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 # Copy application files
 COPY . .
 
-# Copy built frontend assets from builder stage
-COPY --from=frontend-builder /app/public/build ./public/build
-
 # Run composer scripts (post-install)
 RUN composer dump-autoload --optimize
 
