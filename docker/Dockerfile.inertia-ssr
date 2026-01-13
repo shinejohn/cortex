@@ -15,10 +15,21 @@ COPY composer.json composer.lock ./
 
 # Install Composer directly (ECR Public Gallery doesn't have composer image)
 RUN php -v && \
+    echo "Downloading composer installer..." && \
     curl -fsSL https://getcomposer.org/installer -o /tmp/composer-setup.php && \
-    php /tmp/composer-setup.php --install-dir=/usr/bin --filename=composer && \
+    echo "Running composer installer..." && \
+    php /tmp/composer-setup.php --install-dir=/usr/bin --filename=composer 2>&1 && \
+    echo "Cleaning up..." && \
     rm /tmp/composer-setup.php && \
-    composer --version || { echo "❌ Composer installation failed!"; php -v; which php; exit 1; }
+    echo "Verifying composer..." && \
+    composer --version || { \
+        echo "❌ Composer installation failed!"; \
+        echo "PHP version:"; \
+        php -v; \
+        echo "PHP extensions:"; \
+        php -m; \
+        exit 1; \
+    }
 
 # Install only Ziggy (needed for frontend build)
 RUN composer install --no-dev --no-scripts --no-autoloader --quiet && \
