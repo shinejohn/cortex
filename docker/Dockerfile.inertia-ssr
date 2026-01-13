@@ -106,6 +106,14 @@ RUN apk add --no-cache \
     && docker-php-ext-enable redis
     # Redis extension installed for Laravel cache/session/queue
 
+# Verify PHP extensions are installed and enabled
+RUN php -m | grep -E "(simplexml|intl|session|pcntl|fileinfo|dom|xml|redis)" || { \
+    echo "❌ Missing PHP extensions!"; \
+    echo "Installed extensions:"; \
+    php -m; \
+    exit 1; \
+    }
+
 # Configure PHP
 RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini && \
     echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini && \
