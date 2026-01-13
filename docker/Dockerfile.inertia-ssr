@@ -84,6 +84,7 @@ RUN apk add --no-cache \
     nodejs \
     npm \
     composer \
+    php-tokenizer \
     && docker-php-ext-install \
     pdo \
     pdo_pgsql \
@@ -95,6 +96,11 @@ RUN apk add --no-cache \
     zip \
     opcache \
     intl \
+    xml \
+    dom \
+    simplexml \
+    fileinfo \
+    session \
     && pecl install redis \
     && docker-php-ext-enable redis \
     # Redis extension installed for Laravel cache/session/queue
