@@ -156,7 +156,7 @@ domains = {
         "app_name": "local-voices",
     },
     "alphasite": {
-        "domain": "alphasite.com" if is_production else f"{env}.alphasite.com",
+        "domain": "alphasite.ai" if is_production else f"{env}.alphasite.ai",
         "health_check_path": "/healthcheck",
         "app_name": "alphasite",
     },
