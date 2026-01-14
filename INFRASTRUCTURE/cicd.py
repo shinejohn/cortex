@@ -326,7 +326,7 @@ pipeline = aws.codepipeline.Pipeline(
                     "Repo": "Community-Platform",  # Update with your repo name
                     "Branch": "main",
                     "OAuthToken": config.require_secret("github_token"),  # Set via: pulumi config set --secret github_token <token>
-                    "PollForSourceChanges": "false",  # Use webhooks instead
+                    "PollForSourceChanges": "true",  # Poll GitHub for changes every few minutes
                 },
             )],
         ),
