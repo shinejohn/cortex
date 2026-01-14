@@ -103,8 +103,11 @@ RUN apk add --no-cache \
     # Redis extension installed for Laravel cache/session/queue
 
 # Install Composer using official installer (uses Docker image's PHP, not Alpine's)
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-    chmod +x /usr/local/bin/composer
+# Use explicit PHP path to ensure we use Docker image's PHP, not Alpine's
+RUN curl -sS https://getcomposer.org/installer | /usr/local/bin/php -- --install-dir=/usr/local/bin --filename=composer && \
+    chmod +x /usr/local/bin/composer && \
+    # Update Composer's shebang to explicitly use Docker image's PHP
+    sed -i '1s|#!/usr/bin/env php|#!/usr/local/bin/php|' /usr/local/bin/composer
 
 # Enable installed extensions explicitly
 RUN docker-php-ext-enable pcntl simplexml dom xml intl 2>/dev/null || true
@@ -143,10 +146,24 @@ RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini && \
     echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini
 
 # Verify composer is installed and using correct PHP
-RUN composer --version || { echo "❌ Composer not found!"; exit 1; } && \
+RUN echo "=== PHP Binary Locations ===" && \
+    which php && \
+    /usr/local/bin/php --version && \
+    echo "" && \
+    echo "=== PATH Check ===" && \
+    echo $PATH && \
+    echo "" && \
     echo "=== Composer PHP Check ===" && \
     composer --version && \
-    composer diagnose | grep "PHP version" || true
+    composer diagnose 2>&1 | head -20 && \
+    echo "" && \
+    echo "=== Verifying Composer uses correct PHP ===" && \
+    head -1 /usr/local/bin/composer && \
+    /usr/local/bin/php -r "echo 'PHP ini path: ' . php_ini_loaded_file() . PHP_EOL;" && \
+    /usr/local/bin/php -r "echo 'PHP extensions: '; print_r(get_loaded_extensions());" | grep -E "(simplexml|intl|session|pcntl|fileinfo|dom|xml)" || { \
+        echo "❌ Composer verification failed!"; \
+        exit 1; \
+    }
 
 # Set working directory
 WORKDIR /var/www/html
@@ -155,7 +172,8 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 
 # Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+# Use explicit PHP path to ensure Composer uses Docker image's PHP
+RUN /usr/local/bin/php /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 # Copy application files
 COPY . .
