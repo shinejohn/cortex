@@ -111,4 +111,42 @@ return Application::configure(basePath: dirname(__DIR__))
         if (config('app.observability.sentry.enabled')) {
             Integration::handles($exceptions);
         }
+
+        // Handle Redis/Predis connection errors gracefully
+        $exceptions->render(function (\Predis\Connection\ConnectionException | \RedisException | \Illuminate\Redis\Connections\ConnectionException $e, \Illuminate\Http\Request $request) {
+            \Illuminate\Support\Facades\Log::error('Redis connection error', [
+                'error' => $e->getMessage(),
+                'url' => $request->fullUrl(),
+                'type' => get_class($e),
+            ]);
+
+            // Return a user-friendly error instead of crashing
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'error' => 'Service temporarily unavailable. Please try again.',
+                    'message' => 'Redis connection failed. Please check your Redis configuration.',
+                ], 503);
+            }
+
+            // Try to render 503 error page, fallback to simple message
+            if (view()->exists('errors.503')) {
+                return response()->view('errors.503', [
+                    'message' => 'Service temporarily unavailable. Please try again.',
+                ], 503);
+            }
+
+            return response('Service temporarily unavailable. Please try again.', 503);
+        });
+
+        // Log all exceptions for debugging (only in non-production or when debug is enabled)
+        if (config('app.debug') || config('app.env') !== 'production') {
+            $exceptions->report(function (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('Exception occurred', [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => substr($e->getTraceAsString(), 0, 1000), // Limit trace length
+                ]);
+            });
+        }
     })->create();

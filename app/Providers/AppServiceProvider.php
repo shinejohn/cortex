@@ -72,6 +72,41 @@ final class AppServiceProvider extends ServiceProvider
         }
 
         $this->configureRateLimiting();
+        $this->handleRedisConnection();
+    }
+
+    /**
+     * Handle Redis connection errors gracefully
+     * If Redis is configured but unavailable, log warning but don't crash
+     */
+    private function handleRedisConnection(): void
+    {
+        // Only check Redis if it's actually configured as a driver
+        $cacheDriver = config('cache.default');
+        $sessionDriver = config('session.driver');
+        $queueDriver = config('queue.default');
+
+        $redisNeeded = in_array($cacheDriver, ['redis'], true) ||
+                      in_array($sessionDriver, ['redis'], true) ||
+                      in_array($queueDriver, ['redis'], true);
+
+        if ($redisNeeded) {
+            try {
+                // Test Redis connection
+                $redis = \Illuminate\Support\Facades\Redis::connection();
+                $redis->ping();
+            } catch (\Throwable $e) {
+                // Redis is unavailable - log warning
+                \Illuminate\Support\Facades\Log::warning('Redis connection failed', [
+                    'error' => $e->getMessage(),
+                    'cache_driver' => $cacheDriver,
+                    'session_driver' => $sessionDriver,
+                    'queue_driver' => $queueDriver,
+                ]);
+                // Note: We don't change config here as it won't persist
+                // Instead, handle errors in exception handler
+            }
+        }
     }
 
     /**
