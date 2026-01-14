@@ -229,9 +229,10 @@ RUN /usr/local/bin/php -d phar.readonly=0 -d phar.require_hash=0 /usr/local/bin/
 # Copy application files
 COPY . .
 
-# Run composer scripts (post-install)
-RUN /usr/local/bin/php -d phar.readonly=0 -d phar.require_hash=0 /usr/local/bin/composer dump-autoload --optimize || \
-    /usr/local/bin/php /usr/local/bin/composer dump-autoload --optimize
+# Run composer dump-autoload (skip scripts since dev dependencies aren't installed)
+# The --no-scripts flag prevents post-autoload-dump scripts from running, which avoids Scribe config issues
+RUN /usr/local/bin/php -d phar.readonly=0 -d phar.require_hash=0 /usr/local/bin/composer dump-autoload --optimize --no-scripts || \
+    /usr/local/bin/php /usr/local/bin/composer dump-autoload --optimize --no-scripts
 
 # Copy nginx configuration
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf

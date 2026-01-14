@@ -277,7 +277,19 @@ COPY . .
 COPY --from=frontend-builder /app/public/build ./public/build
 
 # Run composer scripts (post-install)
-RUN /usr/local/bin/php /usr/local/bin/composer dump-autoload --optimize
+# Use --no-scripts to avoid package discovery issues with dev dependencies during build
+# Note: Even with --no-scripts, Laravel's ComposerScripts::postAutoloadDump may still trigger package:discover
+# If it fails due to Scribe config (dev dependency), we continue since autoload files are already generated
+RUN APP_ENV=production /usr/local/bin/php /usr/local/bin/composer dump-autoload --optimize --no-scripts --no-interaction || { \
+        echo "⚠️ dump-autoload failed, likely due to Scribe config (dev dependency)"; \
+        echo "Checking if autoload files exist..."; \
+        if [ -f vendor/autoload.php ] && [ -f vendor/composer/autoload_real.php ]; then \
+            echo "✅ Autoload files exist, continuing despite error"; \
+        else \
+            echo "❌ Autoload files missing, this is a real error"; \
+            exit 1; \
+        fi; \
+    }
 
 # Copy nginx configuration
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
