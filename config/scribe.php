@@ -1,8 +1,23 @@
 <?php
 
+// If Scribe is not installed (it's a dev dependency), return minimal config
+if (!class_exists(\Knuckles\Scribe\Config\AuthIn::class)) {
+    return [
+        'title' => config('app.name') . ' API Documentation',
+        'description' => 'API Documentation',
+        'type' => 'static',
+        'base_url' => config('app.url'),
+        'auth' => [
+            'enabled' => true,
+            'default' => true,
+            'in' => 'bearer',
+            'name' => 'Authorization',
+        ],
+    ];
+}
+
 use Knuckles\Scribe\Extracting\Strategies;
 use Knuckles\Scribe\Config\Defaults;
-use Knuckles\Scribe\Config\AuthIn;
 use function Knuckles\Scribe\Config\{removeStrategies, configureStrategy};
 
 // Only the most common configs are shown. See the https://scribe.knuckles.wtf/laravel/reference/config for all.
@@ -110,7 +125,7 @@ return [
         'default' => true,
 
         // Where is the auth value meant to be sent in a request?
-        'in' => AuthIn::BEARER->value,
+        'in' => \Knuckles\Scribe\Config\AuthIn::BEARER->value,
 
         // The name of the auth parameter (e.g. token, key, apiKey) or header (e.g. Authorization, Api-Key).
         'name' => 'Authorization',
