@@ -4,7 +4,7 @@
 # Using public.ecr.aws to avoid Docker Hub rate limits
 FROM public.ecr.aws/docker/library/php:8.4-fpm-alpine
 
-# Install system dependencies (including composer via Alpine package manager)
+# Install system dependencies
 RUN apk add --no-cache \
     git \
     curl \
@@ -21,8 +21,6 @@ RUN apk add --no-cache \
     autoconf \
     g++ \
     make \
-    composer \
-    php-tokenizer \
     && docker-php-ext-install \
     pdo \
     pdo_pgsql \
@@ -41,18 +39,30 @@ RUN apk add --no-cache \
     && docker-php-ext-enable redis
     # Redis extension installed for Laravel cache/session/queue
 
-# Enable core PHP extensions that might not be enabled by default
-# Some extensions are built-in and need to be enabled via ini files
-RUN docker-php-ext-enable session fileinfo pcntl simplexml dom xml intl 2>/dev/null || true && \
-    echo "extension=session" > /usr/local/etc/php/conf.d/docker-php-ext-session.ini 2>/dev/null || true && \
-    echo "extension=fileinfo" > /usr/local/etc/php/conf.d/docker-php-ext-fileinfo.ini 2>/dev/null || true && \
-    echo "extension=pcntl" > /usr/local/etc/php/conf.d/docker-php-ext-pcntl.ini 2>/dev/null || true
+# Install Composer using official installer (uses Docker image's PHP, not Alpine's)
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+    chmod +x /usr/local/bin/composer
+
+# Enable installed extensions explicitly
+RUN docker-php-ext-enable pcntl simplexml dom xml intl 2>/dev/null || true
 
 # Verify PHP extensions are installed and enabled BEFORE composer
-RUN echo "=== Checking PHP extensions ===" && \
+RUN echo "=== PHP Binary Location ===" && \
+    which php && \
+    php --version && \
+    echo "" && \
+    echo "=== Checking PHP extensions ===" && \
     php -m && \
     echo "" && \
     echo "=== Required extensions check ===" && \
+    php -r "echo 'session: ' . (extension_loaded('session') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
+    php -r "echo 'fileinfo: ' . (extension_loaded('fileinfo') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
+    php -r "echo 'simplexml: ' . (extension_loaded('simplexml') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
+    php -r "echo 'intl: ' . (extension_loaded('intl') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
+    php -r "echo 'pcntl: ' . (extension_loaded('pcntl') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
+    php -r "echo 'dom: ' . (extension_loaded('dom') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
+    php -r "echo 'xml: ' . (extension_loaded('xml') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
+    php -r "echo 'redis: ' . (extension_loaded('redis') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
     php -m | grep -E "(simplexml|intl|session|pcntl|fileinfo|dom|xml|redis)" || { \
         echo "❌ Missing PHP extensions!"; \
         echo "Installed extensions:"; \
@@ -69,8 +79,11 @@ RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini && \
     echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini && \
     echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini
 
-# Verify composer is installed
-RUN composer --version || { echo "❌ Composer not found!"; exit 1; }
+# Verify composer is installed and using correct PHP
+RUN composer --version || { echo "❌ Composer not found!"; exit 1; } && \
+    echo "=== Composer PHP Check ===" && \
+    composer --version && \
+    composer diagnose | grep "PHP version" || true
 
 # Set working directory
 WORKDIR /var/www/html
