@@ -145,7 +145,9 @@ return [
 
     'redis' => [
 
-        'client' => env('REDIS_CLIENT', 'phpredis'),
+        // Default to predis (pure PHP, no extension needed) unless phpredis extension is explicitly configured
+        // If REDIS_CLIENT is not set, we'll auto-detect in AppServiceProvider
+        'client' => env('REDIS_CLIENT', 'predis'),
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
