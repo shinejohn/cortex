@@ -72,7 +72,21 @@ final class AppServiceProvider extends ServiceProvider
         }
 
         $this->configureRateLimiting();
+        $this->configureRedisClient();
         $this->handleRedisConnection();
+    }
+
+    /**
+     * Auto-detect and configure Redis client
+     * Use phpredis if extension is loaded, otherwise fallback to predis
+     */
+    private function configureRedisClient(): void
+    {
+        // Only auto-detect if REDIS_CLIENT is not explicitly set
+        if (! env('REDIS_CLIENT')) {
+            $client = (extension_loaded('redis') || function_exists('redis_connect')) ? 'phpredis' : 'predis';
+            config(['database.redis.client' => $client]);
+        }
     }
 
     /**
