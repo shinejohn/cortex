@@ -101,37 +101,32 @@ RUN apk add --no-cache \
     && docker-php-ext-enable redis
     # Redis extension installed for Laravel cache/session/queue
 
-# Install Composer using official installer (uses Docker image's PHP, not Alpine's)
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-    chmod +x /usr/local/bin/composer
-
 # Enable installed extensions explicitly
 RUN docker-php-ext-enable pcntl simplexml dom xml intl 2>/dev/null || true
 
 # Verify PHP extensions are installed and enabled BEFORE composer
-# session and fileinfo are built-in extensions that should be available by default
+# session and fileinfo are built-in PHP extensions that should be available by default
 RUN echo "=== Checking PHP extensions ===" && \
     php -m && \
     echo "" && \
     echo "=== Required extensions check ===" && \
-    php -r "echo 'session: ' . (extension_loaded('session') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
-    php -r "echo 'fileinfo: ' . (extension_loaded('fileinfo') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
-    php -r "echo 'simplexml: ' . (extension_loaded('simplexml') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
-    php -r "echo 'intl: ' . (extension_loaded('intl') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
-    php -r "echo 'pcntl: ' . (extension_loaded('pcntl') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
-    php -r "echo 'dom: ' . (extension_loaded('dom') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
-    php -r "echo 'xml: ' . (extension_loaded('xml') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
-    php -r "echo 'redis: ' . (extension_loaded('redis') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
-    php -m | grep -E "(simplexml|intl|session|pcntl|fileinfo|dom|xml|redis)" || { \
-        echo "❌ Missing PHP extensions!"; \
-        echo "Installed extensions:"; \
-        php -m; \
-        echo ""; \
-        echo "PHP ini files:"; \
-        php --ini; \
-        exit 1; \
-    } && \
+    php -r "if (!extension_loaded('session')) { echo 'ERROR: session extension not loaded\n'; exit(1); }" && \
+    php -r "if (!extension_loaded('fileinfo')) { echo 'ERROR: fileinfo extension not loaded\n'; exit(1); }" && \
+    php -r "if (!extension_loaded('simplexml')) { echo 'ERROR: simplexml extension not loaded\n'; exit(1); }" && \
+    php -r "if (!extension_loaded('intl')) { echo 'ERROR: intl extension not loaded\n'; exit(1); }" && \
+    php -r "if (!extension_loaded('pcntl')) { echo 'ERROR: pcntl extension not loaded\n'; exit(1); }" && \
+    php -r "if (!extension_loaded('dom')) { echo 'ERROR: dom extension not loaded\n'; exit(1); }" && \
+    php -r "if (!extension_loaded('xml')) { echo 'ERROR: xml extension not loaded\n'; exit(1); }" && \
+    php -r "if (!extension_loaded('redis')) { echo 'ERROR: redis extension not loaded\n'; exit(1); }" && \
+    php -m | grep -E "(simplexml|intl|session|pcntl|fileinfo|dom|xml|redis)" && \
     echo "✅ All required extensions are loaded"
+
+# Install Composer using official installer (uses Docker image's PHP, not Alpine's)
+# Use explicit PHP path to ensure we use Docker image's PHP, not Alpine's
+RUN curl -sS https://getcomposer.org/installer | /usr/local/bin/php -- --install-dir=/usr/local/bin --filename=composer && \
+    chmod +x /usr/local/bin/composer && \
+    # Update Composer's shebang to explicitly use Docker image's PHP
+    sed -i '1s|#!/usr/bin/env php|#!/usr/local/bin/php|' /usr/local/bin/composer
 
 # Configure PHP
 RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini && \
@@ -139,10 +134,24 @@ RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini && \
     echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini
 
 # Verify composer is installed and using correct PHP
-RUN composer --version || { echo "❌ Composer not found!"; exit 1; } && \
+RUN echo "=== PHP Binary Locations ===" && \
+    which php && \
+    /usr/local/bin/php --version && \
+    echo "" && \
+    echo "=== PATH Check ===" && \
+    echo $PATH && \
+    echo "" && \
     echo "=== Composer PHP Check ===" && \
     composer --version && \
-    composer diagnose | grep "PHP version" || true
+    composer diagnose 2>&1 | head -20 && \
+    echo "" && \
+    echo "=== Verifying Composer uses correct PHP ===" && \
+    head -1 /usr/local/bin/composer && \
+    /usr/local/bin/php -r "echo 'PHP ini path: ' . php_ini_loaded_file() . PHP_EOL;" && \
+    /usr/local/bin/php -r "echo 'PHP extensions: '; print_r(get_loaded_extensions());" | grep -E "(simplexml|intl|session|pcntl|fileinfo|dom|xml)" || { \
+        echo "❌ Composer verification failed!"; \
+        exit 1; \
+    }
 
 # Set working directory
 WORKDIR /var/www/html
@@ -150,8 +159,20 @@ WORKDIR /var/www/html
 # Copy composer files
 COPY composer.json composer.lock ./
 
+# Final verification of extensions right before composer install
+# This ensures Composer will see all required extensions
+RUN echo "=== Final PHP Extension Check Before Composer ===" && \
+    /usr/local/bin/php -r "echo 'PHP Version: ' . PHP_VERSION . PHP_EOL;" && \
+    /usr/local/bin/php -r "echo 'PHP Binary: ' . PHP_BINARY . PHP_EOL;" && \
+    /usr/local/bin/php --ini | head -5 && \
+    /usr/local/bin/php -m | grep -E "(simplexml|intl|session|pcntl|fileinfo|dom|xml|redis)" && \
+    /usr/local/bin/php -r "foreach(['session', 'fileinfo', 'simplexml', 'intl', 'pcntl', 'dom', 'xml', 'redis'] as \$ext) { if (!extension_loaded(\$ext)) { echo 'MISSING: ' . \$ext . PHP_EOL; exit(1); } } echo '✅ All extensions verified' . PHP_EOL;" && \
+    echo "=== Composer Platform Check ===" && \
+    /usr/local/bin/php /usr/local/bin/composer diagnose | grep -E "(PHP|extensions)" || true
+
 # Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+# Use explicit PHP path to ensure Composer uses Docker image's PHP
+RUN /usr/local/bin/php /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 # Copy application files
 COPY . .
