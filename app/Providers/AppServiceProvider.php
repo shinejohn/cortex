@@ -88,6 +88,10 @@ final class AppServiceProvider extends ServiceProvider
             config(['database.redis.client' => $client]);
         }
         
+        // Configure Redis TLS if enabled
+        $redisScheme = env('REDIS_SCHEME', 'tcp');
+        $redisTls = env('REDIS_TLS', false);
+        
         // Configure Redis timeouts to prevent hanging connections
         // This helps prevent 504 Gateway Timeout errors
         $timeout = (int) env('REDIS_TIMEOUT', 5); // 5 second timeout
@@ -99,24 +103,39 @@ final class AppServiceProvider extends ServiceProvider
         $options['read_timeout'] = $readTimeout;
         config(['database.redis.options' => $options]);
         
-        // Also set for default and cache connections
-        $defaultOptions = config('database.redis.default', []);
-        if (!isset($defaultOptions['timeout'])) {
-            $defaultOptions['timeout'] = $timeout;
+        // Configure default connection with TLS if enabled
+        $defaultConfig = config('database.redis.default', []);
+        $defaultConfig['scheme'] = $redisScheme;
+        if ($redisTls || $redisScheme === 'tls') {
+            $defaultConfig['ssl'] = [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+            ];
         }
-        if (!isset($defaultOptions['read_timeout'])) {
-            $defaultOptions['read_timeout'] = $readTimeout;
+        if (!isset($defaultConfig['timeout'])) {
+            $defaultConfig['timeout'] = $timeout;
         }
-        config(['database.redis.default' => $defaultOptions]);
+        if (!isset($defaultConfig['read_timeout'])) {
+            $defaultConfig['read_timeout'] = $readTimeout;
+        }
+        config(['database.redis.default' => $defaultConfig]);
         
-        $cacheOptions = config('database.redis.cache', []);
-        if (!isset($cacheOptions['timeout'])) {
-            $cacheOptions['timeout'] = $timeout;
+        // Configure cache connection with TLS if enabled
+        $cacheConfig = config('database.redis.cache', []);
+        $cacheConfig['scheme'] = $redisScheme;
+        if ($redisTls || $redisScheme === 'tls') {
+            $cacheConfig['ssl'] = [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+            ];
         }
-        if (!isset($cacheOptions['read_timeout'])) {
-            $cacheOptions['read_timeout'] = $readTimeout;
+        if (!isset($cacheConfig['timeout'])) {
+            $cacheConfig['timeout'] = $timeout;
         }
-        config(['database.redis.cache' => $cacheOptions]);
+        if (!isset($cacheConfig['read_timeout'])) {
+            $cacheConfig['read_timeout'] = $readTimeout;
+        }
+        config(['database.redis.cache' => $cacheConfig]);
     }
 
     /**
