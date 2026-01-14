@@ -228,42 +228,50 @@ for service in services:
 phases:
   pre_build:
     commands:
-      - 'echo "=== PRE-BUILD PHASE ==="'
-      - 'echo "Service=$SERVICE_NAME"'
-      - 'echo "Dockerfile=$DOCKERFILE"'
-      - 'echo "ECR Repository=$ECR_REPOSITORY"'
-      - 'echo "AWS Account=$AWS_ACCOUNT_ID"'
-      - 'echo "Region=$AWS_DEFAULT_REGION"'
-      - 'echo "Image Tag=$IMAGE_TAG"'
-      - 'echo "Commit SHA=$CODEBUILD_RESOLVED_SOURCE_VERSION"'
-      - 'echo "Logging in to Amazon ECR..."'
-      - 'aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com'
-      - 'echo "ECR login successful"'
-      - 'echo "Logging in to Docker Hub (to avoid rate limits)..."'
-      - 'echo "$DOCKERHUB_PASSWORD" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin || echo "WARNING: Docker Hub login failed, may hit rate limits"'
-      - 'echo "Build started on `date`"'
-      - 'echo "Checking Dockerfile exists..."'
-      - 'ls -la $DOCKERFILE || echo "WARNING: Dockerfile not found at $DOCKERFILE"'
-      - 'echo "Building Docker image..."'
+      - echo "=== PRE-BUILD PHASE ==="
+      - echo "Service=$SERVICE_NAME"
+      - echo "Dockerfile=$DOCKERFILE"
+      - echo "ECR Repository=$ECR_REPOSITORY"
+      - echo "AWS Account=$AWS_ACCOUNT_ID"
+      - echo "Region=$AWS_DEFAULT_REGION"
+      - echo "Image Tag=$IMAGE_TAG"
+      - echo "Commit SHA=$CODEBUILD_RESOLVED_SOURCE_VERSION"
+      - echo "Logging in to Amazon ECR..."
+      - |
+        aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - echo "ECR login successful"
+      - echo "Logging in to Docker Hub (to avoid rate limits)..."
+      - |
+        echo "$DOCKERHUB_PASSWORD" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin || echo "WARNING: Docker Hub login failed, may hit rate limits"
+      - echo "Build started on `date`"
+      - echo "Checking Dockerfile exists..."
+      - |
+        ls -la $DOCKERFILE || echo "WARNING: Dockerfile not found at $DOCKERFILE"
+      - echo "Building Docker image..."
   build:
     commands:
-      - 'echo "=== BUILD PHASE ==="'
-      - 'echo "Building Docker image with tags $IMAGE_TAG and $CODEBUILD_RESOLVED_SOURCE_VERSION"'
-      - 'docker build -f $DOCKERFILE -t $ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REPOSITORY:$CODEBUILD_RESOLVED_SOURCE_VERSION .'
-      - 'echo "Build completed on `date`"'
-      - 'echo "Verifying images were created..."'
-      - 'docker images | grep $ECR_REPOSITORY || echo "WARNING: Images not found"'
+      - echo "=== BUILD PHASE ==="
+      - echo "Building Docker image with tags $IMAGE_TAG and $CODEBUILD_RESOLVED_SOURCE_VERSION"
+      - |
+        docker build -f $DOCKERFILE -t $ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REPOSITORY:$CODEBUILD_RESOLVED_SOURCE_VERSION .
+      - echo "Build completed on `date`"
+      - echo "Verifying images were created..."
+      - |
+        docker images | grep $ECR_REPOSITORY || echo "WARNING: Images not found"
   post_build:
     commands:
-      - 'echo "=== POST-BUILD PHASE ==="'
-      - 'echo "Pushing Docker images..."'
-      - 'docker push $ECR_REPOSITORY:$IMAGE_TAG || { echo "ERROR: Failed to push $IMAGE_TAG"; exit 1; }'
-      - 'docker push $ECR_REPOSITORY:$CODEBUILD_RESOLVED_SOURCE_VERSION || { echo "ERROR: Failed to push $CODEBUILD_RESOLVED_SOURCE_VERSION"; exit 1; }'
-      - 'echo "Images pushed successfully"'
-      - 'echo "Writing image definitions file..."'
-      - 'printf "[{\"name\":\"%s\",\"imageUri\":\"%s:%s\"}]" $SERVICE_NAME $ECR_REPOSITORY $CODEBUILD_RESOLVED_SOURCE_VERSION > imagedefinitions.json'
-      - 'cat imagedefinitions.json'
-      - 'echo "=== BUILD COMPLETE ==="'
+      - echo "=== POST-BUILD PHASE ==="
+      - echo "Pushing Docker images..."
+      - |
+        docker push $ECR_REPOSITORY:$IMAGE_TAG || { echo "ERROR: Failed to push $IMAGE_TAG"; exit 1; }
+      - |
+        docker push $ECR_REPOSITORY:$CODEBUILD_RESOLVED_SOURCE_VERSION || { echo "ERROR: Failed to push $CODEBUILD_RESOLVED_SOURCE_VERSION"; exit 1; }
+      - echo "Images pushed successfully"
+      - echo "Writing image definitions file..."
+      - |
+        printf '[{"name":"%s","imageUri":"%s:%s"}]' $SERVICE_NAME $ECR_REPOSITORY $CODEBUILD_RESOLVED_SOURCE_VERSION > imagedefinitions.json
+      - cat imagedefinitions.json
+      - echo "=== BUILD COMPLETE ==="
 artifacts:
   files:
     - imagedefinitions.json
