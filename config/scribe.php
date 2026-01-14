@@ -1,7 +1,14 @@
 <?php
 
 // If Scribe is not installed (it's a dev dependency), return minimal config
-if (!class_exists(\Knuckles\Scribe\Config\AuthIn::class)) {
+// Check if Scribe is actually installed by checking for multiple files
+// This prevents issues during Docker build when --no-dev is used
+$scribeVendorPath = __DIR__ . '/../../vendor/knuckleswtf/scribe';
+$scribeInstalled = file_exists($scribeVendorPath . '/src/ScribeServiceProvider.php') &&
+                   file_exists($scribeVendorPath . '/src/Config/Defaults.php') &&
+                   file_exists($scribeVendorPath . '/composer.json');
+
+if (!$scribeInstalled) {
     return [
         'title' => config('app.name') . ' API Documentation',
         'description' => 'API Documentation',
@@ -16,9 +23,8 @@ if (!class_exists(\Knuckles\Scribe\Config\AuthIn::class)) {
     ];
 }
 
-use Knuckles\Scribe\Extracting\Strategies;
-use Knuckles\Scribe\Config\Defaults;
-use function Knuckles\Scribe\Config\{removeStrategies, configureStrategy};
+// Import Scribe classes - only evaluated if Scribe is installed (early return above prevents this if not installed)
+// Using fully qualified names to avoid autoload issues during Docker build when Scribe isn't installed
 
 // Only the most common configs are shown. See the https://scribe.knuckles.wtf/laravel/reference/config for all.
 
@@ -125,7 +131,9 @@ return [
         'default' => true,
 
         // Where is the auth value meant to be sent in a request?
-        'in' => \Knuckles\Scribe\Config\AuthIn::BEARER->value,
+        // Use string 'bearer' directly to avoid class loading issues during Docker build
+        // The string value works for all Scribe versions (enum is only needed for Scribe 5.x+)
+        'in' => 'bearer',
 
         // The name of the auth parameter (e.g. token, key, apiKey) or header (e.g. Authorization, Api-Key).
         'name' => 'Authorization',
@@ -225,29 +233,29 @@ return [
     // The strategies Scribe will use to extract information about your routes at each stage.
     // Use configureStrategy() to specify settings for a strategy in the list.
     // Use removeStrategies() to remove an included strategy.
-    'strategies' => [
+    'strategies' => $scribeInstalled ? [
         'metadata' => [
-            ...Defaults::METADATA_STRATEGIES,
+            ...\Knuckles\Scribe\Config\Defaults::METADATA_STRATEGIES,
         ],
         'headers' => [
-            ...Defaults::HEADERS_STRATEGIES,
-            Strategies\StaticData::withSettings(data: [
+            ...\Knuckles\Scribe\Config\Defaults::HEADERS_STRATEGIES,
+            \Knuckles\Scribe\Extracting\Strategies\StaticData::withSettings(data: [
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
             ]),
         ],
         'urlParameters' => [
-            ...Defaults::URL_PARAMETERS_STRATEGIES,
+            ...\Knuckles\Scribe\Config\Defaults::URL_PARAMETERS_STRATEGIES,
         ],
         'queryParameters' => [
-            ...Defaults::QUERY_PARAMETERS_STRATEGIES,
+            ...\Knuckles\Scribe\Config\Defaults::QUERY_PARAMETERS_STRATEGIES,
         ],
         'bodyParameters' => [
-            ...Defaults::BODY_PARAMETERS_STRATEGIES,
+            ...\Knuckles\Scribe\Config\Defaults::BODY_PARAMETERS_STRATEGIES,
         ],
-        'responses' => configureStrategy(
-            Defaults::RESPONSES_STRATEGIES,
-            Strategies\Responses\ResponseCalls::withSettings(
+        'responses' => \Knuckles\Scribe\Config\configureStrategy(
+            \Knuckles\Scribe\Config\Defaults::RESPONSES_STRATEGIES,
+            \Knuckles\Scribe\Extracting\Strategies\Responses\ResponseCalls::withSettings(
                 only: ['GET *'],
                 // Recommended: disable debug mode in response calls to avoid error stack traces in responses
                 config: [
@@ -256,9 +264,9 @@ return [
             )
         ),
         'responseFields' => [
-            ...Defaults::RESPONSE_FIELDS_STRATEGIES,
+            ...\Knuckles\Scribe\Config\Defaults::RESPONSE_FIELDS_STRATEGIES,
         ]
-    ],
+    ] : [],
 
     // For response calls, API resource responses and transformer responses,
     // Scribe will try to start database transactions, so no changes are persisted to your database.
