@@ -98,11 +98,15 @@ RUN apk add --no-cache \
     dom \
     simplexml \
     && pecl install redis \
-    && docker-php-ext-enable redis
+    && docker-php-ext-enable redis \
+    && docker-php-ext-enable pcntl simplexml dom xml intl
     # Redis extension installed for Laravel cache/session/queue
+    # Note: session and fileinfo are built-in extensions and don't need explicit enabling
 
-# Enable installed extensions explicitly
-RUN docker-php-ext-enable pcntl simplexml dom xml intl 2>/dev/null || true
+# Configure PHP phar extension
+# Note: phar.require_hash doesn't disable signature verification in PHP 8.4
+# We'll handle signature verification during Composer installation
+RUN echo "phar.readonly = Off" > /usr/local/etc/php/conf.d/phar.ini
 
 # Verify PHP extensions are installed and enabled BEFORE composer
 # session and fileinfo are built-in PHP extensions that should be available by default
@@ -121,19 +125,71 @@ RUN echo "=== Checking PHP extensions ===" && \
     php -m | grep -E "(simplexml|intl|session|pcntl|fileinfo|dom|xml|redis)" && \
     echo "✅ All required extensions are loaded"
 
-# Install Composer using official installer (uses Docker image's PHP, not Alpine's)
-# Use explicit PHP path to ensure we use Docker image's PHP, not Alpine's
-RUN curl -sS https://getcomposer.org/installer | /usr/local/bin/php -- --install-dir=/usr/local/bin --filename=composer && \
-    chmod +x /usr/local/bin/composer && \
-    # Update Composer's shebang to explicitly use Docker image's PHP
-    sed -i '1s|#!/usr/bin/env php|#!/usr/local/bin/php|' /usr/local/bin/composer
+# Install Composer - download PHAR directly (more reliable for PHP 8.4 signature verification)
+# PHP 8.4 has stricter PHAR signature verification, so we use the official pre-built PHAR
+RUN set -eux; \
+    echo "=== Installing Composer ==="; \
+    MAX_RETRIES=3; \
+    RETRY=0; \
+    INSTALL_SUCCESS=0; \
+    while [ $RETRY -lt $MAX_RETRIES ] && [ $INSTALL_SUCCESS -eq 0 ]; do \
+        echo "=== Composer installation attempt $((RETRY+1))/$MAX_RETRIES ==="; \
+        rm -f /usr/local/bin/composer /tmp/composer.phar; \
+        curl -sS https://getcomposer.org/download/latest-stable/composer.phar -o /tmp/composer.phar || { \
+            echo "⚠️ Failed to download Composer PHAR, retrying..."; \
+            RETRY=$((RETRY+1)); \
+            sleep 2; \
+            continue; \
+        }; \
+        mv /tmp/composer.phar /usr/local/bin/composer && \
+        chmod +x /usr/local/bin/composer && \
+        if /usr/local/bin/php /usr/local/bin/composer --version > /dev/null 2>&1; then \
+            echo "✅ Composer installed and verified successfully"; \
+            INSTALL_SUCCESS=1; \
+        else \
+            echo "⚠️ Composer PHAR signature verification failed (attempt $((RETRY+1))/$MAX_RETRIES)"; \
+            echo "Error details:"; \
+            /usr/local/bin/php /usr/local/bin/composer --version 2>&1 || true; \
+            RETRY=$((RETRY+1)); \
+            sleep 2; \
+        fi; \
+    done; \
+    if [ $INSTALL_SUCCESS -eq 0 ]; then \
+        echo "⚠️ Direct PHAR download failed, trying installer script..."; \
+        rm -f /usr/local/bin/composer /tmp/composer-setup.php; \
+        EXPECTED_SIGNATURE=$(curl -sS https://composer.github.io/installer.sig) && \
+        curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php && \
+        ACTUAL_SIGNATURE=$(/usr/local/bin/php -r "echo hash_file('sha384', '/tmp/composer-setup.php');") && \
+        if [ "$EXPECTED_SIGNATURE" = "$ACTUAL_SIGNATURE" ]; then \
+            echo "✅ Installer signature verified, running installer..."; \
+            /usr/local/bin/php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer --quiet && \
+            rm -f /tmp/composer-setup.php && \
+            chmod +x /usr/local/bin/composer; \
+        fi; \
+        if ! /usr/local/bin/php /usr/local/bin/composer --version > /dev/null 2>&1; then \
+            echo "❌ All Composer installation methods failed!"; \
+            echo "PHP version:"; \
+            /usr/local/bin/php --version; \
+            echo "PHP phar configuration:"; \
+            /usr/local/bin/php -i | grep -E "phar\." || true; \
+            exit 1; \
+        fi; \
+        echo "✅ Composer installed successfully via installer script"; \
+    fi
 
 # Configure PHP
 RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini && \
     echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini && \
     echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini
 
+# Ensure PATH prioritizes Docker image's PHP over any Alpine PHP
+ENV PATH="/usr/local/bin:${PATH}"
+
+# Create symlink to ensure 'php' command uses Docker image's PHP
+RUN ln -sf /usr/local/bin/php /usr/bin/php || true
+
 # Verify composer is installed and using correct PHP
+# Test Composer immediately and reinstall if signature verification fails
 RUN echo "=== PHP Binary Locations ===" && \
     which php && \
     /usr/local/bin/php --version && \
@@ -141,17 +197,57 @@ RUN echo "=== PHP Binary Locations ===" && \
     echo "=== PATH Check ===" && \
     echo $PATH && \
     echo "" && \
+    echo "=== Composer Installation Check ===" && \
+    if [ ! -f /usr/local/bin/composer ]; then \
+        echo "❌ Composer binary not found at /usr/local/bin/composer"; \
+        exit 1; \
+    fi && \
+    if ! /usr/local/bin/php /usr/local/bin/composer --version > /dev/null 2>&1; then \
+        echo "⚠️ Composer PHAR signature verification failed, reinstalling..."; \
+        rm -f /usr/local/bin/composer /tmp/composer.phar; \
+        curl -sS https://getcomposer.org/download/latest-stable/composer.phar -o /tmp/composer.phar && \
+        mv /tmp/composer.phar /usr/local/bin/composer && \
+        chmod +x /usr/local/bin/composer && \
+        if ! /usr/local/bin/php /usr/local/bin/composer --version > /dev/null 2>&1; then \
+            echo "⚠️ Direct PHAR download failed, trying installer script..."; \
+            rm -f /usr/local/bin/composer /tmp/composer-setup.php; \
+            EXPECTED_SIG=$(curl -sS https://composer.github.io/installer.sig) && \
+            curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php && \
+            ACTUAL_SIG=$(/usr/local/bin/php -r "echo hash_file('sha384', '/tmp/composer-setup.php');") && \
+            if [ "$EXPECTED_SIG" = "$ACTUAL_SIG" ]; then \
+                /usr/local/bin/php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer --quiet && \
+                rm -f /tmp/composer-setup.php && \
+                chmod +x /usr/local/bin/composer; \
+            fi; \
+        fi && \
+        /usr/local/bin/php /usr/local/bin/composer --version || { \
+            echo "❌ Composer reinstall failed after all attempts!"; \
+            echo "PHP version:"; \
+            /usr/local/bin/php --version; \
+            echo "PHP phar configuration:"; \
+            /usr/local/bin/php -i | grep -E "phar\." || true; \
+            exit 1; \
+        }; \
+        echo "✅ Composer reinstalled successfully"; \
+    fi && \
+    echo "" && \
+    echo "=== Verifying Composer works ===" && \
+    /usr/local/bin/php /usr/local/bin/composer --version && \
+    echo "" && \
     echo "=== Composer PHP Check ===" && \
-    composer --version && \
-    composer diagnose 2>&1 | head -20 && \
+    /usr/local/bin/php /usr/local/bin/composer diagnose 2>&1 | head -20 || echo "⚠️ Composer diagnose had warnings (continuing...)" && \
     echo "" && \
     echo "=== Verifying Composer uses correct PHP ===" && \
     head -1 /usr/local/bin/composer && \
     /usr/local/bin/php -r "echo 'PHP ini path: ' . php_ini_loaded_file() . PHP_EOL;" && \
+    echo "" && \
+    echo "=== Verifying PHP extensions ===" && \
     /usr/local/bin/php -r "echo 'PHP extensions: '; print_r(get_loaded_extensions());" | grep -E "(simplexml|intl|session|pcntl|fileinfo|dom|xml)" || { \
-        echo "❌ Composer verification failed!"; \
+        echo "❌ Missing required PHP extensions!"; \
+        /usr/local/bin/php -m; \
         exit 1; \
-    }
+    } && \
+    echo "✅ Composer verification successful"
 
 # Set working directory
 WORKDIR /var/www/html
@@ -181,7 +277,7 @@ COPY . .
 COPY --from=frontend-builder /app/public/build ./public/build
 
 # Run composer scripts (post-install)
-RUN composer dump-autoload --optimize
+RUN /usr/local/bin/php /usr/local/bin/composer dump-autoload --optimize
 
 # Copy nginx configuration
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
