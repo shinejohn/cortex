@@ -67,7 +67,7 @@ for service_name, domain_config in domains.items():
             protocol="HTTP",
             healthy_threshold=2,
             unhealthy_threshold=3,
-            timeout=5,
+            timeout=15,
             interval=30,
             matcher="200",
         ),
