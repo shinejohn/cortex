@@ -47,6 +47,7 @@ alb = aws.lb.LoadBalancer(
     subnets=[subnet.id for subnet in public_subnets],
     security_groups=[alb_security_group.id],
     enable_deletion_protection=False,
+    idle_timeout=300,  # 5 minutes to match PHP-FPM timeout
     tags={**common_tags, "Name": f"{project_name}-{env}-alb"},
 )
 
