@@ -106,11 +106,26 @@ final class AppServiceProvider extends ServiceProvider
         // Configure default connection with TLS if enabled
         $defaultConfig = config('database.redis.default', []);
         $defaultConfig['scheme'] = $redisScheme;
+        
+        // Configure TLS/SSL based on client type
+        $client = config('database.redis.client', 'predis');
         if ($redisTls || $redisScheme === 'tls') {
-            $defaultConfig['ssl'] = [
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-            ];
+            if ($client === 'phpredis') {
+                // phpredis uses 'scheme' => 'tls' and 'ssl' context options
+                $defaultConfig['scheme'] = 'tls';
+                $defaultConfig['ssl'] = [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                ];
+            } else {
+                // predis uses 'scheme' => 'tls' and 'ssl' options
+                $defaultConfig['scheme'] = 'tls';
+                $defaultConfig['ssl'] = [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                ];
+            }
         }
         if (!isset($defaultConfig['timeout'])) {
             $defaultConfig['timeout'] = $timeout;
@@ -124,10 +139,22 @@ final class AppServiceProvider extends ServiceProvider
         $cacheConfig = config('database.redis.cache', []);
         $cacheConfig['scheme'] = $redisScheme;
         if ($redisTls || $redisScheme === 'tls') {
-            $cacheConfig['ssl'] = [
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-            ];
+            if ($client === 'phpredis') {
+                // phpredis uses 'scheme' => 'tls' and 'ssl' context options
+                $cacheConfig['scheme'] = 'tls';
+                $cacheConfig['ssl'] = [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                ];
+            } else {
+                // predis uses 'scheme' => 'tls' and 'ssl' options
+                $cacheConfig['scheme'] = 'tls';
+                $cacheConfig['ssl'] = [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                ];
+            }
         }
         if (!isset($cacheConfig['timeout'])) {
             $cacheConfig['timeout'] = $timeout;
