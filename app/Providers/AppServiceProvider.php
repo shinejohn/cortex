@@ -87,6 +87,36 @@ final class AppServiceProvider extends ServiceProvider
             $client = (extension_loaded('redis') || function_exists('redis_connect')) ? 'phpredis' : 'predis';
             config(['database.redis.client' => $client]);
         }
+        
+        // Configure Redis timeouts to prevent hanging connections
+        // This helps prevent 504 Gateway Timeout errors
+        $timeout = (int) env('REDIS_TIMEOUT', 5); // 5 second timeout
+        $readTimeout = (int) env('REDIS_READ_TIMEOUT', 5);
+        
+        // Set timeout options for Redis connections
+        $options = config('database.redis.options', []);
+        $options['timeout'] = $timeout;
+        $options['read_timeout'] = $readTimeout;
+        config(['database.redis.options' => $options]);
+        
+        // Also set for default and cache connections
+        $defaultOptions = config('database.redis.default', []);
+        if (!isset($defaultOptions['timeout'])) {
+            $defaultOptions['timeout'] = $timeout;
+        }
+        if (!isset($defaultOptions['read_timeout'])) {
+            $defaultOptions['read_timeout'] = $readTimeout;
+        }
+        config(['database.redis.default' => $defaultOptions]);
+        
+        $cacheOptions = config('database.redis.cache', []);
+        if (!isset($cacheOptions['timeout'])) {
+            $cacheOptions['timeout'] = $timeout;
+        }
+        if (!isset($cacheOptions['read_timeout'])) {
+            $cacheOptions['read_timeout'] = $readTimeout;
+        }
+        config(['database.redis.cache' => $cacheOptions]);
     }
 
     /**
