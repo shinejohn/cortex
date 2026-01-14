@@ -7,6 +7,7 @@ import pulumi
 import pulumi_aws as aws
 from config import project_name, env, common_tags, ecs, ecs_ssr, ecs_horizon
 from .cluster import cluster, ecs_security_group
+from .service_discovery import ssr_service_discovery
 from networking import private_subnets
 from storage import repositories
 from secrets import app_secret
@@ -83,29 +84,44 @@ ssr_task_definition = aws.ecs.TaskDefinition(
     memory=str(ecs_ssr["memory"]),
     execution_role_arn=task_execution_role.arn,
     task_role_arn=task_role.arn,
-    container_definitions=repositories['inertia-ssr'].repository_url.apply(
-        lambda url: json.dumps([{
-            "name": "inertia-ssr",
-            "image": f"{url}:latest",
-            "essential": True,
-            "portMappings": [{
-                "containerPort": ecs_ssr["port"],
-                "protocol": "tcp",
-            }],
-            "environment": [
-                {"name": "NODE_ENV", "value": env},
-                {"name": "INERTIA_SSR_PORT", "value": str(ecs_ssr["port"])},
-            ],
-            "logConfiguration": {
-                "logDriver": "awslogs",
-                "options": {
-                    "awslogs-group": f"/ecs/{project_name}/{env}/ssr",
-                    "awslogs-region": "us-east-1",
-                    "awslogs-stream-prefix": "ecs",
-                },
+    container_definitions=pulumi.Output.all(
+        url=repositories['inertia-ssr'].repository_url,
+        secret_arn=app_secret.arn
+    ).apply(lambda args: json.dumps([{
+        "name": "inertia-ssr",
+        "image": f"{args['url']}:latest",
+        "essential": True,
+        "command": ["php", "artisan", "inertia:start-ssr"],
+        "portMappings": [{
+            "containerPort": ecs_ssr["port"],
+            "protocol": "tcp",
+        }],
+        "environment": [
+            {"name": "NODE_ENV", "value": env},
+            {"name": "INERTIA_SSR_PORT", "value": str(ecs_ssr["port"])},
+            {"name": "APP_ENV", "value": env},
+            {"name": "APP_DEBUG", "value": "false"},
+        ],
+        "secrets": [
+            {"name": "DB_CONNECTION", "valueFrom": f"{args['secret_arn']}:DB_CONNECTION::"},
+            {"name": "DB_HOST", "valueFrom": f"{args['secret_arn']}:DB_HOST::"},
+            {"name": "DB_PORT", "valueFrom": f"{args['secret_arn']}:DB_PORT::"},
+            {"name": "DB_DATABASE", "valueFrom": f"{args['secret_arn']}:DB_DATABASE::"},
+            {"name": "DB_USERNAME", "valueFrom": f"{args['secret_arn']}:DB_USERNAME::"},
+            {"name": "DB_PASSWORD", "valueFrom": f"{args['secret_arn']}:DB_PASSWORD::"},
+            {"name": "REDIS_HOST", "valueFrom": f"{args['secret_arn']}:REDIS_HOST::"},
+            {"name": "REDIS_PORT", "valueFrom": f"{args['secret_arn']}:REDIS_PORT::"},
+            {"name": "APP_KEY", "valueFrom": f"{args['secret_arn']}:APP_KEY::"},
+        ],
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-group": f"/ecs/{project_name}/{env}/ssr",
+                "awslogs-region": "us-east-1",
+                "awslogs-stream-prefix": "ecs",
             },
-        }])
-    ),
+        },
+    }])),
     tags=common_tags,
 )
 
@@ -117,7 +133,7 @@ ssr_log_group = aws.cloudwatch.LogGroup(
     tags=common_tags,
 )
 
-# Inertia SSR Service
+# Inertia SSR Service with Service Discovery
 ssr_service = aws.ecs.Service(
     f"{project_name}-{env}-ssr-service",
     name=f"{project_name}-{env}-ssr",
@@ -129,6 +145,9 @@ ssr_service = aws.ecs.Service(
         subnets=[subnet.id for subnet in private_subnets],
         security_groups=[ecs_security_group.id],
         assign_public_ip=False,
+    ),
+    service_registries=aws.ecs.ServiceServiceRegistriesArgs(
+        registry_arn=ssr_service_discovery.arn,
     ),
     tags=common_tags,
 )
@@ -237,6 +256,10 @@ def create_web_service(name: str, domain_config: dict, target_group_arn: pulumi.
                 {"name": "SESSION_DRIVER", "value": "redis"},
                 {"name": "LOG_CHANNEL", "value": "stderr"},  # Log to stderr for CloudWatch
                 {"name": "LOG_LEVEL", "value": "debug" if env == "dev" else "info"},
+                {"name": "INERTIA_SSR_URL", "value": f"http://ssr.{project_name}-{env}.local:13714"},
+                {"name": "INERTIA_SSR_ENABLED", "value": "true"},
+                {"name": "REDIS_SCHEME", "value": "tls"},
+                {"name": "REDIS_TLS", "value": "true"},
             ],
             "secrets": [
                 {"name": "DB_CONNECTION", "valueFrom": f"{args['secret_arn']}:DB_CONNECTION::"},
