@@ -8,6 +8,7 @@ use App\Models\Region;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 use Stevebauman\Location\Facades\Location;
 use Stevebauman\Location\Position;
 
@@ -39,6 +40,10 @@ final class LocationService
      */
     public function findRegionsByZipcode(string $zipcode): Collection
     {
+        if (! Schema::hasTable('regions')) {
+            return collect();
+        }
+
         return Cache::remember(
             "regions:zipcode:{$zipcode}",
             now()->addHours(24),
@@ -78,6 +83,10 @@ final class LocationService
      */
     public function findNearestRegion(float $latitude, float $longitude, ?string $type = null): ?Region
     {
+        if (! Schema::hasTable('regions')) {
+            return null;
+        }
+
         $query = Region::active()
             ->whereNotNull('latitude')
             ->whereNotNull('longitude');
@@ -127,6 +136,10 @@ final class LocationService
      */
     public function getUserLocation(): ?Region
     {
+        if (! Schema::hasTable('regions')) {
+            return null;
+        }
+
         $regionId = session('user_location_region_id')
             ?? request()->cookie('user_location_region_id');
 
@@ -159,6 +172,10 @@ final class LocationService
      */
     public function searchRegions(string $query, int $limit = 10): Collection
     {
+        if (! Schema::hasTable('regions')) {
+            return collect();
+        }
+
         return Region::active()
             ->where(function ($q) use ($query) {
                 $q->where('name', 'ilike', "%{$query}%")
@@ -179,6 +196,10 @@ final class LocationService
      */
     public function getFallbackRegion(): ?Region
     {
+        if (! Schema::hasTable('regions')) {
+            return null;
+        }
+
         return Cache::remember(
             'regions:fallback',
             now()->addDay(),
