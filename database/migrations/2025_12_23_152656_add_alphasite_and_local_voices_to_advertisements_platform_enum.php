@@ -12,10 +12,37 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // For PostgreSQL, we need to alter the enum type
-        if (DB::getDriverName() === 'pgsql') {
-            DB::statement("ALTER TYPE advertisements_platform_enum ADD VALUE IF NOT EXISTS 'alphasite'");
-            DB::statement("ALTER TYPE advertisements_platform_enum ADD VALUE IF NOT EXISTS 'local_voices'");
+        $driver = DB::getDriverName();
+        
+        if ($driver === 'pgsql') {
+            // For PostgreSQL, Laravel's enum() creates a CHECK constraint, not a PostgreSQL enum type
+            // We need to find and drop the existing constraint, then recreate it with additional values
+            $constraints = DB::select("
+                SELECT conname 
+                FROM pg_constraint 
+                WHERE conrelid = 'advertisements'::regclass 
+                AND contype = 'c'
+            ");
+            
+            // Drop all CHECK constraints on the table (Laravel typically creates one for enum columns)
+            foreach ($constraints as $constraint) {
+                $constraintName = $constraint->conname;
+                // Check if this constraint is related to the platform column
+                $checkDef = DB::selectOne("
+                    SELECT pg_get_constraintdef(oid) as definition
+                    FROM pg_constraint 
+                    WHERE conname = ?
+                ", [$constraintName]);
+                
+                if ($checkDef && str_contains($checkDef->definition, 'platform')) {
+                    DB::statement("ALTER TABLE advertisements DROP CONSTRAINT IF EXISTS {$constraintName}");
+                }
+            }
+            
+            // Recreate the constraint with all values including the new ones
+            DB::statement("ALTER TABLE advertisements ADD CONSTRAINT advertisements_platform_check CHECK (platform IN (
+                'day_news', 'event_city', 'downtown_guide', 'alphasite', 'local_voices'
+            ))");
         } else {
             // For MySQL/SQLite, we need to recreate the column
             // SQLite doesn't support ALTER TABLE DROP COLUMN easily, skip for testing
@@ -40,22 +67,37 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // For PostgreSQL
-        if (DB::getDriverName() === 'pgsql') {
-            // PostgreSQL doesn't support removing enum values easily
-            // We'll need to recreate the column
-            Schema::table('advertisements', function (Blueprint $table) {
-                $table->dropColumn('platform');
-            });
+        $driver = DB::getDriverName();
+        
+        if ($driver === 'pgsql') {
+            // For PostgreSQL, Laravel's enum() creates a CHECK constraint, not a PostgreSQL enum type
+            // We need to find and drop the existing constraint, then recreate it without the new values
+            $constraints = DB::select("
+                SELECT conname 
+                FROM pg_constraint 
+                WHERE conrelid = 'advertisements'::regclass 
+                AND contype = 'c'
+            ");
             
-            DB::statement("CREATE TYPE advertisements_platform_enum_old AS ENUM ('day_news', 'event_city', 'downtown_guide')");
+            // Drop all CHECK constraints on the table
+            foreach ($constraints as $constraint) {
+                $constraintName = $constraint->conname;
+                // Check if this constraint is related to the platform column
+                $checkDef = DB::selectOne("
+                    SELECT pg_get_constraintdef(oid) as definition
+                    FROM pg_constraint 
+                    WHERE conname = ?
+                ", [$constraintName]);
+                
+                if ($checkDef && str_contains($checkDef->definition, 'platform')) {
+                    DB::statement("ALTER TABLE advertisements DROP CONSTRAINT IF EXISTS {$constraintName}");
+                }
+            }
             
-            Schema::table('advertisements', function (Blueprint $table) {
-                $table->addColumn('platform', 'advertisements_platform_enum_old')->after('id');
-            });
-            
-            DB::statement("DROP TYPE IF EXISTS advertisements_platform_enum");
-            DB::statement("ALTER TYPE advertisements_platform_enum_old RENAME TO advertisements_platform_enum");
+            // Recreate the constraint without the new values
+            DB::statement("ALTER TABLE advertisements ADD CONSTRAINT advertisements_platform_check CHECK (platform IN (
+                'day_news', 'event_city', 'downtown_guide'
+            ))");
         } else {
             // For MySQL/SQLite
             Schema::table('advertisements', function (Blueprint $table) {
