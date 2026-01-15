@@ -9,17 +9,20 @@ $scribeInstalled = file_exists($scribeVendorPath . '/src/ScribeServiceProvider.p
                    file_exists($scribeVendorPath . '/composer.json');
 
 if (!$scribeInstalled) {
+    // Return minimal config without Scribe dependencies
+    // Use env() directly to avoid config() calls that might not be available during bootstrap
     return [
-        'title' => config('app.name') . ' API Documentation',
+        'title' => (env('APP_NAME', 'Laravel')) . ' API Documentation',
         'description' => 'API Documentation',
         'type' => 'static',
-        'base_url' => config('app.url'),
+        'base_url' => env('APP_URL', 'http://localhost'),
         'auth' => [
             'enabled' => true,
             'default' => true,
             'in' => 'bearer',
             'name' => 'Authorization',
         ],
+        'strategies' => [],
     ];
 }
 
