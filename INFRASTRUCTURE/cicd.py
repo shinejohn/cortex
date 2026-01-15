@@ -238,13 +238,13 @@ phases:
       - echo "Commit SHA=$CODEBUILD_RESOLVED_SOURCE_VERSION"
       - echo "Logging in to Amazon ECR..."
       - ECR_PASSWORD=$(aws ecr get-login-password --region $AWS_DEFAULT_REGION)
-      - bash -c 'echo "$ECR_PASSWORD" | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com'
+      - echo "$ECR_PASSWORD" | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - echo "ECR login successful"
       - echo "Logging in to Docker Hub (to avoid rate limits)..."
-      - bash -c 'echo "$DOCKERHUB_PASSWORD" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin || echo "WARNING: Docker Hub login failed, may hit rate limits"'
+      - echo "$DOCKERHUB_PASSWORD" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin || true
       - echo "Build started on `date`"
       - echo "Checking Dockerfile exists..."
-      - bash -c 'ls -la $DOCKERFILE || echo "WARNING: Dockerfile not found at $DOCKERFILE"'
+      - ls -la $DOCKERFILE || true
       - echo "Building Docker image..."
   build:
     commands:
@@ -253,7 +253,7 @@ phases:
       - docker build -f $DOCKERFILE -t $ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REPOSITORY:$CODEBUILD_RESOLVED_SOURCE_VERSION .
       - echo "Build completed on `date`"
       - echo "Verifying images were created..."
-      - bash -c 'docker images | grep $ECR_REPOSITORY || echo "WARNING: Images not found"'
+      - docker images | grep $ECR_REPOSITORY || true
   post_build:
     commands:
       - echo "=== POST-BUILD PHASE ==="
