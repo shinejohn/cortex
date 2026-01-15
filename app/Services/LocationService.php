@@ -203,10 +203,22 @@ final class LocationService
         return Cache::remember(
             'regions:fallback',
             now()->addDay(),
-            fn () => Region::active()
-                ->topLevel()
-                ->orderBy('display_order')
-                ->first()
+            function () {
+                // Double-check table exists inside closure (in case it was dropped)
+                if (! Schema::hasTable('regions')) {
+                    return null;
+                }
+                
+                try {
+                    return Region::active()
+                        ->topLevel()
+                        ->orderBy('display_order')
+                        ->first();
+                } catch (\Exception $e) {
+                    // If query fails (e.g., table doesn't exist), return null
+                    return null;
+                }
+            }
         );
     }
 
