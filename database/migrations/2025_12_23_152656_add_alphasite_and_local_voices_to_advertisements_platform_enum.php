@@ -15,6 +15,12 @@ return new class extends Migration
         $driver = DB::getDriverName();
         
         if ($driver === 'pgsql') {
+            // Check if the table exists first
+            if (! Schema::hasTable('advertisements')) {
+                // Table doesn't exist yet, skip this migration
+                return;
+            }
+            
             // For PostgreSQL, Laravel's enum() creates a CHECK constraint, not a PostgreSQL enum type
             // We need to find and drop the existing constraint, then recreate it with additional values
             $constraints = DB::select("
