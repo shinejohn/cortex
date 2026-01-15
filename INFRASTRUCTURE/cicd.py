@@ -238,10 +238,10 @@ phases:
       - echo "Commit SHA=$CODEBUILD_RESOLVED_SOURCE_VERSION"
       - echo "Logging in to Amazon ECR..."
       - ECR_PASSWORD=$(aws ecr get-login-password --region $AWS_DEFAULT_REGION)
-      - echo "$ECR_PASSWORD" | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - sh -c "echo \"$ECR_PASSWORD\" | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com"
       - echo "ECR login successful"
       - echo "Logging in to Docker Hub (to avoid rate limits)..."
-      - echo "$DOCKERHUB_PASSWORD" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin || true
+      - sh -c "echo \"$DOCKERHUB_PASSWORD\" | docker login --username \"$DOCKERHUB_USERNAME\" --password-stdin || true"
       - echo "Build started on `date`"
       - echo "Checking Dockerfile exists..."
       - ls -la $DOCKERFILE || true
@@ -253,7 +253,7 @@ phases:
       - docker build -f $DOCKERFILE -t $ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REPOSITORY:$CODEBUILD_RESOLVED_SOURCE_VERSION .
       - echo "Build completed on `date`"
       - echo "Verifying images were created..."
-      - docker images | grep $ECR_REPOSITORY || true
+      - sh -c "docker images | grep $ECR_REPOSITORY || true"
   post_build:
     commands:
       - echo "=== POST-BUILD PHASE ==="
