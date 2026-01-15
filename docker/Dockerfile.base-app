@@ -168,8 +168,27 @@ RUN echo "=== PHP Binary Location ===" && \
 RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory.ini && \
     echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini && \
     echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "max_execution_time=300" > /usr/local/etc/php/conf.d/timeout.ini && \
+    echo "max_input_time=300" >> /usr/local/etc/php/conf.d/timeout.ini && \
     echo "phar.readonly=0" > /usr/local/etc/php/conf.d/phar.ini && \
     echo "phar.require_hash=0" >> /usr/local/etc/php/conf.d/phar.ini
+
+# Configure PHP-FPM pool for better performance and timeout handling
+# Ensure PHP-FPM listens on TCP port 9000 (not Unix socket) to match nginx config
+RUN sed -i 's/listen = .*/listen = 127.0.0.1:9000/' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's/;pm.max_children = 5/pm.max_children = 50/' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's/;pm.start_servers = 2/pm.start_servers = 5/' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's/;pm.min_spare_servers = 1/pm.min_spare_servers = 5/' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's/;pm.max_spare_servers = 3/pm.max_spare_servers = 10/' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's/;pm.max_requests = 500/pm.max_requests = 500/' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 300/' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's/;slowlog = .*/slowlog = \/var\/log\/php-fpm\/slow.log/' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's/;request_slowlog_timeout = 0/request_slowlog_timeout = 30/' /usr/local/etc/php-fpm.d/www.conf && \
+    echo "catch_workers_output = yes" >> /usr/local/etc/php-fpm.d/www.conf && \
+    echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf && \
+    echo "php_admin_value[error_log] = /var/log/php-fpm-error.log" >> /usr/local/etc/php-fpm.d/www.conf && \
+    echo "php_admin_value[memory_limit] = 512M" >> /usr/local/etc/php-fpm.d/www.conf && \
+    echo "php_admin_value[max_execution_time] = 300" >> /usr/local/etc/php-fpm.d/www.conf
 
 # Verify composer is installed and using correct PHP
 RUN echo "=== PHP Binary Locations ===" && \
