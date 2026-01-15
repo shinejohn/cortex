@@ -24,11 +24,15 @@ final class DetectAppDomain
             $dayNewsDomain = null;
             $downtownGuideDomain = null;
             $eventCityDomain = null;
+            $alphaSiteDomain = null;
+            $localVoicesDomain = null;
             
             try {
                 $dayNewsDomain = config('domains.day-news');
                 $downtownGuideDomain = config('domains.downtown-guide');
                 $eventCityDomain = config('domains.event-city');
+                $alphaSiteDomain = config('domains.alphasite');
+                $localVoicesDomain = config('domains.local-voices');
             } catch (\Throwable $e) {
                 // If config fails, fall back to hostname pattern matching
                 \Illuminate\Support\Facades\Log::warning('Failed to load domain config, using hostname patterns', [
@@ -44,6 +48,14 @@ final class DetectAppDomain
                 // Downtown Guide detection - check exact match first, then hostname patterns
                 $downtownGuideDomain && $host === $downtownGuideDomain => 'downtown-guide',
                 str_contains($host, 'downtownsguide') || str_contains($host, 'downtown-guide') => 'downtown-guide',
+                
+                // AlphaSite detection - check exact match first, then hostname patterns
+                $alphaSiteDomain && $host === $alphaSiteDomain => 'alphasite',
+                str_contains($host, 'alphasite') => 'alphasite',
+                
+                // Local Voices detection - check exact match first, then hostname patterns
+                $localVoicesDomain && $host === $localVoicesDomain => 'local-voices',
+                str_contains($host, 'golocalvoices') || str_contains($host, 'local-voices') => 'local-voices',
                 
                 // Event City detection - check exact match first, then hostname patterns
                 $eventCityDomain && $host === $eventCityDomain => 'event-city',
