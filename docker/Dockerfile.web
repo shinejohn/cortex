@@ -193,6 +193,7 @@ RUN sed -i 's/listen = .*/listen = 127.0.0.1:9000/' /usr/local/etc/php-fpm.d/www
     sed -i 's/;pm.max_spare_servers = 3/pm.max_spare_servers = 10/' /usr/local/etc/php-fpm.d/www.conf && \
     sed -i 's/;pm.max_requests = 500/pm.max_requests = 500/' /usr/local/etc/php-fpm.d/www.conf && \
     sed -i 's/;request_terminate_timeout = 0/request_terminate_timeout = 300/' /usr/local/etc/php-fpm.d/www.conf && \
+    sed -i 's/;slowlog = .*/slowlog = \/var\/log\/php-fpm\/slow.log/' /usr/local/etc/php-fpm.d/www.conf && \
     sed -i 's/;request_slowlog_timeout = 0/request_slowlog_timeout = 30/' /usr/local/etc/php-fpm.d/www.conf && \
     echo "catch_workers_output = yes" >> /usr/local/etc/php-fpm.d/www.conf && \
     echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf && \
