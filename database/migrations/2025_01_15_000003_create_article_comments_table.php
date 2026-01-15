@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('article_comments', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignId('article_id')->constrained('day_news_posts')->cascadeOnDelete();
+            $table->unsignedBigInteger('article_id'); // Create column first without foreign key
             $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
             $table->uuid('parent_id')->nullable();
             $table->text('content');
@@ -31,6 +31,13 @@ return new class extends Migration
             // Self-referencing foreign key for replies
             $table->foreign('parent_id')->references('id')->on('article_comments')->onDelete('cascade');
         });
+        
+        // Add foreign key constraint only if day_news_posts table exists
+        if (Schema::hasTable('day_news_posts')) {
+            Schema::table('article_comments', function (Blueprint $table) {
+                $table->foreign('article_id')->references('id')->on('day_news_posts')->onDelete('cascade');
+            });
+        }
 
         // Article comment likes table
         Schema::create('article_comment_likes', function (Blueprint $table) {
