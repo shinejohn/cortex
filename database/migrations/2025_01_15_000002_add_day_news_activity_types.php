@@ -30,6 +30,13 @@ return new class extends Migration
                 'tag_follow', 'author_follow'
             ) NOT NULL");
         } elseif ($driver === 'pgsql') {
+            // Check if the table exists first (this migration may run before the table is created)
+            if (! Schema::hasTable('social_activities')) {
+                // Table doesn't exist yet, skip this migration
+                // The table will be created later with the correct enum values
+                return;
+            }
+            
             // For PostgreSQL, Laravel's enum() creates a CHECK constraint, not a PostgreSQL enum type
             // We need to find and drop the existing constraint, then recreate it with additional values
             $constraints = DB::select("
