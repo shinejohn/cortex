@@ -10,6 +10,7 @@ use App\Models\Performer;
 use App\Models\Region;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Schema;
 
 final class EventService
 {
@@ -23,12 +24,21 @@ final class EventService
      */
     public function getUpcoming(array $filters = [], int $perPage = 20): LengthAwarePaginator
     {
+        if (! Schema::hasTable('events')) {
+            return new LengthAwarePaginator([], 0, $perPage);
+        }
+        
         $cacheKey = 'events:upcoming:'.md5(serialize([$filters, $perPage]));
         
         return $this->cacheService->remember($cacheKey, 300, function () use ($filters, $perPage) {
-            $query = Event::published()
-                ->upcoming()
-                ->with(['venue', 'performer', 'regions']);
+            if (! Schema::hasTable('events')) {
+                return new LengthAwarePaginator([], 0, $perPage);
+            }
+            
+            try {
+                $query = Event::published()
+                    ->upcoming()
+                    ->with(['venue', 'performer', 'regions']);
 
             // Filters
             if (isset($filters['category'])) {
@@ -80,7 +90,10 @@ final class EventService
                 $query->orderBy($sortBy, $sortOrder);
             }
 
-            return $query->paginate($perPage);
+                return $query->paginate($perPage);
+            } catch (\Exception $e) {
+                return new LengthAwarePaginator([], 0, $perPage);
+            }
         });
     }
 
@@ -89,16 +102,28 @@ final class EventService
      */
     public function getByCategory(string $category, int $limit = 20): Collection
     {
+        if (! Schema::hasTable('events')) {
+            return collect();
+        }
+        
         $cacheKey = "events:category:{$category}:limit:{$limit}";
         
         return $this->cacheService->remember($cacheKey, 600, function () use ($category, $limit) {
-            return Event::published()
-                ->upcoming()
-                ->where('category', $category)
-                ->with(['venue', 'performer', 'regions'])
-                ->orderBy('event_date', 'asc')
-                ->limit($limit)
-                ->get();
+            if (! Schema::hasTable('events')) {
+                return collect();
+            }
+            
+            try {
+                return Event::published()
+                    ->upcoming()
+                    ->where('category', $category)
+                    ->with(['venue', 'performer', 'regions'])
+                    ->orderBy('event_date', 'asc')
+                    ->limit($limit)
+                    ->get();
+            } catch (\Exception $e) {
+                return collect();
+            }
         });
     }
 
@@ -107,17 +132,29 @@ final class EventService
      */
     public function getByVenue(Venue|string $venue, int $limit = 20): Collection
     {
+        if (! Schema::hasTable('events')) {
+            return collect();
+        }
+        
         $venueId = $venue instanceof Venue ? $venue->id : $venue;
         $cacheKey = "events:venue:{$venueId}:limit:{$limit}";
         
         return $this->cacheService->remember($cacheKey, 600, function () use ($venueId, $limit) {
-            return Event::published()
-                ->upcoming()
-                ->where('venue_id', $venueId)
-                ->with(['performer', 'regions'])
-                ->orderBy('event_date', 'asc')
-                ->limit($limit)
-                ->get();
+            if (! Schema::hasTable('events')) {
+                return collect();
+            }
+            
+            try {
+                return Event::published()
+                    ->upcoming()
+                    ->where('venue_id', $venueId)
+                    ->with(['performer', 'regions'])
+                    ->orderBy('event_date', 'asc')
+                    ->limit($limit)
+                    ->get();
+            } catch (\Exception $e) {
+                return collect();
+            }
         });
     }
 
@@ -126,17 +163,29 @@ final class EventService
      */
     public function getByPerformer(Performer|string $performer, int $limit = 20): Collection
     {
+        if (! Schema::hasTable('events')) {
+            return collect();
+        }
+        
         $performerId = $performer instanceof Performer ? $performer->id : $performer;
         $cacheKey = "events:performer:{$performerId}:limit:{$limit}";
         
         return $this->cacheService->remember($cacheKey, 600, function () use ($performerId, $limit) {
-            return Event::published()
-                ->upcoming()
-                ->where('performer_id', $performerId)
-                ->with(['venue', 'regions'])
-                ->orderBy('event_date', 'asc')
-                ->limit($limit)
-                ->get();
+            if (! Schema::hasTable('events')) {
+                return collect();
+            }
+            
+            try {
+                return Event::published()
+                    ->upcoming()
+                    ->where('performer_id', $performerId)
+                    ->with(['venue', 'regions'])
+                    ->orderBy('event_date', 'asc')
+                    ->limit($limit)
+                    ->get();
+            } catch (\Exception $e) {
+                return collect();
+            }
         });
     }
 
@@ -145,13 +194,22 @@ final class EventService
      */
     public function getRelated(Event $event, int $limit = 6): Collection
     {
+        if (! Schema::hasTable('events')) {
+            return collect();
+        }
+        
         $cacheKey = "events:related:{$event->id}:limit:{$limit}";
         
         return $this->cacheService->remember($cacheKey, 1800, function () use ($event, $limit) {
-            $query = Event::published()
-                ->upcoming()
-                ->where('id', '!=', $event->id)
-                ->with(['venue', 'performer', 'regions']);
+            if (! Schema::hasTable('events')) {
+                return collect();
+            }
+            
+            try {
+                $query = Event::published()
+                    ->upcoming()
+                    ->where('id', '!=', $event->id)
+                    ->with(['venue', 'performer', 'regions']);
 
             // Find events with same category
             if ($event->category) {
@@ -171,9 +229,12 @@ final class EventService
                 $query->orWhere('venue_id', $event->venue_id);
             }
 
-            return $query->orderBy('event_date', 'asc')
-                ->limit($limit)
-                ->get();
+                return $query->orderBy('event_date', 'asc')
+                    ->limit($limit)
+                    ->get();
+            } catch (\Exception $e) {
+                return collect();
+            }
         });
     }
 
@@ -182,16 +243,28 @@ final class EventService
      */
     public function getFeatured(int $limit = 6): Collection
     {
+        if (! Schema::hasTable('events')) {
+            return collect();
+        }
+        
         $cacheKey = "events:featured:limit:{$limit}";
         
         return $this->cacheService->remember($cacheKey, 1800, function () use ($limit) {
-            return Event::published()
-                ->upcoming()
-                ->whereNotNull('image')
-                ->with(['venue', 'performer', 'regions'])
-                ->orderBy('event_date', 'asc')
-                ->limit($limit)
-                ->get();
+            if (! Schema::hasTable('events')) {
+                return collect();
+            }
+            
+            try {
+                return Event::published()
+                    ->upcoming()
+                    ->whereNotNull('image')
+                    ->with(['venue', 'performer', 'regions'])
+                    ->orderBy('event_date', 'asc')
+                    ->limit($limit)
+                    ->get();
+            } catch (\Exception $e) {
+                return collect();
+            }
         });
     }
 
@@ -200,19 +273,31 @@ final class EventService
      */
     public function getByRegion(Region|string $region, int $limit = 20): Collection
     {
+        if (! Schema::hasTable('events')) {
+            return collect();
+        }
+        
         $regionId = $region instanceof Region ? $region->id : $region;
         $cacheKey = "events:region:{$regionId}:limit:{$limit}";
         
         return $this->cacheService->remember($cacheKey, 600, function () use ($regionId, $limit) {
-            return Event::published()
-                ->upcoming()
-                ->whereHas('regions', function ($q) use ($regionId) {
-                    $q->where('regions.id', $regionId);
-                })
-                ->with(['venue', 'performer'])
-                ->orderBy('event_date', 'asc')
-                ->limit($limit)
-                ->get();
+            if (! Schema::hasTable('events')) {
+                return collect();
+            }
+            
+            try {
+                return Event::published()
+                    ->upcoming()
+                    ->whereHas('regions', function ($q) use ($regionId) {
+                        $q->where('regions.id', $regionId);
+                    })
+                    ->with(['venue', 'performer'])
+                    ->orderBy('event_date', 'asc')
+                    ->limit($limit)
+                    ->get();
+            } catch (\Exception $e) {
+                return collect();
+            }
         });
     }
 
