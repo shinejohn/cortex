@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\OrganizationRelationshipController;
+use App\Http\Controllers\AlphaSite\FourCallsWebhookController;
 use App\Http\Middleware\ApiResponseFormatter;
 use App\Http\Middleware\ApiVersion;
 use Illuminate\Http\Request;
@@ -45,6 +46,10 @@ Route::middleware([ApiVersion::class, ApiResponseFormatter::class])->group(funct
         Route::put('/{relationship}', [OrganizationRelationshipController::class, 'update']);
         Route::delete('/{relationship}', [OrganizationRelationshipController::class, 'destroy']);
     });
+
+    // AlphaSite 4calls.ai Webhooks (no auth required, signature verified)
+    Route::post('/alphasite/webhooks/fourcalls', [FourCallsWebhookController::class, 'handle'])
+        ->name('api.alphasite.webhooks.fourcalls');
 
     // Legacy Notification Routes (will be migrated to v1)
     Route::prefix('notifications')->group(function () {

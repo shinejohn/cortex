@@ -12,6 +12,7 @@ use App\Models\TicketOrder;
 use App\Notifications\TicketOrderConfirmationNotification;
 use App\Services\DayNewsPostService;
 use App\Services\QRCodeService;
+use App\Services\AlphaSite\FourCallsBillingService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,6 +23,10 @@ use Stripe\Webhook;
 
 final class StripeWebhookController extends Controller
 {
+    public function __construct(
+        private readonly ?FourCallsBillingService $billingService = null
+    ) {}
+
     /**
      * Handle Stripe webhook events
      */
@@ -51,6 +56,11 @@ final class StripeWebhookController extends Controller
                 'payment_intent.succeeded' => $this->handlePaymentIntentSucceeded($event->data->object),
                 'payment_intent.payment_failed' => $this->handlePaymentIntentFailed($event->data->object),
                 'charge.refunded' => $this->handleChargeRefunded($event->data->object),
+                // 4calls.ai subscription events
+                'customer.subscription.updated' => $this->handleSubscriptionUpdated($event->data->object),
+                'customer.subscription.deleted' => $this->handleSubscriptionDeleted($event->data->object),
+                'invoice.payment_succeeded' => $this->handleInvoicePaymentSucceeded($event->data->object),
+                'invoice.payment_failed' => $this->handleInvoicePaymentFailed($event->data->object),
                 default => Log::info('Unhandled Stripe webhook event: '.$event->type),
             };
 
@@ -239,6 +249,102 @@ final class StripeWebhookController extends Controller
             Log::info('Payment failed', [
                 'order_id' => $order->id,
                 'error' => $paymentIntent->last_payment_error->message ?? 'Unknown error',
+            ]);
+        }
+    }
+
+    /**
+     * Handle customer.subscription.updated event (for 4calls.ai subscriptions)
+     */
+    private function handleSubscriptionUpdated(object $subscription): void
+    {
+        // Check if this is a 4calls.ai subscription
+        if (!isset($subscription->metadata->business_id) || !isset($subscription->metadata->package_slug)) {
+            return;
+        }
+
+        if ($this->billingService) {
+            $this->billingService->handleWebhook([
+                'type' => 'customer.subscription.updated',
+                'data' => ['object' => (array) $subscription],
+            ]);
+        }
+    }
+
+    /**
+     * Handle customer.subscription.deleted event (for 4calls.ai subscriptions)
+     */
+    private function handleSubscriptionDeleted(object $subscription): void
+    {
+        // Check if this is a 4calls.ai subscription
+        if (!isset($subscription->metadata->business_id) || !isset($subscription->metadata->package_slug)) {
+            return;
+        }
+
+        if ($this->billingService) {
+            $this->billingService->handleWebhook([
+                'type' => 'customer.subscription.deleted',
+                'data' => ['object' => (array) $subscription],
+            ]);
+        }
+    }
+
+    /**
+     * Handle invoice.payment_succeeded event (for 4calls.ai subscriptions)
+     */
+    private function handleInvoicePaymentSucceeded(object $invoice): void
+    {
+        // Check if this is for a 4calls.ai subscription
+        if (!isset($invoice->subscription)) {
+            return;
+        }
+
+        // Get subscription to check metadata
+        try {
+            $subscription = \Stripe\Subscription::retrieve($invoice->subscription);
+            
+            if (isset($subscription->metadata->business_id) && isset($subscription->metadata->package_slug)) {
+                if ($this->billingService) {
+                    $this->billingService->handleWebhook([
+                        'type' => 'invoice.payment_succeeded',
+                        'data' => ['object' => (array) $invoice],
+                    ]);
+                }
+            }
+        } catch (Exception $e) {
+            Log::error('Failed to retrieve subscription for invoice', [
+                'invoice_id' => $invoice->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Handle invoice.payment_failed event (for 4calls.ai subscriptions)
+     */
+    private function handleInvoicePaymentFailed(object $invoice): void
+    {
+        // Check if this is for a 4calls.ai subscription
+        if (!isset($invoice->subscription)) {
+            return;
+        }
+
+        // Get subscription to check metadata
+        try {
+            $subscription = \Stripe\Subscription::retrieve($invoice->subscription);
+            
+            if (isset($subscription->metadata->business_id) && isset($subscription->metadata->package_slug)) {
+                if ($this->billingService) {
+                    $this->billingService->handleWebhook([
+                        'type' => 'invoice.payment_failed',
+                        'data' => ['object' => (array) $invoice],
+                    ]);
+                }
+            }
+        } catch (Exception $e) {
+            Log::error('Failed to retrieve subscription for invoice', [
+                'invoice_id' => $invoice->id,
+                'error' => $e->getMessage(),
             ]);
         }
     }

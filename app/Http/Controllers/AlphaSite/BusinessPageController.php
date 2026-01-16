@@ -9,6 +9,7 @@ use App\Models\Business;
 use App\Services\BusinessService;
 use App\Services\AlphaSite\PageGeneratorService;
 use App\Services\AlphaSite\LinkingService;
+use App\Services\AlphaSite\FourCallsIntegrationService;
 use App\Services\ReviewService;
 use App\Services\CouponService;
 use App\Services\EventService;
@@ -23,6 +24,7 @@ final class BusinessPageController extends Controller
         private readonly BusinessService $businessService,
         private readonly PageGeneratorService $pageGeneratorService,
         private readonly LinkingService $linkingService,
+        private readonly FourCallsIntegrationService $fourCallsService,
         private readonly ReviewService $reviewService,
         private readonly CouponService $couponService,
         private readonly EventService $eventService,
@@ -85,6 +87,14 @@ final class BusinessPageController extends Controller
         // Get related businesses
         $relatedBusinesses = $this->businessService->getRelatedBusinesses($business);
 
+        // Get 4calls.ai integration status if available
+        $fourCallsIntegration = null;
+        try {
+            $fourCallsIntegration = $this->fourCallsService->getIntegrationStatus($business);
+        } catch (\Exception $e) {
+            // Silently fail if integration doesn't exist or service is unavailable
+        }
+
         return Inertia::render('alphasite/business/show', [
             'business' => $business,
             'template' => $pageData['template'],
@@ -95,6 +105,7 @@ final class BusinessPageController extends Controller
             'communityLinks' => $pageData['communityLinks'],
             'crossPlatformContent' => $crossPlatformContent,
             'relatedBusinesses' => $relatedBusinesses,
+            'fourCallsIntegration' => $fourCallsIntegration,
             'activeTab' => $activeTab,
         ]);
     }
@@ -160,16 +171,36 @@ final class BusinessPageController extends Controller
      */
     public function aiChat(Request $request, string $slug)
     {
+        $request->validate([
+            'message' => 'required|string|max:1000',
+            'conversation_id' => 'nullable|string',
+        ]);
+
         $business = $this->businessService->getBusinessForAlphaSite($slug);
         
         if (!$business) {
             abort(404);
         }
 
-        // TODO: Implement AI chat processing
-        return response()->json([
-            'response' => 'AI chat functionality coming soon',
-            'business_id' => $business->id,
-        ]);
+        try {
+            $response = $this->fourCallsService->sendChatMessage(
+                $business,
+                $request->input('message'),
+                $request->input('conversation_id')
+            );
+
+            return response()->json([
+                'success' => true,
+                'response' => $response['response'] ?? $response['message'] ?? 'Message sent successfully',
+                'conversation_id' => $response['conversation_id'] ?? $request->input('conversation_id'),
+                'data' => $response,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'message' => 'AI chat service is currently unavailable. Please try again later.',
+            ], 503);
+        }
     }
 }

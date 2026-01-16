@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Business;
 use App\Services\BusinessService;
 use App\Services\AlphaSite\SMBCrmService;
+use App\Services\AlphaSite\FourCallsIntegrationService;
+use App\Services\AlphaSite\FourCallsBillingService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -16,7 +18,9 @@ final class SMBCrmController extends Controller
 {
     public function __construct(
         private readonly BusinessService $businessService,
-        private readonly SMBCrmService $crmService
+        private readonly SMBCrmService $crmService,
+        private readonly FourCallsIntegrationService $fourCallsService,
+        private readonly FourCallsBillingService $billingService
     ) {}
 
     /**
@@ -24,7 +28,6 @@ final class SMBCrmController extends Controller
      */
     public function dashboard(Request $request): Response
     {
-        // TODO: Get business from authenticated user's claimed businesses
         $business = Business::where('claimed_by_id', $request->user()->id)->first();
         
         if (!$business) {
@@ -33,9 +36,27 @@ final class SMBCrmController extends Controller
 
         $dashboardData = $this->crmService->getDashboardData($business);
 
+        // Get 4calls.ai integration data
+        $fourCallsData = null;
+        $subscriptionDetails = null;
+        
+        try {
+            $fourCallsData = $this->fourCallsService->getIntegrationStatus($business);
+            $subscriptionDetails = $this->billingService->getSubscriptionDetails($business);
+            
+            // Merge call stats into dashboard
+            if ($fourCallsData && isset($fourCallsData['stats'])) {
+                $dashboardData['call_stats'] = $fourCallsData['stats'];
+            }
+        } catch (\Exception $e) {
+            // Silently fail if integration doesn't exist
+        }
+
         return Inertia::render('alphasite/crm/dashboard', [
             'business' => $business,
             'dashboard' => $dashboardData,
+            'fourCallsIntegration' => $fourCallsData,
+            'subscription' => $subscriptionDetails,
         ]);
     }
 
@@ -90,9 +111,18 @@ final class SMBCrmController extends Controller
 
         $interactions = $this->crmService->getInteractions($business, $request->all());
 
+        // Get 4calls.ai call history
+        $callHistory = [];
+        try {
+            $callHistory = $this->fourCallsService->getCallHistory($business, $request->all());
+        } catch (\Exception $e) {
+            // Silently fail if integration doesn't exist
+        }
+
         return Inertia::render('alphasite/crm/interactions', [
             'business' => $business,
             'interactions' => $interactions,
+            'callHistory' => $callHistory,
         ]);
     }
 
@@ -169,9 +199,24 @@ final class SMBCrmController extends Controller
 
         $servicesConfig = $this->crmService->getAIServicesConfig($business);
 
+        // Get 4calls.ai integration details
+        $fourCallsIntegration = null;
+        $subscriptionDetails = null;
+        $availablePackages = config('fourcalls.packages', []);
+        
+        try {
+            $fourCallsIntegration = $this->fourCallsService->getIntegrationStatus($business);
+            $subscriptionDetails = $this->billingService->getSubscriptionDetails($business);
+        } catch (\Exception $e) {
+            // Silently fail if integration doesn't exist
+        }
+
         return Inertia::render('alphasite/crm/ai-services', [
             'business' => $business,
             'servicesConfig' => $servicesConfig,
+            'fourCallsIntegration' => $fourCallsIntegration,
+            'subscription' => $subscriptionDetails,
+            'availablePackages' => $availablePackages,
         ]);
     }
 }
