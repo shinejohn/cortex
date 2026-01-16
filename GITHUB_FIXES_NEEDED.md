@@ -72,3 +72,5 @@ COPY --from=public.ecr.aws/docker/library/composer:latest /usr/bin/composer /usr
 
 **After fixing, the file should match your local version (which is correct)!**
 
+
+
