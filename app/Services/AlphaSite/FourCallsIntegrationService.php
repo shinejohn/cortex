@@ -529,12 +529,134 @@ final class FourCallsIntegrationService
             throw new \Exception('AI service not active for this business');
         }
 
-        // TODO: Implement chat API endpoint when available in 4calls.ai
-        // For now, return a placeholder response
-        return [
-            'response' => 'AI chat functionality is being integrated. Please check back soon.',
-            'conversation_id' => $conversationId ?? uniqid('chat_'),
-        ];
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . decrypt($integration->api_key),
+                'Content-Type' => 'application/json',
+            ])
+            ->timeout($this->timeout)
+            ->post("{$this->apiUrl}/api/coordinator/chat/message", [
+                'organization_id' => $integration->organization_id,
+                'coordinator_id' => $integration->coordinator_id,
+                'message' => $message,
+                'conversation_id' => $conversationId,
+            ]);
+
+            if (!$response->successful()) {
+                throw new \Exception('Failed to send chat message');
+            }
+
+            return $response->json();
+        } catch (\Exception $e) {
+            Log::error('Exception sending chat message', [
+                'business_id' => $business->id,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Get integration status for a business
+     */
+    public function getIntegrationStatus(Business $business): ?array
+    {
+        $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
+        
+        if (!$integration) {
+            return null;
+        }
+
+        try {
+            $organization = $this->getOrganization($integration->organization_id);
+            $coordinators = $this->listCoordinators($integration->organization_id);
+            $stats = $this->getCallStats($business);
+
+            return [
+                'integration_id' => $integration->id,
+                'status' => $integration->status,
+                'package' => $integration->service_package,
+                'organization' => $organization,
+                'coordinators' => $coordinators,
+                'stats' => $stats,
+                'activated_at' => $integration->activated_at,
+                'expires_at' => $integration->expires_at,
+            ];
+        } catch (\Exception $e) {
+            Log::error('Exception getting integration status', [
+                'business_id' => $business->id,
+                'error' => $e->getMessage(),
+            ]);
+            return [
+                'integration_id' => $integration->id,
+                'status' => $integration->status,
+                'package' => $integration->service_package,
+                'error' => 'Failed to fetch details',
+            ];
+        }
+    }
+
+    /**
+     * Update coordinator configuration
+     */
+    public function updateCoordinator(Business $business, string $coordinatorId, array $config): array
+    {
+        $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
+        
+        if (!$integration || $integration->status !== 'active') {
+            throw new \Exception('AI service not active for this business');
+        }
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . decrypt($integration->api_key),
+                'Content-Type' => 'application/json',
+            ])
+            ->timeout($this->timeout)
+            ->put("{$this->apiUrl}/api/coordinator/organizations/{$integration->organization_id}/coordinators/{$coordinatorId}", $config);
+
+            if (!$response->successful()) {
+                throw new \Exception('Failed to update coordinator');
+            }
+
+            return $response->json();
+        } catch (\Exception $e) {
+            Log::error('Exception updating coordinator', [
+                'business_id' => $business->id,
+                'coordinator_id' => $coordinatorId,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Delete a coordinator
+     */
+    public function deleteCoordinator(Business $business, string $coordinatorId): bool
+    {
+        $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
+        
+        if (!$integration || $integration->status !== 'active') {
+            throw new \Exception('AI service not active for this business');
+        }
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . decrypt($integration->api_key),
+            ])
+            ->timeout($this->timeout)
+            ->delete("{$this->apiUrl}/api/coordinator/organizations/{$integration->organization_id}/coordinators/{$coordinatorId}");
+
+            return $response->successful();
+        } catch (\Exception $e) {
+            Log::error('Exception deleting coordinator', [
+                'business_id' => $business->id,
+                'coordinator_id' => $coordinatorId,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
     }
 }
 
