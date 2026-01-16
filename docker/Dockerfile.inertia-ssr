@@ -59,10 +59,10 @@ RUN npm ci
 # Copy application source
 COPY . .
 
-# Build frontend assets (show errors if build fails)
-RUN npm run build || { \
-    echo "❌ npm build failed! Showing error:"; \
-    npm run build 2>&1; \
+# Build frontend assets + SSR bundle (show errors if build fails)
+RUN npm run build:ssr || { \
+    echo "❌ npm run build:ssr failed! Showing full error:"; \
+    npm run build:ssr 2>&1 | head -100; \
     exit 1; \
     }
 
@@ -282,18 +282,11 @@ COPY . .
 # Copy built frontend assets from builder stage
 COPY --from=frontend-builder /app/public/build ./public/build
 
-# Install npm dependencies for SSR build (need dev dependencies for build tools)
-RUN npm ci
+# Copy SSR bundle from builder stage
+COPY --from=frontend-builder /app/bootstrap/ssr ./bootstrap/ssr
 
 # Run composer scripts (post-install)
 RUN /usr/local/bin/php /usr/local/bin/composer dump-autoload --optimize
-
-# Build SSR bundle (show full error output if it fails)
-RUN npm run build:ssr || { \
-    echo "❌ npm run build:ssr failed! Showing full error:"; \
-    npm run build:ssr 2>&1 | head -100; \
-    exit 1; \
-    }
 
 # Copy nginx configuration
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
