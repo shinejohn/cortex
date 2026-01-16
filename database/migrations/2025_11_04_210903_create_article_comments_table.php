@@ -31,8 +31,10 @@ return new class extends Migration
             $table->index(['article_id', 'parent_id', 'created_at']);
             $table->index(['user_id', 'created_at']);
             $table->index(['article_id', 'is_active', 'created_at']);
-            
-            // Self-referencing foreign key for replies
+        });
+        
+        // Add self-referencing foreign key AFTER table is created
+        Schema::table('article_comments', function (Blueprint $table) {
             $table->foreign('parent_id')->references('id')->on('article_comments')->onDelete('cascade');
         });
 
