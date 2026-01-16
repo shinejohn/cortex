@@ -9,11 +9,6 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Disable transactions for this migration to allow self-referencing foreign keys.
-     */
-    public $withinTransaction = false;
-
-    /**
      * Run the migrations.
      */
     public function up(): void
@@ -35,8 +30,8 @@ return new class extends Migration
         });
         
         // Ensure primary key constraint is committed before adding foreign key
-        // Use DB::statement to explicitly add the foreign key after table creation
-        \Illuminate\Support\Facades\DB::statement('
+        // Use DB::unprepared to run outside transaction context
+        \Illuminate\Support\Facades\DB::unprepared('
             ALTER TABLE article_comments 
             ADD CONSTRAINT article_comments_parent_id_foreign 
             FOREIGN KEY (parent_id) 
