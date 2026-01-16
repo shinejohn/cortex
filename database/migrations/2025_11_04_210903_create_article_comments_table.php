@@ -33,10 +33,15 @@ return new class extends Migration
             $table->index(['article_id', 'is_active', 'created_at']);
         });
         
-        // Add self-referencing foreign key AFTER table is created
-        Schema::table('article_comments', function (Blueprint $table) {
-            $table->foreign('parent_id')->references('id')->on('article_comments')->onDelete('cascade');
-        });
+        // Ensure primary key constraint is committed before adding foreign key
+        // Use DB::statement to explicitly add the foreign key after table creation
+        \Illuminate\Support\Facades\DB::statement('
+            ALTER TABLE article_comments 
+            ADD CONSTRAINT article_comments_parent_id_foreign 
+            FOREIGN KEY (parent_id) 
+            REFERENCES article_comments(id) 
+            ON DELETE CASCADE
+        ');
 
         // Article comment likes table
         Schema::create('article_comment_likes', function (Blueprint $table) {
