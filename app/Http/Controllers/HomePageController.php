@@ -26,8 +26,8 @@ final class HomePageController extends Controller
     {
         // Get featured events from the database (defensive check for missing table)
         $featuredEvents = [];
-        if (Schema::hasTable('events')) {
-            try {
+        try {
+            if (Schema::hasTable('events')) {
                 $featuredEvents = Event::published()
                     ->upcoming()
                     ->with(['venue', 'performer'])
@@ -45,16 +45,19 @@ final class HomePageController extends Controller
                         ];
                     })
                     ->toArray();
-            } catch (\Exception $e) {
-                // If query fails (e.g., table doesn't exist), return empty array
-                $featuredEvents = [];
             }
+        } catch (\Illuminate\Database\QueryException $e) {
+            // If table doesn't exist or query fails, return empty array
+            $featuredEvents = [];
+        } catch (\Exception $e) {
+            // Catch any other exceptions
+            $featuredEvents = [];
         }
 
         // Get featured venues from the database (defensive check for missing table)
         $featuredVenues = [];
-        if (Schema::hasTable('venues')) {
-            try {
+        try {
+            if (Schema::hasTable('venues')) {
                 $featuredVenues = Venue::active()
                     ->orderBy('average_rating', 'desc')
                     ->take(4)
@@ -74,16 +77,19 @@ final class HomePageController extends Controller
                         ];
                     })
                     ->toArray();
-            } catch (\Exception $e) {
-                // If query fails (e.g., table doesn't exist), return empty array
-                $featuredVenues = [];
             }
+        } catch (\Illuminate\Database\QueryException $e) {
+            // If table doesn't exist or query fails, return empty array
+            $featuredVenues = [];
+        } catch (\Exception $e) {
+            // Catch any other exceptions
+            $featuredVenues = [];
         }
 
         // Get featured performers from the database (defensive check for missing table)
         $featuredPerformers = [];
-        if (Schema::hasTable('performers')) {
-            try {
+        try {
+            if (Schema::hasTable('performers')) {
                 $featuredPerformers = Performer::active()
                     ->verified()
                     ->with('upcomingShows')
@@ -108,16 +114,19 @@ final class HomePageController extends Controller
                         ];
                     })
                     ->toArray();
-            } catch (\Exception $e) {
-                // If query fails (e.g., table doesn't exist), return empty array
-                $featuredPerformers = [];
             }
+        } catch (\Illuminate\Database\QueryException $e) {
+            // If table doesn't exist or query fails, return empty array
+            $featuredPerformers = [];
+        } catch (\Exception $e) {
+            // Catch any other exceptions
+            $featuredPerformers = [];
         }
 
         // Get upcoming events from the database (next 7 days) (defensive check for missing table)
         $upcomingEvents = [];
-        if (Schema::hasTable('events')) {
-            try {
+        try {
+            if (Schema::hasTable('events')) {
                 $upcomingEvents = Event::published()
                     ->upcoming()
                     ->with(['venue', 'performer'])
@@ -143,10 +152,13 @@ final class HomePageController extends Controller
                         ];
                     })
                     ->toArray();
-            } catch (\Exception $e) {
-                // If query fails (e.g., table doesn't exist), return empty array
-                $upcomingEvents = [];
             }
+        } catch (\Illuminate\Database\QueryException $e) {
+            // If table doesn't exist or query fails, return empty array
+            $upcomingEvents = [];
+        } catch (\Exception $e) {
+            // Catch any other exceptions
+            $upcomingEvents = [];
         }
 
         // Get current region for ad targeting
