@@ -1,0 +1,188 @@
+name: Diagnostic
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, develop]
+    paths:
+      - '.github/workflows/**'
+      - 'composer.json'
+      - 'package.json'
+
+jobs:
+  diagnose:
+    name: Run Diagnostics
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check PHP Version Compatibility
+        run: |
+          echo "Checking PHP version requirements..."
+          PHP_REQUIRED=$(grep -oP '"php":\s*"\^?\K[0-9.]+' composer.json || echo "8.2")
+          echo "Required PHP version: ^$PHP_REQUIRED"
+          echo "Current workflow uses: 8.4"
+          if [[ "$PHP_REQUIRED" == "8.2" ]]; then
+            echo "⚠️  Warning: PHP 8.4 may have compatibility issues. Consider using 8.3"
+          fi
+
+      - name: Check Composer Dependencies
+        run: |
+          echo "Checking composer.json..."
+          if [ ! -f composer.json ]; then
+            echo "❌ composer.json not found"
+            exit 1
+          fi
+          echo "✅ composer.json exists"
+          
+          # Check for required packages
+          echo "Checking for Pest..."
+          grep -q "pestphp/pest" composer.json && echo "✅ Pest found" || echo "❌ Pest not found"
+          
+          echo "Checking for Laravel..."
+          grep -q "laravel/framework" composer.json && echo "✅ Laravel found" || echo "❌ Laravel not found"
+
+      - name: Check Node Dependencies
+        run: |
+          echo "Checking package.json..."
+          if [ ! -f package.json ]; then
+            echo "❌ package.json not found"
+            exit 1
+          fi
+          echo "✅ package.json exists"
+          
+          # Check for build script
+          grep -q '"build"' package.json && echo "✅ Build script found" || echo "❌ Build script not found"
+
+      - name: Check Dockerfiles
+        run: |
+          echo "Checking Dockerfiles..."
+          DOCKERFILES=(
+            "docker/Dockerfile.base-app"
+            "docker/Dockerfile.inertia-ssr"
+            "docker/Dockerfile.web"
+          )
+          
+          for dockerfile in "${DOCKERFILES[@]}"; do
+            if [ -f "$dockerfile" ]; then
+              echo "✅ $dockerfile exists"
+            else
+              echo "❌ $dockerfile not found"
+            fi
+          done
+
+      - name: Check Test Configuration
+        run: |
+          echo "Checking test configuration..."
+          if [ -f phpunit.xml ]; then
+            echo "✅ phpunit.xml exists"
+          else
+            echo "❌ phpunit.xml not found"
+          fi
+          
+          if [ -f tests/Pest.php ]; then
+            echo "✅ tests/Pest.php exists"
+          else
+            echo "❌ tests/Pest.php not found"
+          fi
+          
+          if [ -f tests/TestCase.php ]; then
+            echo "✅ tests/TestCase.php exists"
+          else
+            echo "❌ tests/TestCase.php not found"
+          fi
+
+      - name: Check Environment Files
+        run: |
+          echo "Checking environment files..."
+          if [ -f .env.example ]; then
+            echo "✅ .env.example exists"
+          else
+            echo "⚠️  .env.example not found (workflow will create minimal .env)"
+          fi
+
+      - name: Check Required Directories
+        run: |
+          echo "Checking required directories..."
+          DIRS=(
+            "storage/framework"
+            "storage/logs"
+            "bootstrap/cache"
+            "tests/Feature"
+            "tests/Unit"
+          )
+          
+          for dir in "${DIRS[@]}"; do
+            if [ -d "$dir" ]; then
+              echo "✅ $dir exists"
+            else
+              echo "⚠️  $dir not found (may be created during workflow)"
+            fi
+          done
+
+      - name: Check AWS Configuration
+        run: |
+          echo "Checking AWS configuration in deploy workflow..."
+          if grep -q "AWS_REGION" .github/workflows/deploy.yml; then
+            echo "✅ AWS_REGION configured"
+          else
+            echo "❌ AWS_REGION not found"
+          fi
+          
+          if grep -q "CLUSTER_NAME" .github/workflows/deploy.yml; then
+            echo "✅ CLUSTER_NAME configured"
+          else
+            echo "❌ CLUSTER_NAME not found"
+          fi
+
+      - name: Validate Workflow Syntax
+        run: |
+          echo "Validating workflow YAML syntax..."
+          for workflow in .github/workflows/*.yml; do
+            if [ -f "$workflow" ]; then
+              echo "Checking $workflow..."
+              # Basic YAML validation (GitHub Actions will catch syntax errors)
+              if grep -q "name:" "$workflow" && grep -q "on:" "$workflow"; then
+                echo "✅ $workflow has basic structure"
+              else
+                echo "❌ $workflow missing required fields"
+              fi
+            fi
+          done
+
+      - name: Check Test Files
+        run: |
+          echo "Checking test files..."
+          TEST_COUNT=$(find tests -name "*.php" -type f 2>/dev/null | wc -l)
+          echo "Found $TEST_COUNT test files"
+          
+          if [ "$TEST_COUNT" -eq 0 ]; then
+            echo "⚠️  No test files found"
+          else
+            echo "✅ Test files found"
+          fi
+
+      - name: Generate Diagnostic Report
+        run: |
+          echo "## Diagnostic Report" > diagnostic-report.md
+          echo "Generated: $(date)" >> diagnostic-report.md
+          echo "" >> diagnostic-report.md
+          echo "### Summary" >> diagnostic-report.md
+          echo "- PHP Version: Checked" >> diagnostic-report.md
+          echo "- Dependencies: Checked" >> diagnostic-report.md
+          echo "- Dockerfiles: Checked" >> diagnostic-report.md
+          echo "- Test Configuration: Checked" >> diagnostic-report.md
+          echo "- AWS Configuration: Checked" >> diagnostic-report.md
+          echo "" >> diagnostic-report.md
+          echo "See workflow logs for detailed information." >> diagnostic-report.md
+
+      - name: Upload Diagnostic Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: diagnostic-report
+          path: diagnostic-report.md
+

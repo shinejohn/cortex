@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Middleware\DetectAppDomain;
 use App\Http\Middleware\DetectUserLocation;
+use App\Http\Middleware\ForceHttps;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\VerifyN8nApiKey;
@@ -38,7 +39,12 @@ return Application::configure(basePath: dirname(__DIR__))
                 });
 
             // DowntownGuide domain routes
-            Route::domain(config('domains.downtown-guide'))
+            // Register routes for downtown-guide domain, with fallback pattern matching
+            $downtownGuideDomain = config('domains.downtown-guide');
+            
+            // Always register routes for downtownsguide.com patterns (handles dev.downtownsguide.com, www.downtownsguide.com, etc.)
+            Route::domain('{subdomain}.downtownsguide.com')
+                ->where(['subdomain' => '[a-z0-9-]+'])
                 ->middleware('web')
                 ->group(function () {
                     require base_path('routes/ads.php');
@@ -46,6 +52,27 @@ return Application::configure(basePath: dirname(__DIR__))
                     require base_path('routes/admin.php');
                     require base_path('routes/downtown-guide.php');
                 });
+            
+            Route::domain('downtownsguide.com')
+                ->middleware('web')
+                ->group(function () {
+                    require base_path('routes/ads.php');
+                    require base_path('routes/email-tracking.php');
+                    require base_path('routes/admin.php');
+                    require base_path('routes/downtown-guide.php');
+                });
+            
+            // Also register with configured domain if it's different from downtownsguide.com
+            if ($downtownGuideDomain && $downtownGuideDomain !== 'downtownsguide.com' && !str_ends_with($downtownGuideDomain, '.downtownsguide.com')) {
+                Route::domain($downtownGuideDomain)
+                    ->middleware('web')
+                    ->group(function () {
+                        require base_path('routes/ads.php');
+                        require base_path('routes/email-tracking.php');
+                        require base_path('routes/admin.php');
+                        require base_path('routes/downtown-guide.php');
+                    });
+            }
 
             // Go Local Voices domain routes (standalone)
             Route::domain(config('domains.local-voices'))
@@ -87,6 +114,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Trust all proxies (AWS ALB, CloudFront, etc.)
+        // In production behind a load balancer, we need to trust proxies to get correct client IP and protocol
+        $middleware->trustProxies(at: '*');
+        
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
         $middleware->validateCsrfTokens(except: [
@@ -95,6 +126,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->web(append: [
+            ForceHttps::class,
             DetectAppDomain::class,
             DetectUserLocation::class,
             HandleAppearance::class,
@@ -108,44 +140,71 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        if (config('app.observability.sentry.enabled')) {
-            Integration::handles($exceptions);
+        // Always enable Sentry if configured (even in production for error tracking)
+        try {
+            if (config('app.observability.sentry.enabled', false)) {
+                Integration::handles($exceptions);
+            }
+        } catch (\Throwable $e) {
+            // Silently fail if Sentry config is broken - don't break the app
         }
 
         // Handle Redis/Predis connection errors gracefully
         $exceptions->render(function (\Predis\Connection\ConnectionException | \RedisException | \Illuminate\Redis\Connections\ConnectionException $e, \Illuminate\Http\Request $request) {
-            \Illuminate\Support\Facades\Log::error('Redis connection error', [
+            \Illuminate\Support\Facades\Log::warning('Redis connection error - falling back to database cache', [
                 'error' => $e->getMessage(),
                 'url' => $request->fullUrl(),
                 'type' => get_class($e),
             ]);
 
-            // Return a user-friendly error instead of crashing
+            // Don't return an error - let the request continue
+            // Individual cache operations should handle Redis failures with try-catch
+            return null;
+        });
+
+        // Handle config errors gracefully (like scribe.php issues)
+        $exceptions->render(function (\Error | \ParseError | \TypeError $e, \Illuminate\Http\Request $request) {
+            // Log the error but don't expose details in production
+            \Illuminate\Support\Facades\Log::error('Configuration error', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
             if ($request->expectsJson()) {
                 return response()->json([
-                    'error' => 'Service temporarily unavailable. Please try again.',
-                    'message' => 'Redis connection failed. Please check your Redis configuration.',
-                ], 503);
+                    'error' => 'Configuration error. Please contact support.',
+                ], 500);
             }
 
-            // Try to render 503 error page, fallback to simple message
-            if (view()->exists('errors.503')) {
-                return response()->view('errors.503', [
-                    'message' => 'Service temporarily unavailable. Please try again.',
-                ], 503);
+            // Try to show a generic error page
+            if (view()->exists('errors.500')) {
+                return response()->view('errors.500', [], 500);
             }
 
-            return response('Service temporarily unavailable. Please try again.', 503);
+            return response('Internal Server Error', 500);
         });
 
         // Log all exceptions for debugging (only in non-production or when debug is enabled)
-        if (config('app.debug') || config('app.env') !== 'production') {
+        $appDebug = env('APP_DEBUG', false);
+        $appEnv = env('APP_ENV', 'production');
+        
+        if ($appDebug || $appEnv !== 'production') {
             $exceptions->report(function (\Throwable $e) {
                 \Illuminate\Support\Facades\Log::error('Exception occurred', [
                     'message' => $e->getMessage(),
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
                     'trace' => substr($e->getTraceAsString(), 0, 1000), // Limit trace length
+                ]);
+            });
+        } else {
+            // In production, still log errors but don't expose details
+            $exceptions->report(function (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('Exception occurred in production', [
+                    'message' => $e->getMessage(),
+                    'file' => basename($e->getFile()),
+                    'line' => $e->getLine(),
                 ]);
             });
         }

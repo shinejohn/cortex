@@ -141,3 +141,5 @@ aws ecr describe-images --repository-name fibonacco/dev/goeventcity
    - Import existing SSR service into Pulumi
    - This will resolve the "already exists" error
 
+
+

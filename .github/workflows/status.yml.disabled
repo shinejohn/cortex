@@ -1,0 +1,103 @@
+name: Workflow Status
+
+on:
+  workflow_run:
+    workflows: ["tests", "Deploy to AWS ECS"]
+    types:
+      - completed
+  schedule:
+    # Run daily at 9 AM UTC to check status
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  status-report:
+    name: Generate Status Report
+    runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion != 'cancelled'
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get Workflow Status
+        uses: actions/github-script@v7
+        id: workflow-status
+        with:
+          script: |
+            const { data: workflows } = await github.rest.actions.listWorkflowRunsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'tests.yml',
+              per_page: 5
+            });
+            
+            const { data: deployWorkflows } = await github.rest.actions.listWorkflowRunsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'deploy.yml',
+              per_page: 5
+            });
+            
+            const latestTest = workflows.workflow_runs[0];
+            const latestDeploy = deployWorkflows.workflow_runs[0];
+            
+            return {
+              test_status: latestTest?.conclusion || 'unknown',
+              test_updated: latestTest?.updated_at || 'never',
+              deploy_status: latestDeploy?.conclusion || 'unknown',
+              deploy_updated: latestDeploy?.updated_at || 'never',
+            };
+
+      - name: Generate Status Report
+        run: |
+          echo "# Workflow Status Report" > status-report.md
+          echo "" >> status-report.md
+          echo "Generated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> status-report.md
+          echo "" >> status-report.md
+          echo "## Test Workflow" >> status-report.md
+          echo "- Status: ${{ steps.workflow-status.outputs.test_status }}" >> status-report.md
+          echo "- Last Updated: ${{ steps.workflow-status.outputs.test_updated }}" >> status-report.md
+          echo "" >> status-report.md
+          echo "## Deploy Workflow" >> status-report.md
+          echo "- Status: ${{ steps.workflow-status.outputs.deploy_status }}" >> status-report.md
+          echo "- Last Updated: ${{ steps.workflow-status.outputs.deploy_updated }}" >> status-report.md
+          echo "" >> status-report.md
+          echo "## Links" >> status-report.md
+          echo "- [Test Workflow](https://github.com/${{ github.repository }}/actions/workflows/tests.yml)" >> status-report.md
+          echo "- [Deploy Workflow](https://github.com/${{ github.repository }}/actions/workflows/deploy.yml)" >> status-report.md
+
+      - name: Upload Status Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-status-report
+          path: status-report.md
+          retention-days: 30
+
+      - name: Comment on PR (if applicable)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('status-report.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: report
+            });
+
+
+              body: report
+            });
+
+
+              body: report
+            });
+
