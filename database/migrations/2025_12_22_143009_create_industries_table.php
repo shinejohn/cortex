@@ -7,11 +7,6 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Disable transactions for this migration to allow self-referencing foreign keys.
-     */
-    public $withinTransaction = false;
-
-    /**
      * Run the migrations.
      */
     public function up(): void
@@ -42,9 +37,14 @@ return new class extends Migration
         });
         
         // Add self-referencing foreign key AFTER table is created
-        Schema::table('industries', function (Blueprint $table) {
-            $table->foreign('parent_id')->references('id')->on('industries')->nullOnDelete();
-        });
+        // Use DB::unprepared to run outside transaction context
+        \Illuminate\Support\Facades\DB::unprepared('
+            ALTER TABLE industries 
+            ADD CONSTRAINT industries_parent_id_foreign 
+            FOREIGN KEY (parent_id) 
+            REFERENCES industries(id) 
+            ON DELETE SET NULL
+        ');
     }
 
     /**
