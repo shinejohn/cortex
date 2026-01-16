@@ -34,7 +34,10 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             
             $table->timestamps();
-            
+        });
+        
+        // Add self-referencing foreign key AFTER table is created
+        Schema::table('industries', function (Blueprint $table) {
             $table->foreign('parent_id')->references('id')->on('industries')->nullOnDelete();
         });
     }
