@@ -3,24 +3,31 @@
 
 # Stage 1: Build frontend assets
 # Using public.ecr.aws to avoid Docker Hub rate limits
-FROM public.ecr.aws/docker/library/node:20-alpine AS frontend-builder
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim AS frontend-builder
 
 WORKDIR /app
 
 # Install PHP and Composer for Ziggy route generation
-# Install composer via Alpine package manager (more reliable than installer script)
-# Only install essential PHP extensions - we use --ignore-platform-reqs for composer install
-RUN apk add --no-cache \
-    php \
-    php-json \
+# Use Debian packages to avoid musl-based Node native module issues
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    git \
+    unzip \
+    php-cli \
     php-mbstring \
     php-xml \
-    php-tokenizer \
-    php-phar \
+    php-zip \
+    php-curl \
     php-openssl \
+    php-phar \
     php-zlib \
-    curl \
-    composer
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Composer (avoid Alpine package to keep runtime consistent)
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+    php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
+    php -r "unlink('composer-setup.php');"
 
 # Copy Composer files first to install Ziggy
 COPY composer.json composer.lock ./
