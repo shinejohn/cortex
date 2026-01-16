@@ -19,9 +19,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     php-xml \
     php-zip \
     php-curl \
-    php-openssl \
-    php-phar \
-    php-zlib \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Composer (avoid Alpine package to keep runtime consistent)
