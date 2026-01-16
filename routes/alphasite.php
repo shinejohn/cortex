@@ -9,6 +9,8 @@ use App\Http\Controllers\AlphaSite\SearchController;
 use App\Http\Controllers\AlphaSite\ClaimController;
 use App\Http\Controllers\AlphaSite\CommunityController;
 use App\Http\Controllers\AlphaSite\SMBCrmController;
+use App\Http\Controllers\AlphaSite\FourCallsSubscriptionController;
+use App\Http\Controllers\AlphaSite\FourCallsWebhookController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -83,6 +85,15 @@ Route::domain('alphasite.com')->group(function () {
         Route::post('/faqs', [SMBCrmController::class, 'storeFaq'])->name('alphasite.crm.faqs.store');
         Route::get('/surveys', [SMBCrmController::class, 'surveys'])->name('alphasite.crm.surveys');
         Route::get('/ai-services', [SMBCrmController::class, 'aiServices'])->name('alphasite.crm.ai');
+    });
+    
+    // 4calls.ai Subscription Management Routes
+    Route::middleware(['auth', 'verified'])->prefix('api/fourcalls')->group(function () {
+        Route::post('/subscribe', [FourCallsSubscriptionController::class, 'subscribe'])->name('alphasite.fourcalls.subscribe');
+        Route::post('/change-package', [FourCallsSubscriptionController::class, 'changePackage'])->name('alphasite.fourcalls.change-package');
+        Route::post('/cancel', [FourCallsSubscriptionController::class, 'cancel'])->name('alphasite.fourcalls.cancel');
+        Route::post('/resume', [FourCallsSubscriptionController::class, 'resume'])->name('alphasite.fourcalls.resume');
+        Route::get('/subscription/{businessId}', [FourCallsSubscriptionController::class, 'show'])->name('alphasite.fourcalls.subscription.show');
     });
     
     // CTA
