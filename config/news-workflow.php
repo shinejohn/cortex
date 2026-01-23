@@ -24,24 +24,21 @@ return [
             'gym',                  // Fitness classes, challenges, events
             'restaurant',           // Special dinners, chef events, tastings
             'cafe',                 // Open mics, art shows, music nights
-            'brewery',              // Tap takeovers, live music, food trucks
-            'winery',               // Tastings, tours, harvest events
             'shopping_mall',        // Seasonal events, pop-ups, shows
             'convention_center',    // Conventions, expos, trade shows
             'library',              // Author talks, workshops, readings
-            'bookstore',            // Book signings, readings, launches
+            'book_store',           // Book signings, readings, launches (Google Places type)
             'park',                 // Festivals, concerts, outdoor events
             'campground',           // Seasonal events, activities
             'tourist_attraction',   // Special tours, seasonal offerings
             'university',           // Lectures, sporting events, performances, open houses
             'school',               // School plays, sporting events, fundraisers, exhibitions
-            'city_hall',            // Town halls, public meetings, community forums
+            'city_hall',            // Town halls, public meetings, community forums (Google Places type)
             'courthouse',           // Public hearings, community events
             'local_government_office', // Public meetings, community outreach
             'police',               // Community safety events, open houses, youth programs
             'fire_station',         // Safety demonstrations, open houses, training events
             'community_center',     // Classes, workshops, public events, meetings
-            'town_hall',            // Council meetings, public forums, community events
         ],
         'radius_km' => env('NEWS_WORKFLOW_BUSINESS_RADIUS', 25),
     ],
@@ -59,7 +56,6 @@ return [
             'bar' => 'daily',
             'restaurant' => 'daily',
             'cafe' => 'daily',
-            'brewery' => 'daily',
             'casino' => 'daily',
 
             // Medium frequency (every 3 days)
@@ -76,13 +72,12 @@ return [
             'museum' => 'weekly',
             'art_gallery' => 'weekly',
             'library' => 'weekly',
-            'bookstore' => 'weekly',
+            'book_store' => 'weekly',
             'zoo' => 'weekly',
             'aquarium' => 'weekly',
             'bowling_alley' => 'weekly',
             'gym' => 'weekly',
             'spa' => 'weekly',
-            'winery' => 'weekly',
             'shopping_mall' => 'weekly',
             'campground' => 'weekly',
             'tourist_attraction' => 'weekly',
@@ -91,7 +86,6 @@ return [
             'city_hall' => 'weekly',
             'courthouse' => 'weekly',
             'local_government_office' => 'weekly',
-            'town_hall' => 'weekly',
             'police' => 'weekly',
             'fire_station' => 'weekly',
         ],
@@ -124,7 +118,7 @@ return [
         'museum' => 'museum',
         'art_gallery' => 'art',
         'library' => 'library',
-        'bookstore' => 'books',
+        'book_store' => 'books',
 
         // Sports & Recreation
         'stadium' => 'sports',
@@ -147,7 +141,6 @@ return [
         // Government & Public Services
         'local_government_office' => 'news',
         'city_hall' => 'city council',
-        'town_hall' => 'news',
         'courthouse' => 'court',
         'police' => 'crime',
         'fire_station' => 'fire',
@@ -165,6 +158,10 @@ return [
         'max_articles_per_business' => env('NEWS_WORKFLOW_MAX_ARTICLES_PER_BUSINESS', 5),
         'max_category_articles' => env('NEWS_WORKFLOW_MAX_CATEGORY_ARTICLES', 20),
         'lookback_days' => env('NEWS_WORKFLOW_LOOKBACK_DAYS', 7),
+
+        // Random sampling of businesses per category to conserve SERP API credits
+        // Instead of fetching news for all businesses, we randomly select this many per category
+        'max_businesses_per_category' => env('NEWS_WORKFLOW_MAX_BUSINESSES_PER_CATEGORY', 10),
     ],
 
     // Phase 3: Shortlisting
@@ -266,6 +263,19 @@ return [
         'scrapingbee_key' => env('SCRAPINGBEE_API_KEY'),
     ],
 
+    // Google Places API (New) Configuration
+    'google_places' => [
+        'enabled' => env('GOOGLE_PLACES_ENABLED', true),
+        'max_photos_per_business' => env('GOOGLE_PLACES_MAX_PHOTOS', 3),
+        'photo_max_width' => env('GOOGLE_PLACES_PHOTO_WIDTH', 800),
+        'photo_storage' => [
+            'enabled' => env('GOOGLE_PLACES_PHOTO_STORAGE_ENABLED', true),
+            // Use GOOGLE_PLACES_PHOTO_DISK env var, or FILESYSTEM_DISK, or default to 'public'
+            'disk' => env('GOOGLE_PLACES_PHOTO_DISK', env('FILESYSTEM_DISK', 'public')),
+            'path' => 'business-photos',
+        ],
+    ],
+
     // Unsplash API for article images
     'unsplash' => [
         'enabled' => env('UNSPLASH_ENABLED', true),
@@ -276,7 +286,8 @@ return [
         // Local storage configuration
         'storage' => [
             'enabled' => env('UNSPLASH_STORAGE_ENABLED', true),
-            'disk' => env('UNSPLASH_STORAGE_DISK', 'public'), // 'public' or 's3'
+            // Use UNSPLASH_STORAGE_DISK env var, or FILESYSTEM_DISK, or default to 'public'
+            'disk' => env('UNSPLASH_STORAGE_DISK', env('FILESYSTEM_DISK', 'public')),
             'path' => 'unsplash', // Base path within disk
             'size' => 'regular', // Which size to download (regular = ~1080px)
         ],
@@ -294,23 +305,43 @@ return [
         'relevance_scoring' => <<<'PROMPT'
 You are an experienced local news editor evaluating articles for {region_name} ({region_type}).
 
+IMPORTANT GEOGRAPHIC CONTEXT:
+- Target Location: {full_location}
+- State: {state_name} ({state_abbr})
+- County: {county_name}
+- Country: {country}
+
 Article Details:
 Title: {title}
 Content: {content_snippet}
 
-Task: Evaluate this article's relevance for local news in {region_name}.
+Task: Evaluate this article's relevance for local news in {region_name}, {state_abbr}.
 
-Scoring Criteria:
+CRITICAL - Location Verification (MUST CHECK FIRST):
+Before scoring, verify this article is about {region_name} in {state_name}, {country}.
+
+REJECT (score 0-10) if the article is about:
+- A different {region_name} in another state (e.g., Melbourne, Australia vs Melbourne, FL)
+- A same-named city in a different country
+- A different geographic region that happens to share the name
+- National/international news that doesn't specifically mention {region_name}, {state_abbr}
+
+Location signals to look for:
+- State abbreviation mentions ({state_abbr})
+- Nearby cities in {state_name}
+- References to {county_name} or nearby counties in {state_name}
+- Local institutions, schools, businesses specific to {state_name}
+
+Scoring Criteria (only if location matches):
 - Local Impact (40%): Direct relevance to the local community
 - Timeliness (20%): How recent and timely the news is
 - Community Interest (20%): Likely interest from local residents
 - Informativeness (20%): Value and depth of information
 
 Hyper-Local Priority:
-- Articles that directly name {region_name} should score HIGHER
+- Articles that directly name {region_name}, {state_abbr} should score HIGHER
 - Stories about local businesses, residents, schools, local government score HIGHER
 - National or state-level news that only tangentially mentions the area should score LOWER
-- Reject articles about other cities/regions with similar names (e.g., Melbourne Australia vs Melbourne FL)
 
 Content Completeness Check:
 - Does the article contain enough specific details (names, locations, dates, facts) to write a complete news story?
@@ -318,9 +349,9 @@ Content Completeness Check:
 - Prefer articles with concrete, verifiable information over those with missing critical details
 
 Provide:
-1. A relevance score from 0-100
+1. A relevance score from 0-100 (0-10 if wrong location detected)
 2. Topic tags for categorization (e.g., business, community, events, government)
-3. Brief rationale for your score
+3. Brief rationale for your score (include location verification result)
 PROMPT,
 
         'outline' => <<<'PROMPT'
@@ -556,9 +587,7 @@ Important:
 PROMPT,
 
         'trust_analysis' => <<<'PROMPT'
-You are evaluating an AI-curated local news article for reader trust indicators.
-
-IMPORTANT CONTEXT: This is an AI-generated summary of news from established local news sources. The article is based on verified reporting from professional news outlets. Your evaluation should reflect this context - these are not original investigative pieces but curated summaries of existing news coverage.
+You are evaluating a local news article for reader trust indicators.
 
 Article Information:
 Title: {title}
@@ -596,11 +625,72 @@ Scoring Guidelines (use the full range):
    - 80-89: Based on established news outlet reporting
    - 70-79: Single source but credible (government, business, organization)
    - Below 70: Unattributed or questionable sources
-   - Articles curated from professional news outlets inherit their credibility (typically 75+)
 
-SCORING PRINCIPLE: Local news summaries from established sources should typically score 75-90 in each category unless there are specific issues. Reserve scores below 70 for articles with clear problems (bias, speculation, unreliable claims).
+SCORING PRINCIPLE: Local news from established sources should typically score 75-90 in each category unless there are specific issues. Reserve scores below 70 for articles with clear problems (bias, speculation, unreliable claims).
+
+IMPORTANT FOR ANALYSIS RATIONALE:
+- Do NOT mention specific source outlet names (e.g., "MaxPreps", "CBS News") in your rationale
+- Do NOT mention that the article is AI-generated, AI-curated, or a summary
+- Focus your rationale purely on the content quality: neutrality, factual accuracy, completeness of information, and verifiability of claims
+- Keep the rationale brief (1-2 sentences) and focused on what affects trustworthiness
 
 Provide scores for each dimension and a brief rationale.
 PROMPT,
+
+        'location_verification' => <<<'PROMPT'
+You are a geographic location verifier for news articles.
+
+TARGET LOCATION:
+- City/Region: {region_name}
+- State: {state_name} ({state_abbr})
+- County: {county_name}
+- Full Address: {full_location}
+- Country: {country}
+
+ARTICLE TO VERIFY:
+Title: {title}
+Content: {content_snippet}
+Publisher: {source_publisher}
+
+TASK: Determine if this article is about {region_name}, {state_abbr}, USA.
+
+IMPORTANT: Many US cities share names (Springfield, Portland, Melbourne, Jacksonville, etc.).
+You must distinguish between:
+- {region_name}, {state_abbr} (TARGET - accept)
+- {region_name} in other US states (WRONG - reject)
+- {region_name} in other countries (WRONG - reject)
+
+LOOK FOR (signals the article is about the target location):
+- State abbreviation "{state_abbr}" in article
+- Mentions of {county_name} county
+- References to nearby cities in {state_name}
+- Local institutions, schools, or businesses unique to {state_name}
+- Publisher location (local papers often cover local news)
+
+RED FLAGS (signals wrong location):
+- Different state abbreviation mentioned (e.g., article mentions "VIC" for Victoria, Australia)
+- Mentions of landmarks/institutions not in {state_name}
+- International datelines, foreign currency, or non-US measurements
+- References to different counties or regions
+- Context clearly about a different geographic area
+
+If the article lacks clear location signals, indicate low confidence but assume it could match.
+
+Provide:
+1. location_match: true if article appears to be about {region_name}, {state_abbr}
+2. confidence: 0-100 confidence in your determination
+3. detected_location: The location the article appears to be about
+4. location_signals: List of evidence found (state mentions, landmarks, institutions, etc.)
+5. rationale: Brief explanation of your determination
+PROMPT,
+    ],
+
+    // Location Verification Settings (Phase 3 enhancement + Phase 4 secondary check)
+    'location_verification' => [
+        'enabled' => env('NEWS_WORKFLOW_LOCATION_VERIFICATION_ENABLED', true),
+
+        // Minimum confidence to reject based on wrong location
+        // Rejections only happen if confidence >= this threshold
+        'min_confidence' => env('NEWS_WORKFLOW_LOCATION_MIN_CONFIDENCE', 70),
     ],
 ];

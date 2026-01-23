@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 final class BusinessDiscoveryService
 {
     public function __construct(
-        private readonly SerpApiService $serpApi
+        private readonly GooglePlacesService $googlePlaces,
     ) {}
 
     /**
@@ -36,23 +36,34 @@ final class BusinessDiscoveryService
         ]);
 
         try {
-            // Fetch businesses from SERP API
-            $businessesData = $this->serpApi->discoverBusinesses($region, $categories);
-
-            Log::info('SERP API returned businesses', [
-                'region' => $region->name,
-                'count' => count($businessesData),
-            ]);
-
-            // Store each business and link to region
-            foreach ($businessesData as $businessData) {
+            // Fetch businesses for each category from Google Places API
+            foreach ($categories as $category) {
                 try {
-                    $business = $this->upsertBusiness($businessData, $region);
-                    $this->assignToRegion($business, $region);
-                    $businessesCount++;
+                    $businessesData = $this->googlePlaces->discoverBusinessesForCategory($region, $category);
+
+                    Log::info('Google Places API returned businesses', [
+                        'region' => $region->name,
+                        'category' => $category,
+                        'count' => count($businessesData),
+                    ]);
+
+                    // Store each business and link to region
+                    foreach ($businessesData as $businessData) {
+                        try {
+                            $business = $this->upsertBusiness($businessData, $region);
+                            $this->assignToRegion($business, $region);
+                            $businessesCount++;
+                        } catch (Exception $e) {
+                            Log::warning('Failed to store business', [
+                                'business_name' => $businessData['name'] ?? 'Unknown',
+                                'region' => $region->name,
+                                'error' => $e->getMessage(),
+                            ]);
+                        }
+                    }
                 } catch (Exception $e) {
-                    Log::warning('Failed to store business', [
-                        'business_name' => $businessData['name'] ?? 'Unknown',
+                    Log::warning('Failed to fetch businesses for category', [
+                        'category' => $category,
                         'region' => $region->name,
                         'error' => $e->getMessage(),
                     ]);
@@ -84,7 +95,9 @@ final class BusinessDiscoveryService
     }
 
     /**
-     * Create or update a business from SERP data
+     * Create or update a business from Google Places data
+     *
+     * @param  array<string, mixed>  $data
      */
     public function upsertBusiness(array $data, Region $region): Business
     {
@@ -98,22 +111,32 @@ final class BusinessDiscoveryService
         // Find existing business by google_place_id
         $business = Business::where('google_place_id', $googlePlaceId)->first();
 
+        $businessFields = [
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'address' => $data['address'],
+            'city' => $data['city'] ?? null,
+            'state' => $data['state'] ?? null,
+            'postal_code' => $data['postal_code'] ?? null,
+            'latitude' => $data['latitude'],
+            'longitude' => $data['longitude'],
+            'rating' => $data['rating'],
+            'reviews_count' => $data['reviews_count'],
+            'phone' => $data['phone'],
+            'website' => $data['website'],
+            'categories' => $data['categories'],
+            'primary_type' => $data['primary_type'] ?? null,
+            'opening_hours' => $data['opening_hours'],
+            'price_level' => $data['price_level'] ?? null,
+            'images' => $data['images'] ?? [],
+            'serp_metadata' => $data['serp_metadata'],
+            'serp_source' => $data['serp_source'] ?? 'google_places',
+            'serp_last_synced_at' => now(),
+        ];
+
         if ($business) {
             // Update existing business
-            $business->update([
-                'name' => $data['name'],
-                'description' => $data['description'],
-                'address' => $data['address'],
-                'latitude' => $data['latitude'],
-                'longitude' => $data['longitude'],
-                'rating' => $data['rating'],
-                'reviews_count' => $data['reviews_count'],
-                'phone' => $data['phone'],
-                'website' => $data['website'],
-                'categories' => $data['categories'],
-                'opening_hours' => $data['opening_hours'],
-                'serp_metadata' => $data['serp_metadata'],
-            ]);
+            $business->update($businessFields);
 
             Log::info('Updated existing business', [
                 'business_id' => $business->id,
@@ -123,18 +146,7 @@ final class BusinessDiscoveryService
             // Create new business
             $business = Business::create([
                 'google_place_id' => $googlePlaceId,
-                'name' => $data['name'],
-                'description' => $data['description'],
-                'address' => $data['address'],
-                'latitude' => $data['latitude'],
-                'longitude' => $data['longitude'],
-                'rating' => $data['rating'],
-                'reviews_count' => $data['reviews_count'],
-                'phone' => $data['phone'],
-                'website' => $data['website'],
-                'categories' => $data['categories'],
-                'opening_hours' => $data['opening_hours'],
-                'serp_metadata' => $data['serp_metadata'],
+                ...$businessFields,
             ]);
 
             Log::info('Created new business', [
