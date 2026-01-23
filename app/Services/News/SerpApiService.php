@@ -31,7 +31,7 @@ class SerpApiService
     /**
      * Discover businesses in a region using Google Local search
      *
-     * @deprecated Use discoverBusinessesForCategory() for parallelized job processing
+     * @deprecated Use GooglePlacesService::discoverBusinessesForCategory() instead
      */
     public function discoverBusinesses(Region $region, array $categories): array
     {
@@ -58,6 +58,8 @@ class SerpApiService
 
     /**
      * Discover businesses for a SINGLE category (used by parallelized jobs)
+     *
+     * @deprecated Use GooglePlacesService::discoverBusinessesForCategory() instead
      *
      * @return array<int, array<string, mixed>>
      */
@@ -343,9 +345,10 @@ class SerpApiService
         $categoryTerms = config("news-workflow.category_news_terms.{$category}");
         $searchTerms = $categoryTerms ?? str_replace('_', ' ', $category);
 
-        // Simple query format: "[Region Name] [search terms]" works best for Google News
-        // Avoid adding state abbreviation as it makes queries too restrictive
-        $query = "{$region->name} {$searchTerms}";
+        // Build query with state disambiguation to avoid returning news from
+        // same-named regions in other states/countries (e.g., Melbourne FL vs Melbourne AU)
+        $stateAbbr = $this->getStateFromRegion($region);
+        $query = $this->buildRegionalQuery($region, $searchTerms, $stateAbbr);
         $lookbackDays = config('news-workflow.news_collection.lookback_days', 7);
 
         $response = Http::timeout(30)->get($this->baseUrl, [
@@ -410,6 +413,28 @@ class SerpApiService
         $radiusKm = config('news-workflow.business_discovery.radius_km', 25);
 
         return "{$radiusKm}km";
+    }
+
+    /**
+     * Build a regional search query with state disambiguation for better targeting
+     *
+     * For cities and neighborhoods, includes state abbreviation to avoid
+     * confusion with same-named places in other states/countries.
+     */
+    private function buildRegionalQuery(Region $region, string $searchTerms, string $stateAbbr): string
+    {
+        // For cities/neighborhoods, include state for disambiguation
+        if (in_array($region->type, ['city', 'neighborhood']) && ! empty($stateAbbr)) {
+            return "{$region->name} {$stateAbbr} {$searchTerms}";
+        }
+
+        // For counties, include state
+        if ($region->type === 'county' && ! empty($stateAbbr)) {
+            return "{$region->name} {$stateAbbr} {$searchTerms}";
+        }
+
+        // For states, just use the name
+        return "{$region->name} {$searchTerms}";
     }
 
     /**
