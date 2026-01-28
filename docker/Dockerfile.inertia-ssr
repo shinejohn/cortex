@@ -28,6 +28,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
 
 # Copy Composer files first to install Ziggy
 COPY composer.json composer.lock ./
+COPY packages/ packages/
 
 # Verify composer is installed
 RUN composer --version || { \
@@ -271,6 +272,7 @@ WORKDIR /var/www/html
 
 # Copy composer files
 COPY composer.json composer.lock ./
+COPY packages/ packages/
 
 # Install PHP dependencies
 # Use explicit PHP path to ensure Composer uses Docker image's PHP
