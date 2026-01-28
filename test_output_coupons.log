@@ -1,0 +1,30 @@
+
+   FAIL  Tests\Unit\Models\BusinessTest
+  ✓ can create business                                                  0.43s  
+  ✓ business has required attributes                                     0.04s  
+  ⨯ business has reviews relationship                                    0.05s  
+  ✓ business has ratings relationship                                    0.04s  
+  ✓ business has coupons relationship                                    0.03s  
+  ✓ business slug is unique                                              0.03s  
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Unit\Models\BusinessTest > business has rev…  QueryException   
+  SQLSTATE[HY000]: General error: 1 no such column: reviews.business_id (Connection: sqlite, SQL: select * from "reviews" where "reviews"."business_id" = 019bdd93-3091-70c4-b5c3-627059b801a7 and "reviews"."business_id" is not null)
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:406
+    402▕             // For select statements, we'll simply execute the query and return an array
+    403▕             // of the database result set. Each element in the array will be a single
+    404▕             // row from the database table, and will either be an array or objects.
+    405▕             $statement = $this->prepared(
+  ➜ 406▕                 $this->getPdoForSelect($useReadPdo)->prepare($query)
+    407▕             );
+    408▕ 
+    409▕             $this->bindValues($statement, $this->prepareBindings($bindings));
+    410▕
+
+      [2m+15 vendor frames [22m
+  16  tests/Unit/Models/BusinessTest.php:36
+
+
+  Tests:    1 failed, 5 passed (7 assertions)
+  Duration: 0.74s
+

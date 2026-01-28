@@ -1,0 +1,5565 @@
+{
+    "App\\Models\\AccountManager": {
+        "table": "account_managers",
+        "fillable": [
+            "tenant_id",
+            "user_id",
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "is_active",
+            "max_accounts",
+            "current_account_count",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "is_active": "boolean",
+            "metadata": "array",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "tenant": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Achievement": {
+        "table": "achievements",
+        "fillable": [
+            "business_id",
+            "title",
+            "description",
+            "source_name",
+            "source_url",
+            "achievement_type",
+            "achievement_date",
+            "expiration_date",
+            "icon",
+            "badge_image_url",
+            "is_verified",
+            "display_order",
+            "is_featured"
+        ],
+        "hidden": [],
+        "casts": {
+            "achievement_date": "date",
+            "expiration_date": "date",
+            "is_verified": "boolean",
+            "is_featured": "boolean",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "business": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\AdCampaign": {
+        "table": "ad_campaigns",
+        "fillable": [
+            "uuid",
+            "advertiser_id",
+            "name",
+            "description",
+            "status",
+            "type",
+            "budget",
+            "spent",
+            "daily_budget",
+            "start_date",
+            "end_date",
+            "targeting",
+            "platforms"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "budget": "decimal:2",
+            "spent": "decimal:2",
+            "daily_budget": "decimal:2",
+            "start_date": "date",
+            "end_date": "date",
+            "targeting": "array",
+            "platforms": "array",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "advertiser": {
+                "type": "BelongsTo"
+            },
+            "creatives": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\AdClick": {
+        "table": "ad_clicks",
+        "fillable": [
+            "impression_id",
+            "creative_id",
+            "ip_hash",
+            "cost",
+            "clicked_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "cost": "decimal:4",
+            "clicked_at": "datetime"
+        },
+        "relationships": {
+            "impression": {
+                "type": "BelongsTo"
+            },
+            "creative": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\AdCreative": {
+        "table": "ad_creatives",
+        "fillable": [
+            "uuid",
+            "campaign_id",
+            "name",
+            "format",
+            "headline",
+            "body",
+            "image_url",
+            "video_url",
+            "audio_url",
+            "click_url",
+            "cta_text",
+            "status",
+            "width",
+            "height"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "campaign": {
+                "type": "BelongsTo"
+            },
+            "impressions": {
+                "type": "HasMany"
+            },
+            "clicks": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\AdImpression": {
+        "table": "ad_impressions",
+        "fillable": [
+            "creative_id",
+            "placement_id",
+            "community_id",
+            "session_id",
+            "ip_hash",
+            "user_agent",
+            "referrer",
+            "cost",
+            "impressed_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "cost": "decimal:4",
+            "impressed_at": "datetime"
+        },
+        "relationships": {
+            "creative": {
+                "type": "BelongsTo"
+            },
+            "placement": {
+                "type": "BelongsTo"
+            },
+            "community": {
+                "type": "BelongsTo"
+            },
+            "click": {
+                "type": "HasOne"
+            }
+        }
+    },
+    "App\\Models\\AdInventory": {
+        "table": "ad_inventory",
+        "fillable": [
+            "placement_id",
+            "community_id",
+            "date",
+            "total_impressions",
+            "sold_impressions",
+            "delivered_impressions",
+            "revenue"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "date": "date",
+            "revenue": "decimal:2"
+        },
+        "relationships": {
+            "placement": {
+                "type": "BelongsTo"
+            },
+            "community": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\AdPlacement": {
+        "table": "ad_placements",
+        "fillable": [
+            "platform",
+            "slot",
+            "name",
+            "description",
+            "format",
+            "width",
+            "height",
+            "base_cpm",
+            "base_cpc",
+            "is_active",
+            "priority"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "base_cpm": "decimal:2",
+            "base_cpc": "decimal:2",
+            "is_active": "boolean"
+        },
+        "relationships": {
+            "inventory": {
+                "type": "HasMany"
+            },
+            "impressions": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\Advertisement": {
+        "table": "advertisements",
+        "fillable": [
+            "platform",
+            "advertable_type",
+            "advertable_id",
+            "placement",
+            "regions",
+            "impressions_count",
+            "clicks_count",
+            "starts_at",
+            "expires_at",
+            "is_active"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "regions": "array",
+            "starts_at": "datetime",
+            "expires_at": "datetime",
+            "is_active": "boolean",
+            "impressions_count": "integer",
+            "clicks_count": "integer"
+        },
+        "relationships": {
+            "advertable": {
+                "type": "MorphTo"
+            },
+            "organizationRelationships": {
+                "type": "MorphMany"
+            },
+            "organizations": {
+                "type": "BelongsToMany"
+            }
+        }
+    },
+    "App\\Models\\AlphaSiteCommunity": {
+        "table": "alphasite_communities",
+        "fillable": [
+            "city",
+            "state",
+            "country",
+            "slug",
+            "name",
+            "description",
+            "hero_image_url",
+            "logo_url",
+            "total_businesses",
+            "premium_businesses",
+            "total_categories",
+            "seo_title",
+            "seo_description",
+            "featured_categories",
+            "is_active",
+            "launched_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "featured_categories": "array",
+            "is_active": "boolean",
+            "launched_at": "datetime"
+        },
+        "relationships": {
+            "businesses": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\AlphaSiteFourCallsIntegration": {
+        "table": "alphasite_fourcalls_integrations",
+        "fillable": [
+            "business_id",
+            "organization_id",
+            "coordinator_id",
+            "api_key",
+            "service_package",
+            "status",
+            "activated_at",
+            "expires_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "activated_at": "datetime",
+            "expires_at": "datetime"
+        },
+        "relationships": {
+            "business": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Announcement": {
+        "table": "announcements",
+        "fillable": [
+            "user_id",
+            "workspace_id",
+            "type",
+            "title",
+            "content",
+            "image",
+            "location",
+            "event_date",
+            "status",
+            "published_at",
+            "expires_at",
+            "views_count",
+            "reactions_count",
+            "comments_count"
+        ],
+        "hidden": [],
+        "casts": {
+            "event_date": "date",
+            "published_at": "datetime",
+            "expires_at": "datetime",
+            "views_count": "integer",
+            "reactions_count": "integer",
+            "comments_count": "integer"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            },
+            "workspace": {
+                "type": "BelongsTo"
+            },
+            "regions": {
+                "type": "BelongsToMany"
+            },
+            "comments": {
+                "type": "MorphMany"
+            },
+            "reviews": {
+                "type": "MorphMany"
+            },
+            "ratings": {
+                "type": "MorphMany"
+            },
+            "approvedReviews": {
+                "type": "MorphMany"
+            },
+            "featuredReviews": {
+                "type": "MorphMany"
+            },
+            "organizationRelationships": {
+                "type": "MorphMany"
+            },
+            "organizations": {
+                "type": "BelongsToMany"
+            }
+        }
+    },
+    "App\\Models\\ArticleComment": {
+        "table": "article_comments",
+        "fillable": [
+            "article_id",
+            "user_id",
+            "parent_id",
+            "content",
+            "is_active",
+            "is_pinned",
+            "reports_count"
+        ],
+        "hidden": [],
+        "casts": {
+            "is_active": "boolean",
+            "is_pinned": "boolean",
+            "reports_count": "integer"
+        },
+        "relationships": {
+            "article": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            },
+            "parent": {
+                "type": "BelongsTo"
+            },
+            "replies": {
+                "type": "HasMany"
+            },
+            "likes": {
+                "type": "HasMany"
+            },
+            "activities": {
+                "type": "MorphMany"
+            }
+        }
+    },
+    "App\\Models\\ArticleCommentLike": {
+        "table": "article_comment_likes",
+        "fillable": [
+            "comment_id",
+            "user_id"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int"
+        },
+        "relationships": {
+            "comment": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Booking": {
+        "table": "bookings",
+        "fillable": [
+            "booking_number",
+            "status",
+            "booking_type",
+            "event_id",
+            "venue_id",
+            "performer_id",
+            "user_id",
+            "contact_name",
+            "contact_email",
+            "contact_phone",
+            "contact_company",
+            "event_date",
+            "start_time",
+            "end_time",
+            "event_type",
+            "expected_guests",
+            "expected_audience",
+            "ticket_quantity",
+            "ticket_type",
+            "price_per_ticket",
+            "payment_status",
+            "total_amount",
+            "currency",
+            "paid_amount",
+            "payment_method",
+            "transaction_id",
+            "payment_date",
+            "refund_amount",
+            "refund_date",
+            "notes",
+            "special_requests",
+            "setup_requirements",
+            "catering_requirements",
+            "performance_requirements",
+            "sound_requirements",
+            "confirmed_at",
+            "cancelled_at",
+            "cancellation_reason",
+            "workspace_id",
+            "created_by",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "event_date": "date",
+            "start_time": "datetime:H:i",
+            "end_time": "datetime:H:i",
+            "total_amount": "decimal:2",
+            "paid_amount": "decimal:2",
+            "price_per_ticket": "decimal:2",
+            "refund_amount": "decimal:2",
+            "payment_date": "datetime",
+            "refund_date": "datetime",
+            "confirmed_at": "datetime",
+            "cancelled_at": "datetime",
+            "special_requests": "array",
+            "setup_requirements": "array",
+            "catering_requirements": "array",
+            "performance_requirements": "array",
+            "sound_requirements": "array"
+        },
+        "relationships": {
+            "event": {
+                "type": "BelongsTo"
+            },
+            "venue": {
+                "type": "BelongsTo"
+            },
+            "performer": {
+                "type": "BelongsTo"
+            },
+            "workspace": {
+                "type": "BelongsTo"
+            },
+            "createdBy": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Business": {
+        "table": "businesses",
+        "fillable": [
+            "workspace_id",
+            "google_place_id",
+            "name",
+            "slug",
+            "description",
+            "website",
+            "phone",
+            "email",
+            "address",
+            "city",
+            "state",
+            "postal_code",
+            "country",
+            "latitude",
+            "longitude",
+            "categories",
+            "rating",
+            "reviews_count",
+            "opening_hours",
+            "images",
+            "serp_metadata",
+            "data_id",
+            "data_cid",
+            "lsig",
+            "provider_id",
+            "local_services_cid",
+            "local_services_bid",
+            "local_services_pid",
+            "serp_source",
+            "serp_last_synced_at",
+            "primary_type",
+            "type_id",
+            "type_ids",
+            "price_level",
+            "open_state",
+            "hours_display",
+            "google_badge",
+            "service_area",
+            "years_in_business",
+            "bookings_nearby",
+            "verification_status",
+            "verified_at",
+            "claimed_at",
+            "is_verified",
+            "service_options",
+            "reserve_url",
+            "order_online_url",
+            "status",
+            "claimable_type",
+            "claimable_id",
+            "organization_type",
+            "organization_level",
+            "parent_organization_id",
+            "organization_category",
+            "is_organization",
+            "organization_identifier",
+            "organization_hierarchy",
+            "alphasite_subdomain",
+            "template_id",
+            "ai_services_enabled",
+            "premium_enrolled_at",
+            "premium_expires_at",
+            "subscription_tier",
+            "homepage_content",
+            "social_links",
+            "amenities",
+            "featured",
+            "promoted",
+            "seo_metadata",
+            "industry_id"
+        ],
+        "hidden": [],
+        "casts": {
+            "categories": "array",
+            "opening_hours": "array",
+            "images": "array",
+            "serp_metadata": "array",
+            "type_ids": "array",
+            "service_area": "array",
+            "service_options": "array",
+            "is_verified": "boolean",
+            "is_organization": "boolean",
+            "organization_hierarchy": "array",
+            "ai_services_enabled": "boolean",
+            "premium_enrolled_at": "datetime",
+            "premium_expires_at": "datetime",
+            "homepage_content": "array",
+            "social_links": "array",
+            "amenities": "array",
+            "featured": "boolean",
+            "promoted": "boolean",
+            "seo_metadata": "array",
+            "rating": "decimal:2",
+            "latitude": "decimal:8",
+            "longitude": "decimal:8",
+            "reviews_count": "integer",
+            "years_in_business": "integer",
+            "bookings_nearby": "integer",
+            "serp_last_synced_at": "datetime",
+            "verified_at": "datetime",
+            "claimed_at": "datetime",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "workspace": {
+                "type": "BelongsTo"
+            },
+            "regions": {
+                "type": "BelongsToMany"
+            },
+            "claimable": {
+                "type": "MorphTo"
+            },
+            "rssFeeds": {
+                "type": "HasMany"
+            },
+            "healthyRssFeeds": {
+                "type": "HasMany"
+            },
+            "parentOrganization": {
+                "type": "BelongsTo"
+            },
+            "childOrganizations": {
+                "type": "HasMany"
+            },
+            "organizationRelationships": {
+                "type": "HasMany"
+            },
+            "relatedContent": {
+                "type": "HasMany"
+            },
+            "industry": {
+                "type": "BelongsTo"
+            },
+            "template": {
+                "type": "BelongsTo"
+            },
+            "subscription": {
+                "type": "BelongsTo"
+            },
+            "achievements": {
+                "type": "HasMany"
+            },
+            "featuredAchievements": {
+                "type": "HasMany"
+            },
+            "faqs": {
+                "type": "HasMany"
+            },
+            "activeFaqs": {
+                "type": "HasMany"
+            },
+            "surveys": {
+                "type": "HasMany"
+            },
+            "activeSurveys": {
+                "type": "HasMany"
+            },
+            "crmCustomers": {
+                "type": "HasMany"
+            },
+            "crmInteractions": {
+                "type": "HasMany"
+            },
+            "reviews": {
+                "type": "MorphMany"
+            },
+            "ratings": {
+                "type": "MorphMany"
+            },
+            "coupons": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\BusinessAttribute": {
+        "table": "business_attributes",
+        "fillable": [
+            "smb_business_id",
+            "attribute_key",
+            "attribute_value",
+            "attribute_type"
+        ],
+        "hidden": [],
+        "casts": {
+            "attribute_value": "string"
+        },
+        "relationships": {
+            "smbBusiness": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\BusinessFaq": {
+        "table": "business_faqs",
+        "fillable": [
+            "business_id",
+            "question",
+            "answer",
+            "category",
+            "tags",
+            "variations",
+            "follow_up_questions",
+            "times_used",
+            "helpful_votes",
+            "unhelpful_votes",
+            "is_active",
+            "display_order"
+        ],
+        "hidden": [],
+        "casts": {
+            "tags": "array",
+            "variations": "array",
+            "follow_up_questions": "array",
+            "is_active": "boolean"
+        },
+        "relationships": {
+            "business": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\BusinessHours": {
+        "table": "business_hours",
+        "fillable": [
+            "smb_business_id",
+            "day_of_week",
+            "open_time",
+            "close_time",
+            "is_closed",
+            "is_24_hours"
+        ],
+        "hidden": [],
+        "casts": {
+            "open_time": "datetime:H:i",
+            "close_time": "datetime:H:i",
+            "is_closed": "boolean",
+            "is_24_hours": "boolean"
+        },
+        "relationships": {
+            "smbBusiness": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\BusinessMention": {
+        "table": "business_mentions",
+        "fillable": [
+            "business_id",
+            "business_name",
+            "business_name_normalized",
+            "community_id",
+            "raw_content_id",
+            "article_id",
+            "published_article_id",
+            "mention_type",
+            "sentiment",
+            "mention_context",
+            "mentioned_at",
+            "is_primary",
+            "notified_sales",
+            "confidence"
+        ],
+        "hidden": [],
+        "casts": {
+            "mentioned_at": "datetime",
+            "is_primary": "boolean",
+            "notified_sales": "boolean"
+        },
+        "relationships": []
+    },
+    "App\\Models\\BusinessPhoto": {
+        "table": "business_photos",
+        "fillable": [
+            "smb_business_id",
+            "photo_reference",
+            "width",
+            "height",
+            "html_attributions",
+            "is_primary",
+            "display_order"
+        ],
+        "hidden": [],
+        "casts": {
+            "html_attributions": "array",
+            "is_primary": "boolean"
+        },
+        "relationships": {
+            "smbBusiness": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\BusinessReview": {
+        "table": "business_reviews",
+        "fillable": [
+            "smb_business_id",
+            "author_name",
+            "author_url",
+            "language",
+            "profile_photo_url",
+            "rating",
+            "relative_time_description",
+            "text",
+            "time"
+        ],
+        "hidden": [],
+        "casts": {
+            "time": "datetime"
+        },
+        "relationships": {
+            "smbBusiness": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\BusinessSubscription": {
+        "table": "business_subscriptions",
+        "fillable": [
+            "business_id",
+            "tier",
+            "status",
+            "trial_started_at",
+            "trial_expires_at",
+            "trial_converted_at",
+            "subscription_started_at",
+            "subscription_expires_at",
+            "auto_renew",
+            "stripe_subscription_id",
+            "stripe_customer_id",
+            "monthly_amount",
+            "billing_cycle",
+            "ai_services_enabled",
+            "claimed_by_id",
+            "claimed_at",
+            "downgraded_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "trial_started_at": "datetime",
+            "trial_expires_at": "datetime",
+            "trial_converted_at": "datetime",
+            "subscription_started_at": "datetime",
+            "subscription_expires_at": "datetime",
+            "claimed_at": "datetime",
+            "downgraded_at": "datetime",
+            "auto_renew": "boolean",
+            "monthly_amount": "decimal:2",
+            "ai_services_enabled": "array"
+        },
+        "relationships": {
+            "business": {
+                "type": "BelongsTo"
+            },
+            "claimedBy": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\BusinessSurvey": {
+        "table": "business_surveys",
+        "fillable": [
+            "business_id",
+            "name",
+            "description",
+            "survey_type",
+            "questions",
+            "trigger_type",
+            "trigger_config",
+            "is_active",
+            "responses_count",
+            "average_score"
+        ],
+        "hidden": [],
+        "casts": {
+            "questions": "array",
+            "trigger_config": "array",
+            "is_active": "boolean",
+            "average_score": "decimal:2"
+        },
+        "relationships": {
+            "business": {
+                "type": "BelongsTo"
+            },
+            "responses": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\BusinessSurveyResponse": {
+        "table": "business_survey_responses",
+        "fillable": [
+            "survey_id",
+            "business_id",
+            "customer_id",
+            "responses",
+            "overall_score",
+            "sentiment",
+            "ai_summary",
+            "action_items",
+            "completed_at",
+            "source"
+        ],
+        "hidden": [],
+        "casts": {
+            "responses": "array",
+            "overall_score": "decimal:2",
+            "action_items": "array",
+            "completed_at": "datetime"
+        },
+        "relationships": {
+            "survey": {
+                "type": "BelongsTo"
+            },
+            "business": {
+                "type": "BelongsTo"
+            },
+            "customer": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\BusinessTemplate": {
+        "table": "business_templates",
+        "fillable": [
+            "name",
+            "slug",
+            "description",
+            "industry_id",
+            "layout_config",
+            "available_tabs",
+            "default_tabs",
+            "ai_features",
+            "theme_config",
+            "component_overrides",
+            "seo_template",
+            "schema_template",
+            "is_premium",
+            "is_active"
+        ],
+        "hidden": [],
+        "casts": {
+            "layout_config": "array",
+            "available_tabs": "array",
+            "default_tabs": "array",
+            "ai_features": "array",
+            "theme_config": "array",
+            "component_overrides": "array",
+            "seo_template": "array",
+            "schema_template": "array",
+            "is_premium": "boolean",
+            "is_active": "boolean"
+        },
+        "relationships": {
+            "industry": {
+                "type": "BelongsTo"
+            },
+            "businesses": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\Calendar": {
+        "table": "calendars",
+        "fillable": [
+            "user_id",
+            "title",
+            "description",
+            "category",
+            "image",
+            "about",
+            "location",
+            "update_frequency",
+            "subscription_price",
+            "is_private",
+            "is_verified",
+            "followers_count",
+            "events_count"
+        ],
+        "hidden": [],
+        "casts": {
+            "subscription_price": "decimal:2",
+            "is_private": "boolean",
+            "is_verified": "boolean",
+            "followers_count": "integer",
+            "events_count": "integer"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            },
+            "owner": {
+                "type": "BelongsTo"
+            },
+            "followers": {
+                "type": "BelongsToMany"
+            },
+            "events": {
+                "type": "BelongsToMany"
+            },
+            "roles": {
+                "type": "HasMany"
+            },
+            "editors": {
+                "type": "BelongsToMany"
+            },
+            "follows": {
+                "type": "MorphMany"
+            }
+        }
+    },
+    "App\\Models\\CalendarEvent": {
+        "table": "calendar_events",
+        "fillable": [
+            "calendar_id",
+            "event_id",
+            "added_by",
+            "position"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "position": "integer"
+        },
+        "relationships": {
+            "calendar": {
+                "type": "BelongsTo"
+            },
+            "event": {
+                "type": "BelongsTo"
+            },
+            "addedBy": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\CalendarFollower": {
+        "table": "calendar_followers",
+        "fillable": [
+            "calendar_id",
+            "user_id"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int"
+        },
+        "relationships": {
+            "calendar": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\CalendarRole": {
+        "table": "calendar_roles",
+        "fillable": [
+            "calendar_id",
+            "user_id",
+            "role"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int"
+        },
+        "relationships": {
+            "calendar": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Campaign": {
+        "table": "campaigns",
+        "fillable": [
+            "tenant_id",
+            "name",
+            "type",
+            "status",
+            "start_date",
+            "end_date",
+            "budget",
+            "spent",
+            "target_audience",
+            "content",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "start_date": "datetime",
+            "end_date": "datetime",
+            "budget": "decimal:2",
+            "spent": "decimal:2",
+            "target_audience": "array",
+            "metadata": "array",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "tenant": {
+                "type": "BelongsTo"
+            },
+            "recipients": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\CampaignRecipient": {
+        "table": "campaign_recipients",
+        "fillable": [
+            "campaign_id",
+            "customer_id",
+            "status",
+            "sent_at",
+            "delivered_at",
+            "opened_at",
+            "clicked_at",
+            "bounced_at",
+            "unsubscribed_at",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "sent_at": "datetime",
+            "delivered_at": "datetime",
+            "opened_at": "datetime",
+            "clicked_at": "datetime",
+            "bounced_at": "datetime",
+            "unsubscribed_at": "datetime",
+            "metadata": "array"
+        },
+        "relationships": {
+            "campaign": {
+                "type": "BelongsTo"
+            },
+            "customer": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Cart": {
+        "table": "carts",
+        "fillable": [
+            "user_id",
+            "session_id"
+        ],
+        "hidden": [],
+        "casts": [],
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            },
+            "items": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\CartItem": {
+        "table": "cart_items",
+        "fillable": [
+            "cart_id",
+            "product_id",
+            "store_id",
+            "quantity",
+            "price"
+        ],
+        "hidden": [],
+        "casts": {
+            "price": "decimal:2"
+        },
+        "relationships": {
+            "cart": {
+                "type": "BelongsTo"
+            },
+            "product": {
+                "type": "BelongsTo"
+            },
+            "store": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\CheckIn": {
+        "table": "check_ins",
+        "fillable": [
+            "event_id",
+            "user_id",
+            "checked_in_at",
+            "location",
+            "latitude",
+            "longitude",
+            "notes",
+            "is_public"
+        ],
+        "hidden": [],
+        "casts": {
+            "checked_in_at": "datetime",
+            "latitude": "decimal:8",
+            "longitude": "decimal:8",
+            "is_public": "boolean"
+        },
+        "relationships": {
+            "event": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\CivicCollectionRun": {
+        "table": "civic_collection_runs",
+        "fillable": [
+            "civic_source_id",
+            "region_id",
+            "started_at",
+            "completed_at",
+            "status",
+            "items_found",
+            "items_new",
+            "items_updated",
+            "items_skipped",
+            "error_message",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "started_at": "datetime",
+            "completed_at": "datetime",
+            "items_found": "integer",
+            "items_new": "integer",
+            "items_updated": "integer",
+            "items_skipped": "integer",
+            "metadata": "array"
+        },
+        "relationships": {
+            "civicSource": {
+                "type": "BelongsTo"
+            },
+            "region": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\CivicContentItem": {
+        "table": "civic_content_items",
+        "fillable": [
+            "civic_source_id",
+            "region_id",
+            "content_type",
+            "external_id",
+            "title",
+            "description",
+            "full_content",
+            "url",
+            "published_at",
+            "event_date",
+            "expires_at",
+            "category",
+            "subcategory",
+            "tags",
+            "body_name",
+            "meeting_type",
+            "agenda_items",
+            "attachments",
+            "alert_type",
+            "urgency",
+            "severity",
+            "raw_data",
+            "content_hash",
+            "processing_status",
+            "news_article_id",
+            "event_id",
+            "processed_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "tags": "array",
+            "agenda_items": "array",
+            "attachments": "array",
+            "raw_data": "array",
+            "published_at": "datetime",
+            "event_date": "datetime",
+            "expires_at": "datetime",
+            "processed_at": "datetime"
+        },
+        "relationships": {
+            "civicSource": {
+                "type": "BelongsTo"
+            },
+            "region": {
+                "type": "BelongsTo"
+            },
+            "newsArticle": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\CivicSource": {
+        "table": "civic_sources",
+        "fillable": [
+            "region_id",
+            "platform_id",
+            "name",
+            "source_type",
+            "entity_type",
+            "base_url",
+            "api_endpoint",
+            "api_client_name",
+            "rss_feed_url",
+            "agency_id",
+            "zip_codes",
+            "county",
+            "state",
+            "config",
+            "available_feeds",
+            "poll_interval_minutes",
+            "last_collected_at",
+            "last_items_found",
+            "next_collection_at",
+            "is_enabled",
+            "is_verified",
+            "consecutive_failures",
+            "health_score",
+            "last_error",
+            "last_error_at",
+            "auto_discovered",
+            "discovered_at",
+            "verified_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "config": "array",
+            "available_feeds": "array",
+            "poll_interval_minutes": "integer",
+            "last_collected_at": "datetime",
+            "next_collection_at": "datetime",
+            "last_items_found": "integer",
+            "is_enabled": "boolean",
+            "is_verified": "boolean",
+            "consecutive_failures": "integer",
+            "health_score": "integer",
+            "last_error_at": "datetime",
+            "auto_discovered": "boolean",
+            "discovered_at": "datetime",
+            "verified_at": "datetime",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "region": {
+                "type": "BelongsTo"
+            },
+            "platform": {
+                "type": "BelongsTo"
+            },
+            "contentItems": {
+                "type": "HasMany"
+            },
+            "collectionRuns": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\CivicSourcePlatform": {
+        "table": "civic_source_platforms",
+        "fillable": [
+            "name",
+            "display_name",
+            "description",
+            "api_base_url",
+            "detection_patterns",
+            "default_config",
+            "is_active"
+        ],
+        "hidden": [],
+        "casts": {
+            "detection_patterns": "array",
+            "default_config": "array",
+            "is_active": "boolean"
+        },
+        "relationships": {
+            "sources": {
+                "type": "HasMany"
+            },
+            "activeSources": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\Classified": {
+        "table": "classifieds",
+        "fillable": [
+            "user_id",
+            "workspace_id",
+            "category",
+            "subcategory",
+            "title",
+            "description",
+            "price",
+            "price_type",
+            "condition",
+            "location",
+            "is_featured",
+            "status",
+            "posted_at",
+            "expires_at",
+            "views_count"
+        ],
+        "hidden": [],
+        "casts": {
+            "price": "decimal:2",
+            "is_featured": "boolean",
+            "posted_at": "datetime",
+            "expires_at": "datetime",
+            "views_count": "integer"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            },
+            "workspace": {
+                "type": "BelongsTo"
+            },
+            "images": {
+                "type": "HasMany"
+            },
+            "regions": {
+                "type": "BelongsToMany"
+            },
+            "payment": {
+                "type": "HasOne"
+            }
+        }
+    },
+    "App\\Models\\ClassifiedImage": {
+        "table": "classified_images",
+        "fillable": [
+            "classified_id",
+            "image_path",
+            "image_disk",
+            "order"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int"
+        },
+        "relationships": {
+            "classified": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\ClassifiedPayment": {
+        "table": "classified_payments",
+        "fillable": [
+            "classified_id",
+            "workspace_id",
+            "stripe_payment_intent_id",
+            "stripe_checkout_session_id",
+            "amount",
+            "currency",
+            "status",
+            "regions_data",
+            "total_days"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "amount": "integer",
+            "regions_data": "array",
+            "total_days": "integer"
+        },
+        "relationships": {
+            "classified": {
+                "type": "BelongsTo"
+            },
+            "workspace": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\CollectionMethod": {
+        "table": "collection_methods",
+        "fillable": [
+            "source_id",
+            "method_type",
+            "name",
+            "endpoint_url",
+            "poll_interval_minutes",
+            "feed_format",
+            "feed_last_modified",
+            "feed_etag",
+            "intake_email",
+            "signup_url",
+            "subscription_status",
+            "confirmed_at",
+            "last_email_received_at",
+            "emails_received_count",
+            "scrape_config",
+            "requires_javascript",
+            "platform_config",
+            "is_enabled",
+            "is_primary",
+            "last_collected_at",
+            "last_successful_at",
+            "last_items_found",
+            "total_items_collected",
+            "consecutive_failures",
+            "last_error"
+        ],
+        "hidden": [],
+        "casts": {
+            "scrape_config": "array",
+            "platform_config": "array",
+            "is_enabled": "boolean",
+            "is_primary": "boolean",
+            "requires_javascript": "boolean",
+            "confirmed_at": "datetime",
+            "last_email_received_at": "datetime",
+            "last_collected_at": "datetime"
+        },
+        "relationships": []
+    },
+    "App\\Models\\CommentReport": {
+        "table": "comment_reports",
+        "fillable": [
+            "comment_id",
+            "user_id",
+            "reason",
+            "details",
+            "status"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "status": "string"
+        },
+        "relationships": {
+            "comment": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Community": {
+        "table": "communities",
+        "fillable": [
+            "slug",
+            "name",
+            "description",
+            "image",
+            "categories",
+            "thread_types",
+            "popular_tags",
+            "guidelines",
+            "total_events",
+            "is_active",
+            "is_featured",
+            "last_activity",
+            "workspace_id",
+            "created_by"
+        ],
+        "hidden": [],
+        "casts": {
+            "categories": "array",
+            "thread_types": "array",
+            "popular_tags": "array",
+            "is_active": "boolean",
+            "is_featured": "boolean",
+            "last_activity": "datetime"
+        },
+        "relationships": {
+            "workspace": {
+                "type": "BelongsTo"
+            },
+            "createdBy": {
+                "type": "BelongsTo"
+            },
+            "threads": {
+                "type": "HasMany"
+            },
+            "members": {
+                "type": "HasMany"
+            },
+            "activeMembers": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\CommunityMember": {
+        "table": "community_members",
+        "fillable": [
+            "community_id",
+            "user_id",
+            "role",
+            "joined_at",
+            "is_active",
+            "last_activity_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "joined_at": "datetime",
+            "is_active": "boolean",
+            "last_activity_at": "datetime"
+        },
+        "relationships": {
+            "community": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\CommunityThread": {
+        "table": "community_threads",
+        "fillable": [
+            "title",
+            "content",
+            "preview",
+            "type",
+            "tags",
+            "images",
+            "is_pinned",
+            "is_locked",
+            "is_featured",
+            "last_reply_at",
+            "last_reply_by",
+            "community_id",
+            "author_id"
+        ],
+        "hidden": [],
+        "casts": {
+            "tags": "array",
+            "images": "array",
+            "is_pinned": "boolean",
+            "is_locked": "boolean",
+            "is_featured": "boolean",
+            "last_reply_at": "datetime"
+        },
+        "relationships": {
+            "community": {
+                "type": "BelongsTo"
+            },
+            "author": {
+                "type": "BelongsTo"
+            },
+            "lastReplyBy": {
+                "type": "BelongsTo"
+            },
+            "replies": {
+                "type": "HasMany"
+            },
+            "views": {
+                "type": "HasMany"
+            },
+            "topLevelReplies": {
+                "type": "HasMany"
+            },
+            "solutions": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\CommunityThreadReply": {
+        "table": "community_thread_replies",
+        "fillable": [
+            "thread_id",
+            "user_id",
+            "content",
+            "images",
+            "is_solution",
+            "is_pinned",
+            "is_edited",
+            "edited_at",
+            "reply_to_id"
+        ],
+        "hidden": [],
+        "casts": {
+            "images": "array",
+            "is_solution": "boolean",
+            "is_pinned": "boolean",
+            "is_edited": "boolean",
+            "edited_at": "datetime"
+        },
+        "relationships": {
+            "thread": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            },
+            "author": {
+                "type": "BelongsTo"
+            },
+            "replyTo": {
+                "type": "BelongsTo"
+            },
+            "replies": {
+                "type": "HasMany"
+            },
+            "likes": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\CommunityThreadReplyLike": {
+        "table": "community_thread_reply_likes",
+        "fillable": [
+            "reply_id",
+            "user_id"
+        ],
+        "hidden": [],
+        "casts": [],
+        "relationships": {
+            "reply": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\CommunityThreadView": {
+        "table": "community_thread_views",
+        "fillable": [
+            "thread_id",
+            "user_id",
+            "session_id",
+            "viewed_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "viewed_at": "datetime"
+        },
+        "relationships": {
+            "thread": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Conversation": {
+        "table": "conversations",
+        "fillable": [
+            "type",
+            "title",
+            "metadata",
+            "last_message_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "metadata": "array",
+            "last_message_at": "datetime"
+        },
+        "relationships": {
+            "participants": {
+                "type": "BelongsToMany"
+            },
+            "messages": {
+                "type": "HasMany"
+            },
+            "latestMessage": {
+                "type": "HasOne"
+            },
+            "conversationParticipants": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\ConversationParticipant": {
+        "table": "conversation_participants",
+        "fillable": [
+            "conversation_id",
+            "user_id",
+            "joined_at",
+            "last_read_at",
+            "is_admin"
+        ],
+        "hidden": [],
+        "casts": {
+            "joined_at": "datetime",
+            "last_read_at": "datetime",
+            "is_admin": "boolean"
+        },
+        "relationships": {
+            "conversation": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Coupon": {
+        "table": "coupons",
+        "fillable": [
+            "user_id",
+            "business_id",
+            "title",
+            "description",
+            "discount_type",
+            "discount_value",
+            "terms",
+            "code",
+            "image",
+            "business_name",
+            "business_location",
+            "start_date",
+            "end_date",
+            "usage_limit",
+            "used_count",
+            "status",
+            "views_count",
+            "clicks_count"
+        ],
+        "hidden": [],
+        "casts": {
+            "discount_value": "decimal:2",
+            "start_date": "date",
+            "end_date": "date",
+            "usage_limit": "integer",
+            "used_count": "integer",
+            "views_count": "integer",
+            "clicks_count": "integer"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            },
+            "business": {
+                "type": "BelongsTo"
+            },
+            "regions": {
+                "type": "BelongsToMany"
+            },
+            "usages": {
+                "type": "HasMany"
+            },
+            "organizationRelationships": {
+                "type": "MorphMany"
+            },
+            "organizations": {
+                "type": "BelongsToMany"
+            }
+        }
+    },
+    "App\\Models\\CouponUsage": {
+        "table": "coupon_usages",
+        "fillable": [
+            "coupon_id",
+            "user_id",
+            "ip_address"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int"
+        },
+        "relationships": {
+            "coupon": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\CreatorProfile": {
+        "table": "creator_profiles",
+        "fillable": [
+            "user_id",
+            "display_name",
+            "slug",
+            "bio",
+            "avatar",
+            "cover_image",
+            "social_links",
+            "status",
+            "followers_count",
+            "podcasts_count",
+            "episodes_count",
+            "total_listens"
+        ],
+        "hidden": [],
+        "casts": {
+            "social_links": "array",
+            "followers_count": "integer",
+            "podcasts_count": "integer",
+            "episodes_count": "integer",
+            "total_listens": "integer"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            },
+            "podcasts": {
+                "type": "HasMany"
+            },
+            "followers": {
+                "type": "MorphMany"
+            }
+        }
+    },
+    "App\\Models\\CrossDomainAuthToken": {
+        "table": "cross_domain_auth_tokens",
+        "fillable": [
+            "user_id",
+            "token",
+            "source_domain",
+            "target_domains",
+            "expires_at",
+            "used"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "target_domains": "array",
+            "expires_at": "datetime",
+            "used": "boolean"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Customer": {
+        "table": "customers",
+        "fillable": [
+            "tenant_id",
+            "smb_business_id",
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "lifecycle_stage",
+            "lead_score",
+            "lead_source",
+            "email_opted_in",
+            "sms_opted_in",
+            "lifetime_value",
+            "tags",
+            "custom_fields"
+        ],
+        "hidden": [],
+        "casts": {
+            "email_opted_in": "boolean",
+            "sms_opted_in": "boolean",
+            "lifetime_value": "decimal:2",
+            "tags": "array",
+            "custom_fields": "array",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "tenant": {
+                "type": "BelongsTo"
+            },
+            "smbBusiness": {
+                "type": "BelongsTo"
+            },
+            "deals": {
+                "type": "HasMany"
+            },
+            "interactions": {
+                "type": "HasMany"
+            },
+            "tasks": {
+                "type": "HasMany"
+            },
+            "campaignRecipients": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\DayNewsPost": {
+        "table": "day_news_posts",
+        "fillable": [
+            "workspace_id",
+            "author_id",
+            "writer_agent_id",
+            "rss_feed_id",
+            "rss_feed_item_id",
+            "source_type",
+            "type",
+            "category",
+            "title",
+            "slug",
+            "content",
+            "excerpt",
+            "featured_image",
+            "featured_image_path",
+            "featured_image_disk",
+            "metadata",
+            "status",
+            "published_at",
+            "expires_at",
+            "view_count",
+            "likes_count",
+            "shares_count",
+            "comments_count",
+            "engagement_score",
+            "engagement_calculated_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "published_at": "datetime",
+            "expires_at": "datetime",
+            "metadata": "array",
+            "view_count": "integer",
+            "likes_count": "integer",
+            "shares_count": "integer",
+            "comments_count": "integer",
+            "engagement_score": "decimal:2",
+            "engagement_calculated_at": "datetime"
+        },
+        "relationships": {
+            "workspace": {
+                "type": "BelongsTo"
+            },
+            "author": {
+                "type": "BelongsTo"
+            },
+            "writerAgent": {
+                "type": "BelongsTo"
+            },
+            "regions": {
+                "type": "BelongsToMany"
+            },
+            "payment": {
+                "type": "HasOne"
+            },
+            "advertisements": {
+                "type": "MorphMany"
+            },
+            "rssFeed": {
+                "type": "BelongsTo"
+            },
+            "rssFeedItem": {
+                "type": "BelongsTo"
+            },
+            "comments": {
+                "type": "HasMany"
+            },
+            "activeComments": {
+                "type": "HasMany"
+            },
+            "tags": {
+                "type": "BelongsToMany"
+            },
+            "activities": {
+                "type": "MorphMany"
+            },
+            "reviews": {
+                "type": "MorphMany"
+            },
+            "ratings": {
+                "type": "MorphMany"
+            },
+            "approvedReviews": {
+                "type": "MorphMany"
+            },
+            "featuredReviews": {
+                "type": "MorphMany"
+            },
+            "organizationRelationships": {
+                "type": "MorphMany"
+            },
+            "organizations": {
+                "type": "BelongsToMany"
+            }
+        }
+    },
+    "App\\Models\\DayNewsPostPayment": {
+        "table": "day_news_post_payments",
+        "fillable": [
+            "post_id",
+            "workspace_id",
+            "stripe_payment_intent_id",
+            "stripe_checkout_session_id",
+            "amount",
+            "currency",
+            "status",
+            "payment_type",
+            "ad_days"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "amount": "integer",
+            "ad_days": "integer"
+        },
+        "relationships": {
+            "post": {
+                "type": "BelongsTo"
+            },
+            "workspace": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Deal": {
+        "table": "deals",
+        "fillable": [
+            "tenant_id",
+            "customer_id",
+            "name",
+            "amount",
+            "currency",
+            "stage",
+            "probability",
+            "expected_close_date",
+            "actual_close_date",
+            "description",
+            "tags",
+            "custom_fields"
+        ],
+        "hidden": [],
+        "casts": {
+            "amount": "decimal:2",
+            "expected_close_date": "date",
+            "actual_close_date": "date",
+            "tags": "array",
+            "custom_fields": "array",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "tenant": {
+                "type": "BelongsTo"
+            },
+            "customer": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\EmailCampaign": {
+        "table": "email_campaigns",
+        "fillable": [
+            "uuid",
+            "community_id",
+            "template_id",
+            "name",
+            "type",
+            "status",
+            "subject",
+            "preview_text",
+            "html_content",
+            "text_content",
+            "segment",
+            "scheduled_at",
+            "started_at",
+            "completed_at",
+            "total_recipients",
+            "sent_count",
+            "delivered_count",
+            "opened_count",
+            "clicked_count",
+            "bounced_count",
+            "complained_count",
+            "unsubscribed_count"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "segment": "array",
+            "scheduled_at": "datetime",
+            "started_at": "datetime",
+            "completed_at": "datetime"
+        },
+        "relationships": {
+            "community": {
+                "type": "BelongsTo"
+            },
+            "template": {
+                "type": "BelongsTo"
+            },
+            "sends": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\EmailSend": {
+        "table": "email_sends",
+        "fillable": [
+            "campaign_id",
+            "subscriber_id",
+            "message_id",
+            "status",
+            "sent_at",
+            "delivered_at",
+            "opened_at",
+            "open_count",
+            "clicked_at",
+            "click_count",
+            "bounce_type",
+            "error_message"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "sent_at": "datetime",
+            "delivered_at": "datetime",
+            "opened_at": "datetime",
+            "clicked_at": "datetime"
+        },
+        "relationships": {
+            "campaign": {
+                "type": "BelongsTo"
+            },
+            "subscriber": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\EmailSenderMapping": {
+        "table": "email_sender_mappings",
+        "fillable": [
+            "source_id",
+            "collection_method_id",
+            "sender_email",
+            "sender_domain",
+            "sender_name_pattern",
+            "priority",
+            "expected_content_type",
+            "is_newsletter",
+            "is_alert",
+            "is_active",
+            "emails_matched"
+        ],
+        "hidden": [],
+        "casts": {
+            "is_newsletter": "boolean",
+            "is_alert": "boolean",
+            "is_active": "boolean"
+        },
+        "relationships": []
+    },
+    "App\\Models\\EmailSubscriber": {
+        "table": "email_subscribers",
+        "fillable": [
+            "uuid",
+            "email",
+            "first_name",
+            "last_name",
+            "community_id",
+            "business_id",
+            "type",
+            "status",
+            "confirmed_at",
+            "unsubscribed_at",
+            "unsubscribe_reason",
+            "preferences",
+            "source"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "confirmed_at": "datetime",
+            "unsubscribed_at": "datetime",
+            "preferences": "array",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "community": {
+                "type": "BelongsTo"
+            },
+            "business": {
+                "type": "BelongsTo"
+            },
+            "sends": {
+                "type": "HasMany"
+            },
+            "newsletterSubscription": {
+                "type": "HasOne"
+            },
+            "emergencySubscription": {
+                "type": "HasOne"
+            }
+        }
+    },
+    "App\\Models\\EmailTemplate": {
+        "table": "email_templates",
+        "fillable": [
+            "uuid",
+            "name",
+            "slug",
+            "type",
+            "subject_template",
+            "preview_text",
+            "html_template",
+            "text_template",
+            "variables",
+            "is_active",
+            "version"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "variables": "array",
+            "is_active": "boolean"
+        },
+        "relationships": []
+    },
+    "App\\Models\\EmergencyAlert": {
+        "table": "emergency_alerts",
+        "fillable": [
+            "uuid",
+            "community_id",
+            "created_by",
+            "municipal_partner_id",
+            "priority",
+            "category",
+            "title",
+            "message",
+            "instructions",
+            "source",
+            "source_url",
+            "status",
+            "published_at",
+            "expires_at",
+            "delivery_channels",
+            "email_sent",
+            "sms_sent"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "published_at": "datetime",
+            "expires_at": "datetime",
+            "delivery_channels": "array",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "community": {
+                "type": "BelongsTo"
+            },
+            "creator": {
+                "type": "BelongsTo"
+            },
+            "municipalPartner": {
+                "type": "BelongsTo"
+            },
+            "deliveries": {
+                "type": "HasMany"
+            },
+            "auditLogs": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\EmergencyAuditLog": {
+        "table": "emergency_audit_log",
+        "fillable": [
+            "alert_id",
+            "user_id",
+            "municipal_partner_id",
+            "action",
+            "changes",
+            "ip_address",
+            "user_agent"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "changes": "array"
+        },
+        "relationships": {
+            "alert": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            },
+            "municipalPartner": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\EmergencyDelivery": {
+        "table": "emergency_deliveries",
+        "fillable": [
+            "alert_id",
+            "subscription_id",
+            "channel",
+            "status",
+            "external_id",
+            "sent_at",
+            "delivered_at",
+            "error_message"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "sent_at": "datetime",
+            "delivered_at": "datetime"
+        },
+        "relationships": {
+            "alert": {
+                "type": "BelongsTo"
+            },
+            "subscription": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\EmergencySubscription": {
+        "table": "emergency_subscriptions",
+        "fillable": [
+            "subscriber_id",
+            "email_enabled",
+            "sms_enabled",
+            "phone_number",
+            "phone_verified",
+            "phone_verification_code",
+            "phone_verified_at",
+            "priority_levels",
+            "categories",
+            "stripe_subscription_id",
+            "sms_tier"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "email_enabled": "boolean",
+            "sms_enabled": "boolean",
+            "phone_verified": "boolean",
+            "phone_verified_at": "datetime",
+            "priority_levels": "array",
+            "categories": "array"
+        },
+        "relationships": {
+            "subscriber": {
+                "type": "BelongsTo"
+            },
+            "deliveries": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\Event": {
+        "table": "events",
+        "fillable": [
+            "title",
+            "image",
+            "image_path",
+            "image_disk",
+            "event_date",
+            "time",
+            "description",
+            "badges",
+            "subcategories",
+            "category",
+            "is_free",
+            "price_min",
+            "price_max",
+            "community_rating",
+            "member_attendance",
+            "member_recommendations",
+            "discussion_thread_id",
+            "curator_notes",
+            "latitude",
+            "longitude",
+            "google_place_id",
+            "postal_code",
+            "venue_id",
+            "performer_id",
+            "workspace_id",
+            "created_by",
+            "source_news_article_id",
+            "source_type",
+            "status"
+        ],
+        "hidden": [],
+        "casts": {
+            "event_date": "datetime",
+            "badges": "array",
+            "subcategories": "array",
+            "is_free": "boolean",
+            "price_min": "decimal:2",
+            "price_max": "decimal:2",
+            "community_rating": "decimal:2",
+            "latitude": "decimal:8",
+            "longitude": "decimal:8"
+        },
+        "relationships": {
+            "venue": {
+                "type": "BelongsTo"
+            },
+            "performer": {
+                "type": "BelongsTo"
+            },
+            "workspace": {
+                "type": "BelongsTo"
+            },
+            "createdBy": {
+                "type": "BelongsTo"
+            },
+            "sourceNewsArticle": {
+                "type": "BelongsTo"
+            },
+            "regions": {
+                "type": "BelongsToMany"
+            },
+            "bookings": {
+                "type": "HasMany"
+            },
+            "ticketPlans": {
+                "type": "HasMany"
+            },
+            "ticketOrders": {
+                "type": "HasMany"
+            },
+            "hub": {
+                "type": "BelongsTo"
+            },
+            "checkIns": {
+                "type": "HasMany"
+            },
+            "plannedEvents": {
+                "type": "HasMany"
+            },
+            "follows": {
+                "type": "MorphMany"
+            },
+            "organizationRelationships": {
+                "type": "MorphMany"
+            },
+            "organizations": {
+                "type": "BelongsToMany"
+            }
+        }
+    },
+    "App\\Models\\EventExtractionDraft": {
+        "table": "event_extraction_drafts",
+        "fillable": [
+            "news_article_id",
+            "region_id",
+            "status",
+            "detection_confidence",
+            "extraction_confidence",
+            "quality_score",
+            "extracted_data",
+            "matched_venue_id",
+            "matched_performer_id",
+            "published_event_id",
+            "ai_metadata",
+            "rejection_reason"
+        ],
+        "hidden": [],
+        "casts": {
+            "detection_confidence": "decimal:2",
+            "extraction_confidence": "decimal:2",
+            "quality_score": "decimal:2",
+            "extracted_data": "array",
+            "ai_metadata": "array"
+        },
+        "relationships": {
+            "newsArticle": {
+                "type": "BelongsTo"
+            },
+            "region": {
+                "type": "BelongsTo"
+            },
+            "matchedVenue": {
+                "type": "BelongsTo"
+            },
+            "matchedPerformer": {
+                "type": "BelongsTo"
+            },
+            "publishedEvent": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Follow": {
+        "table": "follows",
+        "fillable": [
+            "user_id",
+            "followable_type",
+            "followable_id"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "created_at": "datetime",
+            "updated_at": "datetime"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            },
+            "followable": {
+                "type": "MorphTo"
+            }
+        }
+    },
+    "App\\Models\\Hub": {
+        "table": "hubs",
+        "fillable": [
+            "workspace_id",
+            "created_by",
+            "name",
+            "slug",
+            "description",
+            "image",
+            "banner_image",
+            "about",
+            "category",
+            "subcategory",
+            "location",
+            "website",
+            "social_links",
+            "contact_email",
+            "contact_phone",
+            "is_active",
+            "is_featured",
+            "is_verified",
+            "design_settings",
+            "monetization_settings",
+            "permissions",
+            "analytics_enabled",
+            "articles_enabled",
+            "community_enabled",
+            "events_enabled",
+            "gallery_enabled",
+            "performers_enabled",
+            "venues_enabled",
+            "followers_count",
+            "events_count",
+            "articles_count",
+            "members_count",
+            "last_activity_at",
+            "published_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "social_links": "array",
+            "design_settings": "array",
+            "monetization_settings": "array",
+            "permissions": "array",
+            "is_active": "boolean",
+            "is_featured": "boolean",
+            "is_verified": "boolean",
+            "analytics_enabled": "boolean",
+            "articles_enabled": "boolean",
+            "community_enabled": "boolean",
+            "events_enabled": "boolean",
+            "gallery_enabled": "boolean",
+            "performers_enabled": "boolean",
+            "venues_enabled": "boolean",
+            "followers_count": "integer",
+            "events_count": "integer",
+            "articles_count": "integer",
+            "members_count": "integer",
+            "last_activity_at": "datetime",
+            "published_at": "datetime"
+        },
+        "relationships": {
+            "workspace": {
+                "type": "BelongsTo"
+            },
+            "createdBy": {
+                "type": "BelongsTo"
+            },
+            "sections": {
+                "type": "HasMany"
+            },
+            "members": {
+                "type": "HasMany"
+            },
+            "roles": {
+                "type": "HasMany"
+            },
+            "analytics": {
+                "type": "HasMany"
+            },
+            "events": {
+                "type": "HasMany"
+            },
+            "follows": {
+                "type": "MorphMany"
+            }
+        }
+    },
+    "App\\Models\\HubAnalytics": {
+        "table": "hub_analytics",
+        "fillable": [
+            "hub_id",
+            "date",
+            "page_views",
+            "unique_visitors",
+            "events_created",
+            "events_published",
+            "articles_created",
+            "articles_published",
+            "members_joined",
+            "followers_gained",
+            "engagement_score",
+            "revenue",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "date": "date",
+            "page_views": "integer",
+            "unique_visitors": "integer",
+            "events_created": "integer",
+            "events_published": "integer",
+            "articles_created": "integer",
+            "articles_published": "integer",
+            "members_joined": "integer",
+            "followers_gained": "integer",
+            "engagement_score": "decimal:2",
+            "revenue": "decimal:2",
+            "metadata": "array"
+        },
+        "relationships": {
+            "hub": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\HubMember": {
+        "table": "hub_members",
+        "fillable": [
+            "hub_id",
+            "user_id",
+            "role",
+            "permissions",
+            "joined_at",
+            "is_active"
+        ],
+        "hidden": [],
+        "casts": {
+            "permissions": "array",
+            "joined_at": "datetime",
+            "is_active": "boolean"
+        },
+        "relationships": {
+            "hub": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\HubRole": {
+        "table": "hub_roles",
+        "fillable": [
+            "hub_id",
+            "name",
+            "slug",
+            "description",
+            "permissions",
+            "is_system",
+            "sort_order"
+        ],
+        "hidden": [],
+        "casts": {
+            "permissions": "array",
+            "is_system": "boolean",
+            "sort_order": "integer"
+        },
+        "relationships": {
+            "hub": {
+                "type": "BelongsTo"
+            },
+            "members": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\HubSection": {
+        "table": "hub_sections",
+        "fillable": [
+            "hub_id",
+            "type",
+            "title",
+            "description",
+            "content",
+            "settings",
+            "is_visible",
+            "sort_order"
+        ],
+        "hidden": [],
+        "casts": {
+            "content": "array",
+            "settings": "array",
+            "is_visible": "boolean",
+            "sort_order": "integer"
+        },
+        "relationships": {
+            "hub": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\IncomingEmail": {
+        "table": "incoming_emails",
+        "fillable": [
+            "mailbox",
+            "message_id",
+            "from_address",
+            "from_name",
+            "to_address",
+            "subject",
+            "email_date",
+            "received_at",
+            "body_text",
+            "body_html",
+            "headers",
+            "attachments",
+            "email_type",
+            "source_id",
+            "collection_method_id",
+            "processing_status",
+            "processed_at",
+            "processing_error",
+            "is_confirmation",
+            "confirmation_clicked",
+            "confirmation_url",
+            "items_extracted",
+            "raw_content_ids",
+            "is_spam"
+        ],
+        "hidden": [],
+        "casts": {
+            "headers": "array",
+            "attachments": "array",
+            "raw_content_ids": "array",
+            "is_confirmation": "boolean",
+            "confirmation_clicked": "boolean",
+            "is_spam": "boolean",
+            "email_date": "datetime",
+            "received_at": "datetime",
+            "processed_at": "datetime"
+        },
+        "relationships": []
+    },
+    "App\\Models\\Industry": {
+        "table": "industries",
+        "fillable": [
+            "name",
+            "slug",
+            "description",
+            "icon",
+            "parent_id",
+            "default_template_id",
+            "available_features",
+            "required_fields",
+            "seo_title",
+            "seo_description",
+            "schema_type",
+            "display_order",
+            "is_active"
+        ],
+        "hidden": [],
+        "casts": {
+            "available_features": "array",
+            "required_fields": "array",
+            "is_active": "boolean"
+        },
+        "relationships": {
+            "parent": {
+                "type": "BelongsTo"
+            },
+            "children": {
+                "type": "HasMany"
+            },
+            "defaultTemplate": {
+                "type": "BelongsTo"
+            },
+            "businesses": {
+                "type": "HasMany"
+            },
+            "templates": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\Interaction": {
+        "table": "interactions",
+        "fillable": [
+            "tenant_id",
+            "customer_id",
+            "type",
+            "subject",
+            "description",
+            "direction",
+            "duration_minutes",
+            "outcome",
+            "next_action",
+            "next_action_date",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "next_action_date": "date",
+            "metadata": "array"
+        },
+        "relationships": {
+            "tenant": {
+                "type": "BelongsTo"
+            },
+            "customer": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\LegalNotice": {
+        "table": "legal_notices",
+        "fillable": [
+            "user_id",
+            "workspace_id",
+            "type",
+            "case_number",
+            "title",
+            "content",
+            "court",
+            "publish_date",
+            "expiry_date",
+            "status",
+            "metadata",
+            "views_count"
+        ],
+        "hidden": [],
+        "casts": {
+            "publish_date": "date",
+            "expiry_date": "date",
+            "metadata": "array",
+            "views_count": "integer"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            },
+            "workspace": {
+                "type": "BelongsTo"
+            },
+            "regions": {
+                "type": "BelongsToMany"
+            }
+        }
+    },
+    "App\\Models\\Memorial": {
+        "table": "memorials",
+        "fillable": [
+            "user_id",
+            "workspace_id",
+            "name",
+            "years",
+            "date_of_passing",
+            "obituary",
+            "image",
+            "location",
+            "service_date",
+            "service_location",
+            "service_details",
+            "is_featured",
+            "status",
+            "published_at",
+            "views_count",
+            "reactions_count",
+            "comments_count"
+        ],
+        "hidden": [],
+        "casts": {
+            "date_of_passing": "date",
+            "service_date": "date",
+            "published_at": "datetime",
+            "is_featured": "boolean",
+            "views_count": "integer",
+            "reactions_count": "integer",
+            "comments_count": "integer"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            },
+            "workspace": {
+                "type": "BelongsTo"
+            },
+            "regions": {
+                "type": "BelongsToMany"
+            },
+            "reviews": {
+                "type": "MorphMany"
+            },
+            "ratings": {
+                "type": "MorphMany"
+            },
+            "approvedReviews": {
+                "type": "MorphMany"
+            },
+            "featuredReviews": {
+                "type": "MorphMany"
+            }
+        }
+    },
+    "App\\Models\\Message": {
+        "table": "messages",
+        "fillable": [
+            "conversation_id",
+            "sender_id",
+            "content",
+            "type",
+            "metadata",
+            "edited_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "metadata": "array",
+            "edited_at": "datetime"
+        },
+        "relationships": {
+            "conversation": {
+                "type": "BelongsTo"
+            },
+            "sender": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\MunicipalPartner": {
+        "table": "municipal_partners",
+        "fillable": [
+            "uuid",
+            "name",
+            "type",
+            "community_ids",
+            "primary_contact_id",
+            "api_key_hash",
+            "is_verified",
+            "is_active",
+            "allowed_categories",
+            "allowed_priorities",
+            "requires_approval"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "community_ids": "array",
+            "is_verified": "boolean",
+            "is_active": "boolean",
+            "allowed_categories": "array",
+            "allowed_priorities": "array",
+            "requires_approval": "boolean",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "primaryContact": {
+                "type": "BelongsTo"
+            },
+            "alerts": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\NewsArticle": {
+        "table": "news_articles",
+        "fillable": [
+            "region_id",
+            "business_id",
+            "source_type",
+            "source_name",
+            "title",
+            "url",
+            "content_snippet",
+            "full_content",
+            "source_publisher",
+            "published_at",
+            "metadata",
+            "content_hash",
+            "processed",
+            "relevance_score",
+            "relevance_topic_tags",
+            "relevance_rationale",
+            "scored_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "metadata": "array",
+            "processed": "boolean",
+            "published_at": "datetime",
+            "relevance_topic_tags": "array",
+            "scored_at": "datetime"
+        },
+        "relationships": {
+            "region": {
+                "type": "BelongsTo"
+            },
+            "business": {
+                "type": "BelongsTo"
+            },
+            "drafts": {
+                "type": "HasMany"
+            },
+            "eventExtractionDrafts": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\NewsArticleDraft": {
+        "table": "news_article_drafts",
+        "fillable": [
+            "news_article_id",
+            "region_id",
+            "status",
+            "relevance_score",
+            "quality_score",
+            "fact_check_confidence",
+            "topic_tags",
+            "outline",
+            "generated_title",
+            "generated_content",
+            "generated_excerpt",
+            "seo_metadata",
+            "featured_image_url",
+            "featured_image_path",
+            "featured_image_disk",
+            "ai_metadata",
+            "published_post_id",
+            "rejection_reason"
+        ],
+        "hidden": [],
+        "casts": {
+            "relevance_score": "decimal:2",
+            "quality_score": "decimal:2",
+            "fact_check_confidence": "decimal:2",
+            "topic_tags": "array",
+            "seo_metadata": "array",
+            "ai_metadata": "array"
+        },
+        "relationships": {
+            "newsArticle": {
+                "type": "BelongsTo"
+            },
+            "region": {
+                "type": "BelongsTo"
+            },
+            "publishedPost": {
+                "type": "BelongsTo"
+            },
+            "factChecks": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\NewsFactCheck": {
+        "table": "news_fact_checks",
+        "fillable": [
+            "draft_id",
+            "claim",
+            "verification_result",
+            "confidence_score",
+            "sources",
+            "scraped_evidence",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "confidence_score": "decimal:2",
+            "sources": "array",
+            "scraped_evidence": "array",
+            "metadata": "array"
+        },
+        "relationships": {
+            "draft": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\NewsFetchFrequency": {
+        "table": "news_fetch_frequencies",
+        "fillable": [
+            "category",
+            "category_type",
+            "frequency_type",
+            "custom_interval_days",
+            "last_fetched_at",
+            "is_enabled",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "custom_interval_days": "integer",
+            "last_fetched_at": "datetime",
+            "is_enabled": "boolean",
+            "metadata": "array"
+        },
+        "relationships": []
+    },
+    "App\\Models\\NewsSource": {
+        "table": "news_sources",
+        "fillable": [
+            "community_id",
+            "region_id",
+            "name",
+            "source_type",
+            "subtype",
+            "description",
+            "website_url",
+            "rss_url",
+            "business_id",
+            "is_potential_customer",
+            "customer_status",
+            "platform",
+            "platform_config",
+            "default_poll_interval_minutes",
+            "default_processing_tier",
+            "priority",
+            "is_authoritative",
+            "is_active",
+            "is_verified",
+            "last_successful_collection",
+            "consecutive_failures",
+            "health_score",
+            "contact_email",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "platform_config": "array",
+            "metadata": "array",
+            "is_active": "boolean",
+            "is_verified": "boolean",
+            "is_potential_customer": "boolean",
+            "is_authoritative": "boolean",
+            "last_successful_collection": "datetime",
+            "deleted_at": "datetime"
+        },
+        "relationships": []
+    },
+    "App\\Models\\NewsWorkflowRun": {
+        "table": "news_workflow_runs",
+        "fillable": [
+            "region_id",
+            "phase",
+            "status",
+            "started_at",
+            "completed_at",
+            "items_processed",
+            "summary",
+            "error_message",
+            "error_trace"
+        ],
+        "hidden": [],
+        "casts": {
+            "started_at": "datetime",
+            "completed_at": "datetime",
+            "summary": "array"
+        },
+        "relationships": {
+            "region": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\NewsWorkflowSetting": {
+        "table": "news_workflow_settings",
+        "fillable": [
+            "key",
+            "value",
+            "type",
+            "description"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int"
+        },
+        "relationships": []
+    },
+    "App\\Models\\NewsletterSubscription": {
+        "table": "newsletter_subscriptions",
+        "fillable": [
+            "subscriber_id",
+            "tier",
+            "price",
+            "stripe_subscription_id",
+            "status",
+            "started_at",
+            "cancelled_at",
+            "current_period_end"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "price": "decimal:2",
+            "started_at": "datetime",
+            "cancelled_at": "datetime",
+            "current_period_end": "datetime"
+        },
+        "relationships": {
+            "subscriber": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Notification": {
+        "table": "notifications",
+        "fillable": [
+            "user_id",
+            "type",
+            "data",
+            "read",
+            "title",
+            "message",
+            "action_url"
+        ],
+        "hidden": [],
+        "casts": {
+            "data": "array",
+            "read": "boolean"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\NotificationLog": {
+        "table": "notification_log",
+        "fillable": [
+            "platform",
+            "community_id",
+            "notification_type",
+            "channel",
+            "title",
+            "message",
+            "payload",
+            "recipient_count",
+            "sns_message_id",
+            "status",
+            "error_message",
+            "sent_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "payload": "array",
+            "recipient_count": "integer",
+            "sent_at": "datetime"
+        },
+        "relationships": []
+    },
+    "App\\Models\\NotificationSubscription": {
+        "table": "notification_subscriptions",
+        "fillable": [
+            "user_id",
+            "platform",
+            "community_id",
+            "business_id",
+            "phone_number",
+            "phone_verified",
+            "phone_verified_at",
+            "web_push_endpoint",
+            "web_push_p256dh",
+            "web_push_auth",
+            "sns_sms_subscription_arn",
+            "sns_endpoint_arn",
+            "notification_types",
+            "frequency",
+            "quiet_hours_start",
+            "quiet_hours_end",
+            "status",
+            "last_notification_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "phone_verified": "boolean",
+            "phone_verified_at": "datetime",
+            "notification_types": "array",
+            "quiet_hours_start": "datetime:H:i",
+            "quiet_hours_end": "datetime:H:i",
+            "last_notification_at": "datetime"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            },
+            "business": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Order": {
+        "table": "orders",
+        "fillable": [
+            "order_number",
+            "store_id",
+            "user_id",
+            "customer_email",
+            "customer_name",
+            "subtotal",
+            "tax",
+            "shipping",
+            "total",
+            "status",
+            "payment_status",
+            "stripe_payment_intent_id",
+            "stripe_charge_id",
+            "shipping_address",
+            "billing_address",
+            "notes",
+            "paid_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "subtotal": "decimal:2",
+            "tax": "decimal:2",
+            "shipping": "decimal:2",
+            "total": "decimal:2",
+            "shipping_address": "array",
+            "billing_address": "array",
+            "paid_at": "datetime",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "store": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            },
+            "items": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\OrderItem": {
+        "table": "order_items",
+        "fillable": [
+            "order_id",
+            "product_id",
+            "product_name",
+            "product_description",
+            "price",
+            "quantity",
+            "total",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "price": "decimal:2",
+            "total": "decimal:2",
+            "metadata": "array"
+        },
+        "relationships": {
+            "order": {
+                "type": "BelongsTo"
+            },
+            "product": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\OrganizationHierarchy": {
+        "table": "organization_hierarchies",
+        "fillable": [
+            "organization_id",
+            "parent_id",
+            "level",
+            "path"
+        ],
+        "hidden": [],
+        "casts": {
+            "level": "integer"
+        },
+        "relationships": {
+            "organization": {
+                "type": "BelongsTo"
+            },
+            "parent": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\OrganizationRelationship": {
+        "table": "organization_relationships",
+        "fillable": [
+            "organization_id",
+            "relatable_type",
+            "relatable_id",
+            "relationship_type",
+            "is_primary",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "is_primary": "boolean",
+            "metadata": "array",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "organization": {
+                "type": "BelongsTo"
+            },
+            "relatable": {
+                "type": "MorphTo"
+            }
+        }
+    },
+    "App\\Models\\Performer": {
+        "table": "performers",
+        "fillable": [
+            "name",
+            "profile_image",
+            "genres",
+            "rating",
+            "review_count",
+            "follower_count",
+            "bio",
+            "years_active",
+            "shows_played",
+            "home_city",
+            "is_verified",
+            "is_touring_now",
+            "available_for_booking",
+            "has_merchandise",
+            "has_original_music",
+            "offers_meet_and_greet",
+            "takes_requests",
+            "available_for_private_events",
+            "is_family_friendly",
+            "has_samples",
+            "trending_score",
+            "distance_miles",
+            "added_date",
+            "introductory_pricing",
+            "base_price",
+            "currency",
+            "minimum_booking_hours",
+            "travel_fee_per_mile",
+            "setup_fee",
+            "cancellation_policy",
+            "status",
+            "workspace_id",
+            "created_by",
+            "average_rating",
+            "total_reviews"
+        ],
+        "hidden": [],
+        "casts": {
+            "genres": "array",
+            "average_rating": "decimal:2",
+            "is_verified": "boolean",
+            "is_touring_now": "boolean",
+            "available_for_booking": "boolean",
+            "has_merchandise": "boolean",
+            "has_original_music": "boolean",
+            "offers_meet_and_greet": "boolean",
+            "takes_requests": "boolean",
+            "available_for_private_events": "boolean",
+            "is_family_friendly": "boolean",
+            "has_samples": "boolean",
+            "distance_miles": "decimal:2",
+            "added_date": "date",
+            "introductory_pricing": "boolean",
+            "base_price": "decimal:2",
+            "travel_fee_per_mile": "decimal:2",
+            "setup_fee": "decimal:2"
+        },
+        "relationships": {
+            "workspace": {
+                "type": "BelongsTo"
+            },
+            "createdBy": {
+                "type": "BelongsTo"
+            },
+            "events": {
+                "type": "HasMany"
+            },
+            "bookings": {
+                "type": "HasMany"
+            },
+            "upcomingShows": {
+                "type": "HasMany"
+            },
+            "follows": {
+                "type": "MorphMany"
+            },
+            "reviews": {
+                "type": "MorphMany"
+            },
+            "ratings": {
+                "type": "MorphMany"
+            },
+            "approvedReviews": {
+                "type": "MorphMany"
+            },
+            "featuredReviews": {
+                "type": "MorphMany"
+            }
+        }
+    },
+    "App\\Models\\PhoneVerification": {
+        "table": "phone_verifications",
+        "fillable": [
+            "phone_number",
+            "code",
+            "expires_at",
+            "attempts",
+            "verified"
+        ],
+        "hidden": [],
+        "casts": {
+            "expires_at": "datetime",
+            "attempts": "integer",
+            "verified": "boolean"
+        },
+        "relationships": []
+    },
+    "App\\Models\\Photo": {
+        "table": "photos",
+        "fillable": [
+            "user_id",
+            "album_id",
+            "title",
+            "description",
+            "image_path",
+            "image_disk",
+            "thumbnail_path",
+            "category",
+            "status",
+            "width",
+            "height",
+            "file_size",
+            "views_count",
+            "likes_count",
+            "comments_count"
+        ],
+        "hidden": [],
+        "casts": {
+            "width": "integer",
+            "height": "integer",
+            "file_size": "integer",
+            "views_count": "integer",
+            "likes_count": "integer",
+            "comments_count": "integer"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            },
+            "album": {
+                "type": "BelongsTo"
+            },
+            "albums": {
+                "type": "BelongsToMany"
+            },
+            "regions": {
+                "type": "BelongsToMany"
+            },
+            "reviews": {
+                "type": "MorphMany"
+            },
+            "ratings": {
+                "type": "MorphMany"
+            },
+            "approvedReviews": {
+                "type": "MorphMany"
+            },
+            "featuredReviews": {
+                "type": "MorphMany"
+            }
+        }
+    },
+    "App\\Models\\PhotoAlbum": {
+        "table": "photo_albums",
+        "fillable": [
+            "user_id",
+            "workspace_id",
+            "title",
+            "description",
+            "cover_image",
+            "visibility",
+            "photos_count",
+            "views_count"
+        ],
+        "hidden": [],
+        "casts": {
+            "photos_count": "integer",
+            "views_count": "integer"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            },
+            "workspace": {
+                "type": "BelongsTo"
+            },
+            "photos": {
+                "type": "BelongsToMany"
+            }
+        }
+    },
+    "App\\Models\\PlannedEvent": {
+        "table": "planned_events",
+        "fillable": [
+            "event_id",
+            "user_id",
+            "planned_at",
+            "reminder_sent",
+            "reminder_sent_at",
+            "notes"
+        ],
+        "hidden": [],
+        "casts": {
+            "planned_at": "datetime",
+            "reminder_sent": "boolean",
+            "reminder_sent_at": "datetime"
+        },
+        "relationships": {
+            "event": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Podcast": {
+        "table": "podcasts",
+        "fillable": [
+            "creator_profile_id",
+            "title",
+            "slug",
+            "description",
+            "cover_image",
+            "category",
+            "status",
+            "published_at",
+            "episodes_count",
+            "subscribers_count",
+            "total_listens",
+            "total_duration"
+        ],
+        "hidden": [],
+        "casts": {
+            "published_at": "datetime",
+            "episodes_count": "integer",
+            "subscribers_count": "integer",
+            "total_listens": "integer",
+            "total_duration": "integer"
+        },
+        "relationships": {
+            "creator": {
+                "type": "BelongsTo"
+            },
+            "episodes": {
+                "type": "HasMany"
+            },
+            "publishedEpisodes": {
+                "type": "HasMany"
+            },
+            "regions": {
+                "type": "BelongsToMany"
+            },
+            "followers": {
+                "type": "MorphMany"
+            }
+        }
+    },
+    "App\\Models\\PodcastEpisode": {
+        "table": "podcast_episodes",
+        "fillable": [
+            "podcast_id",
+            "title",
+            "slug",
+            "description",
+            "show_notes",
+            "audio_file_path",
+            "audio_file_disk",
+            "duration",
+            "file_size",
+            "episode_number",
+            "status",
+            "published_at",
+            "listens_count",
+            "downloads_count",
+            "likes_count",
+            "comments_count"
+        ],
+        "hidden": [],
+        "casts": {
+            "duration": "integer",
+            "file_size": "integer",
+            "published_at": "datetime",
+            "listens_count": "integer",
+            "downloads_count": "integer",
+            "likes_count": "integer",
+            "comments_count": "integer"
+        },
+        "relationships": {
+            "podcast": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Product": {
+        "table": "products",
+        "fillable": [
+            "store_id",
+            "name",
+            "slug",
+            "description",
+            "images",
+            "price",
+            "compare_at_price",
+            "quantity",
+            "track_inventory",
+            "sku",
+            "is_active",
+            "is_featured",
+            "stripe_price_id",
+            "stripe_product_id",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "images": "array",
+            "price": "decimal:2",
+            "compare_at_price": "decimal:2",
+            "track_inventory": "boolean",
+            "is_active": "boolean",
+            "is_featured": "boolean",
+            "metadata": "array",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "store": {
+                "type": "BelongsTo"
+            },
+            "orderItems": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\PromoCode": {
+        "table": "promo_codes",
+        "fillable": [
+            "code",
+            "description",
+            "type",
+            "value",
+            "min_purchase",
+            "max_discount",
+            "usage_limit",
+            "used_count",
+            "is_active",
+            "starts_at",
+            "expires_at",
+            "applicable_to",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "value": "decimal:2",
+            "min_purchase": "decimal:2",
+            "max_discount": "decimal:2",
+            "usage_limit": "integer",
+            "used_count": "integer",
+            "is_active": "boolean",
+            "starts_at": "datetime",
+            "expires_at": "datetime",
+            "applicable_to": "array",
+            "metadata": "array"
+        },
+        "relationships": {
+            "usages": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\PromoCodeUsage": {
+        "table": "promo_code_usages",
+        "fillable": [
+            "promo_code_id",
+            "user_id",
+            "ticket_order_id",
+            "discount_amount",
+            "original_amount",
+            "final_amount",
+            "used_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "discount_amount": "decimal:2",
+            "original_amount": "decimal:2",
+            "final_amount": "decimal:2",
+            "used_at": "datetime"
+        },
+        "relationships": {
+            "promoCode": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            },
+            "ticketOrder": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Rating": {
+        "table": "ratings",
+        "fillable": [
+            "ratable_type",
+            "ratable_id",
+            "user_id",
+            "rating",
+            "context",
+            "notes",
+            "type",
+            "booking_id"
+        ],
+        "hidden": [],
+        "casts": [],
+        "relationships": {
+            "ratable": {
+                "type": "MorphTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            },
+            "booking": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\RawContent": {
+        "table": "raw_content",
+        "fillable": [
+            "source_id",
+            "collection_method_id",
+            "community_id",
+            "region_id",
+            "source_url",
+            "source_title",
+            "source_content",
+            "source_excerpt",
+            "source_html",
+            "source_published_at",
+            "source_author",
+            "source_images",
+            "content_hash",
+            "title_hash",
+            "collected_at",
+            "collection_method",
+            "raw_metadata",
+            "email_from",
+            "email_subject",
+            "incoming_email_id",
+            "classification_status",
+            "classified_at",
+            "classification_error",
+            "classification_model",
+            "content_types",
+            "primary_type",
+            "categories",
+            "tags",
+            "businesses_mentioned",
+            "people_mentioned",
+            "locations_mentioned",
+            "organizations_mentioned",
+            "dates_mentioned",
+            "has_event",
+            "event_data",
+            "local_relevance_score",
+            "local_relevance_reason",
+            "news_value_score",
+            "news_value_reason",
+            "processing_tier",
+            "priority",
+            "processing_recommendation",
+            "suggested_headline",
+            "processing_status",
+            "processed_at",
+            "processing_error",
+            "skip_reason",
+            "output_ids",
+            "article_id",
+            "event_id",
+            "has_sales_opportunity",
+            "sales_flag",
+            "was_published"
+        ],
+        "hidden": [],
+        "casts": {
+            "source_images": "array",
+            "raw_metadata": "array",
+            "content_types": "array",
+            "categories": "array",
+            "tags": "array",
+            "businesses_mentioned": "array",
+            "people_mentioned": "array",
+            "locations_mentioned": "array",
+            "organizations_mentioned": "array",
+            "dates_mentioned": "array",
+            "event_data": "array",
+            "processing_recommendation": "array",
+            "output_ids": "array",
+            "sales_flag": "array",
+            "has_event": "boolean",
+            "has_sales_opportunity": "boolean",
+            "was_published": "boolean",
+            "source_published_at": "datetime",
+            "collected_at": "datetime",
+            "classified_at": "datetime",
+            "processed_at": "datetime"
+        },
+        "relationships": []
+    },
+    "App\\Models\\Region": {
+        "table": "regions",
+        "fillable": [
+            "name",
+            "slug",
+            "type",
+            "parent_id",
+            "description",
+            "is_active",
+            "display_order",
+            "metadata",
+            "latitude",
+            "longitude"
+        ],
+        "hidden": [],
+        "casts": {
+            "is_active": "boolean",
+            "metadata": "array",
+            "latitude": "decimal:7",
+            "longitude": "decimal:7"
+        },
+        "relationships": {
+            "parent": {
+                "type": "BelongsTo"
+            },
+            "children": {
+                "type": "HasMany"
+            },
+            "zipcodes": {
+                "type": "HasMany"
+            },
+            "newsArticles": {
+                "type": "HasMany"
+            },
+            "businesses": {
+                "type": "BelongsToMany"
+            },
+            "events": {
+                "type": "BelongsToMany"
+            },
+            "civicSources": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\RegionZipcode": {
+        "table": "region_zipcodes",
+        "fillable": [
+            "region_id",
+            "zipcode",
+            "is_primary"
+        ],
+        "hidden": [],
+        "casts": {
+            "is_primary": "boolean"
+        },
+        "relationships": {
+            "region": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Review": {
+        "table": "reviews",
+        "fillable": [
+            "reviewable_type",
+            "reviewable_id",
+            "user_id",
+            "title",
+            "content",
+            "rating",
+            "is_verified",
+            "is_featured",
+            "helpful_votes",
+            "helpful_count",
+            "status",
+            "approved_at",
+            "approved_by",
+            "rejection_reason"
+        ],
+        "hidden": [],
+        "casts": {
+            "helpful_votes": "array",
+            "is_verified": "boolean",
+            "is_featured": "boolean",
+            "approved_at": "datetime"
+        },
+        "relationships": {
+            "reviewable": {
+                "type": "MorphTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            },
+            "approvedBy": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Role": {
+        "table": "roles",
+        "fillable": [
+            "name"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int"
+        },
+        "relationships": {
+            "memberships": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\RssFeed": {
+        "table": "rss_feeds",
+        "fillable": [
+            "business_id",
+            "url",
+            "feed_type",
+            "title",
+            "description",
+            "status",
+            "health_status",
+            "last_checked_at",
+            "last_successful_fetch_at",
+            "last_error",
+            "fetch_frequency",
+            "total_items_count",
+            "metadata",
+            "auto_approved"
+        ],
+        "hidden": [],
+        "casts": {
+            "metadata": "array",
+            "auto_approved": "boolean",
+            "last_checked_at": "datetime",
+            "last_successful_fetch_at": "datetime",
+            "fetch_frequency": "integer",
+            "total_items_count": "integer",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "business": {
+                "type": "BelongsTo"
+            },
+            "feedItems": {
+                "type": "HasMany"
+            },
+            "dayNewsPosts": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\RssFeedItem": {
+        "table": "rss_feed_items",
+        "fillable": [
+            "rss_feed_id",
+            "guid",
+            "title",
+            "description",
+            "content",
+            "url",
+            "author",
+            "published_at",
+            "categories",
+            "metadata",
+            "processed",
+            "processed_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "categories": "array",
+            "metadata": "array",
+            "processed": "boolean",
+            "published_at": "datetime",
+            "processed_at": "datetime",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "rssFeed": {
+                "type": "BelongsTo"
+            },
+            "dayNewsPosts": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\SMBCrmCustomer": {
+        "table": "smb_crm_customers",
+        "fillable": [
+            "business_id",
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "source",
+            "source_details",
+            "status",
+            "customer_since",
+            "last_interaction_at",
+            "health_score",
+            "lifetime_value",
+            "predicted_churn_risk",
+            "ai_notes",
+            "preferences",
+            "tags"
+        ],
+        "hidden": [],
+        "casts": {
+            "source_details": "array",
+            "customer_since": "date",
+            "last_interaction_at": "datetime",
+            "lifetime_value": "decimal:2",
+            "predicted_churn_risk": "decimal:4",
+            "preferences": "array",
+            "tags": "array",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "business": {
+                "type": "BelongsTo"
+            },
+            "interactions": {
+                "type": "HasMany"
+            },
+            "surveyResponses": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\SMBCrmInteraction": {
+        "table": "smb_crm_interactions",
+        "fillable": [
+            "business_id",
+            "customer_id",
+            "interaction_type",
+            "channel",
+            "direction",
+            "subject",
+            "content",
+            "summary",
+            "handled_by",
+            "ai_service_used",
+            "ai_confidence_score",
+            "escalated_reason",
+            "outcome",
+            "sentiment",
+            "duration_seconds",
+            "metadata",
+            "created_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "created_at": "datetime",
+            "ai_confidence_score": "decimal:4",
+            "metadata": "array"
+        },
+        "relationships": {
+            "business": {
+                "type": "BelongsTo"
+            },
+            "customer": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\SalesOpportunity": {
+        "table": "sales_opportunities",
+        "fillable": [
+            "business_id",
+            "business_name",
+            "community_id",
+            "opportunity_type",
+            "quality",
+            "priority_score",
+            "trigger_content_id",
+            "trigger_description",
+            "article_headline",
+            "article_url",
+            "recommended_action",
+            "suggested_script",
+            "talking_points",
+            "recommended_product",
+            "status",
+            "assigned_to",
+            "assigned_at",
+            "first_contact_at",
+            "next_followup_at",
+            "closed_at",
+            "outcome",
+            "deal_value",
+            "notes",
+            "activity_log"
+        ],
+        "hidden": [],
+        "casts": {
+            "talking_points": "array",
+            "activity_log": "array",
+            "assigned_at": "datetime",
+            "first_contact_at": "datetime",
+            "next_followup_at": "datetime",
+            "closed_at": "datetime"
+        },
+        "relationships": []
+    },
+    "App\\Models\\SearchHistory": {
+        "table": "search_history",
+        "fillable": [
+            "user_id",
+            "query",
+            "results_count",
+            "filters",
+            "ip_address"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "filters": "array",
+            "results_count": "integer"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\SearchSuggestion": {
+        "table": "search_suggestions",
+        "fillable": [
+            "query",
+            "popularity",
+            "click_count"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "popularity": "integer",
+            "click_count": "integer"
+        },
+        "relationships": []
+    },
+    "App\\Models\\SmbBusiness": {
+        "table": "smb_businesses",
+        "fillable": [
+            "tenant_id",
+            "google_place_id",
+            "display_name",
+            "latitude",
+            "longitude",
+            "formatted_address",
+            "address_components",
+            "plus_code",
+            "viewport",
+            "location",
+            "phone_national",
+            "phone_international",
+            "website_url",
+            "business_status",
+            "fibonacco_status",
+            "google_rating",
+            "google_rating_count",
+            "user_rating_total",
+            "delivery",
+            "dine_in",
+            "takeout",
+            "reservable",
+            "outdoor_seating",
+            "serves_breakfast",
+            "serves_lunch",
+            "serves_dinner",
+            "serves_beer",
+            "serves_wine",
+            "serves_brunch",
+            "serves_vegetarian_food",
+            "wheelchair_accessible_entrance",
+            "place_types",
+            "accessibility_options",
+            "payment_options",
+            "parking_options",
+            "data_sources",
+            "opening_hours",
+            "current_opening_hours",
+            "secondary_opening_hours",
+            "editorial_summary",
+            "photos",
+            "reviews",
+            "utc_offset",
+            "adr_address",
+            "formatted_phone_number",
+            "international_phone_number",
+            "price_level",
+            "icon",
+            "icon_background_color",
+            "icon_mask_base_uri",
+            "name",
+            "place_id",
+            "reference",
+            "scope",
+            "types",
+            "url",
+            "vicinity",
+            "geometry",
+            "permanently_closed",
+            "permanently_closed_time",
+            "last_google_sync_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "latitude": "decimal:8",
+            "longitude": "decimal:8",
+            "google_rating": "decimal:1",
+            "address_components": "array",
+            "viewport": "array",
+            "location": "array",
+            "place_types": "array",
+            "accessibility_options": "array",
+            "payment_options": "array",
+            "parking_options": "array",
+            "data_sources": "array",
+            "opening_hours": "array",
+            "current_opening_hours": "array",
+            "secondary_opening_hours": "array",
+            "editorial_summary": "array",
+            "photos": "array",
+            "reviews": "array",
+            "types": "array",
+            "geometry": "array",
+            "delivery": "boolean",
+            "dine_in": "boolean",
+            "takeout": "boolean",
+            "reservable": "boolean",
+            "outdoor_seating": "boolean",
+            "serves_breakfast": "boolean",
+            "serves_lunch": "boolean",
+            "serves_dinner": "boolean",
+            "serves_beer": "boolean",
+            "serves_wine": "boolean",
+            "serves_brunch": "boolean",
+            "serves_vegetarian_food": "boolean",
+            "wheelchair_accessible_entrance": "boolean",
+            "permanently_closed": "boolean",
+            "permanently_closed_time": "datetime",
+            "last_google_sync_at": "datetime",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "tenant": {
+                "type": "BelongsTo"
+            },
+            "customers": {
+                "type": "HasMany"
+            },
+            "businessHours": {
+                "type": "HasMany"
+            },
+            "photos": {
+                "type": "HasMany"
+            },
+            "reviews": {
+                "type": "HasMany"
+            },
+            "attributes": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\SocialAccount": {
+        "table": "social_accounts",
+        "fillable": [
+            "user_id",
+            "provider",
+            "provider_id",
+            "name",
+            "token",
+            "refresh_token",
+            "avatar",
+            "code",
+            "expires_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "expires_at": "datetime",
+            "token": "encrypted",
+            "refresh_token": "encrypted"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\SocialActivity": {
+        "table": "social_activities",
+        "fillable": [
+            "user_id",
+            "actor_id",
+            "type",
+            "subject_type",
+            "subject_id",
+            "data",
+            "is_read"
+        ],
+        "hidden": [],
+        "casts": {
+            "data": "array",
+            "is_read": "boolean"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            },
+            "actor": {
+                "type": "BelongsTo"
+            },
+            "subject": {
+                "type": "MorphTo"
+            }
+        }
+    },
+    "App\\Models\\SocialCommentLike": {
+        "table": "social_comment_likes",
+        "fillable": [
+            "comment_id",
+            "user_id"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int"
+        },
+        "relationships": {
+            "comment": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\SocialFriendship": {
+        "table": "social_friendships",
+        "fillable": [
+            "user_id",
+            "friend_id",
+            "status",
+            "requested_at",
+            "responded_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "requested_at": "datetime",
+            "responded_at": "datetime"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            },
+            "friend": {
+                "type": "BelongsTo"
+            },
+            "requester": {
+                "type": "BelongsTo"
+            },
+            "recipient": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\SocialGroup": {
+        "table": "social_groups",
+        "fillable": [
+            "name",
+            "description",
+            "cover_image",
+            "creator_id",
+            "privacy",
+            "is_active",
+            "settings"
+        ],
+        "hidden": [],
+        "casts": {
+            "is_active": "boolean",
+            "settings": "array"
+        },
+        "relationships": {
+            "creator": {
+                "type": "BelongsTo"
+            },
+            "members": {
+                "type": "HasMany"
+            },
+            "posts": {
+                "type": "HasMany"
+            },
+            "invitations": {
+                "type": "HasMany"
+            },
+            "approvedMembers": {
+                "type": "HasMany"
+            },
+            "admins": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\SocialGroupInvitation": {
+        "table": "social_group_invitations",
+        "fillable": [
+            "group_id",
+            "inviter_id",
+            "invited_id",
+            "message",
+            "status",
+            "expires_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "expires_at": "datetime"
+        },
+        "relationships": {
+            "group": {
+                "type": "BelongsTo"
+            },
+            "inviter": {
+                "type": "BelongsTo"
+            },
+            "invited": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\SocialGroupMember": {
+        "table": "social_group_members",
+        "fillable": [
+            "group_id",
+            "user_id",
+            "role",
+            "status",
+            "joined_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "joined_at": "datetime"
+        },
+        "relationships": {
+            "group": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\SocialGroupPost": {
+        "table": "social_group_posts",
+        "fillable": [
+            "group_id",
+            "user_id",
+            "content",
+            "media",
+            "is_pinned",
+            "is_active"
+        ],
+        "hidden": [],
+        "casts": {
+            "media": "array",
+            "is_pinned": "boolean",
+            "is_active": "boolean"
+        },
+        "relationships": {
+            "group": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            },
+            "activities": {
+                "type": "MorphMany"
+            }
+        }
+    },
+    "App\\Models\\SocialPost": {
+        "table": "social_posts",
+        "fillable": [
+            "user_id",
+            "content",
+            "media",
+            "visibility",
+            "location",
+            "is_active"
+        ],
+        "hidden": [],
+        "casts": {
+            "media": "array",
+            "location": "array",
+            "is_active": "boolean"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            },
+            "likes": {
+                "type": "HasMany"
+            },
+            "comments": {
+                "type": "HasMany"
+            },
+            "shares": {
+                "type": "HasMany"
+            },
+            "activities": {
+                "type": "MorphMany"
+            }
+        }
+    },
+    "App\\Models\\SocialPostComment": {
+        "table": "social_post_comments",
+        "fillable": [
+            "post_id",
+            "user_id",
+            "parent_id",
+            "content",
+            "is_active"
+        ],
+        "hidden": [],
+        "casts": {
+            "is_active": "boolean"
+        },
+        "relationships": {
+            "post": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            },
+            "parent": {
+                "type": "BelongsTo"
+            },
+            "replies": {
+                "type": "HasMany"
+            },
+            "likes": {
+                "type": "HasMany"
+            },
+            "activities": {
+                "type": "MorphMany"
+            }
+        }
+    },
+    "App\\Models\\SocialPostLike": {
+        "table": "social_post_likes",
+        "fillable": [
+            "post_id",
+            "user_id"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int"
+        },
+        "relationships": {
+            "post": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\SocialPostShare": {
+        "table": "social_post_shares",
+        "fillable": [
+            "post_id",
+            "user_id",
+            "message"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int"
+        },
+        "relationships": {
+            "post": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\SocialUserFollow": {
+        "table": "social_user_follows",
+        "fillable": [
+            "follower_id",
+            "following_id"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int"
+        },
+        "relationships": {
+            "follower": {
+                "type": "BelongsTo"
+            },
+            "following": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\SocialUserProfile": {
+        "table": "social_user_profiles",
+        "fillable": [
+            "user_id",
+            "bio",
+            "website",
+            "location",
+            "birth_date",
+            "profile_visibility",
+            "interests",
+            "cover_photo",
+            "social_links",
+            "show_email",
+            "show_location"
+        ],
+        "hidden": [],
+        "casts": {
+            "id": "int",
+            "birth_date": "date",
+            "interests": "array",
+            "social_links": "array",
+            "show_email": "boolean",
+            "show_location": "boolean"
+        },
+        "relationships": {
+            "user": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Store": {
+        "table": "stores",
+        "fillable": [
+            "workspace_id",
+            "name",
+            "slug",
+            "description",
+            "logo",
+            "banner",
+            "status",
+            "rejection_reason",
+            "approved_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "approved_at": "datetime",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "workspace": {
+                "type": "BelongsTo"
+            },
+            "products": {
+                "type": "HasMany"
+            },
+            "orders": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\Tag": {
+        "table": "tags",
+        "fillable": [
+            "name",
+            "slug",
+            "description",
+            "article_count",
+            "followers_count",
+            "is_trending",
+            "trending_score"
+        ],
+        "hidden": [],
+        "casts": {
+            "is_trending": "boolean",
+            "article_count": "integer",
+            "followers_count": "integer",
+            "trending_score": "integer"
+        },
+        "relationships": {
+            "posts": {
+                "type": "BelongsToMany"
+            },
+            "followers": {
+                "type": "MorphMany"
+            }
+        }
+    },
+    "App\\Models\\Task": {
+        "table": "tasks",
+        "fillable": [
+            "tenant_id",
+            "customer_id",
+            "assigned_to_id",
+            "title",
+            "description",
+            "type",
+            "priority",
+            "status",
+            "due_date",
+            "completed_at",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "due_date": "date",
+            "completed_at": "datetime",
+            "metadata": "array"
+        },
+        "relationships": {
+            "tenant": {
+                "type": "BelongsTo"
+            },
+            "customer": {
+                "type": "BelongsTo"
+            },
+            "assignedTo": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\Tenant": {
+        "table": "tenants",
+        "fillable": [
+            "name",
+            "subdomain",
+            "domain",
+            "email",
+            "phone",
+            "address",
+            "city",
+            "state",
+            "postal_code",
+            "country",
+            "timezone",
+            "locale",
+            "currency",
+            "is_active",
+            "trial_ends_at",
+            "settings",
+            "metadata"
+        ],
+        "hidden": [],
+        "casts": {
+            "is_active": "boolean",
+            "trial_ends_at": "datetime",
+            "settings": "array",
+            "metadata": "array",
+            "deleted_at": "datetime"
+        },
+        "relationships": {
+            "users": {
+                "type": "HasMany"
+            },
+            "smbBusinesses": {
+                "type": "HasMany"
+            },
+            "customers": {
+                "type": "HasMany"
+            },
+            "accountManagers": {
+                "type": "HasMany"
+            },
+            "deals": {
+                "type": "HasMany"
+            },
+            "interactions": {
+                "type": "HasMany"
+            },
+            "tasks": {
+                "type": "HasMany"
+            },
+            "campaigns": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\TicketGift": {
+        "table": "ticket_gifts",
+        "fillable": [
+            "ticket_order_item_id",
+            "gifter_id",
+            "recipient_email",
+            "recipient_name",
+            "recipient_user_id",
+            "status",
+            "gift_token",
+            "message",
+            "gifted_at",
+            "redeemed_at",
+            "expires_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "gifted_at": "datetime",
+            "redeemed_at": "datetime",
+            "expires_at": "datetime"
+        },
+        "relationships": {
+            "ticketOrderItem": {
+                "type": "BelongsTo"
+            },
+            "gifter": {
+                "type": "BelongsTo"
+            },
+            "recipient": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\TicketListing": {
+        "table": "ticket_listings",
+        "fillable": [
+            "ticket_order_item_id",
+            "seller_id",
+            "event_id",
+            "price",
+            "quantity",
+            "status",
+            "description",
+            "expires_at",
+            "sold_at",
+            "sold_to"
+        ],
+        "hidden": [],
+        "casts": {
+            "price": "decimal:2",
+            "quantity": "integer",
+            "expires_at": "datetime",
+            "sold_at": "datetime"
+        },
+        "relationships": {
+            "ticketOrderItem": {
+                "type": "BelongsTo"
+            },
+            "seller": {
+                "type": "BelongsTo"
+            },
+            "buyer": {
+                "type": "BelongsTo"
+            },
+            "event": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\TicketOrder": {
+        "table": "ticket_orders",
+        "fillable": [
+            "event_id",
+            "user_id",
+            "status",
+            "subtotal",
+            "fees",
+            "discount",
+            "total",
+            "promo_code",
+            "billing_info",
+            "payment_intent_id",
+            "payment_status",
+            "completed_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "subtotal": "decimal:2",
+            "fees": "decimal:2",
+            "discount": "decimal:2",
+            "total": "decimal:2",
+            "promo_code": "array",
+            "billing_info": "array",
+            "completed_at": "datetime"
+        },
+        "relationships": {
+            "event": {
+                "type": "BelongsTo"
+            },
+            "user": {
+                "type": "BelongsTo"
+            },
+            "items": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\TicketOrderItem": {
+        "table": "ticket_order_items",
+        "fillable": [
+            "ticket_order_id",
+            "ticket_plan_id",
+            "quantity",
+            "unit_price",
+            "total_price",
+            "ticket_code",
+            "qr_code"
+        ],
+        "hidden": [],
+        "casts": {
+            "unit_price": "decimal:2",
+            "total_price": "decimal:2"
+        },
+        "relationships": {
+            "ticketOrder": {
+                "type": "BelongsTo"
+            },
+            "ticketPlan": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\TicketPlan": {
+        "table": "ticket_plans",
+        "fillable": [
+            "event_id",
+            "name",
+            "description",
+            "price",
+            "max_quantity",
+            "available_quantity",
+            "is_active",
+            "metadata",
+            "sort_order"
+        ],
+        "hidden": [],
+        "casts": {
+            "price": "decimal:2",
+            "is_active": "boolean",
+            "metadata": "array"
+        },
+        "relationships": {
+            "event": {
+                "type": "BelongsTo"
+            },
+            "orderItems": {
+                "type": "HasMany"
+            },
+            "organizationRelationships": {
+                "type": "MorphMany"
+            },
+            "organizations": {
+                "type": "BelongsToMany"
+            }
+        }
+    },
+    "App\\Models\\TicketTransfer": {
+        "table": "ticket_transfers",
+        "fillable": [
+            "ticket_order_item_id",
+            "from_user_id",
+            "to_user_id",
+            "to_email",
+            "status",
+            "transfer_token",
+            "message",
+            "transferred_at",
+            "expires_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "transferred_at": "datetime",
+            "expires_at": "datetime"
+        },
+        "relationships": {
+            "ticketOrderItem": {
+                "type": "BelongsTo"
+            },
+            "fromUser": {
+                "type": "BelongsTo"
+            },
+            "toUser": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\UpcomingShow": {
+        "table": "upcoming_shows",
+        "fillable": [
+            "performer_id",
+            "date",
+            "venue",
+            "tickets_available",
+            "ticket_url",
+            "ticket_price",
+            "description"
+        ],
+        "hidden": [],
+        "casts": {
+            "date": "date",
+            "tickets_available": "boolean",
+            "ticket_price": "decimal:2"
+        },
+        "relationships": {
+            "performer": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\User": {
+        "table": "users",
+        "fillable": [
+            "name",
+            "email",
+            "password",
+            "current_workspace_id",
+            "tenant_id"
+        ],
+        "hidden": [
+            "password",
+            "remember_token"
+        ],
+        "casts": {
+            "email_verified_at": "datetime",
+            "password": "hashed",
+            "is_private_profile": "boolean",
+            "allow_friend_requests": "boolean",
+            "allow_group_invites": "boolean",
+            "last_active_at": "datetime"
+        },
+        "relationships": {
+            "socialAccounts": {
+                "type": "HasMany"
+            },
+            "calendars": {
+                "type": "HasMany"
+            },
+            "workspaces": {
+                "type": "HasMany"
+            },
+            "currentWorkspace": {
+                "type": "BelongsTo"
+            },
+            "tenant": {
+                "type": "BelongsTo"
+            },
+            "workspaceMemberships": {
+                "type": "HasMany"
+            },
+            "socialPosts": {
+                "type": "HasMany"
+            },
+            "authoredDayNewsPosts": {
+                "type": "HasMany"
+            },
+            "socialProfile": {
+                "type": "HasOne"
+            },
+            "friendships": {
+                "type": "HasMany"
+            },
+            "friendshipRequests": {
+                "type": "HasMany"
+            },
+            "followers": {
+                "type": "HasMany"
+            },
+            "following": {
+                "type": "HasMany"
+            },
+            "socialGroups": {
+                "type": "HasMany"
+            },
+            "groupMemberships": {
+                "type": "HasMany"
+            },
+            "groupInvitations": {
+                "type": "HasMany"
+            },
+            "sentGroupInvitations": {
+                "type": "HasMany"
+            },
+            "socialActivities": {
+                "type": "HasMany"
+            },
+            "actorActivities": {
+                "type": "HasMany"
+            },
+            "acceptedFriends": {
+                "type": "HasMany"
+            },
+            "blockedUsers": {
+                "type": "HasMany"
+            },
+            "conversations": {
+                "type": "BelongsToMany"
+            },
+            "sentMessages": {
+                "type": "HasMany"
+            },
+            "conversationParticipants": {
+                "type": "HasMany"
+            },
+            "follows": {
+                "type": "HasMany"
+            },
+            "ticketOrders": {
+                "type": "HasMany"
+            },
+            "checkIns": {
+                "type": "HasMany"
+            },
+            "plannedEvents": {
+                "type": "HasMany"
+            },
+            "hubMemberships": {
+                "type": "HasMany"
+            }
+        }
+    },
+    "App\\Models\\Venue": {
+        "table": "venues",
+        "fillable": [
+            "name",
+            "description",
+            "images",
+            "verified",
+            "venue_type",
+            "capacity",
+            "price_per_hour",
+            "price_per_event",
+            "price_per_day",
+            "rating",
+            "review_count",
+            "address",
+            "neighborhood",
+            "latitude",
+            "longitude",
+            "google_place_id",
+            "postal_code",
+            "amenities",
+            "event_types",
+            "unavailable_dates",
+            "last_booked_days_ago",
+            "response_time_hours",
+            "listed_date",
+            "status",
+            "workspace_id",
+            "created_by",
+            "average_rating",
+            "total_reviews"
+        ],
+        "hidden": [],
+        "casts": {
+            "images": "array",
+            "verified": "boolean",
+            "price_per_hour": "decimal:2",
+            "price_per_event": "decimal:2",
+            "price_per_day": "decimal:2",
+            "average_rating": "decimal:2",
+            "latitude": "decimal:8",
+            "longitude": "decimal:8",
+            "amenities": "array",
+            "event_types": "array",
+            "unavailable_dates": "array",
+            "listed_date": "date"
+        },
+        "relationships": {
+            "workspace": {
+                "type": "BelongsTo"
+            },
+            "createdBy": {
+                "type": "BelongsTo"
+            },
+            "events": {
+                "type": "HasMany"
+            },
+            "bookings": {
+                "type": "HasMany"
+            },
+            "follows": {
+                "type": "MorphMany"
+            },
+            "reviews": {
+                "type": "MorphMany"
+            },
+            "ratings": {
+                "type": "MorphMany"
+            },
+            "approvedReviews": {
+                "type": "MorphMany"
+            },
+            "featuredReviews": {
+                "type": "MorphMany"
+            }
+        }
+    },
+    "App\\Models\\Workspace": {
+        "table": "workspaces",
+        "fillable": [
+            "name",
+            "slug",
+            "logo",
+            "owner_id",
+            "stripe_connect_id",
+            "stripe_charges_enabled",
+            "stripe_payouts_enabled",
+            "stripe_admin_approved"
+        ],
+        "hidden": [],
+        "casts": {
+            "stripe_charges_enabled": "boolean",
+            "stripe_payouts_enabled": "boolean",
+            "stripe_admin_approved": "boolean"
+        },
+        "relationships": {
+            "owner": {
+                "type": "BelongsTo"
+            },
+            "members": {
+                "type": "HasMany"
+            },
+            "invitations": {
+                "type": "HasMany"
+            },
+            "stores": {
+                "type": "HasMany"
+            },
+            "dayNewsPosts": {
+                "type": "HasMany"
+            },
+            "credits": {
+                "type": "MorphMany"
+            },
+            "creditTransactions": {
+                "type": "MorphMany"
+            }
+        }
+    },
+    "App\\Models\\WorkspaceInvitation": {
+        "table": "workspace_invitations",
+        "fillable": [
+            "workspace_id",
+            "invited_by",
+            "email",
+            "role",
+            "token",
+            "expires_at",
+            "accepted_at"
+        ],
+        "hidden": [],
+        "casts": {
+            "expires_at": "datetime",
+            "accepted_at": "datetime"
+        },
+        "relationships": {
+            "workspace": {
+                "type": "BelongsTo"
+            },
+            "inviter": {
+                "type": "BelongsTo"
+            }
+        }
+    },
+    "App\\Models\\WorkspaceMembership": {
+        "table": "workspace_memberships",
+        "fillable": [
+            "workspace_id",
+            "user_id",
+            "role"
+        ],
+        "hidden": [],
+        "casts": [],
+        "relationships": []
+    },
+    "App\\Models\\WriterAgent": {
+        "table": "writer_agents",
+        "fillable": [
+            "name",
+            "slug",
+            "bio",
+            "avatar",
+            "writing_style",
+            "persona_traits",
+            "expertise_areas",
+            "categories",
+            "prompts",
+            "articles_count",
+            "is_active"
+        ],
+        "hidden": [],
+        "casts": {
+            "persona_traits": "array",
+            "expertise_areas": "array",
+            "categories": "array",
+            "prompts": "array",
+            "articles_count": "integer",
+            "is_active": "boolean"
+        },
+        "relationships": {
+            "regions": {
+                "type": "BelongsToMany"
+            },
+            "posts": {
+                "type": "HasMany"
+            }
+        }
+    }
+}

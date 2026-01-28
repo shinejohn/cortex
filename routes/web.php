@@ -219,7 +219,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/tickets/my-tickets', [TicketPageController::class, 'myTickets'])->name('tickets.my-tickets');
     Route::get('/tickets/checkout/success/{ticketOrder}', [TicketOrderController::class, 'checkoutSuccess'])->name('tickets.checkout.success');
     Route::get('/tickets/checkout/cancel/{ticketOrder}', [TicketOrderController::class, 'checkoutCancel'])->name('tickets.checkout.cancel');
-    
+
     // Public ticket verification route
     Route::get('/tickets/verify/{ticketCode}', [TicketPageController::class, 'verifyTicket'])->name('tickets.verify')->withoutMiddleware(['auth', 'verified']);
 
@@ -290,7 +290,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Redirect to appropriate dashboard based on user role or default to fan dashboard
         return redirect()->route('dashboard.fan');
     })->name('dashboard');
-    
+
     Route::get('/dashboard/fan', function (Request $request) {
         return Inertia::render('event-city/dashboard/fan', [
             'user' => $request->user(),
@@ -508,9 +508,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Stripe webhook (public route, no auth/CSRF)
 Route::post('/stripe/webhook', App\Http\Controllers\StripeWebhookController::class)->name('stripe.webhook');
 
-require __DIR__.'/workspace.php';
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
-require __DIR__.'/ads.php';
-require __DIR__.'/email-tracking.php';
-require __DIR__.'/admin.php';
+require __DIR__ . '/workspace.php';
+require __DIR__ . '/settings.php';
+// Public Poll Routes
+Route::get('/poll/{slug}', [App\Http\Controllers\PollPageController::class, 'show'])->name('poll.show');
+Route::get('/poll/{slug}/embed', [App\Http\Controllers\PollPageController::class, 'embed'])->name('poll.embed');
+Route::post('/api/polls/{slug}/vote', [App\Http\Controllers\PollPageController::class, 'vote'])->name('poll.vote');
+
+require __DIR__ . '/auth.php';
+require __DIR__ . '/ads.php';
+require __DIR__ . '/email-tracking.php';
+require __DIR__ . '/admin.php';

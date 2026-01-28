@@ -1,0 +1,33 @@
+{
+    "name": "fibonacco/ai-tools-core",
+    "description": "Core AI tools infrastructure for Fibonacco platforms",
+    "type": "library",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^11.0|^12.0",
+        "illuminate/database": "^11.0|^12.0",
+        "illuminate/validation": "^11.0|^12.0",
+        "illuminate/cache": "^11.0|^12.0",
+        "illuminate/filesystem": "^11.0|^12.0",
+        "illuminate/http": "^11.0|^12.0",
+        "prism-php/prism": "^0.99"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0",
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fibonacco\\AiToolsCore\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Fibonacco\\AiToolsCore\\AiToolsCoreServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable"
+}

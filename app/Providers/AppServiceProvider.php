@@ -20,7 +20,7 @@ final class AppServiceProvider extends ServiceProvider
     {
         // Existing bindings
         $this->app->bind(GeocodingServiceInterface::class, GeocodingService::class);
-        
+
         // Register AlphaSite services
         $this->app->singleton(\App\Services\AlphaSite\CommunityService::class);
         $this->app->singleton(\App\Services\AlphaSite\LinkingService::class);
@@ -28,7 +28,7 @@ final class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\AlphaSite\SMBCrmService::class);
         $this->app->singleton(\App\Services\AlphaSite\SubscriptionLifecycleService::class);
         $this->app->singleton(\App\Services\AlphaSite\TemplateService::class);
-        
+
         // Register DayNews services
         $this->app->singleton(\App\Services\DayNews\AnnouncementService::class);
         $this->app->singleton(\App\Services\DayNews\ArchiveService::class);
@@ -39,7 +39,7 @@ final class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\DayNews\SearchService::class);
         $this->app->singleton(\App\Services\DayNews\TagService::class);
         $this->app->singleton(\App\Services\DayNews\TrendingService::class);
-        
+
         // Register News workflow services
         $this->app->singleton(\App\Services\News\ArticleGenerationService::class);
         $this->app->singleton(\App\Services\News\BusinessDiscoveryService::class);
@@ -60,6 +60,11 @@ final class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\News\UnsplashService::class);
         $this->app->singleton(\App\Services\News\VenueMatchingService::class);
         $this->app->singleton(\App\Services\News\WorkflowSettingsService::class);
+
+        // Register Story Follow-Up services
+        $this->app->singleton(\App\Services\Story\StoryFollowUpService::class);
+        $this->app->singleton(\App\Services\Story\EngagementScoringService::class);
+        $this->app->singleton(\App\Services\Story\StoryAnalysisService::class);
     }
 
     /**
@@ -67,7 +72,8 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (! config('makerkit.auth.magiclink.enabled') && ! config('makerkit.auth.password.enabled')) {
+        \App\Models\DayNewsPost::observe(\App\Observers\DayNewsPostObserver::class);
+        if (!config('makerkit.auth.magiclink.enabled') && !config('makerkit.auth.password.enabled')) {
             throw new Exception('Magic link or password authentication must be enabled');
         }
 
@@ -83,30 +89,30 @@ final class AppServiceProvider extends ServiceProvider
     private function configureRedisClient(): void
     {
         // Only auto-detect if REDIS_CLIENT is not explicitly set
-        if (! env('REDIS_CLIENT')) {
+        if (!env('REDIS_CLIENT')) {
             $client = (extension_loaded('redis') || function_exists('redis_connect')) ? 'phpredis' : 'predis';
             config(['database.redis.client' => $client]);
         }
-        
+
         // Configure Redis TLS if enabled
         $redisScheme = env('REDIS_SCHEME', 'tcp');
         $redisTls = env('REDIS_TLS', false);
-        
+
         // Configure Redis timeouts to prevent hanging connections
         // This helps prevent 504 Gateway Timeout errors
         $timeout = (int) env('REDIS_TIMEOUT', 5); // 5 second timeout
         $readTimeout = (int) env('REDIS_READ_TIMEOUT', 5);
-        
+
         // Set timeout options for Redis connections
         $options = config('database.redis.options', []);
         $options['timeout'] = $timeout;
         $options['read_timeout'] = $readTimeout;
         config(['database.redis.options' => $options]);
-        
+
         // Configure default connection with TLS if enabled
         $defaultConfig = config('database.redis.default', []);
         $defaultConfig['scheme'] = $redisScheme;
-        
+
         // Configure TLS/SSL based on client type
         $client = config('database.redis.client', 'predis');
         if ($redisTls || $redisScheme === 'tls') {
@@ -134,7 +140,7 @@ final class AppServiceProvider extends ServiceProvider
             $defaultConfig['read_timeout'] = $readTimeout;
         }
         config(['database.redis.default' => $defaultConfig]);
-        
+
         // Configure cache connection with TLS if enabled
         $cacheConfig = config('database.redis.cache', []);
         $cacheConfig['scheme'] = $redisScheme;
@@ -177,8 +183,8 @@ final class AppServiceProvider extends ServiceProvider
         $queueDriver = config('queue.default');
 
         $redisNeeded = in_array($cacheDriver, ['redis'], true) ||
-                      in_array($sessionDriver, ['redis'], true) ||
-                      in_array($queueDriver, ['redis'], true);
+            in_array($sessionDriver, ['redis'], true) ||
+            in_array($queueDriver, ['redis'], true);
 
         if ($redisNeeded) {
             try {
@@ -206,13 +212,13 @@ final class AppServiceProvider extends ServiceProvider
     {
         // Rate limiter for geocoding jobs - Google Maps API allows 50 requests/second
         // We limit to 10 per second to be safe and avoid hitting API limits
-        RateLimiter::for('geocoding', fn () => Limit::perSecond(10));
+        RateLimiter::for('geocoding', fn() => Limit::perSecond(10));
 
         // Rate limiter for location API - prevent abuse of search/detection endpoints
         // 30 requests per minute per IP for search (allow for autocomplete typing)
-        RateLimiter::for('location-search', fn () => Limit::perMinute(30)->by(request()->ip()));
+        RateLimiter::for('location-search', fn() => Limit::perMinute(30)->by(request()->ip()));
 
         // 10 requests per minute per IP for set/detect/clear operations
-        RateLimiter::for('location-actions', fn () => Limit::perMinute(10)->by(request()->ip()));
+        RateLimiter::for('location-actions', fn() => Limit::perMinute(10)->by(request()->ip()));
     }
 }

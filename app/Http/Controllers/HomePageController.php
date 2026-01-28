@@ -27,30 +27,40 @@ final class HomePageController extends Controller
         // Get featured events from the database (defensive check for missing table)
         $featuredEvents = [];
         try {
+            // Double-check table exists and query it safely
             if (Schema::hasTable('events')) {
-                $featuredEvents = Event::published()
-                    ->upcoming()
-                    ->with(['venue', 'performer'])
-                    ->take(4)
-                    ->get()
-                    ->map(function ($event) {
-                        return [
-                            'id' => $event->id,
-                            'title' => $event->title,
-                            'date' => $event->event_date->format('F j, Y'),
-                            'venue' => $event->venue?->name ?? 'TBA',
-                            'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
-                            'category' => $event->category,
-                            'image' => $event->image,
-                        ];
-                    })
-                    ->toArray();
+                try {
+                    $featuredEvents = Event::published()
+                        ->upcoming()
+                        ->with(['venue', 'performer'])
+                        ->take(4)
+                        ->get()
+                        ->map(function ($event) {
+                            return [
+                                'id' => $event->id,
+                                'title' => $event->title,
+                                'date' => $event->event_date->format('F j, Y'),
+                                'venue' => $event->venue?->name ?? 'TBA',
+                                'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
+                                'category' => $event->category,
+                                'image' => $event->image,
+                            ];
+                        })
+                        ->toArray();
+                } catch (\Illuminate\Database\QueryException $e) {
+                    // Table might not exist despite Schema::hasTable() returning true
+                    // This can happen if migrations haven't been run
+                    \Log::warning('Events table query failed: '.$e->getMessage());
+                    $featuredEvents = [];
+                }
             }
         } catch (\Illuminate\Database\QueryException $e) {
             // If table doesn't exist or query fails, return empty array
+            \Log::warning('Events table check failed: '.$e->getMessage());
             $featuredEvents = [];
         } catch (\Exception $e) {
             // Catch any other exceptions
+            \Log::warning('Unexpected error in HomePageController: '.$e->getMessage());
             $featuredEvents = [];
         }
 

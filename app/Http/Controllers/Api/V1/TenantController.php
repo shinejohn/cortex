@@ -112,13 +112,32 @@ final class TenantController extends BaseController
      * 
      * @authenticated
      */
-    public function update(UpdateTenantRequest $request, Tenant $tenant): JsonResponse
+    public function update(UpdateTenantRequest $request, string $id): JsonResponse
     {
+        $tenant = Tenant::findOrFail($id);
         $this->authorize('update', $tenant);
 
         $tenant->update($request->validated());
 
         return $this->success(new TenantResource($tenant), 'Tenant updated successfully');
     }
-}
 
+    /**
+     * Delete tenant.
+     * 
+     * @urlParam tenant string required The tenant UUID. Example: 550e8400-e29b-41d4-a716-446655440000
+     * 
+     * @response 204 No Content
+     * 
+     * @authenticated
+     */
+    public function destroy(string $id): JsonResponse
+    {
+        $tenant = Tenant::findOrFail($id);
+        $this->authorize('delete', $tenant);
+
+        $tenant->delete();
+
+        return $this->noContent();
+    }
+}
