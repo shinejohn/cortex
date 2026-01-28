@@ -38,6 +38,11 @@ final class Calendar extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function followers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'calendar_followers')

@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace App\Services\News;
 
 use App\Models\NewsArticleDraft;
+use App\Models\RawContent;
+use App\Models\DayNewsPost;
 use App\Models\Region;
 use App\Services\WriterAgent\AgentAssignmentService;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
+use Illuminate\Support\Str;
 
 final class ArticleGenerationService
 {
@@ -17,14 +20,15 @@ final class ArticleGenerationService
         private readonly PrismAiService $prismAi,
         private readonly UnsplashService $unsplash,
         private readonly AgentAssignmentService $agentAssignmentService
-    ) {}
+    ) {
+    }
 
     /**
      * Generate full articles from drafts (Phase 6)
      */
     public function generateArticles(Region $region): int
     {
-        if (! config('news-workflow.article_generation.enabled', true)) {
+        if (!config('news-workflow.article_generation.enabled', true)) {
             Log::info('Article generation is disabled', ['region' => $region->name]);
 
             return 0;
@@ -86,7 +90,7 @@ final class ArticleGenerationService
 
                 $draft->update([
                     'status' => 'rejected',
-                    'rejection_reason' => 'Article generation failed: '.$e->getMessage(),
+                    'rejection_reason' => 'Article generation failed: ' . $e->getMessage(),
                 ]);
             }
         }
@@ -112,7 +116,7 @@ final class ArticleGenerationService
         $agent = $region ? $this->agentAssignmentService->findBestAgent($region, $category) : null;
 
         // Fallback to any active agent if no match found
-        if (! $agent) {
+        if (!$agent) {
             $agent = $this->agentAssignmentService->findAnyAgent();
         }
 
@@ -131,7 +135,7 @@ final class ArticleGenerationService
         $factChecks = $draft->factChecks()
             ->where('verification_result', 'verified')
             ->get()
-            ->map(fn ($fc) => [
+            ->map(fn($fc) => [
                 'claim' => $fc->claim,
                 'verification_result' => $fc->verification_result,
                 'confidence_score' => $fc->confidence_score,
@@ -154,11 +158,11 @@ final class ArticleGenerationService
         $result = $this->prismAi->generateFinalArticle($draftData, $factChecks, $writerStyleInstructions);
 
         // Validate AI response has required fields
-        if (! is_array($result) || ! isset($result['title'], $result['content'], $result['excerpt'])) {
+        if (!is_array($result) || !isset($result['title'], $result['content'], $result['excerpt'])) {
             $keys = is_array($result) ? array_keys($result) : ['not_an_array'];
 
             throw new RuntimeException(
-                'AI response missing required fields (title, content, excerpt). Got keys: '.implode(', ', $keys)
+                'AI response missing required fields (title, content, excerpt). Got keys: ' . implode(', ', $keys)
             );
         }
 
@@ -219,7 +223,7 @@ final class ArticleGenerationService
      */
     private function fetchArticleImage(string $title, array $topicTags): ?array
     {
-        if (! config('news-workflow.unsplash.enabled', true)) {
+        if (!config('news-workflow.unsplash.enabled', true)) {
             return null;
         }
 
@@ -241,7 +245,7 @@ final class ArticleGenerationService
         }
 
         // Try with just topic tags if title keywords didn't work
-        if (! empty($topicTags)) {
+        if (!empty($topicTags)) {
             $imageData = $this->unsplash->searchImage($topicTags, $orientation);
 
             if ($imageData) {
@@ -301,8 +305,86 @@ final class ArticleGenerationService
         $stopWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'];
 
         $words = explode(' ', mb_strtolower($title));
-        $keywords = array_filter($words, fn ($word) => ! in_array($word, $stopWords) && mb_strlen($word) > 3);
+        $keywords = array_filter($words, fn($word) => !in_array($word, $stopWords) && mb_strlen($word) > 3);
 
         return array_values($keywords);
+    }
+
+    // =========================================================================
+    // NEWSROOM TIER-BASED GENERATION
+    // =========================================================================
+
+    public function generateBrief(RawContent $content): DayNewsPost
+    {
+        return $this->generateFromRaw($content, RawContent::TIER_BRIEF);
+    }
+
+    public function generateStandard(RawContent $content): DayNewsPost
+    {
+        return $this->generateFromRaw($content, RawContent::TIER_STANDARD);
+    }
+
+    public function generateFull(RawContent $content): DayNewsPost
+    {
+        return $this->generateFromRaw($content, RawContent::TIER_FULL);
+    }
+
+    private function generateFromRaw(RawContent $content, string $tier): DayNewsPost
+    {
+        Log::info("Generating {$tier} article from RawContent", ['id' => $content->id]);
+
+        // 1. Prepare Data
+        $draftData = [
+            'id' => $content->id,
+            'region_name' => $content->source->region->name ?? 'Local Area',
+            'generated_title' => $content->title,
+            'source_title' => $content->title,
+            'source_content' => $content->body, // Assuming body contains the text
+            'source_publisher' => $content->source->name ?? 'Unknown Source',
+            'published_at' => $content->published_at?->toIso8601String(),
+            'outline' => "Generate a {$tier} news article based on the provided content.",
+        ];
+
+        // 2. Determine Length/Style based on Tier
+        $instructions = match ($tier) {
+            RawContent::TIER_BRIEF => "Write a concise 100-200 word summary. Focus on the key facts: Who, What, When, Where. Direct tone.",
+            RawContent::TIER_FULL => "Write a comprehensive 500-1000 word article. Include deep context, analysis, and a professional journalistic tone.",
+            default => "Write a standard 300-500 word news article. Balanced tone, covering all main points.",
+        };
+
+        // 3. Generate with Prism
+        // We reuse generateFinalArticle but pass specific instructions
+        $result = $this->prismAi->generateFinalArticle($draftData, [], $instructions);
+
+        // 4. Create DayNewsPost
+        // Map category
+        $category = 'local_news'; // Default or derive from content classification
+        if ($content->classification_data && isset($content->classification_data['category'])) {
+            // Map RawContent category to DayNewsPost category if needed
+            $category = $this->mapTopicTagToCategory($content->classification_data['category']);
+        }
+
+        // Generate SEO & Image
+        $seoMetadata = $this->generateSeoMetadata($result['title'], $result['content'], $result['seo_keywords'] ?? []);
+
+        $tags = $result['seo_keywords'] ?? [];
+        $imageData = $this->fetchArticleImage($result['title'], $tags);
+
+        $post = DayNewsPost::create([
+            'title' => $result['title'],
+            'slug' => $seoMetadata['slug'] . '-' . Str::random(6),
+            'content' => $result['content'],
+            'excerpt' => $result['excerpt'],
+            'category' => $category,
+            'status' => 'draft', // Auto-publish logic can handle status change later
+            'featured_image' => $imageData['url'] ?? null,
+            'meta_description' => $seoMetadata['meta_description'],
+            'seo_keywords' => $seoMetadata['keywords'],
+            'author_id' => 1, // System user or unassigned
+            'published_at' => now(), // Setup for immediate publishing if approved
+            'region_id' => $content->source->region_id ?? null,
+        ]);
+
+        return $post;
     }
 }

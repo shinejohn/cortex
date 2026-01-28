@@ -1,0 +1,6767 @@
+{
+    "users": {
+        "file": "0001_01_01_000000_create_users_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "email": {
+                "type": "string"
+            },
+            "email_verified_at": {
+                "type": "timestamp"
+            },
+            "password": {
+                "type": "string"
+            },
+            "token": {
+                "type": "string"
+            },
+            "created_at": {
+                "type": "timestamp"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "ip_address": {
+                "type": "string"
+            },
+            "user_agent": {
+                "type": "text"
+            },
+            "payload": {
+                "type": "longText"
+            },
+            "last_activity": {
+                "type": "integer"
+            }
+        }
+    },
+    "cache": {
+        "file": "0001_01_01_000001_create_cache_table.php",
+        "type": "create",
+        "columns": {
+            "key": {
+                "type": "string"
+            },
+            "value": {
+                "type": "mediumText"
+            },
+            "expiration": {
+                "type": "integer"
+            },
+            "owner": {
+                "type": "string"
+            }
+        }
+    },
+    "jobs": {
+        "file": "0001_01_01_000002_create_jobs_table.php",
+        "type": "create",
+        "columns": {
+            "queue": {
+                "type": "text"
+            },
+            "payload": {
+                "type": "longText"
+            },
+            "attempts": {
+                "type": "unsignedTinyInteger"
+            },
+            "reserved_at": {
+                "type": "unsignedInteger"
+            },
+            "available_at": {
+                "type": "unsignedInteger"
+            },
+            "created_at": {
+                "type": "integer"
+            },
+            "id": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "total_jobs": {
+                "type": "integer"
+            },
+            "pending_jobs": {
+                "type": "integer"
+            },
+            "failed_jobs": {
+                "type": "integer"
+            },
+            "failed_job_ids": {
+                "type": "longText"
+            },
+            "options": {
+                "type": "mediumText"
+            },
+            "cancelled_at": {
+                "type": "integer"
+            },
+            "finished_at": {
+                "type": "integer"
+            },
+            "uuid": {
+                "type": "string"
+            },
+            "connection": {
+                "type": "text"
+            },
+            "exception": {
+                "type": "longText"
+            },
+            "failed_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "magic_links": {
+        "file": "2017_07_06_000000_create_table_magic_links.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "token": {
+                "type": "string"
+            },
+            "action": {
+                "type": "text"
+            },
+            "num_visits": {
+                "type": "unsignedTinyInteger"
+            },
+            "max_visits": {
+                "type": "index"
+            },
+            "available_at": {
+                "type": "index"
+            },
+            "access_code": {
+                "type": "string"
+            }
+        }
+    },
+    "day_news_posts": {
+        "file": "2025_11_04_210900_create_day_news_tables.php",
+        "type": "create",
+        "columns": {
+            "workspace_id": {
+                "type": "index"
+            },
+            "author_id": {
+                "type": "foreignUuid"
+            },
+            "type": {
+                "type": "enum"
+            },
+            "category": {
+                "type": "enum"
+            },
+            "title": {
+                "type": "string"
+            },
+            "slug": {
+                "type": "index"
+            },
+            "content": {
+                "type": "text"
+            },
+            "excerpt": {
+                "type": "text"
+            },
+            "featured_image": {
+                "type": "string"
+            },
+            "metadata": {
+                "type": "json"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "published_at": {
+                "type": "timestamp"
+            },
+            "expires_at": {
+                "type": "index"
+            },
+            "view_count": {
+                "type": "unsignedBigInteger"
+            },
+            "post_id": {
+                "type": "index"
+            },
+            "stripe_payment_intent_id": {
+                "type": "index"
+            },
+            "stripe_checkout_session_id": {
+                "type": "index"
+            },
+            "amount": {
+                "type": "integer"
+            },
+            "currency": {
+                "type": "string"
+            },
+            "payment_type": {
+                "type": "enum"
+            },
+            "ad_days": {
+                "type": "integer"
+            },
+            "platform": {
+                "type": "enum"
+            },
+            "advertable_type": {
+                "type": "string"
+            },
+            "advertable_id": {
+                "type": "string"
+            },
+            "placement": {
+                "type": "enum"
+            },
+            "regions": {
+                "type": "json"
+            },
+            "impressions_count": {
+                "type": "unsignedBigInteger"
+            },
+            "clicks_count": {
+                "type": "unsignedBigInteger"
+            },
+            "starts_at": {
+                "type": "timestamp"
+            },
+            "is_active": {
+                "type": "boolean"
+            },
+            "day_news_post_id": {
+                "type": "foreignId"
+            },
+            "region_id": {
+                "type": "foreignUuid"
+            }
+        }
+    },
+    "article_comments": {
+        "file": "2025_11_04_210903_create_article_comments_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "article_id": {
+                "type": "foreignId"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "parent_id": {
+                "type": "foreignUuid"
+            },
+            "comment_id": {
+                "type": "uuid"
+            }
+        }
+    },
+    "tags": {
+        "file": "2025_11_04_210904_create_tags_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "name": {
+                "type": "string"
+            },
+            "slug": {
+                "type": "index"
+            },
+            "description": {
+                "type": "text"
+            },
+            "article_count": {
+                "type": "unsignedInteger"
+            },
+            "followers_count": {
+                "type": "unsignedInteger"
+            },
+            "is_trending": {
+                "type": "index"
+            },
+            "trending_score": {
+                "type": "unsignedInteger"
+            },
+            "day_news_post_id": {
+                "type": "foreignId"
+            },
+            "tag_id": {
+                "type": "index"
+            }
+        }
+    },
+    "search_history": {
+        "file": "2025_11_04_210905_create_search_tables.php",
+        "type": "create",
+        "columns": {
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "query": {
+                "type": "index"
+            },
+            "results_count": {
+                "type": "unsignedInteger"
+            },
+            "filters": {
+                "type": "json"
+            },
+            "ip_address": {
+                "type": "string"
+            },
+            "created_at": {
+                "type": "index"
+            },
+            "popularity": {
+                "type": "index"
+            },
+            "click_count": {
+                "type": "unsignedInteger"
+            }
+        }
+    },
+    "comment_reports": {
+        "file": "2025_11_04_210906_create_comment_reports_table.php",
+        "type": "create",
+        "columns": {
+            "comment_id": {
+                "type": "index"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "reason": {
+                "type": "string"
+            },
+            "details": {
+                "type": "text"
+            },
+            "status": {
+                "type": "enum"
+            }
+        }
+    },
+    "announcements": {
+        "file": "2025_11_04_210907_create_announcements_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "workspace_id": {
+                "type": "foreignUuid"
+            },
+            "type": {
+                "type": "enum"
+            },
+            "title": {
+                "type": "string"
+            },
+            "content": {
+                "type": "text"
+            },
+            "image": {
+                "type": "string"
+            },
+            "location": {
+                "type": "string"
+            },
+            "event_date": {
+                "type": "index"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "published_at": {
+                "type": "timestamp"
+            },
+            "expires_at": {
+                "type": "timestamp"
+            },
+            "views_count": {
+                "type": "unsignedInteger"
+            },
+            "reactions_count": {
+                "type": "unsignedInteger"
+            },
+            "comments_count": {
+                "type": "unsignedInteger"
+            },
+            "announcement_id": {
+                "type": "uuid"
+            },
+            "region_id": {
+                "type": "foreignUuid"
+            }
+        }
+    },
+    "classifieds": {
+        "file": "2025_11_04_210908_create_classifieds_tables.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "workspace_id": {
+                "type": "index"
+            },
+            "category": {
+                "type": "enum"
+            },
+            "subcategory": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "price": {
+                "type": "decimal"
+            },
+            "price_type": {
+                "type": "string"
+            },
+            "condition": {
+                "type": "string"
+            },
+            "location": {
+                "type": "string"
+            },
+            "is_featured": {
+                "type": "boolean"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "posted_at": {
+                "type": "timestamp"
+            },
+            "expires_at": {
+                "type": "index"
+            },
+            "views_count": {
+                "type": "unsignedInteger"
+            },
+            "classified_id": {
+                "type": "index"
+            },
+            "image_path": {
+                "type": "string"
+            },
+            "image_disk": {
+                "type": "string"
+            },
+            "order": {
+                "type": "unsignedInteger"
+            },
+            "region_id": {
+                "type": "foreignUuid"
+            },
+            "days": {
+                "type": "unsignedInteger"
+            },
+            "stripe_payment_intent_id": {
+                "type": "string"
+            },
+            "stripe_checkout_session_id": {
+                "type": "index"
+            },
+            "amount": {
+                "type": "integer"
+            },
+            "currency": {
+                "type": "string"
+            },
+            "regions_data": {
+                "type": "json"
+            },
+            "total_days": {
+                "type": "unsignedInteger"
+            }
+        }
+    },
+    "coupons": {
+        "file": "2025_11_04_210909_create_coupons_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "user_id": {
+                "type": "index"
+            },
+            "business_id": {
+                "type": "foreignUuid"
+            },
+            "title": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "discount_type": {
+                "type": "enum"
+            },
+            "discount_value": {
+                "type": "decimal"
+            },
+            "terms": {
+                "type": "text"
+            },
+            "code": {
+                "type": "index"
+            },
+            "image": {
+                "type": "string"
+            },
+            "business_name": {
+                "type": "string"
+            },
+            "business_location": {
+                "type": "string"
+            },
+            "start_date": {
+                "type": "date"
+            },
+            "end_date": {
+                "type": "index"
+            },
+            "usage_limit": {
+                "type": "unsignedInteger"
+            },
+            "used_count": {
+                "type": "unsignedInteger"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "views_count": {
+                "type": "unsignedInteger"
+            },
+            "clicks_count": {
+                "type": "unsignedInteger"
+            },
+            "coupon_id": {
+                "type": "uuid"
+            },
+            "region_id": {
+                "type": "foreignUuid"
+            },
+            "ip_address": {
+                "type": "string"
+            }
+        }
+    },
+    "photo_albums": {
+        "file": "2025_11_04_210910_create_photos_tables.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "workspace_id": {
+                "type": "foreignUuid"
+            },
+            "title": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "cover_image": {
+                "type": "string"
+            },
+            "visibility": {
+                "type": "enum"
+            },
+            "photos_count": {
+                "type": "unsignedInteger"
+            },
+            "views_count": {
+                "type": "unsignedInteger"
+            },
+            "created_at": {
+                "type": "index"
+            },
+            "album_id": {
+                "type": "uuid"
+            },
+            "image_path": {
+                "type": "string"
+            },
+            "image_disk": {
+                "type": "string"
+            },
+            "thumbnail_path": {
+                "type": "string"
+            },
+            "category": {
+                "type": "string"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "width": {
+                "type": "unsignedInteger"
+            },
+            "height": {
+                "type": "unsignedInteger"
+            },
+            "file_size": {
+                "type": "unsignedBigInteger"
+            },
+            "likes_count": {
+                "type": "unsignedInteger"
+            },
+            "comments_count": {
+                "type": "unsignedInteger"
+            },
+            "photo_id": {
+                "type": "uuid"
+            },
+            "order": {
+                "type": "unsignedInteger"
+            },
+            "region_id": {
+                "type": "foreignUuid"
+            }
+        }
+    },
+    "legal_notices": {
+        "file": "2025_11_04_210912_create_legal_notices_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "workspace_id": {
+                "type": "foreignUuid"
+            },
+            "type": {
+                "type": "enum"
+            },
+            "case_number": {
+                "type": "index"
+            },
+            "title": {
+                "type": "string"
+            },
+            "content": {
+                "type": "text"
+            },
+            "court": {
+                "type": "string"
+            },
+            "publish_date": {
+                "type": "date"
+            },
+            "expiry_date": {
+                "type": "date"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "metadata": {
+                "type": "json"
+            },
+            "views_count": {
+                "type": "unsignedInteger"
+            },
+            "legal_notice_id": {
+                "type": "uuid"
+            },
+            "region_id": {
+                "type": "foreignUuid"
+            }
+        }
+    },
+    "memorials": {
+        "file": "2025_11_04_210913_create_memorials_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "workspace_id": {
+                "type": "foreignUuid"
+            },
+            "name": {
+                "type": "string"
+            },
+            "years": {
+                "type": "string"
+            },
+            "date_of_passing": {
+                "type": "date"
+            },
+            "obituary": {
+                "type": "text"
+            },
+            "image": {
+                "type": "string"
+            },
+            "location": {
+                "type": "string"
+            },
+            "service_date": {
+                "type": "date"
+            },
+            "service_location": {
+                "type": "string"
+            },
+            "service_details": {
+                "type": "text"
+            },
+            "is_featured": {
+                "type": "index"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "published_at": {
+                "type": "timestamp"
+            },
+            "views_count": {
+                "type": "unsignedInteger"
+            },
+            "reactions_count": {
+                "type": "unsignedInteger"
+            },
+            "comments_count": {
+                "type": "unsignedInteger"
+            },
+            "memorial_id": {
+                "type": "uuid"
+            },
+            "region_id": {
+                "type": "foreignUuid"
+            }
+        }
+    },
+    "creator_profiles": {
+        "file": "2025_11_04_210914_create_podcasts_tables.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "display_name": {
+                "type": "string"
+            },
+            "slug": {
+                "type": "index"
+            },
+            "bio": {
+                "type": "text"
+            },
+            "avatar": {
+                "type": "string"
+            },
+            "cover_image": {
+                "type": "string"
+            },
+            "social_links": {
+                "type": "json"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "followers_count": {
+                "type": "unsignedInteger"
+            },
+            "podcasts_count": {
+                "type": "unsignedInteger"
+            },
+            "episodes_count": {
+                "type": "unsignedInteger"
+            },
+            "total_listens": {
+                "type": "unsignedInteger"
+            },
+            "creator_profile_id": {
+                "type": "uuid"
+            },
+            "title": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "category": {
+                "type": "string"
+            },
+            "published_at": {
+                "type": "timestamp"
+            },
+            "subscribers_count": {
+                "type": "unsignedInteger"
+            },
+            "total_duration": {
+                "type": "unsignedInteger"
+            },
+            "podcast_id": {
+                "type": "uuid"
+            },
+            "show_notes": {
+                "type": "text"
+            },
+            "audio_file_path": {
+                "type": "string"
+            },
+            "audio_file_disk": {
+                "type": "string"
+            },
+            "duration": {
+                "type": "unsignedInteger"
+            },
+            "file_size": {
+                "type": "unsignedBigInteger"
+            },
+            "episode_number": {
+                "type": "string"
+            },
+            "listens_count": {
+                "type": "unsignedInteger"
+            },
+            "downloads_count": {
+                "type": "unsignedInteger"
+            },
+            "likes_count": {
+                "type": "unsignedInteger"
+            },
+            "comments_count": {
+                "type": "unsignedInteger"
+            },
+            "region_id": {
+                "type": "foreignUuid"
+            }
+        }
+    },
+    "civic_source_platforms": {
+        "file": "2025_01_21_000001_create_civic_sources_tables.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "name": {
+                "type": "string"
+            },
+            "display_name": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "api_base_url": {
+                "type": "string"
+            },
+            "detection_patterns": {
+                "type": "json"
+            },
+            "default_config": {
+                "type": "json"
+            },
+            "is_active": {
+                "type": "boolean"
+            },
+            "region_id": {
+                "type": "foreign"
+            },
+            "platform_id": {
+                "type": "foreign"
+            },
+            "source_type": {
+                "type": "string"
+            },
+            "entity_type": {
+                "type": "string"
+            },
+            "base_url": {
+                "type": "string"
+            },
+            "api_endpoint": {
+                "type": "string"
+            },
+            "api_client_name": {
+                "type": "string"
+            },
+            "rss_feed_url": {
+                "type": "string"
+            },
+            "agency_id": {
+                "type": "string"
+            },
+            "zip_codes": {
+                "type": "string"
+            },
+            "county": {
+                "type": "string"
+            },
+            "state": {
+                "type": "string"
+            },
+            "config": {
+                "type": "json"
+            },
+            "available_feeds": {
+                "type": "json"
+            },
+            "poll_interval_minutes": {
+                "type": "integer"
+            },
+            "last_collected_at": {
+                "type": "timestamp"
+            },
+            "last_items_found": {
+                "type": "integer"
+            },
+            "next_collection_at": {
+                "type": "timestamp"
+            },
+            "is_enabled": {
+                "type": "boolean"
+            },
+            "is_verified": {
+                "type": "boolean"
+            },
+            "consecutive_failures": {
+                "type": "integer"
+            },
+            "health_score": {
+                "type": "integer"
+            },
+            "last_error": {
+                "type": "text"
+            },
+            "last_error_at": {
+                "type": "timestamp"
+            },
+            "auto_discovered": {
+                "type": "boolean"
+            },
+            "discovered_at": {
+                "type": "timestamp"
+            },
+            "verified_at": {
+                "type": "timestamp"
+            },
+            "civic_source_id": {
+                "type": "foreign"
+            },
+            "content_type": {
+                "type": "string"
+            },
+            "external_id": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "full_content": {
+                "type": "text"
+            },
+            "url": {
+                "type": "string"
+            },
+            "published_at": {
+                "type": "timestamp"
+            },
+            "event_date": {
+                "type": "timestamp"
+            },
+            "expires_at": {
+                "type": "timestamp"
+            },
+            "category": {
+                "type": "string"
+            },
+            "subcategory": {
+                "type": "string"
+            },
+            "tags": {
+                "type": "json"
+            },
+            "body_name": {
+                "type": "string"
+            },
+            "meeting_type": {
+                "type": "string"
+            },
+            "agenda_items": {
+                "type": "json"
+            },
+            "attachments": {
+                "type": "json"
+            },
+            "alert_type": {
+                "type": "string"
+            },
+            "urgency": {
+                "type": "string"
+            },
+            "severity": {
+                "type": "string"
+            },
+            "raw_data": {
+                "type": "json"
+            },
+            "content_hash": {
+                "type": "string"
+            },
+            "processing_status": {
+                "type": "string"
+            },
+            "news_article_id": {
+                "type": "uuid"
+            },
+            "event_id": {
+                "type": "uuid"
+            },
+            "processed_at": {
+                "type": "timestamp"
+            },
+            "started_at": {
+                "type": "timestamp"
+            },
+            "completed_at": {
+                "type": "timestamp"
+            },
+            "status": {
+                "type": "string"
+            },
+            "items_found": {
+                "type": "integer"
+            },
+            "items_new": {
+                "type": "integer"
+            },
+            "items_updated": {
+                "type": "integer"
+            },
+            "items_skipped": {
+                "type": "integer"
+            },
+            "error_message": {
+                "type": "text"
+            },
+            "metadata": {
+                "type": "json"
+            }
+        }
+    },
+    "social_accounts": {
+        "file": "2025_05_03_144545_create_social_accounts_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "provider": {
+                "type": "string"
+            },
+            "provider_id": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "token": {
+                "type": "longText"
+            },
+            "refresh_token": {
+                "type": "longText"
+            },
+            "avatar": {
+                "type": "longText"
+            },
+            "code": {
+                "type": "longText"
+            },
+            "expires_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "workspaces": {
+        "file": "2025_05_03_154707_create_workspaces_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "owner_id": {
+                "type": "foreignUuid"
+            },
+            "name": {
+                "type": "text"
+            },
+            "slug": {
+                "type": "string"
+            },
+            "logo": {
+                "type": "longText"
+            },
+            "timezone": {
+                "type": "string"
+            },
+            "stripe_connect_id": {
+                "type": "string"
+            },
+            "stripe_charges_enabled": {
+                "type": "boolean"
+            },
+            "stripe_payouts_enabled": {
+                "type": "boolean"
+            },
+            "stripe_admin_approved": {
+                "type": "boolean"
+            },
+            "current_workspace_id": {
+                "type": "dropConstrainedForeignId"
+            },
+            "workspace_id": {
+                "type": "foreignUuid"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "role": {
+                "type": "foreign"
+            }
+        }
+    },
+    "workspace_invitations": {
+        "file": "2025_07_16_171440_create_workspace_invitations_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "workspace_id": {
+                "type": "foreignUuid"
+            },
+            "invited_by": {
+                "type": "foreignUuid"
+            },
+            "email": {
+                "type": "string"
+            },
+            "role": {
+                "type": "foreign"
+            },
+            "token": {
+                "type": "string"
+            },
+            "expires_at": {
+                "type": "timestamp"
+            },
+            "accepted_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "credits": {
+        "file": "2025_08_22_192832_create_credits_table.php",
+        "type": "create",
+        "columns": {
+            "creditable": {
+                "type": "uuidMorphs"
+            },
+            "amount": {
+                "type": "decimal"
+            },
+            "running_balance": {
+                "type": "decimal"
+            },
+            "description": {
+                "type": "string"
+            },
+            "type": {
+                "type": "index"
+            },
+            "metadata": {
+                "type": "json"
+            },
+            "created_at": {
+                "type": "index"
+            }
+        }
+    },
+    "venues": {
+        "file": "2025_09_15_160356_create_venues_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "name": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "images": {
+                "type": "json"
+            },
+            "verified": {
+                "type": "boolean"
+            },
+            "venue_type": {
+                "type": "string"
+            },
+            "capacity": {
+                "type": "index"
+            },
+            "price_per_hour": {
+                "type": "decimal"
+            },
+            "price_per_event": {
+                "type": "decimal"
+            },
+            "price_per_day": {
+                "type": "decimal"
+            },
+            "average_rating": {
+                "type": "decimal"
+            },
+            "total_reviews": {
+                "type": "integer"
+            },
+            "address": {
+                "type": "string"
+            },
+            "neighborhood": {
+                "type": "string"
+            },
+            "latitude": {
+                "type": "decimal"
+            },
+            "longitude": {
+                "type": "decimal"
+            },
+            "google_place_id": {
+                "type": "string"
+            },
+            "postal_code": {
+                "type": "string"
+            },
+            "amenities": {
+                "type": "json"
+            },
+            "event_types": {
+                "type": "json"
+            },
+            "unavailable_dates": {
+                "type": "json"
+            },
+            "last_booked_days_ago": {
+                "type": "integer"
+            },
+            "response_time_hours": {
+                "type": "integer"
+            },
+            "listed_date": {
+                "type": "date"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "workspace_id": {
+                "type": "foreignUuid"
+            },
+            "created_by": {
+                "type": "foreignUuid"
+            }
+        }
+    },
+    "performers": {
+        "file": "2025_09_15_160414_create_performers_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "name": {
+                "type": "string"
+            },
+            "profile_image": {
+                "type": "string"
+            },
+            "genres": {
+                "type": "json"
+            },
+            "average_rating": {
+                "type": "decimal"
+            },
+            "total_reviews": {
+                "type": "integer"
+            },
+            "follower_count": {
+                "type": "integer"
+            },
+            "bio": {
+                "type": "text"
+            },
+            "years_active": {
+                "type": "integer"
+            },
+            "shows_played": {
+                "type": "integer"
+            },
+            "home_city": {
+                "type": "index"
+            },
+            "is_verified": {
+                "type": "index"
+            },
+            "is_touring_now": {
+                "type": "boolean"
+            },
+            "available_for_booking": {
+                "type": "boolean"
+            },
+            "has_merchandise": {
+                "type": "boolean"
+            },
+            "has_original_music": {
+                "type": "boolean"
+            },
+            "offers_meet_and_greet": {
+                "type": "boolean"
+            },
+            "takes_requests": {
+                "type": "boolean"
+            },
+            "available_for_private_events": {
+                "type": "boolean"
+            },
+            "is_family_friendly": {
+                "type": "boolean"
+            },
+            "has_samples": {
+                "type": "boolean"
+            },
+            "trending_score": {
+                "type": "index"
+            },
+            "distance_miles": {
+                "type": "decimal"
+            },
+            "added_date": {
+                "type": "date"
+            },
+            "introductory_pricing": {
+                "type": "boolean"
+            },
+            "base_price": {
+                "type": "decimal"
+            },
+            "currency": {
+                "type": "string"
+            },
+            "minimum_booking_hours": {
+                "type": "integer"
+            },
+            "travel_fee_per_mile": {
+                "type": "decimal"
+            },
+            "setup_fee": {
+                "type": "decimal"
+            },
+            "cancellation_policy": {
+                "type": "text"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "workspace_id": {
+                "type": "foreignUuid"
+            },
+            "created_by": {
+                "type": "foreignUuid"
+            }
+        }
+    },
+    "events": {
+        "file": "2025_09_15_160428_create_events_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "title": {
+                "type": "string"
+            },
+            "image": {
+                "type": "string"
+            },
+            "event_date": {
+                "type": "dateTime"
+            },
+            "time": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "badges": {
+                "type": "json"
+            },
+            "subcategories": {
+                "type": "json"
+            },
+            "category": {
+                "type": "index"
+            },
+            "is_free": {
+                "type": "boolean"
+            },
+            "price_min": {
+                "type": "decimal"
+            },
+            "price_max": {
+                "type": "decimal"
+            },
+            "community_rating": {
+                "type": "index"
+            },
+            "member_attendance": {
+                "type": "integer"
+            },
+            "member_recommendations": {
+                "type": "integer"
+            },
+            "discussion_thread_id": {
+                "type": "string"
+            },
+            "curator_notes": {
+                "type": "text"
+            },
+            "latitude": {
+                "type": "decimal"
+            },
+            "longitude": {
+                "type": "decimal"
+            },
+            "google_place_id": {
+                "type": "string"
+            },
+            "postal_code": {
+                "type": "string"
+            },
+            "venue_id": {
+                "type": "foreignUuid"
+            },
+            "performer_id": {
+                "type": "foreignUuid"
+            },
+            "workspace_id": {
+                "type": "foreignUuid"
+            },
+            "created_by": {
+                "type": "foreignUuid"
+            },
+            "status": {
+                "type": "enum"
+            }
+        }
+    },
+    "bookings": {
+        "file": "2025_09_15_160437_create_bookings_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "booking_number": {
+                "type": "string"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "booking_type": {
+                "type": "enum"
+            },
+            "event_id": {
+                "type": "foreignUuid"
+            },
+            "venue_id": {
+                "type": "foreignUuid"
+            },
+            "performer_id": {
+                "type": "foreignUuid"
+            },
+            "workspace_id": {
+                "type": "foreignUuid"
+            },
+            "created_by": {
+                "type": "foreignUuid"
+            },
+            "contact_name": {
+                "type": "string"
+            },
+            "contact_email": {
+                "type": "index"
+            },
+            "contact_phone": {
+                "type": "string"
+            },
+            "contact_company": {
+                "type": "string"
+            },
+            "event_date": {
+                "type": "date"
+            },
+            "start_time": {
+                "type": "time"
+            },
+            "end_time": {
+                "type": "time"
+            },
+            "event_type": {
+                "type": "string"
+            },
+            "expected_guests": {
+                "type": "integer"
+            },
+            "expected_audience": {
+                "type": "integer"
+            },
+            "ticket_quantity": {
+                "type": "integer"
+            },
+            "ticket_type": {
+                "type": "string"
+            },
+            "price_per_ticket": {
+                "type": "decimal"
+            },
+            "payment_status": {
+                "type": "index"
+            },
+            "total_amount": {
+                "type": "decimal"
+            },
+            "currency": {
+                "type": "string"
+            },
+            "paid_amount": {
+                "type": "decimal"
+            },
+            "payment_method": {
+                "type": "string"
+            },
+            "transaction_id": {
+                "type": "string"
+            },
+            "payment_date": {
+                "type": "timestamp"
+            },
+            "refund_amount": {
+                "type": "decimal"
+            },
+            "refund_date": {
+                "type": "timestamp"
+            },
+            "notes": {
+                "type": "text"
+            },
+            "special_requests": {
+                "type": "json"
+            },
+            "setup_requirements": {
+                "type": "json"
+            },
+            "catering_requirements": {
+                "type": "json"
+            },
+            "performance_requirements": {
+                "type": "json"
+            },
+            "sound_requirements": {
+                "type": "json"
+            },
+            "confirmed_at": {
+                "type": "timestamp"
+            },
+            "cancelled_at": {
+                "type": "timestamp"
+            },
+            "cancellation_reason": {
+                "type": "string"
+            }
+        }
+    },
+    "upcoming_shows": {
+        "file": "2025_09_15_160601_create_upcoming_shows_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "performer_id": {
+                "type": "foreignUuid"
+            },
+            "date": {
+                "type": "index"
+            },
+            "venue": {
+                "type": "string"
+            },
+            "tickets_available": {
+                "type": "boolean"
+            },
+            "ticket_url": {
+                "type": "string"
+            },
+            "ticket_price": {
+                "type": "decimal"
+            },
+            "description": {
+                "type": "text"
+            }
+        }
+    },
+    "reviews": {
+        "file": "2025_09_15_163335_create_reviews_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "reviewable": {
+                "type": "uuidMorphs"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "title": {
+                "type": "string"
+            },
+            "content": {
+                "type": "text"
+            },
+            "rating": {
+                "type": "integer"
+            },
+            "is_verified": {
+                "type": "boolean"
+            },
+            "is_featured": {
+                "type": "boolean"
+            },
+            "helpful_votes": {
+                "type": "json"
+            },
+            "helpful_count": {
+                "type": "integer"
+            },
+            "status": {
+                "type": "index"
+            },
+            "approved_at": {
+                "type": "timestamp"
+            },
+            "approved_by": {
+                "type": "foreignUuid"
+            },
+            "rejection_reason": {
+                "type": "string"
+            }
+        }
+    },
+    "ratings": {
+        "file": "2025_09_15_163344_create_ratings_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "ratable": {
+                "type": "uuidMorphs"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "rating": {
+                "type": "integer"
+            },
+            "context": {
+                "type": "index"
+            },
+            "notes": {
+                "type": "text"
+            },
+            "type": {
+                "type": "enum"
+            },
+            "booking_id": {
+                "type": "foreignUuid"
+            }
+        }
+    },
+    "communities": {
+        "file": "2025_12_22_143022_create_communities_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "city": {
+                "type": "string"
+            },
+            "state": {
+                "type": "string"
+            },
+            "country": {
+                "type": "string"
+            },
+            "slug": {
+                "type": "index"
+            },
+            "name": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "hero_image_url": {
+                "type": "string"
+            },
+            "logo_url": {
+                "type": "string"
+            },
+            "total_businesses": {
+                "type": "integer"
+            },
+            "premium_businesses": {
+                "type": "integer"
+            },
+            "total_categories": {
+                "type": "integer"
+            },
+            "seo_title": {
+                "type": "string"
+            },
+            "seo_description": {
+                "type": "text"
+            },
+            "featured_categories": {
+                "type": "json"
+            },
+            "is_active": {
+                "type": "boolean"
+            },
+            "launched_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "community_thread_views": {
+        "file": "2025_09_18_153847_create_community_system_tables.php (modification)",
+        "type": "modify",
+        "columns": []
+    },
+    "community_thread_replies": {
+        "file": "2025_09_18_153847_create_community_system_tables.php (modification)",
+        "type": "modify",
+        "columns": []
+    },
+    "social_posts": {
+        "file": "2025_09_23_191514_create_social_features_tables.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "content": {
+                "type": "text"
+            },
+            "media": {
+                "type": "json"
+            },
+            "visibility": {
+                "type": "enum"
+            },
+            "location": {
+                "type": "string"
+            },
+            "is_active": {
+                "type": "boolean"
+            },
+            "post_id": {
+                "type": "foreignUuid"
+            },
+            "parent_id": {
+                "type": "foreign"
+            },
+            "comment_id": {
+                "type": "foreignUuid"
+            },
+            "message": {
+                "type": "string"
+            },
+            "friend_id": {
+                "type": "foreignUuid"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "requested_at": {
+                "type": "timestamp"
+            },
+            "responded_at": {
+                "type": "timestamp"
+            },
+            "name": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "cover_image": {
+                "type": "string"
+            },
+            "creator_id": {
+                "type": "foreignUuid"
+            },
+            "privacy": {
+                "type": "enum"
+            },
+            "settings": {
+                "type": "json"
+            },
+            "group_id": {
+                "type": "foreignUuid"
+            },
+            "role": {
+                "type": "enum"
+            },
+            "joined_at": {
+                "type": "timestamp"
+            },
+            "is_pinned": {
+                "type": "boolean"
+            },
+            "bio": {
+                "type": "text"
+            },
+            "website": {
+                "type": "string"
+            },
+            "birth_date": {
+                "type": "date"
+            },
+            "profile_visibility": {
+                "type": "enum"
+            },
+            "interests": {
+                "type": "json"
+            },
+            "cover_photo": {
+                "type": "string"
+            },
+            "social_links": {
+                "type": "json"
+            },
+            "show_email": {
+                "type": "boolean"
+            },
+            "show_location": {
+                "type": "boolean"
+            },
+            "follower_id": {
+                "type": "foreignUuid"
+            },
+            "following_id": {
+                "type": "foreignUuid"
+            },
+            "inviter_id": {
+                "type": "foreignUuid"
+            },
+            "invited_id": {
+                "type": "foreignUuid"
+            },
+            "expires_at": {
+                "type": "timestamp"
+            },
+            "actor_id": {
+                "type": "foreignUuid"
+            },
+            "type": {
+                "type": "enum"
+            },
+            "subject_type": {
+                "type": "string"
+            },
+            "subject_id": {
+                "type": "uuid"
+            },
+            "data": {
+                "type": "json"
+            },
+            "is_read": {
+                "type": "boolean"
+            },
+            "is_private_profile": {
+                "type": "boolean"
+            },
+            "allow_friend_requests": {
+                "type": "boolean"
+            },
+            "allow_group_invites": {
+                "type": "boolean"
+            },
+            "last_active_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "social_post_comments": {
+        "file": "2025_09_23_191514_create_social_features_tables.php (modification)",
+        "type": "modify",
+        "columns": []
+    },
+    "notifications": {
+        "file": "2025_09_25_124919_create_notifications_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "user_id": {
+                "type": "foreign"
+            },
+            "type": {
+                "type": "string"
+            },
+            "data": {
+                "type": "json"
+            },
+            "read": {
+                "type": "boolean"
+            },
+            "title": {
+                "type": "string"
+            },
+            "message": {
+                "type": "text"
+            },
+            "action_url": {
+                "type": "string"
+            },
+            "created_at": {
+                "type": "index"
+            }
+        }
+    },
+    "conversations": {
+        "file": "2025_09_25_135743_create_messaging_system.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "type": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "metadata": {
+                "type": "json"
+            },
+            "last_message_at": {
+                "type": "timestamp"
+            },
+            "conversation_id": {
+                "type": "foreign"
+            },
+            "user_id": {
+                "type": "foreign"
+            },
+            "joined_at": {
+                "type": "timestamp"
+            },
+            "last_read_at": {
+                "type": "timestamp"
+            },
+            "is_admin": {
+                "type": "boolean"
+            },
+            "sender_id": {
+                "type": "foreign"
+            },
+            "content": {
+                "type": "text"
+            },
+            "edited_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "ticket_plans": {
+        "file": "2025_09_26_222707_create_ticket_system_tables.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "event_id": {
+                "type": "foreign"
+            },
+            "name": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "price": {
+                "type": "decimal"
+            },
+            "max_quantity": {
+                "type": "integer"
+            },
+            "available_quantity": {
+                "type": "integer"
+            },
+            "is_active": {
+                "type": "boolean"
+            },
+            "metadata": {
+                "type": "json"
+            },
+            "sort_order": {
+                "type": "integer"
+            },
+            "user_id": {
+                "type": "foreign"
+            },
+            "status": {
+                "type": "string"
+            },
+            "subtotal": {
+                "type": "decimal"
+            },
+            "fees": {
+                "type": "decimal"
+            },
+            "discount": {
+                "type": "decimal"
+            },
+            "total": {
+                "type": "decimal"
+            },
+            "promo_code": {
+                "type": "json"
+            },
+            "billing_info": {
+                "type": "json"
+            },
+            "payment_intent_id": {
+                "type": "string"
+            },
+            "payment_status": {
+                "type": "string"
+            },
+            "completed_at": {
+                "type": "timestamp"
+            },
+            "ticket_order_id": {
+                "type": "foreign"
+            },
+            "ticket_plan_id": {
+                "type": "foreign"
+            },
+            "quantity": {
+                "type": "integer"
+            },
+            "unit_price": {
+                "type": "decimal"
+            },
+            "total_price": {
+                "type": "decimal"
+            }
+        }
+    },
+    "follows": {
+        "file": "2025_09_30_144841_create_follows_table.php",
+        "type": "create",
+        "columns": {
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "followable": {
+                "type": "uuidMorphs"
+            }
+        }
+    },
+    "stores": {
+        "file": "2025_10_02_175440_create_stores_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "workspace_id": {
+                "type": "foreignUuid"
+            },
+            "name": {
+                "type": "string"
+            },
+            "slug": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "logo": {
+                "type": "string"
+            },
+            "banner": {
+                "type": "string"
+            },
+            "status": {
+                "type": "string"
+            },
+            "rejection_reason": {
+                "type": "text"
+            },
+            "approved_at": {
+                "type": "timestamp"
+            },
+            "store_id": {
+                "type": "foreignUuid"
+            },
+            "images": {
+                "type": "json"
+            },
+            "price": {
+                "type": "decimal"
+            },
+            "compare_at_price": {
+                "type": "decimal"
+            },
+            "quantity": {
+                "type": "integer"
+            },
+            "track_inventory": {
+                "type": "boolean"
+            },
+            "sku": {
+                "type": "string"
+            },
+            "is_active": {
+                "type": "boolean"
+            },
+            "is_featured": {
+                "type": "boolean"
+            },
+            "stripe_price_id": {
+                "type": "string"
+            },
+            "stripe_product_id": {
+                "type": "string"
+            },
+            "metadata": {
+                "type": "json"
+            },
+            "order_number": {
+                "type": "string"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "customer_email": {
+                "type": "string"
+            },
+            "customer_name": {
+                "type": "string"
+            },
+            "subtotal": {
+                "type": "decimal"
+            },
+            "tax": {
+                "type": "decimal"
+            },
+            "shipping": {
+                "type": "decimal"
+            },
+            "total": {
+                "type": "decimal"
+            },
+            "payment_status": {
+                "type": "string"
+            },
+            "stripe_payment_intent_id": {
+                "type": "string"
+            },
+            "stripe_charge_id": {
+                "type": "string"
+            },
+            "shipping_address": {
+                "type": "json"
+            },
+            "billing_address": {
+                "type": "json"
+            },
+            "notes": {
+                "type": "text"
+            },
+            "paid_at": {
+                "type": "timestamp"
+            },
+            "order_id": {
+                "type": "foreignUuid"
+            },
+            "product_id": {
+                "type": "foreignUuid"
+            },
+            "product_name": {
+                "type": "string"
+            },
+            "product_description": {
+                "type": "text"
+            }
+        }
+    },
+    "carts": {
+        "file": "2025_10_02_211800_create_carts_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "session_id": {
+                "type": "string"
+            },
+            "cart_id": {
+                "type": "foreignUuid"
+            },
+            "product_id": {
+                "type": "foreignUuid"
+            },
+            "store_id": {
+                "type": "foreignUuid"
+            },
+            "quantity": {
+                "type": "integer"
+            },
+            "price": {
+                "type": "decimal"
+            }
+        }
+    },
+    "calendars": {
+        "file": "2025_10_06_143426_create_calendars_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "title": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "category": {
+                "type": "string"
+            },
+            "image": {
+                "type": "string"
+            },
+            "about": {
+                "type": "text"
+            },
+            "location": {
+                "type": "string"
+            },
+            "update_frequency": {
+                "type": "string"
+            },
+            "subscription_price": {
+                "type": "decimal"
+            },
+            "is_private": {
+                "type": "boolean"
+            },
+            "is_verified": {
+                "type": "boolean"
+            },
+            "followers_count": {
+                "type": "integer"
+            },
+            "events_count": {
+                "type": "integer"
+            },
+            "calendar_id": {
+                "type": "foreignUuid"
+            },
+            "role": {
+                "type": "string"
+            },
+            "event_id": {
+                "type": "foreignUuid"
+            },
+            "added_by": {
+                "type": "foreignUuid"
+            },
+            "position": {
+                "type": "integer"
+            }
+        }
+    },
+    "regions": {
+        "file": "2025_10_28_134749_create_region_news_system_tables.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "name": {
+                "type": "string"
+            },
+            "slug": {
+                "type": "index"
+            },
+            "type": {
+                "type": "index"
+            },
+            "parent_id": {
+                "type": "foreign"
+            },
+            "description": {
+                "type": "text"
+            },
+            "is_active": {
+                "type": "index"
+            },
+            "display_order": {
+                "type": "integer"
+            },
+            "metadata": {
+                "type": "json"
+            },
+            "latitude": {
+                "type": "decimal"
+            },
+            "longitude": {
+                "type": "decimal"
+            },
+            "region_id": {
+                "type": "foreignUuid"
+            },
+            "zipcode": {
+                "type": "index"
+            },
+            "is_primary": {
+                "type": "boolean"
+            }
+        }
+    },
+    "businesses": {
+        "file": "2025_11_17_105200_create_n8n_rss_integration_tables.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "workspace_id": {
+                "type": "index"
+            },
+            "google_place_id": {
+                "type": "index"
+            },
+            "name": {
+                "type": "string"
+            },
+            "slug": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "website": {
+                "type": "string"
+            },
+            "phone": {
+                "type": "string"
+            },
+            "email": {
+                "type": "string"
+            },
+            "address": {
+                "type": "string"
+            },
+            "city": {
+                "type": "string"
+            },
+            "state": {
+                "type": "string"
+            },
+            "postal_code": {
+                "type": "string"
+            },
+            "country": {
+                "type": "string"
+            },
+            "latitude": {
+                "type": "decimal"
+            },
+            "longitude": {
+                "type": "decimal"
+            },
+            "categories": {
+                "type": "json"
+            },
+            "rating": {
+                "type": "decimal"
+            },
+            "reviews_count": {
+                "type": "integer"
+            },
+            "opening_hours": {
+                "type": "json"
+            },
+            "images": {
+                "type": "json"
+            },
+            "serp_metadata": {
+                "type": "json"
+            },
+            "data_id": {
+                "type": "index"
+            },
+            "data_cid": {
+                "type": "index"
+            },
+            "lsig": {
+                "type": "string"
+            },
+            "provider_id": {
+                "type": "string"
+            },
+            "local_services_cid": {
+                "type": "string"
+            },
+            "local_services_bid": {
+                "type": "string"
+            },
+            "local_services_pid": {
+                "type": "string"
+            },
+            "serp_source": {
+                "type": "index"
+            },
+            "serp_last_synced_at": {
+                "type": "timestamp"
+            },
+            "primary_type": {
+                "type": "index"
+            },
+            "type_id": {
+                "type": "string"
+            },
+            "type_ids": {
+                "type": "json"
+            },
+            "price_level": {
+                "type": "string"
+            },
+            "open_state": {
+                "type": "string"
+            },
+            "hours_display": {
+                "type": "string"
+            },
+            "google_badge": {
+                "type": "string"
+            },
+            "service_area": {
+                "type": "json"
+            },
+            "years_in_business": {
+                "type": "integer"
+            },
+            "bookings_nearby": {
+                "type": "integer"
+            },
+            "verification_status": {
+                "type": "index"
+            },
+            "verified_at": {
+                "type": "timestamp"
+            },
+            "claimed_at": {
+                "type": "timestamp"
+            },
+            "is_verified": {
+                "type": "index"
+            },
+            "service_options": {
+                "type": "json"
+            },
+            "reserve_url": {
+                "type": "string"
+            },
+            "order_online_url": {
+                "type": "string"
+            },
+            "status": {
+                "type": "index"
+            },
+            "claimable": {
+                "type": "nullableUuidMorphs"
+            },
+            "business_id": {
+                "type": "index"
+            },
+            "region_id": {
+                "type": "foreignUuid"
+            },
+            "url": {
+                "type": "string"
+            },
+            "feed_type": {
+                "type": "index"
+            },
+            "title": {
+                "type": "string"
+            },
+            "health_status": {
+                "type": "index"
+            },
+            "last_checked_at": {
+                "type": "timestamp"
+            },
+            "last_successful_fetch_at": {
+                "type": "timestamp"
+            },
+            "last_error": {
+                "type": "text"
+            },
+            "fetch_frequency": {
+                "type": "integer"
+            },
+            "total_items_count": {
+                "type": "integer"
+            },
+            "metadata": {
+                "type": "json"
+            },
+            "auto_approved": {
+                "type": "boolean"
+            },
+            "rss_feed_id": {
+                "type": "index"
+            },
+            "guid": {
+                "type": "string"
+            },
+            "content": {
+                "type": "text"
+            },
+            "author": {
+                "type": "string"
+            },
+            "published_at": {
+                "type": "index"
+            },
+            "processed": {
+                "type": "index"
+            },
+            "processed_at": {
+                "type": "timestamp"
+            },
+            "rss_feed_item_id": {
+                "type": "index"
+            },
+            "source_type": {
+                "type": "index"
+            }
+        }
+    },
+    "news_articles": {
+        "file": "2025_11_25_123429_create_news_workflow_tables.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "region_id": {
+                "type": "uuid"
+            },
+            "business_id": {
+                "type": "foreign"
+            },
+            "source_type": {
+                "type": "string"
+            },
+            "source_name": {
+                "type": "string"
+            },
+            "title": {
+                "type": "text"
+            },
+            "url": {
+                "type": "text"
+            },
+            "content_snippet": {
+                "type": "text"
+            },
+            "full_content": {
+                "type": "text"
+            },
+            "source_publisher": {
+                "type": "string"
+            },
+            "published_at": {
+                "type": "timestamp"
+            },
+            "metadata": {
+                "type": "json"
+            },
+            "content_hash": {
+                "type": "string"
+            },
+            "processed": {
+                "type": "boolean"
+            },
+            "news_article_id": {
+                "type": "foreign"
+            },
+            "status": {
+                "type": "string"
+            },
+            "relevance_score": {
+                "type": "decimal"
+            },
+            "quality_score": {
+                "type": "index"
+            },
+            "fact_check_confidence": {
+                "type": "decimal"
+            },
+            "topic_tags": {
+                "type": "json"
+            },
+            "outline": {
+                "type": "text"
+            },
+            "generated_title": {
+                "type": "text"
+            },
+            "generated_content": {
+                "type": "text"
+            },
+            "generated_excerpt": {
+                "type": "text"
+            },
+            "seo_metadata": {
+                "type": "json"
+            },
+            "featured_image_url": {
+                "type": "string"
+            },
+            "ai_metadata": {
+                "type": "json"
+            },
+            "published_post_id": {
+                "type": "foreign"
+            },
+            "rejection_reason": {
+                "type": "text"
+            },
+            "draft_id": {
+                "type": "foreign"
+            },
+            "claim": {
+                "type": "text"
+            },
+            "verification_result": {
+                "type": "text"
+            },
+            "confidence_score": {
+                "type": "decimal"
+            },
+            "sources": {
+                "type": "json"
+            },
+            "scraped_evidence": {
+                "type": "text"
+            },
+            "phase": {
+                "type": "string"
+            },
+            "started_at": {
+                "type": "timestamp"
+            },
+            "completed_at": {
+                "type": "timestamp"
+            },
+            "items_processed": {
+                "type": "integer"
+            },
+            "summary": {
+                "type": "json"
+            },
+            "error_message": {
+                "type": "text"
+            },
+            "error_trace": {
+                "type": "json"
+            }
+        }
+    },
+    "event_region": {
+        "file": "2025_11_26_201944_add_event_extraction_support.php",
+        "type": "create",
+        "columns": {
+            "source_news_article_id": {
+                "type": "foreignUuid"
+            },
+            "source_type": {
+                "type": "index"
+            },
+            "event_id": {
+                "type": "foreignUuid"
+            },
+            "region_id": {
+                "type": "foreignUuid"
+            },
+            "id": {
+                "type": "uuid"
+            },
+            "news_article_id": {
+                "type": "foreignUuid"
+            },
+            "status": {
+                "type": "index"
+            },
+            "detection_confidence": {
+                "type": "decimal"
+            },
+            "extraction_confidence": {
+                "type": "decimal"
+            },
+            "quality_score": {
+                "type": "index"
+            },
+            "extracted_data": {
+                "type": "json"
+            },
+            "matched_venue_id": {
+                "type": "foreignUuid"
+            },
+            "matched_performer_id": {
+                "type": "foreignUuid"
+            },
+            "published_event_id": {
+                "type": "foreignUuid"
+            },
+            "ai_metadata": {
+                "type": "json"
+            },
+            "rejection_reason": {
+                "type": "text"
+            }
+        }
+    },
+    "news_article_drafts": {
+        "file": "2025_11_27_124219_add_news_feature_enhancements.php (modification)",
+        "type": "modify",
+        "columns": []
+    },
+    "news_fetch_frequencies": {
+        "file": "2025_12_10_215831_create_news_fetch_frequencies_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "category": {
+                "type": "string"
+            },
+            "category_type": {
+                "type": "string"
+            },
+            "frequency_type": {
+                "type": "string"
+            },
+            "custom_interval_days": {
+                "type": "unsignedInteger"
+            },
+            "last_fetched_at": {
+                "type": "timestamp"
+            },
+            "is_enabled": {
+                "type": "boolean"
+            },
+            "metadata": {
+                "type": "json"
+            }
+        }
+    },
+    "news_workflow_settings": {
+        "file": "2025_12_11_163649_create_news_workflow_settings_table.php",
+        "type": "create",
+        "columns": {
+            "key": {
+                "type": "string"
+            },
+            "value": {
+                "type": "string"
+            },
+            "type": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            }
+        }
+    },
+    "writer_agents": {
+        "file": "2025_12_16_112702_create_writer_agents_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "name": {
+                "type": "string"
+            },
+            "slug": {
+                "type": "string"
+            },
+            "bio": {
+                "type": "text"
+            },
+            "avatar": {
+                "type": "string"
+            },
+            "writing_style": {
+                "type": "index"
+            },
+            "persona_traits": {
+                "type": "json"
+            },
+            "expertise_areas": {
+                "type": "json"
+            },
+            "categories": {
+                "type": "json"
+            },
+            "prompts": {
+                "type": "json"
+            },
+            "articles_count": {
+                "type": "unsignedInteger"
+            },
+            "is_active": {
+                "type": "index"
+            },
+            "writer_agent_id": {
+                "type": "dropColumn"
+            },
+            "region_id": {
+                "type": "index"
+            },
+            "is_primary": {
+                "type": "boolean"
+            }
+        }
+    },
+    "organization_relationships": {
+        "file": "2025_12_20_000002_create_organization_relationships_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "organization_id": {
+                "type": "index"
+            },
+            "relatable_type": {
+                "type": "string"
+            },
+            "relatable_id": {
+                "type": "uuid"
+            },
+            "relationship_type": {
+                "type": "index"
+            },
+            "is_primary": {
+                "type": "index"
+            },
+            "metadata": {
+                "type": "json"
+            }
+        }
+    },
+    "organization_hierarchies": {
+        "file": "2025_12_20_000003_create_organization_hierarchies_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "organization_id": {
+                "type": "index"
+            },
+            "parent_id": {
+                "type": "index"
+            },
+            "level": {
+                "type": "index"
+            },
+            "path": {
+                "type": "string"
+            }
+        }
+    },
+    "hubs": {
+        "file": "2025_12_20_142746_create_hubs_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "workspace_id": {
+                "type": "foreign"
+            },
+            "created_by": {
+                "type": "foreign"
+            },
+            "name": {
+                "type": "string"
+            },
+            "slug": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "image": {
+                "type": "string"
+            },
+            "banner_image": {
+                "type": "string"
+            },
+            "about": {
+                "type": "text"
+            },
+            "category": {
+                "type": "string"
+            },
+            "subcategory": {
+                "type": "string"
+            },
+            "location": {
+                "type": "string"
+            },
+            "website": {
+                "type": "string"
+            },
+            "social_links": {
+                "type": "json"
+            },
+            "contact_email": {
+                "type": "string"
+            },
+            "contact_phone": {
+                "type": "string"
+            },
+            "is_active": {
+                "type": "boolean"
+            },
+            "is_featured": {
+                "type": "boolean"
+            },
+            "is_verified": {
+                "type": "boolean"
+            },
+            "design_settings": {
+                "type": "json"
+            },
+            "monetization_settings": {
+                "type": "json"
+            },
+            "permissions": {
+                "type": "json"
+            },
+            "analytics_enabled": {
+                "type": "boolean"
+            },
+            "articles_enabled": {
+                "type": "boolean"
+            },
+            "community_enabled": {
+                "type": "boolean"
+            },
+            "events_enabled": {
+                "type": "boolean"
+            },
+            "gallery_enabled": {
+                "type": "boolean"
+            },
+            "performers_enabled": {
+                "type": "boolean"
+            },
+            "venues_enabled": {
+                "type": "boolean"
+            },
+            "followers_count": {
+                "type": "integer"
+            },
+            "events_count": {
+                "type": "integer"
+            },
+            "articles_count": {
+                "type": "integer"
+            },
+            "members_count": {
+                "type": "integer"
+            },
+            "last_activity_at": {
+                "type": "timestamp"
+            },
+            "published_at": {
+                "type": "timestamp"
+            },
+            "hub_id": {
+                "type": "dropColumn"
+            },
+            "type": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "content": {
+                "type": "json"
+            },
+            "settings": {
+                "type": "json"
+            },
+            "is_visible": {
+                "type": "boolean"
+            },
+            "sort_order": {
+                "type": "integer"
+            },
+            "user_id": {
+                "type": "foreign"
+            },
+            "role": {
+                "type": "string"
+            },
+            "joined_at": {
+                "type": "timestamp"
+            },
+            "is_system": {
+                "type": "boolean"
+            },
+            "date": {
+                "type": "date"
+            },
+            "page_views": {
+                "type": "integer"
+            },
+            "unique_visitors": {
+                "type": "integer"
+            },
+            "events_created": {
+                "type": "integer"
+            },
+            "events_published": {
+                "type": "integer"
+            },
+            "articles_created": {
+                "type": "integer"
+            },
+            "articles_published": {
+                "type": "integer"
+            },
+            "members_joined": {
+                "type": "integer"
+            },
+            "followers_gained": {
+                "type": "integer"
+            },
+            "engagement_score": {
+                "type": "decimal"
+            },
+            "revenue": {
+                "type": "decimal"
+            },
+            "metadata": {
+                "type": "json"
+            }
+        }
+    },
+    "check_ins": {
+        "file": "2025_12_20_142758_create_check_ins_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "event_id": {
+                "type": "foreign"
+            },
+            "user_id": {
+                "type": "foreign"
+            },
+            "checked_in_at": {
+                "type": "timestamp"
+            },
+            "location": {
+                "type": "string"
+            },
+            "latitude": {
+                "type": "decimal"
+            },
+            "longitude": {
+                "type": "decimal"
+            },
+            "notes": {
+                "type": "text"
+            },
+            "is_public": {
+                "type": "boolean"
+            }
+        }
+    },
+    "planned_events": {
+        "file": "2025_12_20_142759_create_planned_events_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "event_id": {
+                "type": "foreign"
+            },
+            "user_id": {
+                "type": "foreign"
+            },
+            "planned_at": {
+                "type": "timestamp"
+            },
+            "reminder_sent": {
+                "type": "boolean"
+            },
+            "reminder_sent_at": {
+                "type": "timestamp"
+            },
+            "notes": {
+                "type": "text"
+            }
+        }
+    },
+    "promo_codes": {
+        "file": "2025_12_20_142800_create_promo_codes_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "code": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "type": {
+                "type": "string"
+            },
+            "value": {
+                "type": "decimal"
+            },
+            "min_purchase": {
+                "type": "decimal"
+            },
+            "max_discount": {
+                "type": "decimal"
+            },
+            "usage_limit": {
+                "type": "integer"
+            },
+            "used_count": {
+                "type": "integer"
+            },
+            "is_active": {
+                "type": "boolean"
+            },
+            "starts_at": {
+                "type": "timestamp"
+            },
+            "expires_at": {
+                "type": "timestamp"
+            },
+            "applicable_to": {
+                "type": "json"
+            },
+            "metadata": {
+                "type": "json"
+            },
+            "promo_code_id": {
+                "type": "foreign"
+            },
+            "user_id": {
+                "type": "foreign"
+            },
+            "ticket_order_id": {
+                "type": "foreign"
+            },
+            "discount_amount": {
+                "type": "decimal"
+            },
+            "original_amount": {
+                "type": "decimal"
+            },
+            "final_amount": {
+                "type": "decimal"
+            },
+            "used_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "ticket_listings": {
+        "file": "2025_12_20_142801_create_ticket_listings_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "ticket_order_item_id": {
+                "type": "foreign"
+            },
+            "seller_id": {
+                "type": "foreign"
+            },
+            "event_id": {
+                "type": "foreign"
+            },
+            "price": {
+                "type": "decimal"
+            },
+            "quantity": {
+                "type": "integer"
+            },
+            "status": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "expires_at": {
+                "type": "timestamp"
+            },
+            "sold_at": {
+                "type": "timestamp"
+            },
+            "sold_to": {
+                "type": "foreign"
+            }
+        }
+    },
+    "ticket_transfers": {
+        "file": "2025_12_20_142801_create_ticket_transfers_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "ticket_order_item_id": {
+                "type": "foreign"
+            },
+            "from_user_id": {
+                "type": "foreign"
+            },
+            "to_user_id": {
+                "type": "foreign"
+            },
+            "to_email": {
+                "type": "string"
+            },
+            "status": {
+                "type": "string"
+            },
+            "transfer_token": {
+                "type": "string"
+            },
+            "message": {
+                "type": "text"
+            },
+            "transferred_at": {
+                "type": "timestamp"
+            },
+            "expires_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "ticket_gifts": {
+        "file": "2025_12_20_142802_create_ticket_gifts_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "ticket_order_item_id": {
+                "type": "foreign"
+            },
+            "gifter_id": {
+                "type": "foreign"
+            },
+            "recipient_email": {
+                "type": "string"
+            },
+            "recipient_name": {
+                "type": "string"
+            },
+            "recipient_user_id": {
+                "type": "foreign"
+            },
+            "status": {
+                "type": "string"
+            },
+            "gift_token": {
+                "type": "string"
+            },
+            "message": {
+                "type": "text"
+            },
+            "gifted_at": {
+                "type": "timestamp"
+            },
+            "redeemed_at": {
+                "type": "timestamp"
+            },
+            "expires_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "ticket_order_items": {
+        "file": "2025_12_20_182429_add_qr_code_to_ticket_order_items_table.php (modification)",
+        "type": "modify",
+        "columns": []
+    },
+    "industries": {
+        "file": "2025_12_22_143009_create_industries_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "name": {
+                "type": "string"
+            },
+            "slug": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "icon": {
+                "type": "string"
+            },
+            "parent_id": {
+                "type": "foreignUuid"
+            }
+        }
+    },
+    "business_templates": {
+        "file": "2025_12_22_143016_create_business_templates_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "name": {
+                "type": "string"
+            },
+            "slug": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "industry_id": {
+                "type": "foreign"
+            },
+            "layout_config": {
+                "type": "json"
+            },
+            "available_tabs": {
+                "type": "json"
+            },
+            "default_tabs": {
+                "type": "json"
+            },
+            "ai_features": {
+                "type": "json"
+            },
+            "theme_config": {
+                "type": "json"
+            },
+            "component_overrides": {
+                "type": "json"
+            },
+            "seo_template": {
+                "type": "json"
+            },
+            "schema_template": {
+                "type": "json"
+            },
+            "is_premium": {
+                "type": "boolean"
+            },
+            "is_active": {
+                "type": "boolean"
+            }
+        }
+    },
+    "business_subscriptions": {
+        "file": "2025_12_22_143020_create_business_subscriptions_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "business_id": {
+                "type": "index"
+            },
+            "tier": {
+                "type": "index"
+            },
+            "status": {
+                "type": "index"
+            },
+            "trial_started_at": {
+                "type": "timestamp"
+            },
+            "trial_expires_at": {
+                "type": "index"
+            },
+            "trial_converted_at": {
+                "type": "timestamp"
+            },
+            "subscription_started_at": {
+                "type": "timestamp"
+            },
+            "subscription_expires_at": {
+                "type": "timestamp"
+            },
+            "auto_renew": {
+                "type": "boolean"
+            },
+            "stripe_subscription_id": {
+                "type": "string"
+            },
+            "stripe_customer_id": {
+                "type": "string"
+            },
+            "monthly_amount": {
+                "type": "decimal"
+            },
+            "billing_cycle": {
+                "type": "string"
+            },
+            "ai_services_enabled": {
+                "type": "json"
+            },
+            "claimed_by_id": {
+                "type": "foreign"
+            },
+            "claimed_at": {
+                "type": "timestamp"
+            },
+            "downgraded_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "alphasite_communities": {
+        "file": "2025_12_22_143022_create_alphasite_communities_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "city": {
+                "type": "string"
+            },
+            "state": {
+                "type": "string"
+            },
+            "country": {
+                "type": "string"
+            },
+            "slug": {
+                "type": "index"
+            },
+            "name": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "hero_image_url": {
+                "type": "string"
+            },
+            "logo_url": {
+                "type": "string"
+            },
+            "total_businesses": {
+                "type": "integer"
+            },
+            "premium_businesses": {
+                "type": "integer"
+            },
+            "total_categories": {
+                "type": "integer"
+            },
+            "seo_title": {
+                "type": "string"
+            },
+            "seo_description": {
+                "type": "text"
+            },
+            "featured_categories": {
+                "type": "json"
+            },
+            "is_active": {
+                "type": "boolean"
+            },
+            "launched_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "smb_crm_customers": {
+        "file": "2025_12_22_143025_create_smb_crm_customers_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "business_id": {
+                "type": "index"
+            },
+            "first_name": {
+                "type": "string"
+            },
+            "last_name": {
+                "type": "string"
+            },
+            "email": {
+                "type": "string"
+            },
+            "phone": {
+                "type": "string"
+            },
+            "source": {
+                "type": "string"
+            },
+            "source_details": {
+                "type": "json"
+            },
+            "status": {
+                "type": "string"
+            },
+            "customer_since": {
+                "type": "date"
+            },
+            "last_interaction_at": {
+                "type": "timestamp"
+            },
+            "health_score": {
+                "type": "integer"
+            },
+            "lifetime_value": {
+                "type": "decimal"
+            },
+            "predicted_churn_risk": {
+                "type": "decimal"
+            },
+            "ai_notes": {
+                "type": "text"
+            },
+            "preferences": {
+                "type": "json"
+            },
+            "tags": {
+                "type": "json"
+            }
+        }
+    },
+    "smb_crm_interactions": {
+        "file": "2025_12_22_143028_create_smb_crm_interactions_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "business_id": {
+                "type": "index"
+            },
+            "customer_id": {
+                "type": "index"
+            },
+            "interaction_type": {
+                "type": "index"
+            },
+            "channel": {
+                "type": "string"
+            },
+            "direction": {
+                "type": "string"
+            },
+            "subject": {
+                "type": "string"
+            },
+            "content": {
+                "type": "text"
+            },
+            "summary": {
+                "type": "text"
+            },
+            "handled_by": {
+                "type": "string"
+            },
+            "ai_service_used": {
+                "type": "string"
+            },
+            "ai_confidence_score": {
+                "type": "decimal"
+            },
+            "escalated_reason": {
+                "type": "text"
+            },
+            "outcome": {
+                "type": "string"
+            },
+            "sentiment": {
+                "type": "string"
+            },
+            "duration_seconds": {
+                "type": "integer"
+            },
+            "metadata": {
+                "type": "json"
+            },
+            "created_at": {
+                "type": "index"
+            }
+        }
+    },
+    "business_faqs": {
+        "file": "2025_12_22_143030_create_business_faqs_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "business_id": {
+                "type": "index"
+            },
+            "question": {
+                "type": "text"
+            },
+            "answer": {
+                "type": "text"
+            },
+            "category": {
+                "type": "string"
+            },
+            "tags": {
+                "type": "json"
+            },
+            "variations": {
+                "type": "json"
+            },
+            "follow_up_questions": {
+                "type": "json"
+            },
+            "times_used": {
+                "type": "integer"
+            },
+            "helpful_votes": {
+                "type": "integer"
+            },
+            "unhelpful_votes": {
+                "type": "integer"
+            },
+            "is_active": {
+                "type": "boolean"
+            },
+            "display_order": {
+                "type": "integer"
+            }
+        }
+    },
+    "business_surveys": {
+        "file": "2025_12_22_143032_create_business_surveys_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "business_id": {
+                "type": "index"
+            },
+            "name": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "survey_type": {
+                "type": "string"
+            },
+            "questions": {
+                "type": "json"
+            },
+            "trigger_type": {
+                "type": "string"
+            },
+            "trigger_config": {
+                "type": "json"
+            },
+            "is_active": {
+                "type": "boolean"
+            },
+            "responses_count": {
+                "type": "integer"
+            },
+            "average_score": {
+                "type": "decimal"
+            },
+            "survey_id": {
+                "type": "index"
+            },
+            "customer_id": {
+                "type": "index"
+            },
+            "responses": {
+                "type": "json"
+            },
+            "overall_score": {
+                "type": "decimal"
+            },
+            "sentiment": {
+                "type": "string"
+            },
+            "ai_summary": {
+                "type": "text"
+            },
+            "action_items": {
+                "type": "json"
+            },
+            "completed_at": {
+                "type": "timestamp"
+            },
+            "source": {
+                "type": "string"
+            }
+        }
+    },
+    "achievements": {
+        "file": "2025_12_22_143036_create_achievements_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "business_id": {
+                "type": "index"
+            },
+            "title": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "source_name": {
+                "type": "string"
+            },
+            "source_url": {
+                "type": "string"
+            },
+            "achievement_type": {
+                "type": "string"
+            },
+            "achievement_date": {
+                "type": "date"
+            },
+            "expiration_date": {
+                "type": "date"
+            },
+            "icon": {
+                "type": "string"
+            },
+            "badge_image_url": {
+                "type": "string"
+            },
+            "is_verified": {
+                "type": "boolean"
+            },
+            "display_order": {
+                "type": "integer"
+            },
+            "is_featured": {
+                "type": "boolean"
+            }
+        }
+    },
+    "cross_domain_auth_tokens": {
+        "file": "2025_12_22_174842_create_cross_domain_auth_tokens_table.php",
+        "type": "create",
+        "columns": {
+            "user_id": {
+                "type": "index"
+            },
+            "token": {
+                "type": "string"
+            },
+            "source_domain": {
+                "type": "string"
+            },
+            "target_domains": {
+                "type": "json"
+            },
+            "expires_at": {
+                "type": "timestamp"
+            },
+            "used": {
+                "type": "boolean"
+            }
+        }
+    },
+    "advertisements": {
+        "file": "2025_12_23_152656_add_alphasite_and_local_voices_to_advertisements_platform_enum.php (modification)",
+        "type": "modify",
+        "columns": []
+    },
+    "ad_campaigns": {
+        "file": "2025_12_23_200943_create_ad_campaigns_table.php",
+        "type": "create",
+        "columns": {
+            "uuid": {
+                "type": "uuid"
+            },
+            "advertiser_id": {
+                "type": "index"
+            },
+            "name": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "type": {
+                "type": "enum"
+            },
+            "budget": {
+                "type": "decimal"
+            },
+            "spent": {
+                "type": "decimal"
+            },
+            "daily_budget": {
+                "type": "decimal"
+            },
+            "start_date": {
+                "type": "date"
+            },
+            "end_date": {
+                "type": "date"
+            },
+            "targeting": {
+                "type": "json"
+            },
+            "platforms": {
+                "type": "json"
+            }
+        }
+    },
+    "ad_creatives": {
+        "file": "2025_12_23_200945_create_ad_creatives_table.php",
+        "type": "create",
+        "columns": {
+            "uuid": {
+                "type": "uuid"
+            },
+            "campaign_id": {
+                "type": "foreignId"
+            },
+            "name": {
+                "type": "string"
+            },
+            "format": {
+                "type": "index"
+            },
+            "headline": {
+                "type": "string"
+            },
+            "body": {
+                "type": "text"
+            },
+            "image_url": {
+                "type": "string"
+            },
+            "video_url": {
+                "type": "string"
+            },
+            "audio_url": {
+                "type": "string"
+            },
+            "click_url": {
+                "type": "string"
+            },
+            "cta_text": {
+                "type": "string"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "width": {
+                "type": "integer"
+            },
+            "height": {
+                "type": "integer"
+            }
+        }
+    },
+    "ad_placements": {
+        "file": "2025_12_23_200947_create_ad_placements_table.php",
+        "type": "create",
+        "columns": {
+            "platform": {
+                "type": "index"
+            },
+            "slot": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "format": {
+                "type": "string"
+            },
+            "width": {
+                "type": "integer"
+            },
+            "height": {
+                "type": "integer"
+            },
+            "base_cpm": {
+                "type": "decimal"
+            },
+            "base_cpc": {
+                "type": "decimal"
+            },
+            "is_active": {
+                "type": "index"
+            },
+            "priority": {
+                "type": "integer"
+            }
+        }
+    },
+    "ad_inventory": {
+        "file": "2025_12_23_200950_create_ad_inventory_table.php",
+        "type": "create",
+        "columns": {
+            "placement_id": {
+                "type": "foreignId"
+            },
+            "community_id": {
+                "type": "foreignId"
+            },
+            "date": {
+                "type": "date"
+            },
+            "total_impressions": {
+                "type": "integer"
+            },
+            "sold_impressions": {
+                "type": "integer"
+            },
+            "delivered_impressions": {
+                "type": "integer"
+            },
+            "revenue": {
+                "type": "decimal"
+            }
+        }
+    },
+    "ad_impressions": {
+        "file": "2025_12_23_200952_create_ad_impressions_table.php",
+        "type": "create",
+        "columns": {
+            "creative_id": {
+                "type": "foreignId"
+            },
+            "placement_id": {
+                "type": "foreignId"
+            },
+            "community_id": {
+                "type": "foreignId"
+            },
+            "session_id": {
+                "type": "string"
+            },
+            "ip_hash": {
+                "type": "string"
+            },
+            "user_agent": {
+                "type": "string"
+            },
+            "referrer": {
+                "type": "string"
+            },
+            "cost": {
+                "type": "decimal"
+            },
+            "impressed_at": {
+                "type": "index"
+            }
+        }
+    },
+    "ad_clicks": {
+        "file": "2025_12_23_200954_create_ad_clicks_table.php",
+        "type": "create",
+        "columns": {
+            "impression_id": {
+                "type": "foreignId"
+            },
+            "creative_id": {
+                "type": "foreignId"
+            },
+            "ip_hash": {
+                "type": "string"
+            },
+            "cost": {
+                "type": "decimal"
+            },
+            "clicked_at": {
+                "type": "index"
+            }
+        }
+    },
+    "email_subscribers": {
+        "file": "2025_12_23_201529_create_email_subscribers_table.php",
+        "type": "create",
+        "columns": {
+            "uuid": {
+                "type": "uuid"
+            },
+            "email": {
+                "type": "string"
+            },
+            "first_name": {
+                "type": "string"
+            },
+            "last_name": {
+                "type": "string"
+            },
+            "community_id": {
+                "type": "foreignId"
+            },
+            "business_id": {
+                "type": "foreignId"
+            },
+            "type": {
+                "type": "enum"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "confirmed_at": {
+                "type": "timestamp"
+            },
+            "unsubscribed_at": {
+                "type": "timestamp"
+            },
+            "unsubscribe_reason": {
+                "type": "string"
+            },
+            "preferences": {
+                "type": "json"
+            },
+            "source": {
+                "type": "string"
+            }
+        }
+    },
+    "email_campaigns": {
+        "file": "2025_12_23_201530_create_email_campaigns_table.php",
+        "type": "create",
+        "columns": {
+            "uuid": {
+                "type": "uuid"
+            },
+            "community_id": {
+                "type": "foreignId"
+            },
+            "template_id": {
+                "type": "foreignId"
+            },
+            "name": {
+                "type": "string"
+            },
+            "type": {
+                "type": "enum"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "subject": {
+                "type": "string"
+            },
+            "preview_text": {
+                "type": "string"
+            },
+            "html_content": {
+                "type": "longText"
+            },
+            "text_content": {
+                "type": "longText"
+            },
+            "segment": {
+                "type": "json"
+            },
+            "scheduled_at": {
+                "type": "index"
+            },
+            "started_at": {
+                "type": "timestamp"
+            },
+            "completed_at": {
+                "type": "timestamp"
+            },
+            "total_recipients": {
+                "type": "integer"
+            },
+            "sent_count": {
+                "type": "integer"
+            },
+            "delivered_count": {
+                "type": "integer"
+            },
+            "opened_count": {
+                "type": "integer"
+            },
+            "clicked_count": {
+                "type": "integer"
+            },
+            "bounced_count": {
+                "type": "integer"
+            },
+            "complained_count": {
+                "type": "integer"
+            },
+            "unsubscribed_count": {
+                "type": "integer"
+            }
+        }
+    },
+    "email_sends": {
+        "file": "2025_12_23_201530_create_email_sends_table.php",
+        "type": "create",
+        "columns": {
+            "campaign_id": {
+                "type": "foreignId"
+            },
+            "subscriber_id": {
+                "type": "foreignId"
+            },
+            "message_id": {
+                "type": "string"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "sent_at": {
+                "type": "index"
+            },
+            "delivered_at": {
+                "type": "timestamp"
+            },
+            "opened_at": {
+                "type": "timestamp"
+            },
+            "open_count": {
+                "type": "integer"
+            },
+            "clicked_at": {
+                "type": "timestamp"
+            },
+            "click_count": {
+                "type": "integer"
+            },
+            "bounce_type": {
+                "type": "string"
+            },
+            "error_message": {
+                "type": "text"
+            }
+        }
+    },
+    "email_templates": {
+        "file": "2025_12_23_201530_create_email_templates_table.php",
+        "type": "create",
+        "columns": {
+            "uuid": {
+                "type": "uuid"
+            },
+            "name": {
+                "type": "string"
+            },
+            "slug": {
+                "type": "string"
+            },
+            "type": {
+                "type": "enum"
+            },
+            "subject_template": {
+                "type": "string"
+            },
+            "preview_text": {
+                "type": "string"
+            },
+            "html_template": {
+                "type": "longText"
+            },
+            "text_template": {
+                "type": "longText"
+            },
+            "variables": {
+                "type": "json"
+            },
+            "is_active": {
+                "type": "boolean"
+            },
+            "version": {
+                "type": "integer"
+            }
+        }
+    },
+    "newsletter_subscriptions": {
+        "file": "2025_12_23_201530_create_newsletter_subscriptions_table.php",
+        "type": "create",
+        "columns": {
+            "subscriber_id": {
+                "type": "foreignId"
+            },
+            "tier": {
+                "type": "enum"
+            },
+            "price": {
+                "type": "decimal"
+            },
+            "stripe_subscription_id": {
+                "type": "index"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "started_at": {
+                "type": "timestamp"
+            },
+            "cancelled_at": {
+                "type": "timestamp"
+            },
+            "current_period_end": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "emergency_alerts": {
+        "file": "2025_12_23_201533_create_emergency_alerts_table.php",
+        "type": "create",
+        "columns": {
+            "uuid": {
+                "type": "uuid"
+            },
+            "community_id": {
+                "type": "foreignId"
+            },
+            "created_by": {
+                "type": "foreignId"
+            },
+            "municipal_partner_id": {
+                "type": "foreignId"
+            },
+            "priority": {
+                "type": "enum"
+            },
+            "category": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "message": {
+                "type": "text"
+            },
+            "instructions": {
+                "type": "text"
+            },
+            "source": {
+                "type": "string"
+            },
+            "source_url": {
+                "type": "string"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "published_at": {
+                "type": "timestamp"
+            },
+            "expires_at": {
+                "type": "index"
+            },
+            "delivery_channels": {
+                "type": "json"
+            },
+            "email_sent": {
+                "type": "integer"
+            },
+            "sms_sent": {
+                "type": "integer"
+            }
+        }
+    },
+    "emergency_subscriptions": {
+        "file": "2025_12_23_201533_create_emergency_subscriptions_table.php",
+        "type": "create",
+        "columns": {
+            "subscriber_id": {
+                "type": "unique"
+            },
+            "email_enabled": {
+                "type": "boolean"
+            },
+            "sms_enabled": {
+                "type": "boolean"
+            },
+            "phone_number": {
+                "type": "string"
+            },
+            "phone_verified": {
+                "type": "boolean"
+            },
+            "phone_verification_code": {
+                "type": "string"
+            },
+            "phone_verified_at": {
+                "type": "timestamp"
+            },
+            "priority_levels": {
+                "type": "json"
+            },
+            "categories": {
+                "type": "json"
+            },
+            "stripe_subscription_id": {
+                "type": "string"
+            },
+            "sms_tier": {
+                "type": "enum"
+            }
+        }
+    },
+    "emergency_audit_log": {
+        "file": "2025_12_23_201534_create_emergency_audit_log_table.php",
+        "type": "create",
+        "columns": {
+            "alert_id": {
+                "type": "foreignId"
+            },
+            "user_id": {
+                "type": "foreignId"
+            },
+            "municipal_partner_id": {
+                "type": "foreignId"
+            },
+            "action": {
+                "type": "string"
+            },
+            "changes": {
+                "type": "json"
+            },
+            "ip_address": {
+                "type": "string"
+            },
+            "user_agent": {
+                "type": "string"
+            },
+            "created_at": {
+                "type": "index"
+            }
+        }
+    },
+    "emergency_deliveries": {
+        "file": "2025_12_23_201534_create_emergency_deliveries_table.php",
+        "type": "create",
+        "columns": {
+            "alert_id": {
+                "type": "foreignId"
+            },
+            "subscription_id": {
+                "type": "foreignId"
+            },
+            "channel": {
+                "type": "enum"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "external_id": {
+                "type": "string"
+            },
+            "sent_at": {
+                "type": "index"
+            },
+            "delivered_at": {
+                "type": "timestamp"
+            },
+            "error_message": {
+                "type": "text"
+            }
+        }
+    },
+    "municipal_partners": {
+        "file": "2025_12_23_201534_create_municipal_partners_table.php",
+        "type": "create",
+        "columns": {
+            "uuid": {
+                "type": "uuid"
+            },
+            "name": {
+                "type": "string"
+            },
+            "type": {
+                "type": "enum"
+            },
+            "community_ids": {
+                "type": "json"
+            },
+            "primary_contact_id": {
+                "type": "foreignId"
+            },
+            "api_key_hash": {
+                "type": "string"
+            },
+            "is_verified": {
+                "type": "boolean"
+            },
+            "is_active": {
+                "type": "boolean"
+            },
+            "allowed_categories": {
+                "type": "json"
+            },
+            "allowed_priorities": {
+                "type": "json"
+            },
+            "requires_approval": {
+                "type": "boolean"
+            },
+            "municipal_partner_id": {
+                "type": "foreign"
+            }
+        }
+    },
+    "notification_subscriptions": {
+        "file": "2025_12_24_022805_create_notification_subscriptions_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "user_id": {
+                "type": "foreignUuid"
+            },
+            "platform": {
+                "type": "enum"
+            },
+            "community_id": {
+                "type": "string"
+            },
+            "business_id": {
+                "type": "uuid"
+            },
+            "phone_number": {
+                "type": "string"
+            },
+            "phone_verified": {
+                "type": "boolean"
+            },
+            "phone_verified_at": {
+                "type": "timestamp"
+            },
+            "web_push_endpoint": {
+                "type": "text"
+            },
+            "web_push_p256dh": {
+                "type": "string"
+            },
+            "web_push_auth": {
+                "type": "string"
+            },
+            "sns_sms_subscription_arn": {
+                "type": "string"
+            },
+            "sns_endpoint_arn": {
+                "type": "string"
+            },
+            "notification_types": {
+                "type": "json"
+            },
+            "frequency": {
+                "type": "enum"
+            },
+            "quiet_hours_start": {
+                "type": "time"
+            },
+            "quiet_hours_end": {
+                "type": "time"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "last_notification_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "phone_verifications": {
+        "file": "2025_12_24_022809_create_phone_verifications_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "phone_number": {
+                "type": "string"
+            },
+            "code": {
+                "type": "string"
+            },
+            "expires_at": {
+                "type": "timestamp"
+            },
+            "attempts": {
+                "type": "integer"
+            },
+            "verified": {
+                "type": "boolean"
+            }
+        }
+    },
+    "notification_log": {
+        "file": "2025_12_24_022813_create_notification_log_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "platform": {
+                "type": "string"
+            },
+            "community_id": {
+                "type": "string"
+            },
+            "notification_type": {
+                "type": "string"
+            },
+            "channel": {
+                "type": "enum"
+            },
+            "title": {
+                "type": "string"
+            },
+            "message": {
+                "type": "text"
+            },
+            "payload": {
+                "type": "json"
+            },
+            "recipient_count": {
+                "type": "integer"
+            },
+            "sns_message_id": {
+                "type": "string"
+            },
+            "status": {
+                "type": "enum"
+            },
+            "error_message": {
+                "type": "text"
+            },
+            "sent_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "tenants": {
+        "file": "2025_12_27_183628_create_tenants_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "name": {
+                "type": "string"
+            },
+            "subdomain": {
+                "type": "index"
+            },
+            "domain": {
+                "type": "string"
+            },
+            "email": {
+                "type": "string"
+            },
+            "phone": {
+                "type": "string"
+            },
+            "address": {
+                "type": "string"
+            },
+            "city": {
+                "type": "string"
+            },
+            "state": {
+                "type": "string"
+            },
+            "postal_code": {
+                "type": "string"
+            },
+            "country": {
+                "type": "string"
+            },
+            "timezone": {
+                "type": "string"
+            },
+            "locale": {
+                "type": "string"
+            },
+            "currency": {
+                "type": "string"
+            },
+            "is_active": {
+                "type": "index"
+            },
+            "trial_ends_at": {
+                "type": "timestamp"
+            },
+            "settings": {
+                "type": "json"
+            },
+            "metadata": {
+                "type": "json"
+            }
+        }
+    },
+    "account_managers": {
+        "file": "2025_12_27_183629_create_account_managers_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "tenant_id": {
+                "type": "index"
+            },
+            "user_id": {
+                "type": "index"
+            },
+            "first_name": {
+                "type": "string"
+            },
+            "last_name": {
+                "type": "string"
+            },
+            "email": {
+                "type": "string"
+            },
+            "phone": {
+                "type": "string"
+            },
+            "is_active": {
+                "type": "index"
+            },
+            "max_accounts": {
+                "type": "integer"
+            },
+            "current_account_count": {
+                "type": "integer"
+            },
+            "metadata": {
+                "type": "json"
+            }
+        }
+    },
+    "business_hours": {
+        "file": "2025_12_27_183629_create_business_hours_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "smb_business_id": {
+                "type": "index"
+            },
+            "day_of_week": {
+                "type": "integer"
+            },
+            "open_time": {
+                "type": "time"
+            },
+            "close_time": {
+                "type": "time"
+            },
+            "is_closed": {
+                "type": "boolean"
+            },
+            "is_24_hours": {
+                "type": "boolean"
+            }
+        }
+    },
+    "customers": {
+        "file": "2025_12_27_183629_create_customers_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "tenant_id": {
+                "type": "index"
+            },
+            "smb_business_id": {
+                "type": "index"
+            },
+            "first_name": {
+                "type": "string"
+            },
+            "last_name": {
+                "type": "string"
+            },
+            "email": {
+                "type": "index"
+            },
+            "phone": {
+                "type": "string"
+            },
+            "lifecycle_stage": {
+                "type": "index"
+            },
+            "lead_score": {
+                "type": "integer"
+            },
+            "lead_source": {
+                "type": "enum"
+            },
+            "email_opted_in": {
+                "type": "boolean"
+            },
+            "sms_opted_in": {
+                "type": "boolean"
+            },
+            "lifetime_value": {
+                "type": "decimal"
+            },
+            "tags": {
+                "type": "json"
+            },
+            "custom_fields": {
+                "type": "json"
+            }
+        }
+    },
+    "smb_businesses": {
+        "file": "2025_12_27_183629_create_smb_businesses_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "tenant_id": {
+                "type": "index"
+            },
+            "google_place_id": {
+                "type": "index"
+            },
+            "display_name": {
+                "type": "string"
+            },
+            "latitude": {
+                "type": "decimal"
+            },
+            "longitude": {
+                "type": "decimal"
+            },
+            "formatted_address": {
+                "type": "text"
+            },
+            "address_components": {
+                "type": "json"
+            },
+            "plus_code": {
+                "type": "string"
+            },
+            "viewport": {
+                "type": "json"
+            },
+            "location": {
+                "type": "json"
+            },
+            "phone_national": {
+                "type": "string"
+            },
+            "phone_international": {
+                "type": "string"
+            },
+            "website_url": {
+                "type": "string"
+            },
+            "business_status": {
+                "type": "string"
+            },
+            "fibonacco_status": {
+                "type": "index"
+            },
+            "google_rating": {
+                "type": "decimal"
+            },
+            "google_rating_count": {
+                "type": "integer"
+            },
+            "user_rating_total": {
+                "type": "integer"
+            },
+            "delivery": {
+                "type": "boolean"
+            },
+            "dine_in": {
+                "type": "boolean"
+            },
+            "takeout": {
+                "type": "boolean"
+            },
+            "reservable": {
+                "type": "boolean"
+            },
+            "outdoor_seating": {
+                "type": "boolean"
+            },
+            "serves_breakfast": {
+                "type": "boolean"
+            },
+            "serves_lunch": {
+                "type": "boolean"
+            },
+            "serves_dinner": {
+                "type": "boolean"
+            },
+            "serves_beer": {
+                "type": "boolean"
+            },
+            "serves_wine": {
+                "type": "boolean"
+            },
+            "serves_brunch": {
+                "type": "boolean"
+            },
+            "serves_vegetarian_food": {
+                "type": "boolean"
+            },
+            "wheelchair_accessible_entrance": {
+                "type": "boolean"
+            },
+            "place_types": {
+                "type": "json"
+            },
+            "accessibility_options": {
+                "type": "json"
+            },
+            "payment_options": {
+                "type": "json"
+            },
+            "parking_options": {
+                "type": "json"
+            },
+            "data_sources": {
+                "type": "json"
+            },
+            "opening_hours": {
+                "type": "json"
+            },
+            "current_opening_hours": {
+                "type": "json"
+            },
+            "secondary_opening_hours": {
+                "type": "json"
+            },
+            "editorial_summary": {
+                "type": "json"
+            },
+            "photos": {
+                "type": "json"
+            },
+            "reviews": {
+                "type": "json"
+            },
+            "utc_offset": {
+                "type": "integer"
+            },
+            "adr_address": {
+                "type": "text"
+            },
+            "formatted_phone_number": {
+                "type": "string"
+            },
+            "international_phone_number": {
+                "type": "string"
+            },
+            "price_level": {
+                "type": "integer"
+            },
+            "icon": {
+                "type": "string"
+            },
+            "icon_background_color": {
+                "type": "string"
+            },
+            "icon_mask_base_uri": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "place_id": {
+                "type": "string"
+            },
+            "reference": {
+                "type": "string"
+            },
+            "scope": {
+                "type": "string"
+            },
+            "types": {
+                "type": "json"
+            },
+            "url": {
+                "type": "string"
+            },
+            "vicinity": {
+                "type": "string"
+            },
+            "geometry": {
+                "type": "json"
+            },
+            "permanently_closed": {
+                "type": "boolean"
+            },
+            "permanently_closed_time": {
+                "type": "timestamp"
+            },
+            "last_google_sync_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "business_attributes": {
+        "file": "2025_12_27_183630_create_business_attributes_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "smb_business_id": {
+                "type": "index"
+            },
+            "attribute_key": {
+                "type": "string"
+            },
+            "attribute_value": {
+                "type": "text"
+            },
+            "attribute_type": {
+                "type": "enum"
+            }
+        }
+    },
+    "business_photos": {
+        "file": "2025_12_27_183630_create_business_photos_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "smb_business_id": {
+                "type": "index"
+            },
+            "photo_reference": {
+                "type": "string"
+            },
+            "width": {
+                "type": "integer"
+            },
+            "height": {
+                "type": "integer"
+            },
+            "html_attributions": {
+                "type": "json"
+            },
+            "is_primary": {
+                "type": "boolean"
+            },
+            "display_order": {
+                "type": "integer"
+            }
+        }
+    },
+    "business_reviews": {
+        "file": "2025_12_27_183630_create_business_reviews_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "smb_business_id": {
+                "type": "index"
+            },
+            "author_name": {
+                "type": "string"
+            },
+            "author_url": {
+                "type": "string"
+            },
+            "language": {
+                "type": "string"
+            },
+            "profile_photo_url": {
+                "type": "string"
+            },
+            "rating": {
+                "type": "index"
+            },
+            "relative_time_description": {
+                "type": "string"
+            },
+            "text": {
+                "type": "text"
+            },
+            "time": {
+                "type": "index"
+            }
+        }
+    },
+    "deals": {
+        "file": "2025_12_27_183630_create_deals_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "tenant_id": {
+                "type": "index"
+            },
+            "customer_id": {
+                "type": "index"
+            },
+            "name": {
+                "type": "string"
+            },
+            "amount": {
+                "type": "decimal"
+            },
+            "currency": {
+                "type": "string"
+            },
+            "stage": {
+                "type": "index"
+            },
+            "probability": {
+                "type": "integer"
+            },
+            "expected_close_date": {
+                "type": "index"
+            },
+            "actual_close_date": {
+                "type": "date"
+            },
+            "description": {
+                "type": "text"
+            },
+            "tags": {
+                "type": "json"
+            },
+            "custom_fields": {
+                "type": "json"
+            }
+        }
+    },
+    "interactions": {
+        "file": "2025_12_27_183630_create_interactions_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "tenant_id": {
+                "type": "index"
+            },
+            "customer_id": {
+                "type": "index"
+            },
+            "type": {
+                "type": "index"
+            },
+            "subject": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "direction": {
+                "type": "enum"
+            },
+            "duration_minutes": {
+                "type": "integer"
+            },
+            "outcome": {
+                "type": "enum"
+            },
+            "next_action": {
+                "type": "string"
+            },
+            "next_action_date": {
+                "type": "date"
+            },
+            "metadata": {
+                "type": "json"
+            },
+            "created_at": {
+                "type": "index"
+            }
+        }
+    },
+    "tasks": {
+        "file": "2025_12_27_183630_create_tasks_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "tenant_id": {
+                "type": "index"
+            },
+            "customer_id": {
+                "type": "index"
+            },
+            "assigned_to_id": {
+                "type": "index"
+            },
+            "title": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "type": {
+                "type": "enum"
+            },
+            "priority": {
+                "type": "enum"
+            },
+            "status": {
+                "type": "index"
+            },
+            "due_date": {
+                "type": "index"
+            },
+            "completed_at": {
+                "type": "timestamp"
+            },
+            "metadata": {
+                "type": "json"
+            }
+        }
+    },
+    "campaign_recipients": {
+        "file": "2025_12_27_183631_create_campaign_recipients_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "campaign_id": {
+                "type": "index"
+            },
+            "customer_id": {
+                "type": "index"
+            },
+            "status": {
+                "type": "index"
+            },
+            "sent_at": {
+                "type": "timestamp"
+            },
+            "delivered_at": {
+                "type": "timestamp"
+            },
+            "opened_at": {
+                "type": "timestamp"
+            },
+            "clicked_at": {
+                "type": "timestamp"
+            },
+            "bounced_at": {
+                "type": "timestamp"
+            },
+            "unsubscribed_at": {
+                "type": "timestamp"
+            },
+            "metadata": {
+                "type": "json"
+            }
+        }
+    },
+    "campaigns": {
+        "file": "2025_12_27_183631_create_campaigns_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "tenant_id": {
+                "type": "index"
+            },
+            "name": {
+                "type": "string"
+            },
+            "type": {
+                "type": "enum"
+            },
+            "status": {
+                "type": "index"
+            },
+            "start_date": {
+                "type": "index"
+            },
+            "end_date": {
+                "type": "timestamp"
+            },
+            "budget": {
+                "type": "decimal"
+            },
+            "spent": {
+                "type": "decimal"
+            },
+            "target_audience": {
+                "type": "json"
+            },
+            "content": {
+                "type": "text"
+            },
+            "metadata": {
+                "type": "json"
+            }
+        }
+    },
+    "personal_access_tokens": {
+        "file": "2026_01_02_194713_create_personal_access_tokens_table.php",
+        "type": "create",
+        "columns": {
+            "tokenable": {
+                "type": "morphs"
+            },
+            "name": {
+                "type": "text"
+            },
+            "token": {
+                "type": "string"
+            },
+            "abilities": {
+                "type": "text"
+            },
+            "last_used_at": {
+                "type": "timestamp"
+            },
+            "expires_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "alphasite_fourcalls_integrations": {
+        "file": "2026_01_16_022108_create_alphasite_fourcalls_integrations_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "business_id": {
+                "type": "unique"
+            },
+            "organization_id": {
+                "type": "index"
+            },
+            "coordinator_id": {
+                "type": "string"
+            },
+            "api_key": {
+                "type": "text"
+            },
+            "service_package": {
+                "type": "string"
+            },
+            "status": {
+                "type": "index"
+            },
+            "activated_at": {
+                "type": "timestamp"
+            },
+            "expires_at": {
+                "type": "timestamp"
+            }
+        }
+    },
+    "news_sources": {
+        "file": "2026_01_22_003825_create_news_sources_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "community_id": {
+                "type": "foreignId"
+            },
+            "region_id": {
+                "type": "foreignId"
+            },
+            "name": {
+                "type": "string"
+            },
+            "source_type": {
+                "type": "string"
+            },
+            "subtype": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "website_url": {
+                "type": "text"
+            },
+            "rss_url": {
+                "type": "text"
+            },
+            "business_id": {
+                "type": "foreignId"
+            },
+            "is_potential_customer": {
+                "type": "boolean"
+            },
+            "customer_status": {
+                "type": "string"
+            },
+            "platform": {
+                "type": "string"
+            },
+            "platform_config": {
+                "type": "jsonb"
+            },
+            "default_poll_interval_minutes": {
+                "type": "integer"
+            },
+            "default_processing_tier": {
+                "type": "string"
+            },
+            "priority": {
+                "type": "integer"
+            },
+            "is_active": {
+                "type": "boolean"
+            },
+            "last_successful_collection": {
+                "type": "timestamp"
+            },
+            "consecutive_failures": {
+                "type": "integer"
+            },
+            "health_score": {
+                "type": "integer"
+            },
+            "needs_manual_setup": {
+                "type": "boolean"
+            },
+            "setup_notes": {
+                "type": "text"
+            },
+            "metadata": {
+                "type": "jsonb"
+            }
+        }
+    },
+    "collection_methods": {
+        "file": "2026_01_22_003901_create_collection_methods_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "source_id": {
+                "type": "foreign"
+            },
+            "method_type": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "endpoint_url": {
+                "type": "text"
+            },
+            "poll_interval_minutes": {
+                "type": "integer"
+            },
+            "feed_format": {
+                "type": "string"
+            },
+            "feed_etag": {
+                "type": "string"
+            },
+            "intake_email": {
+                "type": "string"
+            },
+            "signup_url": {
+                "type": "text"
+            },
+            "signup_platform": {
+                "type": "string"
+            },
+            "categories_subscribed": {
+                "type": "jsonb"
+            },
+            "subscription_status": {
+                "type": "string"
+            },
+            "last_email_received_at": {
+                "type": "timestamp"
+            },
+            "emails_received_count": {
+                "type": "integer"
+            },
+            "scrape_config": {
+                "type": "jsonb"
+            },
+            "requires_javascript": {
+                "type": "boolean"
+            },
+            "is_enabled": {
+                "type": "boolean"
+            },
+            "last_collected_at": {
+                "type": "timestamp"
+            },
+            "last_items_found": {
+                "type": "integer"
+            },
+            "total_items_collected": {
+                "type": "integer"
+            },
+            "consecutive_failures": {
+                "type": "integer"
+            },
+            "last_error": {
+                "type": "text"
+            }
+        }
+    },
+    "raw_content": {
+        "file": "2026_01_22_003937_create_raw_content_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "source_id": {
+                "type": "foreign"
+            },
+            "collection_method_id": {
+                "type": "foreign"
+            },
+            "community_id": {
+                "type": "foreignId"
+            },
+            "region_id": {
+                "type": "foreignId"
+            },
+            "source_url": {
+                "type": "text"
+            },
+            "source_title": {
+                "type": "text"
+            },
+            "source_content": {
+                "type": "longText"
+            },
+            "source_excerpt": {
+                "type": "text"
+            },
+            "source_published_at": {
+                "type": "timestamp"
+            },
+            "source_author": {
+                "type": "string"
+            },
+            "content_hash": {
+                "type": "string"
+            },
+            "collected_at": {
+                "type": "timestamp"
+            },
+            "collection_method": {
+                "type": "string"
+            },
+            "raw_metadata": {
+                "type": "jsonb"
+            },
+            "email_from": {
+                "type": "string"
+            },
+            "email_subject": {
+                "type": "string"
+            },
+            "classification_status": {
+                "type": "string"
+            },
+            "classified_at": {
+                "type": "timestamp"
+            },
+            "classification_error": {
+                "type": "text"
+            },
+            "content_types": {
+                "type": "jsonb"
+            },
+            "primary_type": {
+                "type": "string"
+            },
+            "categories": {
+                "type": "jsonb"
+            },
+            "businesses_mentioned": {
+                "type": "jsonb"
+            },
+            "people_mentioned": {
+                "type": "jsonb"
+            },
+            "locations_mentioned": {
+                "type": "jsonb"
+            },
+            "organizations_mentioned": {
+                "type": "jsonb"
+            },
+            "has_event": {
+                "type": "boolean"
+            },
+            "event_data": {
+                "type": "jsonb"
+            },
+            "local_relevance_score": {
+                "type": "integer"
+            },
+            "news_value_score": {
+                "type": "integer"
+            },
+            "processing_tier": {
+                "type": "string"
+            },
+            "priority": {
+                "type": "string"
+            },
+            "processing_recommendation": {
+                "type": "jsonb"
+            },
+            "processing_status": {
+                "type": "string"
+            },
+            "processed_at": {
+                "type": "timestamp"
+            },
+            "processing_error": {
+                "type": "text"
+            },
+            "output_ids": {
+                "type": "jsonb"
+            },
+            "has_sales_opportunity": {
+                "type": "boolean"
+            },
+            "sales_flag": {
+                "type": "jsonb"
+            }
+        }
+    },
+    "business_mentions": {
+        "file": "2026_01_22_003946_create_business_sales_tables.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "business_id": {
+                "type": "foreignId"
+            },
+            "business_name": {
+                "type": "string"
+            },
+            "community_id": {
+                "type": "foreignId"
+            },
+            "raw_content_id": {
+                "type": "foreign"
+            },
+            "mention_type": {
+                "type": "string"
+            },
+            "sentiment": {
+                "type": "string"
+            },
+            "mention_context": {
+                "type": "text"
+            },
+            "mentioned_at": {
+                "type": "timestamp"
+            },
+            "notified_sales": {
+                "type": "boolean"
+            },
+            "opportunity_type": {
+                "type": "string"
+            },
+            "quality": {
+                "type": "string"
+            },
+            "trigger_content_id": {
+                "type": "foreign"
+            },
+            "trigger_description": {
+                "type": "text"
+            },
+            "recommended_action": {
+                "type": "text"
+            },
+            "suggested_script": {
+                "type": "text"
+            },
+            "status": {
+                "type": "string"
+            },
+            "assigned_to": {
+                "type": "foreignId"
+            },
+            "contacted_at": {
+                "type": "timestamp"
+            },
+            "converted_at": {
+                "type": "timestamp"
+            },
+            "outcome": {
+                "type": "string"
+            },
+            "deal_value": {
+                "type": "decimal"
+            },
+            "notes": {
+                "type": "text"
+            }
+        }
+    },
+    "incoming_emails": {
+        "file": "2026_01_22_030000_create_incoming_emails_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "mailbox": {
+                "type": "string"
+            },
+            "message_id": {
+                "type": "string"
+            },
+            "from_address": {
+                "type": "index"
+            },
+            "from_name": {
+                "type": "string"
+            },
+            "to_address": {
+                "type": "string"
+            },
+            "subject": {
+                "type": "text"
+            },
+            "email_date": {
+                "type": "timestamp"
+            },
+            "received_at": {
+                "type": "timestamp"
+            },
+            "body_text": {
+                "type": "longText"
+            },
+            "body_html": {
+                "type": "longText"
+            },
+            "headers": {
+                "type": "jsonb"
+            },
+            "attachments": {
+                "type": "jsonb"
+            },
+            "email_type": {
+                "type": "string"
+            },
+            "source_id": {
+                "type": "foreign"
+            },
+            "collection_method_id": {
+                "type": "uuid"
+            },
+            "processing_status": {
+                "type": "index"
+            },
+            "processed_at": {
+                "type": "timestamp"
+            },
+            "processing_error": {
+                "type": "text"
+            },
+            "is_confirmation": {
+                "type": "index"
+            },
+            "confirmation_clicked": {
+                "type": "boolean"
+            },
+            "confirmation_url": {
+                "type": "text"
+            },
+            "items_extracted": {
+                "type": "integer"
+            },
+            "raw_content_ids": {
+                "type": "jsonb"
+            },
+            "is_spam": {
+                "type": "boolean"
+            }
+        }
+    },
+    "email_sender_mappings": {
+        "file": "2026_01_22_030001_create_email_sender_mappings_table.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "uuid"
+            },
+            "source_id": {
+                "type": "foreign"
+            },
+            "collection_method_id": {
+                "type": "uuid"
+            },
+            "sender_email": {
+                "type": "index"
+            },
+            "sender_domain": {
+                "type": "index"
+            },
+            "sender_name_pattern": {
+                "type": "string"
+            },
+            "priority": {
+                "type": "integer"
+            },
+            "expected_content_type": {
+                "type": "string"
+            },
+            "is_newsletter": {
+                "type": "boolean"
+            },
+            "is_alert": {
+                "type": "boolean"
+            },
+            "is_active": {
+                "type": "boolean"
+            },
+            "emails_matched": {
+                "type": "integer"
+            }
+        }
+    },
+    "announcement_region": {
+        "file": "2026_01_22_120000_backfill_missing_tables.php",
+        "type": "create",
+        "columns": {
+            "id": {
+                "type": "id"
+            },
+            "announcement_id": {
+                "type": "string"
+            },
+            "region_id": {
+                "type": "string"
+            },
+            "comment_id": {
+                "type": "string"
+            },
+            "user_id": {
+                "type": "string"
+            },
+            "business_id": {
+                "type": "integer"
+            },
+            "survey_id": {
+                "type": "string"
+            },
+            "customer_id": {
+                "type": "string"
+            },
+            "responses": {
+                "type": "text"
+            },
+            "overall_score": {
+                "type": "string"
+            },
+            "sentiment": {
+                "type": "string"
+            },
+            "ai_summary": {
+                "type": "text"
+            },
+            "action_items": {
+                "type": "text"
+            },
+            "completed_at": {
+                "type": "date"
+            },
+            "source": {
+                "type": "string"
+            },
+            "key": {
+                "type": "string"
+            },
+            "owner": {
+                "type": "string"
+            },
+            "expiration": {
+                "type": "integer"
+            },
+            "calendar_id": {
+                "type": "string"
+            },
+            "event_id": {
+                "type": "string"
+            },
+            "added_by": {
+                "type": "string"
+            },
+            "position": {
+                "type": "integer"
+            },
+            "role": {
+                "type": "text"
+            },
+            "cart_id": {
+                "type": "string"
+            },
+            "product_id": {
+                "type": "string"
+            },
+            "store_id": {
+                "type": "string"
+            },
+            "quantity": {
+                "type": "integer"
+            },
+            "price": {
+                "type": "string"
+            },
+            "civic_source_id": {
+                "type": "string"
+            },
+            "started_at": {
+                "type": "date"
+            },
+            "status": {
+                "type": "string"
+            },
+            "items_found": {
+                "type": "integer"
+            },
+            "items_new": {
+                "type": "integer"
+            },
+            "items_updated": {
+                "type": "integer"
+            },
+            "items_skipped": {
+                "type": "integer"
+            },
+            "error_message": {
+                "type": "text"
+            },
+            "metadata": {
+                "type": "text"
+            },
+            "content_type": {
+                "type": "string"
+            },
+            "external_id": {
+                "type": "string"
+            },
+            "title": {
+                "type": "string"
+            },
+            "description": {
+                "type": "text"
+            },
+            "full_content": {
+                "type": "text"
+            },
+            "url": {
+                "type": "string"
+            },
+            "published_at": {
+                "type": "date"
+            },
+            "event_date": {
+                "type": "date"
+            },
+            "expires_at": {
+                "type": "date"
+            },
+            "category": {
+                "type": "string"
+            },
+            "subcategory": {
+                "type": "string"
+            },
+            "tags": {
+                "type": "text"
+            },
+            "body_name": {
+                "type": "string"
+            },
+            "meeting_type": {
+                "type": "string"
+            },
+            "agenda_items": {
+                "type": "text"
+            },
+            "attachments": {
+                "type": "text"
+            },
+            "alert_type": {
+                "type": "string"
+            },
+            "urgency": {
+                "type": "string"
+            },
+            "severity": {
+                "type": "string"
+            },
+            "raw_data": {
+                "type": "text"
+            },
+            "content_hash": {
+                "type": "string"
+            },
+            "processing_status": {
+                "type": "string"
+            },
+            "news_article_id": {
+                "type": "string"
+            },
+            "processed_at": {
+                "type": "date"
+            },
+            "platform_id": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "source_type": {
+                "type": "string"
+            },
+            "entity_type": {
+                "type": "string"
+            },
+            "base_url": {
+                "type": "string"
+            },
+            "api_endpoint": {
+                "type": "string"
+            },
+            "api_client_name": {
+                "type": "string"
+            },
+            "rss_feed_url": {
+                "type": "string"
+            },
+            "agency_id": {
+                "type": "string"
+            },
+            "zip_codes": {
+                "type": "string"
+            },
+            "county": {
+                "type": "string"
+            },
+            "state": {
+                "type": "string"
+            },
+            "config": {
+                "type": "text"
+            },
+            "available_feeds": {
+                "type": "text"
+            },
+            "poll_interval_minutes": {
+                "type": "integer"
+            },
+            "last_collected_at": {
+                "type": "date"
+            },
+            "last_items_found": {
+                "type": "integer"
+            },
+            "next_collection_at": {
+                "type": "date"
+            },
+            "is_enabled": {
+                "type": "integer"
+            },
+            "is_verified": {
+                "type": "integer"
+            },
+            "consecutive_failures": {
+                "type": "integer"
+            },
+            "health_score": {
+                "type": "integer"
+            },
+            "last_error": {
+                "type": "text"
+            },
+            "last_error_at": {
+                "type": "date"
+            },
+            "auto_discovered": {
+                "type": "integer"
+            },
+            "discovered_at": {
+                "type": "date"
+            },
+            "verified_at": {
+                "type": "date"
+            },
+            "classified_id": {
+                "type": "string"
+            },
+            "image_path": {
+                "type": "string"
+            },
+            "image_disk": {
+                "type": "string"
+            },
+            "order": {
+                "type": "integer"
+            },
+            "workspace_id": {
+                "type": "string"
+            },
+            "stripe_payment_intent_id": {
+                "type": "string"
+            },
+            "stripe_checkout_session_id": {
+                "type": "string"
+            },
+            "amount": {
+                "type": "integer"
+            },
+            "currency": {
+                "type": "string"
+            },
+            "regions_data": {
+                "type": "text"
+            },
+            "total_days": {
+                "type": "integer"
+            },
+            "days": {
+                "type": "integer"
+            },
+            "community_id": {
+                "type": "integer"
+            },
+            "joined_at": {
+                "type": "date"
+            },
+            "is_active": {
+                "type": "integer"
+            },
+            "last_activity_at": {
+                "type": "date"
+            },
+            "reply_id": {
+                "type": "string"
+            },
+            "content": {
+                "type": "text"
+            },
+            "preview": {
+                "type": "text"
+            },
+            "type": {
+                "type": "string"
+            },
+            "images": {
+                "type": "text"
+            },
+            "is_pinned": {
+                "type": "integer"
+            },
+            "is_locked": {
+                "type": "integer"
+            },
+            "is_featured": {
+                "type": "integer"
+            },
+            "last_reply_at": {
+                "type": "date"
+            },
+            "last_reply_by": {
+                "type": "string"
+            },
+            "author_id": {
+                "type": "string"
+            },
+            "conversation_id": {
+                "type": "string"
+            },
+            "last_read_at": {
+                "type": "date"
+            },
+            "is_admin": {
+                "type": "integer"
+            },
+            "coupon_id": {
+                "type": "string"
+            },
+            "ip_address": {
+                "type": "string"
+            },
+            "post_id": {
+                "type": "string"
+            },
+            "payment_type": {
+                "type": "string"
+            },
+            "ad_days": {
+                "type": "integer"
+            },
+            "day_news_post_id": {
+                "type": "integer"
+            },
+            "tag_id": {
+                "type": "string"
+            },
+            "detection_confidence": {
+                "type": "string"
+            },
+            "extraction_confidence": {
+                "type": "string"
+            },
+            "quality_score": {
+                "type": "string"
+            },
+            "extracted_data": {
+                "type": "text"
+            },
+            "matched_venue_id": {
+                "type": "string"
+            },
+            "matched_performer_id": {
+                "type": "string"
+            },
+            "published_event_id": {
+                "type": "string"
+            },
+            "ai_metadata": {
+                "type": "text"
+            },
+            "rejection_reason": {
+                "type": "text"
+            },
+            "uuid": {
+                "type": "string"
+            },
+            "connection": {
+                "type": "text"
+            },
+            "queue": {
+                "type": "text"
+            },
+            "payload": {
+                "type": "text"
+            },
+            "exception": {
+                "type": "text"
+            },
+            "failed_at": {
+                "type": "date"
+            },
+            "hub_id": {
+                "type": "string"
+            },
+            "date": {
+                "type": "date"
+            },
+            "page_views": {
+                "type": "integer"
+            },
+            "unique_visitors": {
+                "type": "integer"
+            },
+            "events_created": {
+                "type": "integer"
+            },
+            "events_published": {
+                "type": "integer"
+            },
+            "articles_created": {
+                "type": "integer"
+            },
+            "articles_published": {
+                "type": "integer"
+            },
+            "members_joined": {
+                "type": "integer"
+            },
+            "followers_gained": {
+                "type": "integer"
+            },
+            "engagement_score": {
+                "type": "string"
+            },
+            "revenue": {
+                "type": "string"
+            },
+            "permissions": {
+                "type": "text"
+            },
+            "slug": {
+                "type": "string"
+            },
+            "is_system": {
+                "type": "integer"
+            },
+            "sort_order": {
+                "type": "integer"
+            },
+            "settings": {
+                "type": "text"
+            },
+            "is_visible": {
+                "type": "integer"
+            },
+            "total_jobs": {
+                "type": "integer"
+            },
+            "pending_jobs": {
+                "type": "integer"
+            },
+            "failed_jobs": {
+                "type": "integer"
+            },
+            "failed_job_ids": {
+                "type": "text"
+            },
+            "options": {
+                "type": "text"
+            },
+            "cancelled_at": {
+                "type": "integer"
+            },
+            "finished_at": {
+                "type": "integer"
+            },
+            "legal_notice_id": {
+                "type": "string"
+            },
+            "memorial_id": {
+                "type": "string"
+            },
+            "sender_id": {
+                "type": "string"
+            },
+            "edited_at": {
+                "type": "date"
+            },
+            "draft_id": {
+                "type": "string"
+            },
+            "claim": {
+                "type": "text"
+            },
+            "verification_result": {
+                "type": "text"
+            },
+            "confidence_score": {
+                "type": "string"
+            },
+            "sources": {
+                "type": "text"
+            },
+            "scraped_evidence": {
+                "type": "text"
+            },
+            "phase": {
+                "type": "string"
+            },
+            "items_processed": {
+                "type": "integer"
+            },
+            "summary": {
+                "type": "text"
+            },
+            "error_trace": {
+                "type": "text"
+            },
+            "order_id": {
+                "type": "string"
+            },
+            "product_name": {
+                "type": "string"
+            },
+            "product_description": {
+                "type": "text"
+            },
+            "total": {
+                "type": "string"
+            },
+            "order_number": {
+                "type": "string"
+            },
+            "customer_email": {
+                "type": "string"
+            },
+            "customer_name": {
+                "type": "string"
+            },
+            "subtotal": {
+                "type": "string"
+            },
+            "tax": {
+                "type": "string"
+            },
+            "shipping": {
+                "type": "string"
+            },
+            "payment_status": {
+                "type": "string"
+            },
+            "stripe_charge_id": {
+                "type": "string"
+            },
+            "shipping_address": {
+                "type": "text"
+            },
+            "billing_address": {
+                "type": "text"
+            },
+            "notes": {
+                "type": "text"
+            },
+            "paid_at": {
+                "type": "date"
+            },
+            "email": {
+                "type": "string"
+            },
+            "token": {
+                "type": "string"
+            },
+            "album_id": {
+                "type": "string"
+            },
+            "photo_id": {
+                "type": "string"
+            },
+            "thumbnail_path": {
+                "type": "string"
+            },
+            "width": {
+                "type": "integer"
+            },
+            "height": {
+                "type": "integer"
+            },
+            "file_size": {
+                "type": "integer"
+            },
+            "views_count": {
+                "type": "integer"
+            },
+            "likes_count": {
+                "type": "integer"
+            },
+            "comments_count": {
+                "type": "integer"
+            },
+            "podcast_id": {
+                "type": "string"
+            },
+            "show_notes": {
+                "type": "text"
+            },
+            "audio_file_path": {
+                "type": "string"
+            },
+            "audio_file_disk": {
+                "type": "string"
+            },
+            "duration": {
+                "type": "integer"
+            },
+            "episode_number": {
+                "type": "string"
+            },
+            "listens_count": {
+                "type": "integer"
+            },
+            "downloads_count": {
+                "type": "integer"
+            },
+            "creator_profile_id": {
+                "type": "string"
+            },
+            "cover_image": {
+                "type": "string"
+            },
+            "episodes_count": {
+                "type": "integer"
+            },
+            "subscribers_count": {
+                "type": "integer"
+            },
+            "total_listens": {
+                "type": "integer"
+            },
+            "total_duration": {
+                "type": "integer"
+            },
+            "compare_at_price": {
+                "type": "string"
+            },
+            "track_inventory": {
+                "type": "integer"
+            },
+            "sku": {
+                "type": "string"
+            },
+            "stripe_price_id": {
+                "type": "string"
+            },
+            "stripe_product_id": {
+                "type": "string"
+            },
+            "promo_code_id": {
+                "type": "string"
+            },
+            "ticket_order_id": {
+                "type": "string"
+            },
+            "discount_amount": {
+                "type": "string"
+            },
+            "original_amount": {
+                "type": "string"
+            },
+            "final_amount": {
+                "type": "string"
+            },
+            "used_at": {
+                "type": "date"
+            },
+            "zipcode": {
+                "type": "string"
+            },
+            "is_primary": {
+                "type": "integer"
+            },
+            "rss_feed_id": {
+                "type": "string"
+            },
+            "guid": {
+                "type": "string"
+            },
+            "author": {
+                "type": "string"
+            },
+            "categories": {
+                "type": "text"
+            },
+            "processed": {
+                "type": "integer"
+            },
+            "feed_type": {
+                "type": "string"
+            },
+            "health_status": {
+                "type": "string"
+            },
+            "last_checked_at": {
+                "type": "date"
+            },
+            "last_successful_fetch_at": {
+                "type": "date"
+            },
+            "fetch_frequency": {
+                "type": "integer"
+            },
+            "total_items_count": {
+                "type": "integer"
+            },
+            "auto_approved": {
+                "type": "integer"
+            },
+            "business_name": {
+                "type": "string"
+            },
+            "opportunity_type": {
+                "type": "string"
+            },
+            "quality": {
+                "type": "string"
+            },
+            "trigger_content_id": {
+                "type": "string"
+            },
+            "trigger_description": {
+                "type": "text"
+            },
+            "recommended_action": {
+                "type": "text"
+            },
+            "suggested_script": {
+                "type": "text"
+            },
+            "assigned_to": {
+                "type": "integer"
+            },
+            "contacted_at": {
+                "type": "date"
+            },
+            "converted_at": {
+                "type": "date"
+            },
+            "outcome": {
+                "type": "string"
+            },
+            "deal_value": {
+                "type": "string"
+            },
+            "query": {
+                "type": "string"
+            },
+            "popularity": {
+                "type": "integer"
+            },
+            "click_count": {
+                "type": "integer"
+            },
+            "user_agent": {
+                "type": "text"
+            },
+            "last_activity": {
+                "type": "integer"
+            },
+            "actor_id": {
+                "type": "string"
+            },
+            "subject_type": {
+                "type": "string"
+            },
+            "subject_id": {
+                "type": "string"
+            },
+            "data": {
+                "type": "text"
+            },
+            "is_read": {
+                "type": "integer"
+            },
+            "friend_id": {
+                "type": "string"
+            },
+            "requested_at": {
+                "type": "date"
+            },
+            "responded_at": {
+                "type": "date"
+            },
+            "group_id": {
+                "type": "string"
+            },
+            "inviter_id": {
+                "type": "string"
+            },
+            "invited_id": {
+                "type": "string"
+            },
+            "message": {
+                "type": "text"
+            },
+            "media": {
+                "type": "text"
+            },
+            "creator_id": {
+                "type": "string"
+            },
+            "privacy": {
+                "type": "string"
+            },
+            "follower_id": {
+                "type": "string"
+            },
+            "following_id": {
+                "type": "string"
+            },
+            "bio": {
+                "type": "text"
+            },
+            "website": {
+                "type": "string"
+            },
+            "location": {
+                "type": "string"
+            },
+            "birth_date": {
+                "type": "date"
+            },
+            "profile_visibility": {
+                "type": "string"
+            },
+            "interests": {
+                "type": "text"
+            },
+            "cover_photo": {
+                "type": "string"
+            },
+            "social_links": {
+                "type": "text"
+            },
+            "show_email": {
+                "type": "integer"
+            },
+            "show_location": {
+                "type": "integer"
+            },
+            "fees": {
+                "type": "string"
+            },
+            "discount": {
+                "type": "string"
+            },
+            "promo_code": {
+                "type": "text"
+            },
+            "billing_info": {
+                "type": "text"
+            },
+            "payment_intent_id": {
+                "type": "string"
+            },
+            "writer_agent_id": {
+                "type": "string"
+            }
+        }
+    }
+}

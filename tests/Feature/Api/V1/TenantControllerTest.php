@@ -39,6 +39,7 @@ final class TenantControllerTest extends TestCase
             ->postJson('/api/v1/tenants', [
                 'name' => 'Test Tenant',
                 'subdomain' => 'test-tenant',
+                'email' => 'test@example.com',
             ]);
 
         $response->assertStatus(201)
@@ -107,7 +108,7 @@ final class TenantControllerTest extends TestCase
 
         $response->assertStatus(204);
 
-        $this->assertDatabaseMissing('tenants', [
+        $this->assertSoftDeleted('tenants', [
             'id' => $tenant->id,
         ]);
     }
@@ -121,7 +122,14 @@ final class TenantControllerTest extends TestCase
             ->postJson('/api/v1/tenants', []);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['name']);
+            ->assertJson([
+                'success' => false,
+                'data' => [
+                    'errors' => [
+                        'name' => [],
+                    ],
+                ],
+            ]);
     }
 }
 

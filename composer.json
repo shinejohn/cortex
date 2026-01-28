@@ -13,6 +13,8 @@
         "aws/aws-sdk-php": "^3.369",
         "cesargb/laravel-magiclink": "^2.24.1",
         "climactic/laravel-credits": "^1.4.0",
+        "fibonacco/ai-gateway-client": "@dev",
+        "fibonacco/ai-tools-core": "@dev",
         "filament/filament": "^4.3.1",
         "inertiajs/inertia-laravel": "^2.0.16",
         "laravel/framework": "^12.43.1",
@@ -27,11 +29,23 @@
         "predis/predis": "^3.3.0",
         "prism-php/prism": "^0.99.2",
         "sentry/sentry-laravel": "^4.20.0",
+        "simplepie/simplepie": "^1.9",
         "spatie/laravel-sitemap": "^7.3.8",
         "stevebauman/location": "^7.6.0",
         "stripe/stripe-php": "^19.1.0",
-        "tightenco/ziggy": "^2.6.0"
+        "tightenco/ziggy": "^2.6.0",
+        "webklex/php-imap": "^6.2"
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./packages/fibonacco/ai-tools-core"
+        },
+        {
+            "type": "path",
+            "url": "./packages/fibonacco/ai-gateway-client"
+        }
+    ],
     "require-dev": {
         "fakerphp/faker": "^1.24.1",
         "knuckleswtf/scribe": "^5.6",

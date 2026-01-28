@@ -75,6 +75,8 @@ final class RegionControllerTest extends TestCase
             ->postJson('/api/v1/regions', [
                 'name' => 'Test Region',
                 'state' => 'FL',
+                'type' => 'city',
+                'slug' => 'test-region',
             ]);
 
         $response->assertStatus(201)
@@ -98,7 +100,15 @@ final class RegionControllerTest extends TestCase
             ->postJson('/api/v1/regions', []);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['name']);
+            ->assertJson([
+                'success' => false,
+                'data' => [
+                    'errors' => [
+                        'name' => [],
+                        'type' => [],
+                    ],
+                ],
+            ]);
     }
 }
 

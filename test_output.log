@@ -1,0 +1,48 @@
+
+   FAIL  Tests\Unit\Models\BusinessTest
+  ✓ can create business                                                  0.44s  
+  ✓ business has required attributes                                     0.05s  
+  ⨯ business has reviews relationship                                    0.05s  
+  ⨯ business has ratings relationship                                    0.04s  
+  ✓ business has coupons relationship                                    0.05s  
+  ✓ business slug is unique                                              0.05s  
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Unit\Models\BusinessTest > business has rev…  QueryException   
+  SQLSTATE[HY000]: General error: 1 table reviews has no column named business_id (Connection: sqlite, SQL: insert into "reviews" ("reviewable_type", "reviewable_id", "user_id", "title", "content", "rating", "is_verified", "is_featured", "helpful_votes", "helpful_count", "status", "approved_at", "approved_by", "business_id", "id", "updated_at", "created_at") values (App\Models\Business, 019bdd91-10ef-732a-b413-1254c27f3a76, 019bdd91-10ef-732a-b413-1254c18ae6d4, Professional and talented, Professional service from start to finish. Highly recommended., 5, 1, 0, [1], 1, approved, 2025-12-26 15:10:33, 019bdd91-10f0-73af-ba73-7227f6a4cd3b, 019bdd91-10e7-7147-a19e-25be5a6a9a9d, 019bdd91-10f0-73af-ba73-7227f7345fb0, 2026-01-20 22:40:30, 2026-01-20 22:40:30))
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:564
+    560▕             if ($this->pretending()) {
+    561▕                 return true;
+    562▕             }
+    563▕ 
+  ➜ 564▕             $statement = $this->getPdo()->prepare($query);
+    565▕ 
+    566▕             $this->bindValues($statement, $this->prepareBindings($bindings));
+    567▕ 
+    568▕             $this->recordsHaveBeenModified();
+
+      [2m+14 vendor frames [22m
+  15  tests/Unit/Models/BusinessTest.php:30
+
+  ────────────────────────────────────────────────────────────────────────────  
+   FAILED  Tests\Unit\Models\BusinessTest > business has rat…  QueryException   
+  SQLSTATE[HY000]: General error: 1 table ratings has no column named rateable_id (Connection: sqlite, SQL: insert into "ratings" ("ratable_type", "ratable_id", "user_id", "rating", "context", "notes", "type", "booking_id", "rateable_id", "rateable_type", "id", "updated_at", "created_at") values (App\Models\Business, 019bdd91-111c-7325-8647-d2b273213a2f, 019bdd91-111b-7180-809d-32aa7c6881cc, 1, value, Tenetur deleniti neque aut et facere unde necessitatibus omnis., general, ?, 019bdd91-111b-7180-809d-32aa7c5c2fa4, App\Models\Business, 019bdd91-111d-7293-bb5d-7550f101fd45, 2026-01-20 22:40:30, 2026-01-20 22:40:30))
+
+  at vendor/laravel/framework/src/Illuminate/Database/Connection.php:564
+    560▕             if ($this->pretending()) {
+    561▕                 return true;
+    562▕             }
+    563▕ 
+  ➜ 564▕             $statement = $this->getPdo()->prepare($query);
+    565▕ 
+    566▕             $this->bindValues($statement, $this->prepareBindings($bindings));
+    567▕ 
+    568▕             $this->recordsHaveBeenModified();
+
+      [2m+14 vendor frames [22m
+  15  tests/Unit/Models/BusinessTest.php:42
+
+
+  Tests:    2 failed, 4 passed (6 assertions)
+  Duration: 0.78s
+

@@ -209,6 +209,21 @@ final class Business extends Model
         return $this->hasMany(SMBCrmInteraction::class);
     }
 
+    public function reviews(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Review::class, 'reviewable');
+    }
+
+    public function ratings(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Rating::class, 'ratable');
+    }
+
+    public function coupons(): HasMany
+    {
+        return $this->hasMany(Coupon::class);
+    }
+
     // Scopes
     public function scopeActive($query)
     {
@@ -280,7 +295,7 @@ final class Business extends Model
     {
         return $query->where(function ($q) {
             $q->where('organization_level', 'national')
-              ->orWhere('organization_level', 'international');
+                ->orWhere('organization_level', 'international');
         });
     }
 

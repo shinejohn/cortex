@@ -451,13 +451,13 @@ class PrismAiService
 
         // Include source publisher info if available
         $sourceInfo = '';
-        if (! empty($draft['source_publisher'])) {
+        if (!empty($draft['source_publisher'])) {
             $sourceInfo = "\nOriginal Source: {$draft['source_publisher']} (established news outlet)";
         }
 
         return strtr($prompt, [
             '{title}' => $draft['title'] ?? 'Unknown',
-            '{outline}' => ($draft['outline'] ?? 'No outline available').$sourceInfo,
+            '{outline}' => ($draft['outline'] ?? 'No outline available') . $sourceInfo,
             '{fact_check_summary}' => $this->summarizeFactChecks($draft['fact_checks'] ?? []),
             '{relevance_score}' => (string) ($draft['relevance_score'] ?? 'N/A'),
         ]);
@@ -480,7 +480,7 @@ class PrismAiService
 
         // Append writer agent style instructions if provided
         if ($writerStyleInstructions) {
-            $basePrompt .= "\n\n## WRITING STYLE INSTRUCTIONS\n".$writerStyleInstructions;
+            $basePrompt .= "\n\n## WRITING STYLE INSTRUCTIONS\n" . $writerStyleInstructions;
         }
 
         return $basePrompt;
@@ -648,5 +648,34 @@ class PrismAiService
             '{published_at}' => $article['published_at'] ?? '',
             '{region_name}' => $region->name,
         ]);
+    }
+    /**
+     * Generic JSON generation method to support Story Analysis
+     */
+    public function generateJson(string $prompt, array $schema): array
+    {
+        try {
+            $model = config('news-workflow.ai_models.scoring');
+
+            // Map simple schema array to RawSchema object if needed
+            // The StoryAnalysisService passes a raw array for schema, we need to adapt it
+            // Assuming schema is ['type' => 'object', ...] 
+
+            $response = prism()
+                ->structured()
+                ->using(...$model)
+                ->withClientOptions(['timeout' => self::CLIENT_TIMEOUT])
+                ->withPrompt($prompt)
+                ->withSchema(new RawSchema('generic_generation', $schema))
+                ->generate();
+
+            return $response->structured;
+        } catch (Exception $e) {
+            Log::error('Prism AI generic generation failed', [
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
     }
 }

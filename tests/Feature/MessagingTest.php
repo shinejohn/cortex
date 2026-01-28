@@ -29,9 +29,10 @@ test('user can view messages index page', function () {
         ->get(route('social.messages.index'));
 
     $response->assertSuccessful();
-    $response->assertInertia(fn ($page) => $page->component('event-city/social/messages-index')
-        ->has('conversations')
-        ->has('current_user')
+    $response->assertInertia(
+        fn($page) => $page->component('event-city/social/messages-index')
+            ->has('conversations')
+            ->has('current_user')
     );
 });
 
@@ -157,10 +158,11 @@ test('user can view conversation with messages', function () {
         ->get(route('social.messages.show', $conversation->id));
 
     $response->assertSuccessful();
-    $response->assertInertia(fn ($page) => $page->component('event-city/social/messages-index')
-        ->where('selected_conversation', $conversation->id)
-        ->has('messages', 2)
-        ->has('conversations')
+    $response->assertInertia(
+        fn($page) => $page->component('event-city/social/messages-index')
+            ->where('selected_conversation', $conversation->id)
+            ->has('messages', 2)
+            ->has('conversations')
     );
 });
 
@@ -260,7 +262,8 @@ test('new message page shows available friends', function () {
         ->get(route('social.messages.new'));
 
     $response->assertSuccessful();
-    $response->assertInertia(fn ($page) => $page->component('event-city/social/messages-new')
-        ->has('friends')
+    $response->assertInertia(
+        fn($page) => $page->component('event-city/social/messages-new')
+            ->has('friends')
     );
 });

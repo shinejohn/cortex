@@ -16,15 +16,17 @@ use Illuminate\Support\Facades\Log;
 final class PublishingService
 {
     public function __construct(
-        private readonly AgentAssignmentService $agentAssignmentService
-    ) {}
+        private readonly AgentAssignmentService $agentAssignmentService,
+        private readonly TrafficControlService $trafficControlService
+    ) {
+    }
 
     /**
      * Publish articles (Phase 7)
      */
     public function publishArticles(Region $region): int
     {
-        if (! config('news-workflow.publishing.enabled', true)) {
+        if (!config('news-workflow.publishing.enabled', true)) {
             Log::info('Publishing is disabled', ['region' => $region->name]);
 
             return 0;
@@ -37,6 +39,7 @@ final class PublishingService
         ]);
 
         // Get drafts ready for publishing
+        // We get ALL ready drafts because TrafficControl will decide priority
         $drafts = NewsArticleDraft::where('region_id', $region->id)
             ->where('status', 'ready_for_publishing')
             ->with('newsArticle')
@@ -47,26 +50,27 @@ final class PublishingService
             'count' => $drafts->count(),
         ]);
 
+        // Sort drafts by Priority Score before processing
+        $drafts = $drafts->sortByDesc(fn($draft) => $this->trafficControlService->calculatePriorityScore($draft));
+
         foreach ($drafts as $draft) {
             try {
-                // Check if auto-publish or needs review
-                if ($this->shouldAutoPublish($draft)) {
+                // Check Traffic Control logic
+                if ($this->trafficControlService->shouldPublishNow($draft)) {
                     $post = $this->publishDraft($draft, 'published');
                     $publishedCount++;
 
-                    Log::info('Auto-published article', [
+                    Log::info('Auto-published article via Traffic Control', [
                         'draft_id' => $draft->id,
                         'post_id' => $post->id,
                         'title' => $draft->generated_title,
+                        'category' => $post->category,
                     ]);
                 } else {
-                    // Mark as pending review
-                    $post = $this->publishDraft($draft, 'draft');
-
-                    Log::info('Article pending review', [
+                    // It remains in 'ready_for_publishing' for the next run
+                    Log::debug('Article held by Traffic Control', [
                         'draft_id' => $draft->id,
-                        'post_id' => $post->id,
-                        'quality_score' => $draft->quality_score,
+                        'reason' => 'Quota, Mix, or Timing rules',
                     ]);
                 }
             } catch (Exception $e) {
@@ -77,7 +81,7 @@ final class PublishingService
 
                 $draft->update([
                     'status' => 'rejected',
-                    'rejection_reason' => 'Publishing failed: '.$e->getMessage(),
+                    'rejection_reason' => 'Publishing failed: ' . $e->getMessage(),
                 ]);
             }
         }
@@ -91,28 +95,12 @@ final class PublishingService
     }
 
     /**
-     * Check if draft should be auto-published
-     * Always auto-publish if we have fewer than the target article count
+     * DEPRECATED: Legacy logic replaced by TrafficControlService
+     * Kept private if needed for fallback, but main flow uses TrafficControl
      */
     private function shouldAutoPublish(NewsArticleDraft $draft): bool
     {
-        $targetCount = config('news-workflow.final_selection.articles_per_region', 12);
-
-        // Count how many articles are ready for publishing today for this region
-        $readyCount = NewsArticleDraft::where('region_id', $draft->region_id)
-            ->where('status', 'ready_for_publishing')
-            ->whereDate('created_at', now()->toDateString())
-            ->count();
-
-        // Always auto-publish if we have fewer than target count
-        if ($readyCount < $targetCount) {
-            return true;
-        }
-
-        // Otherwise, check quality threshold
-        $threshold = config('news-workflow.publishing.auto_publish_threshold', 85);
-
-        return $draft->quality_score >= $threshold;
+        return $this->trafficControlService->shouldPublishNow($draft);
     }
 
     /**
@@ -151,7 +139,7 @@ final class PublishingService
             $agent = $preAssignedAgentId ? WriterAgent::find($preAssignedAgentId) : null;
 
             // Fallback to finding a suitable agent if not pre-assigned
-            if (! $agent) {
+            if (!$agent) {
                 $region = Region::find($draft->region_id);
                 $agent = $region ? $this->agentAssignmentService->findBestAgent($region, $category) : null;
             }
@@ -245,7 +233,7 @@ final class PublishingService
         $counter = 1;
 
         while (DayNewsPost::where('slug', $slug)->exists()) {
-            $slug = $originalSlug.'-'.$counter;
+            $slug = $originalSlug . '-' . $counter;
             $counter++;
         }
 
