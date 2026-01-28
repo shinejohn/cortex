@@ -14,14 +14,15 @@ final class BusinessDiscoveryService
 {
     public function __construct(
         private readonly GooglePlacesService $googlePlaces,
-    ) {}
+    ) {
+    }
 
     /**
      * Discover and store businesses for a region (Phase 1)
      */
     public function discoverBusinesses(Region $region): int
     {
-        if (! config('news-workflow.business_discovery.enabled', true)) {
+        if (!config('news-workflow.business_discovery.enabled', true)) {
             Log::info('Business discovery is disabled', ['region' => $region->name]);
 
             return 0;
@@ -104,7 +105,7 @@ final class BusinessDiscoveryService
         // Use google_place_id as unique identifier
         $googlePlaceId = $data['google_place_id'];
 
-        if (! $googlePlaceId) {
+        if (!$googlePlaceId) {
             throw new Exception('Business data missing google_place_id');
         }
 
@@ -169,7 +170,7 @@ final class BusinessDiscoveryService
             ->where('region_id', $region->id)
             ->exists();
 
-        if (! $exists) {
+        if (!$exists) {
             DB::table('business_region')->insert([
                 'business_id' => $business->id,
                 'region_id' => $region->id,
@@ -182,6 +183,86 @@ final class BusinessDiscoveryService
                 'business_name' => $business->name,
                 'region_id' => $region->id,
                 'region_name' => $region->name,
+            ]);
+        }
+
+        // Auto-configure as news source if applicable
+        $this->evaluateAndSetupNewsSource($business, $region);
+    }
+
+    /**
+     * targeted: Evaluate if this business should be a news source and setup collection
+     */
+    private function evaluateAndSetupNewsSource(Business $business, Region $region): void
+    {
+        // 1. Must have a website
+        if (empty($business->website)) {
+            return;
+        }
+
+        // 2. Check types/categories for news potential
+        // e.g., 'city_hall', 'police', 'school', 'newspaper', 'community_center'
+        $newsyTypes = ['government', 'school', 'university', 'museum', 'library', 'police', 'fire_station', 'local_government_office', 'newspaper', 'news_media'];
+
+        $isNewsy = false;
+        foreach ($business->categories ?? [] as $cat) {
+            if (str_contains(strtolower($cat), 'news') || in_array(strtolower($cat), $newsyTypes)) {
+                $isNewsy = true;
+                break;
+            }
+        }
+
+        if (in_array($business->primary_type, $newsyTypes)) {
+            $isNewsy = true;
+        }
+
+        if (!$isNewsy) {
+            return;
+        }
+
+        // 3. Create News Source
+        $source = \App\Models\NewsSource::firstOrCreate(
+            ['business_id' => $business->id],
+            [
+                'name' => $business->name,
+                'community_id' => $region->community_id, // Assuming region tracks community
+                'region_id' => $region->id,
+                'source_type' => 'organization_site',
+                'description' => $business->description,
+                'website_url' => $business->website,
+                'is_active' => true,
+                'priority' => 70,
+                'customer_status' => 'prospect'
+            ]
+        );
+
+        // 4. Create Collection Method (Web Scrape)
+        if ($source->wasRecentlyCreated || !$source->collectionMethods()->exists()) {
+
+            // Determine Playwright requirement (rudimentary check or config)
+            // By default, assume simple scrape, but use playwright if configured
+            $usePlaywright = true; // Use robust scraper for organizational sites
+
+            $method = $source->collectionMethods()->create([
+                'method_type' => 'scrape',
+                'name' => 'Website Scraper',
+                'endpoint_url' => $business->website, // Or try to find /news URL via AI later
+                'poll_interval_minutes' => 1440, // Daily check for orgs
+                'is_enabled' => true,
+                'requires_javascript' => $usePlaywright,
+                'scrape_config' => [
+                    'selectors' => [
+                        'list' => 'article, .news-item, .post, .press-release', // Generic starting point
+                        'title' => 'h1, h2, h3, .title',
+                        'date' => '.date, time'
+                    ]
+                ]
+            ]);
+
+            Log::info('Auto-created News Source from Business', [
+                'business_id' => $business->id,
+                'source_id' => $source->id,
+                'method' => 'scrape'
             ]);
         }
     }

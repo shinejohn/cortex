@@ -23,21 +23,21 @@ class ViteHelper
             public_path('build/.vite/manifest.json'),
             public_path('build/manifest.json'),
         ];
-        
+
         $manifestPath = $possiblePaths[0];
         $manifestDir = dirname($manifestPath);
-        
+
         // Create directory if it doesn't exist
         if (!File::exists($manifestDir)) {
             File::makeDirectory($manifestDir, 0755, true);
         }
-        
+
         // Also create the alternative path directory
         $altDir = dirname($possiblePaths[1]);
         if (!File::exists($altDir)) {
             File::makeDirectory($altDir, 0755, true);
         }
-        
+
         // Create a minimal manifest that includes common assets
         $manifest = [
             'resources/js/app.tsx' => [
@@ -50,7 +50,7 @@ class ViteHelper
                 'src' => 'resources/css/app.css',
             ],
         ];
-        
+
         // Add common page components that tests might hit
         // Comprehensive list based on test failures and common routes
         $commonPages = [
@@ -69,8 +69,19 @@ class ViteHelper
             'event-city/social/groups/index',
             'event-city/promo-codes/index',
             'event-city/promo-codes/show',
+            'event-city/social/messages-index',
+            'event-city/social/messages-new',
+            'event-city/notifications/index',
+            'event-city/calendars',
+            'event-city/calendars/index',
+            'event-city/calendars/show',
+            'event-city/calendars/edit',
+            'event-city/calendars/create',
+            'event-city/stores/edit',
+            'event-city/products/create',
+            'event-city/settings/workspace/overview',
         ];
-        
+
         foreach ($commonPages as $page) {
             $manifest["resources/js/pages/{$page}.tsx"] = [
                 'file' => "assets/{$page}.js",
@@ -78,12 +89,12 @@ class ViteHelper
                 'isEntry' => true,
             ];
         }
-        
+
         // Write to both possible locations
         File::put($manifestPath, json_encode($manifest, JSON_PRETTY_PRINT));
         File::put($possiblePaths[1], json_encode($manifest, JSON_PRETTY_PRINT));
     }
-    
+
     /**
      * Mock Vite facade to return empty strings in tests
      */

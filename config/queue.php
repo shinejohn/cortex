@@ -74,6 +74,60 @@ return [
             'after_commit' => false,
         ],
 
+        'collection' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'collection',
+            'retry_after' => 90,
+            'block_for' => null,
+            'after_commit' => false,
+        ],
+
+        'classification' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'classification',
+            'retry_after' => 90,
+            'block_for' => null,
+            'after_commit' => false,
+        ],
+
+        'breaking' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'breaking',
+            'retry_after' => 90,
+            'block_for' => null,
+            'after_commit' => false,
+        ],
+
+        'processing-brief' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'processing-brief',
+            'retry_after' => 90,
+            'block_for' => null,
+            'after_commit' => false,
+        ],
+
+        'processing-standard' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'processing-standard',
+            'retry_after' => 90,
+            'block_for' => null,
+            'after_commit' => false,
+        ],
+
+        'processing-full' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => 'processing-full',
+            'retry_after' => 90,
+            'block_for' => null,
+            'after_commit' => false,
+        ],
+
     ],
 
     /*

@@ -11,6 +11,7 @@ Route::prefix('tenants')->group(function () {
     Route::get('/{tenant}', [TenantController::class, 'show']);
     Route::post('/', [TenantController::class, 'store']);
     Route::put('/{tenant}', [TenantController::class, 'update']);
+    Route::delete('/{tenant}', [TenantController::class, 'destroy']);
 });
 
 Route::prefix('account-managers')->group(function () {

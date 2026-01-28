@@ -1,0 +1,24 @@
+{
+    "name": "fibonacco/ai-gateway-client",
+    "description": "HTTP client for the Fibonacco AI Gateway",
+    "type": "library",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^11.0|^12.0",
+        "illuminate/http": "^11.0|^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fibonacco\\AiGatewayClient\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Fibonacco\\AiGatewayClient\\AiGatewayClientServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable"
+}

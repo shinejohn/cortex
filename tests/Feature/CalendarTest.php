@@ -17,7 +17,7 @@ it('displays the calendars index page', function () {
     $response = get('/calendars');
 
     $response->assertSuccessful();
-    $response->assertInertia(fn ($page) => $page->component('calendars'));
+    $response->assertInertia(fn($page) => $page->component('event-city/calendars/index'));
 });
 
 it('displays public calendars only on index', function () {
@@ -27,7 +27,7 @@ it('displays public calendars only on index', function () {
     $response = get('/calendars');
 
     $response->assertSuccessful();
-    $response->assertInertia(fn ($page) => $page
+    $response->assertInertia(fn($page) => $page
         ->has('calendars.data', 3));
 });
 
@@ -37,7 +37,7 @@ it('allows authenticated users to create calendars', function () {
     $response = actingAs($user)->post('/calendars', [
         'title' => 'Test Calendar',
         'description' => 'This is a test calendar',
-        'category' => 'jazz',
+        'category' => 'music',
         'update_frequency' => 'weekly',
         'subscription_price' => 0,
         'is_private' => false,
@@ -159,7 +159,7 @@ it('allows calendar owners to add editors', function () {
     $calendar = Calendar::factory()->create(['user_id' => $owner->id]);
 
     $response = actingAs($owner)->post("/calendars/{$calendar->id}/editors", [
-        'user_id' => $editor->id,
+        'email' => $editor->email,
         'role' => 'editor',
     ]);
 
@@ -195,7 +195,7 @@ it('filters calendars by category', function () {
     $response = get('/calendars?category=jazz');
 
     $response->assertSuccessful();
-    $response->assertInertia(fn ($page) => $page
+    $response->assertInertia(fn($page) => $page
         ->has('calendars.data', 1));
 });
 
@@ -206,7 +206,7 @@ it('searches calendars by title', function () {
     $response = get('/calendars?search=Jazz');
 
     $response->assertSuccessful();
-    $response->assertInertia(fn ($page) => $page
+    $response->assertInertia(fn($page) => $page
         ->has('calendars.data', 1));
 });
 
@@ -217,7 +217,7 @@ it('filters calendars by price type', function () {
     $response = get('/calendars?price_type=free');
 
     $response->assertSuccessful();
-    $response->assertInertia(fn ($page) => $page
+    $response->assertInertia(fn($page) => $page
         ->has('calendars.data', 2));
 });
 
@@ -228,7 +228,7 @@ it('shows canEdit as true for calendar owners on show page', function () {
     $response = actingAs($user)->get("/calendars/{$calendar->id}");
 
     $response->assertSuccessful();
-    $response->assertInertia(fn ($page) => $page
+    $response->assertInertia(fn($page) => $page
         ->where('canEdit', true));
 });
 
@@ -241,7 +241,7 @@ it('shows canEdit as true for calendar editors on show page', function () {
     $response = actingAs($editor)->get("/calendars/{$calendar->id}");
 
     $response->assertSuccessful();
-    $response->assertInertia(fn ($page) => $page
+    $response->assertInertia(fn($page) => $page
         ->where('canEdit', true));
 });
 
@@ -253,6 +253,6 @@ it('shows canEdit as false for non-owners and non-editors on show page', functio
     $response = actingAs($otherUser)->get("/calendars/{$calendar->id}");
 
     $response->assertSuccessful();
-    $response->assertInertia(fn ($page) => $page
+    $response->assertInertia(fn($page) => $page
         ->where('canEdit', false));
 });

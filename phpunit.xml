@@ -42,5 +42,8 @@
         <env name="STRIPE_KEY" value="pk_test_00000000000000000000000000000000000000000000000000000000000000000000"/>
         <!-- Disable Vite manifest checks in tests -->
         <env name="VITE_APP_NAME" value="Laravel"/>
+        <env name="AI_GATEWAY_URL" value="https://ai-gateway.fibonacco.com"/>
+        <env name="AI_GATEWAY_TOKEN" value="test-token"/>
+        <env name="AI_TOOLS_PLATFORM" value="daynews"/>
     </php>
 </phpunit>

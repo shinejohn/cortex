@@ -27,6 +27,7 @@ final class Region extends Model
         'metadata',
         'latitude',
         'longitude',
+        'timezone',
     ];
 
     public function parent(): BelongsTo
@@ -59,6 +60,14 @@ final class Region extends Model
     {
         return $this->belongsToMany(Event::class, 'event_region')
             ->withTimestamps();
+    }
+
+    /**
+     * Get civic sources for this region
+     */
+    public function civicSources(): HasMany
+    {
+        return $this->hasMany(CivicSource::class);
     }
 
     /**

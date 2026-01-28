@@ -17,14 +17,14 @@ final class TenantResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'slug' => $this->slug,
+
             'subdomain' => $this->subdomain,
             'domain' => $this->domain,
             'is_active' => $this->is_active,
             'settings' => $this->settings,
             'metadata' => $this->metadata,
-            'created_at' => $this->created_at->toISOString(),
-            'updated_at' => $this->updated_at->toISOString(),
+            'created_at' => $this->created_at?->toISOString(),
+            'updated_at' => $this->updated_at?->toISOString(),
         ];
     }
 }

@@ -6,7 +6,7 @@ use App\Models\Notification;
 use App\Models\User;
 
 beforeEach(function () {
-    $this->withoutMiddleware();
+    // $this->withoutMiddleware(); // Removed to fix SubstituteBindings
 });
 
 it('can display the notifications index page', function () {
@@ -15,9 +15,10 @@ it('can display the notifications index page', function () {
     $response = $this->actingAs($user)->get('/notifications');
 
     $response->assertSuccessful();
-    $response->assertInertia(fn ($page) => $page
-        ->component('event-city/notifications/index')
-        ->has('notifications')
+    $response->assertInertia(
+        fn($page) => $page
+            ->component('event-city/notifications/index')
+            ->has('notifications')
     );
 });
 
@@ -50,6 +51,8 @@ it('can mark a notification as read', function () {
         'user_id' => $user->id,
         'read' => false,
     ]);
+
+    // Debug check removed
 
     $response = $this->actingAs($user)
         ->patch("/api/notifications/{$notification->id}/read");

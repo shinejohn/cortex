@@ -30,3 +30,8 @@ Schedule::command('email:generate-digests')->dailyAt('02:00');
 Schedule::command('email:generate-newsletters')->weeklyOn(6, '22:00'); // Saturday at 10 PM
 Schedule::command('email:generate-smb-reports')->weeklyOn(0, '18:00'); // Sunday at 6 PM
 Schedule::command('email:process-queue')->everyMinute();
+
+// AI Newsroom Schedule
+Schedule::command('newsroom:collect')->everyFifteenMinutes();
+Schedule::command('newsroom:classify')->everyTenMinutes();
+Schedule::command('newsroom:process')->everyFiveMinutes();

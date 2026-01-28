@@ -14,21 +14,21 @@ class BusinessTemplateFactory extends Factory
      *
      * @return array<string, mixed>
      */
-        public function definition(): array
+    public function definition(): array
     {
         return [
             'name' => $this->faker->sentence(),
             'slug' => $this->faker->slug(),
             'description' => $this->faker->paragraph(),
             'industry_id' => \App\Models\Industry::factory(),
-            'layout_config' => $this->faker->word(),
-            'available_tabs' => $this->faker->word(),
-            'default_tabs' => $this->faker->word(),
-            'ai_features' => $this->faker->dateTime(),
-            'theme_config' => $this->faker->word(),
-            'component_overrides' => $this->faker->word(),
-            'seo_template' => $this->faker->dateTime(),
-            'schema_template' => $this->faker->dateTime(),
+            'layout_config' => ['layout' => $this->faker->word()],
+            'available_tabs' => [$this->faker->word()],
+            'default_tabs' => [$this->faker->word()],
+            'ai_features' => ['feature' => $this->faker->word()],
+            'theme_config' => ['color' => $this->faker->hexColor()],
+            'component_overrides' => [],
+            'seo_template' => ['title' => $this->faker->sentence()],
+            'schema_template' => ['type' => 'Store'],
             'is_premium' => $this->faker->boolean(),
             'is_active' => $this->faker->boolean(),
         ];

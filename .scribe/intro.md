@@ -1,6 +1,6 @@
 # Introduction
 
-Complete RESTful API for the Day News Multisite platform. Includes authentication, publishing, CRM, social features, e-commerce, ticketing, and more.
+API Documentation
 
 <aside>
     <strong>Base URL</strong>: <code>http://localhost</code>

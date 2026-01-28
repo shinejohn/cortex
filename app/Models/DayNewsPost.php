@@ -40,6 +40,11 @@ final class DayNewsPost extends Model
         'published_at',
         'expires_at',
         'view_count',
+        'likes_count',
+        'shares_count',
+        'comments_count',
+        'engagement_score',
+        'engagement_calculated_at',
     ];
 
     public function workspace(): BelongsTo
@@ -223,7 +228,7 @@ final class DayNewsPost extends Model
         $count = 1;
 
         while (self::where('slug', $slug)->exists()) {
-            $slug = $originalSlug.'-'.$count;
+            $slug = $originalSlug . '-' . $count;
             $count++;
         }
 
@@ -237,6 +242,84 @@ final class DayNewsPost extends Model
             'expires_at' => 'datetime',
             'metadata' => 'array',
             'view_count' => 'integer',
+            'likes_count' => 'integer',
+            'shares_count' => 'integer',
+            'comments_count' => 'integer',
+            'engagement_score' => 'decimal:2',
+            'engagement_calculated_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Calculate and update engagement score
+     * 
+     * Formula: Weighted combination of views, likes, shares, comments
+     * Weights: views=1, likes=3, shares=5, comments=4
+     */
+    public function calculateEngagementScore(): float
+    {
+        $score = (
+            ($this->view_count * 1) +
+            ($this->likes_count * 3) +
+            ($this->shares_count * 5) +
+            ($this->comments_count * 4)
+        );
+
+        // Normalize to 0-100 scale (adjust divisor based on your traffic)
+        $normalized = min(100, $score / 10);
+
+        $this->update([
+            'engagement_score' => $normalized,
+            'engagement_calculated_at' => now(),
+        ]);
+
+        return $normalized;
+    }
+
+    /**
+     * Increment a specific engagement metric
+     */
+    public function incrementEngagement(string $type): void
+    {
+        $column = match ($type) {
+            'view' => 'view_count',
+            'like' => 'likes_count',
+            'share' => 'shares_count',
+            'comment' => 'comments_count',
+            default => null,
+        };
+
+        if ($column) {
+            $this->increment($column);
+        }
+    }
+
+    /**
+     * Scope: High engagement posts
+     */
+    public function scopeHighEngagement($query, float $minScore = 75.0)
+    {
+        return $query->where('engagement_score', '>=', $minScore);
+    }
+
+    /**
+     * Scope: Posts needing engagement recalculation
+     */
+    public function scopeNeedsEngagementUpdate($query, int $hoursOld = 6)
+    {
+        return $query->where(function ($q) use ($hoursOld) {
+            $q->whereNull('engagement_calculated_at')
+                ->orWhere('engagement_calculated_at', '<', now()->subHours($hoursOld));
+        });
+    }
+    /**
+     * Get story threads this post belongs to
+     */
+    public function storyThreads(): BelongsToMany
+    {
+        // Links to StoryThreads via story_thread_articles pivot
+        // Assuming this post corresponds to 'news_article_id' in the pivot
+        return $this->belongsToMany(StoryThread::class, 'story_thread_articles', 'news_article_id', 'story_thread_id')
+            ->withPivot(['sequence_number', 'narrative_role', 'contribution_summary']);
     }
 }

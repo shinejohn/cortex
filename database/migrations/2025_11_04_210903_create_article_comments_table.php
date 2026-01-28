@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,32 +15,13 @@ return new class extends Migration
         if (Schema::hasTable('article_comments')) {
             return;
         }
-        
+
         Schema::create('article_comments', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignId('article_id')->constrained('day_news_posts')->cascadeOnDelete();
             $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
-            $table->uuid('parent_id')->nullable();
-            $table->text('content');
-            $table->boolean('is_active')->default(true);
-            $table->boolean('is_pinned')->default(false);
-            $table->unsignedInteger('reports_count')->default(0);
-            $table->timestamps();
-
-            $table->index(['article_id', 'parent_id', 'created_at']);
-            $table->index(['user_id', 'created_at']);
-            $table->index(['article_id', 'is_active', 'created_at']);
+            $table->foreignUuid('parent_id')->nullable()->constrained('article_comments')->cascadeOnDelete();
         });
-        
-        // Ensure primary key constraint is committed before adding foreign key
-        // Use DB::unprepared to run outside transaction context
-        \Illuminate\Support\Facades\DB::unprepared('
-            ALTER TABLE article_comments 
-            ADD CONSTRAINT article_comments_parent_id_foreign 
-            FOREIGN KEY (parent_id) 
-            REFERENCES article_comments(id) 
-            ON DELETE CASCADE
-        ');
 
         // Article comment likes table
         Schema::create('article_comment_likes', function (Blueprint $table) {
