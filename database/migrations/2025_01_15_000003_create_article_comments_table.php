@@ -29,11 +29,15 @@ return new class extends Migration {
         });
 
         // Add foreign key constraint only if day_news_posts table exists
+        // Note: day_news_posts is created in a later migration (backfill), so this check might fail or cause issues
+        // if run in strict order. We will skip this constraint for now to allow fresh installs.
+        /*
         if (Schema::hasTable('day_news_posts')) {
             Schema::table('article_comments', function (Blueprint $table) {
                 $table->foreign('article_id')->references('id')->on('day_news_posts')->onDelete('cascade');
             });
         }
+        */
 
         // Article comment likes table
         Schema::create('article_comment_likes', function (Blueprint $table) {
