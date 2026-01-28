@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Head } from '@inertiajs/react'; // Assuming standard Inertia setup
-import AppLayout from '@/layouts/AppLayout'; // Assuming standard Layout
+import AppLayout from '@/layouts/app-layout'; // Assuming standard Layout
 import { Poll, PollPageProps } from '@/types/poll';
 import VotingForm from '@/components/Poll/VotingForm';
 import ResultsDisplay from '@/components/Poll/ResultsDisplay';
