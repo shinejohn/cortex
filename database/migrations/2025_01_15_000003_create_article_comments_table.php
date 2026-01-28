@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->unsignedBigInteger('article_id'); // Create column first without foreign key
             $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignUuid('parent_id')->nullable()->constrained('article_comments')->cascadeOnDelete();
+            $table->foreignUuid('parent_id')->nullable(); // Removed constrained('article_comments') to avoid self-referencing issue during create
             $table->text('content');
             $table->boolean('is_active')->default(true);
             $table->boolean('is_pinned')->default(false);
