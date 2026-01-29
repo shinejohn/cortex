@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('memorials', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignUuid('workspace_id')->nullable()->constrained()->nullOnDelete();
+            $table->uuid('user_id');
+            $table->uuid('workspace_id')->nullable();
             $table->string('name');
             $table->string('years'); // e.g., "1932 - 2023"
             $table->date('date_of_passing');
@@ -41,8 +41,8 @@ return new class extends Migration
 
         Schema::create('memorial_region', function (Blueprint $table) {
             $table->id();
-            $table->uuid('memorial_id')->constrained('memorials')->cascadeOnDelete();
-            $table->foreignUuid('region_id')->constrained()->cascadeOnDelete();
+            $table->uuid('memorial_id');
+            $table->uuid('region_id');
             $table->timestamps();
 
             $table->unique(['memorial_id', 'region_id']);

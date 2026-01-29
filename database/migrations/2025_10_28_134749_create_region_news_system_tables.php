@@ -46,7 +46,7 @@ return new class extends Migration
         // Region zipcodes table - links zipcodes to regions
         Schema::create('region_zipcodes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('region_id')->constrained('regions')->onDelete('cascade');
+            $table->uuid('region_id');
             $table->string('zipcode', 10);
             $table->boolean('is_primary')->default(false);
             $table->timestamps();

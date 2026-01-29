@@ -19,8 +19,8 @@ return new class extends Migration
         
         Schema::create('announcements', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignUuid('workspace_id')->nullable()->constrained()->nullOnDelete();
+            $table->uuid('user_id');
+            $table->uuid('workspace_id')->nullable();
             $table->enum('type', [
                 'wedding',
                 'engagement',
@@ -59,8 +59,8 @@ return new class extends Migration
         // Announcement regions pivot table
         Schema::create('announcement_region', function (Blueprint $table) {
             $table->id();
-            $table->uuid('announcement_id')->constrained('announcements')->cascadeOnDelete();
-            $table->foreignUuid('region_id')->constrained()->cascadeOnDelete();
+            $table->uuid('announcement_id');
+            $table->uuid('region_id');
             $table->timestamps();
 
             $table->unique(['announcement_id', 'region_id']);

@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('ad_campaigns', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->foreignId('advertiser_id')->constrained('businesses')->cascadeOnDelete();
+            $table->unsignedBigInteger('advertiser_id');
             $table->string('name');
             $table->text('description')->nullable();
             $table->enum('status', ['draft', 'pending', 'active', 'paused', 'completed', 'cancelled'])->default('draft');

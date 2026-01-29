@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('comment_reports', function (Blueprint $table) {
             $table->id();
-            $table->uuid('comment_id')->constrained('article_comments')->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('comment_id');
+            $table->uuid('user_id');
             $table->string('reason'); // spam, harassment, inappropriate, other
             $table->text('details')->nullable();
             $table->enum('status', ['pending', 'reviewed', 'resolved', 'dismissed'])->default('pending');

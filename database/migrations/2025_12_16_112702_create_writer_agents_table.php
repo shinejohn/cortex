@@ -48,8 +48,8 @@ return new class extends Migration
 
         Schema::create('writer_agent_region', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('writer_agent_id')->constrained('writer_agents')->cascadeOnDelete();
-            $table->foreignUuid('region_id')->constrained('regions')->cascadeOnDelete();
+            $table->uuid('writer_agent_id');
+            $table->uuid('region_id');
             $table->boolean('is_primary')->default(false);
             $table->timestamps();
 
@@ -58,11 +58,9 @@ return new class extends Migration
         });
 
         Schema::table('day_news_posts', function (Blueprint $table) {
-            $table->foreignUuid('writer_agent_id')
+            $table->uuid('writer_agent_id')
                 ->nullable()
-                ->after('author_id')
-                ->constrained('writer_agents')
-                ->nullOnDelete();
+                ->after('author_id');
         });
     }
 

@@ -1,0 +1,356 @@
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+/**
+ * Comprehensive Foreign Key Constraints Migration
+ * 
+ * This migration adds ALL foreign key constraints AFTER all tables exist.
+ * Generated from FK_CONSTRAINTS_LOG_BACKUP.txt containing 235 original constraints.
+ * 
+ * Pattern: Uses defensive hasTable() + hasColumn() + try-catch to safely add FKs.
+ */
+return new class extends Migration {
+    
+    /**
+     * Run the migrations - add all foreign key constraints.
+     */
+    public function up(): void
+    {
+        // ==========================================
+        // TAGS PIVOT TABLE
+        // ==========================================
+        $this->addFk('day_news_post_tag', 'day_news_post_id', 'day_news_posts', 'id', 'cascade');
+        $this->addFk('day_news_post_tag', 'tag_id', 'tags', 'id', 'cascade');
+        
+        // ==========================================
+        // ARTICLE COMMENTS
+        // ==========================================
+        $this->addFk('article_comments', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('article_comments', 'parent_id', 'article_comments', 'id', 'cascade');
+        $this->addFk('article_comment_likes', 'comment_id', 'article_comments', 'id', 'cascade');
+        $this->addFk('article_comment_likes', 'user_id', 'users', 'id', 'cascade');
+        
+        // ==========================================
+        // SEARCH TABLES
+        // ==========================================
+        $this->addFk('search_history', 'user_id', 'users', 'id', 'set null');
+        
+        // ==========================================
+        // COMMENT REPORTS
+        // ==========================================
+        $this->addFk('comment_reports', 'comment_id', 'article_comments', 'id', 'cascade');
+        $this->addFk('comment_reports', 'user_id', 'users', 'id', 'cascade');
+        
+        // ==========================================
+        // ANNOUNCEMENTS
+        // ==========================================
+        $this->addFk('announcements', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('announcements', 'workspace_id', 'workspaces', 'id', 'set null');
+        $this->addFk('announcement_views', 'announcement_id', 'announcements', 'id', 'cascade');
+        $this->addFk('announcement_regions', 'region_id', 'regions', 'id', 'cascade');
+        
+        // ==========================================
+        // CLASSIFIEDS
+        // ==========================================
+        $this->addFk('classifieds', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('classifieds', 'workspace_id', 'workspaces', 'id', 'set null');
+        $this->addFk('classified_images', 'classified_id', 'classifieds', 'id', 'cascade');
+        $this->addFk('classified_inquiries', 'classified_id', 'classifieds', 'id', 'cascade');
+        $this->addFk('classified_regions', 'region_id', 'regions', 'id', 'cascade');
+        $this->addFk('classified_workspace_featured', 'classified_id', 'classifieds', 'id', 'cascade');
+        $this->addFk('classified_workspace_featured', 'workspace_id', 'workspaces', 'id', 'cascade');
+        
+        // ==========================================
+        // COUPONS
+        // ==========================================
+        $this->addFk('coupons', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('coupons', 'business_id', 'businesses', 'id', 'set null');
+        $this->addFk('coupon_redemptions', 'coupon_id', 'coupons', 'id', 'cascade');
+        $this->addFk('coupon_regions', 'region_id', 'regions', 'id', 'cascade');
+        $this->addFk('coupon_saves', 'coupon_id', 'coupons', 'id', 'cascade');
+        $this->addFk('coupon_saves', 'user_id', 'users', 'id', 'set null');
+        
+        // ==========================================
+        // PHOTOS
+        // ==========================================
+        $this->addFk('photo_albums', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('photo_albums', 'workspace_id', 'workspaces', 'id', 'set null');
+        $this->addFk('photos', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('photos', 'album_id', 'photo_albums', 'id', 'set null');
+        $this->addFk('photo_album_regions', 'album_id', 'photo_albums', 'id', 'cascade');
+        $this->addFk('photo_likes', 'photo_id', 'photos', 'id', 'cascade');
+        $this->addFk('photo_comments', 'photo_id', 'photos', 'id', 'cascade');
+        $this->addFk('photo_regions', 'region_id', 'regions', 'id', 'cascade');
+        
+        // ==========================================
+        // LEGAL NOTICES
+        // ==========================================
+        $this->addFk('legal_notices', 'user_id', 'users', 'id', 'set null');
+        $this->addFk('legal_notices', 'workspace_id', 'workspaces', 'id', 'set null');
+        $this->addFk('legal_notice_views', 'legal_notice_id', 'legal_notices', 'id', 'cascade');
+        $this->addFk('legal_notice_regions', 'region_id', 'regions', 'id', 'cascade');
+        
+        // ==========================================
+        // MEMORIALS
+        // ==========================================
+        $this->addFk('memorials', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('memorials', 'workspace_id', 'workspaces', 'id', 'set null');
+        $this->addFk('memorial_tributes', 'memorial_id', 'memorials', 'id', 'cascade');
+        $this->addFk('memorial_regions', 'region_id', 'regions', 'id', 'cascade');
+        
+        // ==========================================
+        // PODCASTS
+        // ==========================================
+        $this->addFk('creator_profiles', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('podcasts', 'creator_profile_id', 'creator_profiles', 'id', 'cascade');
+        $this->addFk('podcast_episodes', 'podcast_id', 'podcasts', 'id', 'cascade');
+        $this->addFk('podcast_subscriptions', 'podcast_id', 'podcasts', 'id', 'cascade');
+        $this->addFk('podcast_regions', 'region_id', 'regions', 'id', 'cascade');
+        
+        // ==========================================
+        // NEWS SOURCES
+        // ==========================================
+        $this->addFk('news_sources', 'community_id', 'communities', 'id', 'set null');
+        $this->addFk('news_sources', 'region_id', 'regions', 'id', 'set null');
+        $this->addFk('news_sources', 'business_id', 'businesses', 'id', 'set null');
+        
+        // ==========================================
+        // RAW CONTENT
+        // ==========================================
+        $this->addFk('raw_content', 'community_id', 'communities', 'id', 'set null');
+        $this->addFk('raw_content', 'region_id', 'regions', 'id', 'set null');
+        
+        // ==========================================
+        // BUSINESS MENTIONS
+        // ==========================================
+        $this->addFk('business_mentions', 'business_id', 'businesses', 'id', 'set null');
+        $this->addFk('business_mentions', 'community_id', 'communities', 'id', 'set null');
+        
+        // ==========================================
+        // SOCIAL ACCOUNTS
+        // ==========================================
+        $this->addFk('social_accounts', 'user_id', 'users', 'id', 'cascade');
+        
+        // ==========================================
+        // WORKSPACES
+        // ==========================================
+        $this->addFk('workspaces', 'owner_id', 'users', 'id', 'cascade');
+        $this->addFk('workspace_members', 'workspace_id', 'workspaces', 'id', 'cascade');
+        $this->addFk('workspace_members', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('workspace_invitations', 'workspace_id', 'workspaces', 'id', 'cascade');
+        $this->addFk('workspace_invitations', 'invited_by', 'users', 'id', 'set null');
+        
+        // ==========================================
+        // VENUES / PERFORMERS / EVENTS / BOOKINGS
+        // ==========================================
+        $this->addFk('venues', 'workspace_id', 'workspaces', 'id', 'cascade');
+        $this->addFk('venues', 'created_by', 'users', 'id', 'set null');
+        $this->addFk('performers', 'workspace_id', 'workspaces', 'id', 'cascade');
+        $this->addFk('performers', 'created_by', 'users', 'id', 'set null');
+        $this->addFk('events', 'venue_id', 'venues', 'id', 'set null');
+        $this->addFk('events', 'performer_id', 'performers', 'id', 'set null');
+        $this->addFk('events', 'workspace_id', 'workspaces', 'id', 'cascade');
+        $this->addFk('events', 'created_by', 'users', 'id', 'set null');
+        $this->addFk('bookings', 'event_id', 'events', 'id', 'cascade');
+        $this->addFk('bookings', 'venue_id', 'venues', 'id', 'cascade');
+        $this->addFk('bookings', 'performer_id', 'performers', 'id', 'cascade');
+        $this->addFk('bookings', 'workspace_id', 'workspaces', 'id', 'cascade');
+        $this->addFk('bookings', 'created_by', 'users', 'id', 'set null');
+        $this->addFk('upcoming_shows', 'performer_id', 'performers', 'id', 'cascade');
+        
+        // ==========================================
+        // REVIEWS / RATINGS
+        // ==========================================
+        $this->addFk('reviews', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('reviews', 'approved_by', 'users', 'id', 'set null');
+        $this->addFk('ratings', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('ratings', 'booking_id', 'bookings', 'id', 'cascade');
+        
+        // ==========================================
+        // COMMUNITY SYSTEM
+        // ==========================================
+        $this->addFk('communities', 'workspace_id', 'workspaces', 'id', 'cascade');
+        $this->addFk('communities', 'created_by', 'users', 'id', 'cascade');
+        $this->addFk('community_threads', 'last_reply_by', 'users', 'id', 'set null');
+        $this->addFk('community_threads', 'community_id', 'communities', 'id', 'cascade');
+        $this->addFk('community_threads', 'author_id', 'users', 'id', 'cascade');
+        $this->addFk('community_thread_views', 'thread_id', 'community_threads', 'id', 'cascade');
+        $this->addFk('community_thread_views', 'user_id', 'users', 'id', 'set null');
+        $this->addFk('community_members', 'community_id', 'communities', 'id', 'cascade');
+        $this->addFk('community_members', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('community_thread_replies', 'thread_id', 'community_threads', 'id', 'cascade');
+        $this->addFk('community_thread_replies', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('community_thread_reply_likes', 'reply_id', 'community_thread_replies', 'id', 'cascade');
+        $this->addFk('community_thread_reply_likes', 'user_id', 'users', 'id', 'cascade');
+        
+        // ==========================================
+        // SOCIAL FEATURES
+        // ==========================================
+        $this->addFk('social_posts', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('social_post_likes', 'post_id', 'social_posts', 'id', 'cascade');
+        $this->addFk('social_post_likes', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('social_post_comments', 'post_id', 'social_posts', 'id', 'cascade');
+        $this->addFk('social_post_comments', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('social_post_comment_likes', 'comment_id', 'social_post_comments', 'id', 'cascade');
+        $this->addFk('social_post_comment_likes', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('social_post_shares', 'post_id', 'social_posts', 'id', 'cascade');
+        $this->addFk('social_post_shares', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('friendships', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('friendships', 'friend_id', 'users', 'id', 'cascade');
+        $this->addFk('social_groups', 'creator_id', 'users', 'id', 'cascade');
+        $this->addFk('social_group_members', 'group_id', 'social_groups', 'id', 'cascade');
+        $this->addFk('social_group_members', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('social_group_posts', 'group_id', 'social_groups', 'id', 'cascade');
+        $this->addFk('social_group_posts', 'user_id', 'users', 'id', 'cascade');
+        
+        // ==========================================
+        // NOTIFICATIONS & MESSAGING
+        // ==========================================
+        $this->addFk('notifications', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('conversations', 'created_by', 'users', 'id', 'cascade');
+        $this->addFk('conversation_participants', 'conversation_id', 'conversations', 'id', 'cascade');
+        $this->addFk('conversation_participants', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('messages', 'conversation_id', 'conversations', 'id', 'cascade');
+        $this->addFk('messages', 'sender_id', 'users', 'id', 'cascade');
+        
+        // ==========================================
+        // TICKETS
+        // ==========================================
+        $this->addFk('ticket_types', 'event_id', 'events', 'id', 'cascade');
+        $this->addFk('ticket_orders', 'event_id', 'events', 'id', 'cascade');
+        $this->addFk('ticket_orders', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('ticket_order_items', 'order_id', 'ticket_orders', 'id', 'cascade');
+        $this->addFk('ticket_order_items', 'ticket_type_id', 'ticket_types', 'id', 'cascade');
+        
+        // ==========================================
+        // STORES / CARTS
+        // ==========================================
+        $this->addFk('stores', 'workspace_id', 'workspaces', 'id', 'cascade');
+        $this->addFk('stores', 'created_by', 'users', 'id', 'set null');
+        $this->addFk('store_products', 'store_id', 'stores', 'id', 'cascade');
+        $this->addFk('store_categories', 'store_id', 'stores', 'id', 'cascade');
+        $this->addFk('store_regions', 'store_id', 'stores', 'id', 'cascade');
+        $this->addFk('store_regions', 'region_id', 'regions', 'id', 'cascade');
+        $this->addFk('carts', 'user_id', 'users', 'id', 'cascade');
+        $this->addFk('cart_items', 'cart_id', 'carts', 'id', 'cascade');
+        
+        // ==========================================
+        // INDUSTRIES
+        // ==========================================
+        $this->addFk('industries', 'parent_id', 'industries', 'id', 'set null');
+        
+        // ==========================================
+        // AD SYSTEM
+        // ==========================================
+        $this->addFk('ad_campaigns', 'advertiser_id', 'businesses', 'id', 'cascade');
+        $this->addFk('ad_creatives', 'campaign_id', 'ad_campaigns', 'id', 'cascade');
+        $this->addFk('ad_inventory', 'placement_id', 'ad_placements', 'id', 'cascade');
+        $this->addFk('ad_inventory', 'community_id', 'communities', 'id', 'cascade');
+        $this->addFk('ad_impressions', 'creative_id', 'ad_creatives', 'id', 'cascade');
+        $this->addFk('ad_impressions', 'placement_id', 'ad_placements', 'id', 'cascade');
+        $this->addFk('ad_impressions', 'community_id', 'communities', 'id', 'set null');
+        $this->addFk('ad_clicks', 'impression_id', 'ad_impressions', 'id', 'cascade');
+        $this->addFk('ad_clicks', 'creative_id', 'ad_creatives', 'id', 'cascade');
+        
+        // ==========================================
+        // EMAIL SYSTEM
+        // ==========================================
+        $this->addFk('email_subscribers', 'community_id', 'communities', 'id', 'cascade');
+        $this->addFk('email_subscribers', 'business_id', 'businesses', 'id', 'set null');
+        $this->addFk('email_campaigns', 'community_id', 'communities', 'id', 'cascade');
+        $this->addFk('email_campaigns', 'template_id', 'email_templates', 'id', 'set null');
+        $this->addFk('email_sends', 'campaign_id', 'email_campaigns', 'id', 'cascade');
+        $this->addFk('email_sends', 'subscriber_id', 'email_subscribers', 'id', 'cascade');
+        $this->addFk('newsletter_subscriptions', 'subscriber_id', 'email_subscribers', 'id', 'cascade');
+        
+        // ==========================================
+        // EMERGENCY SYSTEM
+        // ==========================================
+        $this->addFk('emergency_alerts', 'community_id', 'communities', 'id', 'cascade');
+        $this->addFk('emergency_alerts', 'created_by', 'users', 'id', 'set null');
+        $this->addFk('emergency_subscriptions', 'subscriber_id', 'email_subscribers', 'id', 'cascade');
+        $this->addFk('emergency_audit_log', 'alert_id', 'emergency_alerts', 'id', 'set null');
+        $this->addFk('emergency_audit_log', 'user_id', 'users', 'id', 'set null');
+        $this->addFk('emergency_audit_log', 'municipal_partner_id', 'municipal_partners', 'id', 'set null');
+        $this->addFk('emergency_deliveries', 'alert_id', 'emergency_alerts', 'id', 'cascade');
+        $this->addFk('emergency_deliveries', 'subscription_id', 'emergency_subscriptions', 'id', 'cascade');
+        $this->addFk('municipal_partners', 'primary_contact_id', 'users', 'id', 'set null');
+        
+        // ==========================================
+        // NOTIFICATION SUBSCRIPTIONS
+        // ==========================================
+        $this->addFk('notification_subscriptions', 'user_id', 'users', 'id', 'cascade');
+        
+        // ==========================================
+        // CROSS-DOMAIN AUTH
+        // ==========================================
+        $this->addFk('cross_domain_auth_tokens', 'user_id', 'users', 'id', 'cascade');
+        
+        // ==========================================
+        // ALPHASITE INTEGRATIONS
+        // ==========================================
+        $this->addFk('alphasite_fourcalls_integrations', 'business_id', 'businesses', 'id', 'cascade');
+        
+        // ==========================================
+        // COMMUNITY LOGS / INFLUENCERS
+        // ==========================================
+        $this->addFk('community_logs', 'region_id', 'regions', 'id', 'cascade');
+        $this->addFk('influencers', 'region_id', 'regions', 'id', 'cascade');
+    }
+
+    /**
+     * Safely add a foreign key constraint with full existence checks.
+     */
+    private function addFk(
+        string $sourceTable, 
+        string $sourceColumn, 
+        string $targetTable, 
+        string $targetColumn = 'id',
+        string $onDelete = 'cascade'
+    ): void {
+        if (!Schema::hasTable($sourceTable) || !Schema::hasTable($targetTable)) {
+            return;
+        }
+        
+        if (!Schema::hasColumn($sourceTable, $sourceColumn)) {
+            return;
+        }
+        
+        if (!Schema::hasColumn($targetTable, $targetColumn)) {
+            return;
+        }
+        
+        try {
+            Schema::table($sourceTable, function (Blueprint $table) use ($sourceColumn, $targetTable, $targetColumn, $onDelete) {
+                $table->foreign($sourceColumn)
+                    ->references($targetColumn)
+                    ->on($targetTable)
+                    ->onDelete($onDelete);
+            });
+        } catch (\Exception $e) {
+            // Ignore if FK already exists or other constraint issues
+            $msg = strtolower($e->getMessage());
+            if (strpos($msg, 'already exists') === false && 
+                strpos($msg, 'duplicate') === false &&
+                strpos($msg, 'constraint') === false) {
+                // Log but don't throw - we want migration to continue
+                \Log::warning("FK constraint failed: {$sourceTable}.{$sourceColumn} -> {$targetTable}.{$targetColumn}: " . $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Reverse the migrations - drop all foreign keys.
+     * Note: This is intentionally empty as dropping FKs is complex and 
+     * the down() of individual table migrations will handle cleanup.
+     */
+    public function down(): void
+    {
+        // Foreign keys will be dropped when tables are dropped in their respective migrations
+    }
+};

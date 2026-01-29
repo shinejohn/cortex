@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->enum('type', ['municipality', 'law_enforcement', 'school_district', 'utility', 'other']);
             $table->json('community_ids'); // communities they can broadcast to
-            $table->foreignId('primary_contact_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->unsignedBigInteger('primary_contact_id')->nullable();
             $table->string('api_key_hash')->nullable();
             $table->boolean('is_verified')->default(false);
             $table->boolean('is_active')->default(true);

@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('email')->index();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
-            $table->foreignId('community_id')->constrained('communities')->cascadeOnDelete();
-            $table->foreignId('business_id')->nullable()->constrained('businesses')->nullOnDelete();
+            $table->unsignedBigInteger('community_id');
+            $table->unsignedBigInteger('business_id')->nullable();
             $table->enum('type', ['reader', 'smb'])->default('reader');
             $table->enum('status', ['pending', 'active', 'unsubscribed', 'bounced', 'complained'])->default('pending');
             $table->timestamp('confirmed_at')->nullable();

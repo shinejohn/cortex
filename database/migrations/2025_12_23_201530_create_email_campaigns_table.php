@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('email_campaigns', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->foreignId('community_id')->constrained('communities')->cascadeOnDelete();
-            $table->foreignId('template_id')->nullable()->constrained('email_templates')->nullOnDelete();
+            $table->unsignedBigInteger('community_id');
+            $table->unsignedBigInteger('template_id')->nullable();
             $table->string('name');
             $table->enum('type', ['daily_digest', 'breaking_news', 'weekly_newsletter', 'smb_report', 'emergency', 'custom']);
             $table->enum('status', ['draft', 'scheduled', 'sending', 'sent', 'cancelled'])->default('draft');

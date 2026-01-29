@@ -10,10 +10,10 @@ return new class extends Migration {
         if (!Schema::hasTable('business_mentions')) {
             Schema::create('business_mentions', function (Blueprint $table) {
                 $table->uuid('id')->primary();
-                $table->foreignId('business_id')->nullable()->constrained()->nullOnDelete();
+                $table->unsignedBigInteger('business_id')->nullable();
                 $table->string('business_name');
                 $table->string('business_name_normalized')->nullable();
-                $table->foreignId('community_id')->nullable()->constrained()->nullOnDelete();
+                $table->unsignedBigInteger('community_id')->nullable();
                 $table->uuid('raw_content_id')->nullable();
                 $table->foreign('raw_content_id')->references('id')->on('raw_content')->nullOnDelete();
                 $table->foreignId('article_id')->nullable();

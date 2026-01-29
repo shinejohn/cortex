@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('ad_impressions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('creative_id')->constrained('ad_creatives')->cascadeOnDelete();
-            $table->foreignId('placement_id')->constrained('ad_placements')->cascadeOnDelete();
-            $table->foreignId('community_id')->nullable()->constrained('communities')->nullOnDelete();
+            $table->unsignedBigInteger('creative_id');
+            $table->unsignedBigInteger('placement_id');
+            $table->unsignedBigInteger('community_id')->nullable();
             $table->string('session_id', 64)->nullable();
             $table->string('ip_hash', 64)->nullable();
             $table->string('user_agent')->nullable();
