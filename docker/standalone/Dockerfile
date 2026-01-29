@@ -156,6 +156,7 @@ RUN composer dump-autoload
 # Configure Nginx
 COPY docker/standalone/etc/nginx/conf.d/custom.conf /etc/nginx/conf.d/custom.conf
 COPY docker/standalone/etc/nginx/site-opts.d/http.conf /etc/nginx/site-opts.d/http.conf
+COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
 
 # Configure Supervisor for Horizon (required by Laravel Horizon)
 COPY docker/standalone/etc/supervisor/supervisord.conf /etc/supervisord.conf
