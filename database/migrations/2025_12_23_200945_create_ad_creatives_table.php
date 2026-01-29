@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('ad_creatives', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->foreignId('campaign_id')->constrained('ad_campaigns')->cascadeOnDelete();
+            $table->unsignedBigInteger('campaign_id');
             $table->string('name');
             $table->enum('format', ['leaderboard', 'medium_rectangle', 'sidebar', 'native', 'sponsored_article', 'audio', 'video']);
             $table->string('headline')->nullable();

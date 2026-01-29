@@ -14,8 +14,8 @@ return new class extends Migration {
                 $table->foreign('source_id')->references('id')->on('news_sources')->nullOnDelete();
                 $table->uuid('collection_method_id')->nullable();
                 $table->foreign('collection_method_id')->references('id')->on('collection_methods')->nullOnDelete();
-                $table->foreignId('community_id')->nullable()->constrained()->nullOnDelete();
-                $table->foreignId('region_id')->nullable()->constrained()->nullOnDelete();
+                $table->unsignedBigInteger('community_id')->nullable();
+                $table->unsignedBigInteger('region_id')->nullable();
                 $table->text('source_url')->nullable();
                 $table->text('source_title');
                 $table->longText('source_content');

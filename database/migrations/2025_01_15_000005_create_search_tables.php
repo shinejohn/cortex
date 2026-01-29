@@ -16,7 +16,7 @@ return new class extends Migration
         // Search history table
         Schema::create('search_history', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->uuid('user_id')->nullable();
             $table->string('query');
             $table->unsignedInteger('results_count')->default(0);
             $table->json('filters')->nullable();

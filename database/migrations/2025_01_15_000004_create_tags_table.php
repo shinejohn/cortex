@@ -32,8 +32,8 @@ return new class extends Migration
         // Pivot table for tags and articles
         Schema::create('day_news_post_tag', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('day_news_post_id')->constrained()->cascadeOnDelete();
-            $table->uuid('tag_id')->constrained('tags')->cascadeOnDelete();
+            $table->unsignedBigInteger('day_news_post_id');
+            $table->uuid('tag_id');
             $table->timestamps();
 
             $table->unique(['day_news_post_id', 'tag_id']);

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('follows', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->uuid('user_id');
             $table->uuidMorphs('followable');
             $table->timestamps();
 

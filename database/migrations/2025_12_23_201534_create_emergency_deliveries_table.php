@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('emergency_deliveries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('alert_id')->constrained('emergency_alerts')->cascadeOnDelete();
-            $table->foreignId('subscription_id')->constrained('emergency_subscriptions')->cascadeOnDelete();
+            $table->unsignedBigInteger('alert_id');
+            $table->unsignedBigInteger('subscription_id');
             $table->enum('channel', ['email', 'sms']);
             $table->enum('status', ['queued', 'sent', 'delivered', 'failed'])->default('queued');
             $table->string('external_id')->nullable(); // SES message ID or SNS message ID

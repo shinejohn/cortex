@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('coupons', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignUuid('business_id')->nullable()->constrained('businesses')->nullOnDelete();
+            $table->uuid('user_id');
+            $table->uuid('business_id')->nullable();
             $table->string('title');
             $table->text('description')->nullable();
             $table->enum('discount_type', ['percentage', 'fixed_amount', 'buy_one_get_one', 'free_item'])->default('percentage');
@@ -44,8 +44,8 @@ return new class extends Migration
         // Coupon regions pivot table
         Schema::create('coupon_region', function (Blueprint $table) {
             $table->id();
-            $table->uuid('coupon_id')->constrained('coupons')->cascadeOnDelete();
-            $table->foreignUuid('region_id')->constrained()->cascadeOnDelete();
+            $table->uuid('coupon_id');
+            $table->uuid('region_id');
             $table->timestamps();
 
             $table->unique(['coupon_id', 'region_id']);
@@ -54,8 +54,8 @@ return new class extends Migration
         // Coupon usage tracking
         Schema::create('coupon_usages', function (Blueprint $table) {
             $table->id();
-            $table->uuid('coupon_id')->constrained('coupons')->cascadeOnDelete();
-            $table->foreignUuid('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->uuid('coupon_id');
+            $table->uuid('user_id')->nullable();
             $table->string('ip_address')->nullable();
             $table->timestamps();
 

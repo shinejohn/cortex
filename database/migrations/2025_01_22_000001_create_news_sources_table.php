@@ -10,15 +10,15 @@ return new class extends Migration {
         if (!Schema::hasTable('news_sources')) {
             Schema::create('news_sources', function (Blueprint $table) {
                 $table->uuid('id')->primary();
-                $table->foreignId('community_id')->nullable()->constrained()->nullOnDelete();
-                $table->foreignId('region_id')->nullable()->constrained()->nullOnDelete();
+                $table->unsignedBigInteger('community_id')->nullable();
+                $table->unsignedBigInteger('region_id')->nullable();
                 $table->string('name');
                 $table->string('source_type', 50);
                 $table->string('subtype', 50)->nullable();
                 $table->text('description')->nullable();
                 $table->text('website_url')->nullable();
                 $table->text('rss_url')->nullable();
-                $table->foreignId('business_id')->nullable()->constrained()->nullOnDelete();
+                $table->unsignedBigInteger('business_id')->nullable();
                 $table->boolean('is_potential_customer')->default(true);
                 $table->string('customer_status', 20)->default('prospect');
                 $table->string('platform', 50)->nullable();

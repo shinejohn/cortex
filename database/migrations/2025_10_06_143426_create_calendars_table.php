@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('calendars', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->uuid('user_id');
             $table->string('title');
             $table->text('description');
             $table->string('category');
@@ -33,8 +33,8 @@ return new class extends Migration
 
         Schema::create('calendar_followers', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('calendar_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->uuid('calendar_id');
+            $table->uuid('user_id');
             $table->timestamps();
 
             $table->unique(['calendar_id', 'user_id']);
@@ -42,8 +42,8 @@ return new class extends Migration
 
         Schema::create('calendar_roles', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('calendar_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->uuid('calendar_id');
+            $table->uuid('user_id');
             $table->string('role')->default('editor');
             $table->timestamps();
 
@@ -52,9 +52,9 @@ return new class extends Migration
 
         Schema::create('calendar_events', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('calendar_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('event_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('added_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->uuid('calendar_id');
+            $table->uuid('event_id');
+            $table->uuid('added_by')->nullable();
             $table->integer('position')->default(0);
             $table->timestamps();
 

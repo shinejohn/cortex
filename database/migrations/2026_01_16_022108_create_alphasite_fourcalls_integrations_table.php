@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('alphasite_fourcalls_integrations', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('business_id')->constrained('businesses')->onDelete('cascade');
+            $table->uuid('business_id');
             $table->string('organization_id')->comment('4calls.ai organization ID');
             $table->string('coordinator_id')->nullable()->comment('Default coordinator ID');
             $table->text('api_key')->comment('Encrypted API key for 4calls.ai');

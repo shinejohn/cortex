@@ -20,7 +20,7 @@ return new class extends Migration
             $table->uuidMorphs('reviewable'); // reviewable_type, reviewable_id
 
             // User who wrote the review (not workspace-specific)
-            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
+            $table->uuid('user_id');
 
             // Review content
             $table->string('title');
@@ -36,7 +36,7 @@ return new class extends Migration
             // Moderation
             $table->enum('status', ['pending', 'approved', 'rejected', 'hidden'])->default('pending');
             $table->timestamp('approved_at')->nullable();
-            $table->foreignUuid('approved_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->uuid('approved_by')->nullable();
             $table->string('rejection_reason')->nullable();
 
             $table->timestamps();

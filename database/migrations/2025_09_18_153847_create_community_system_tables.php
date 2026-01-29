@@ -29,8 +29,8 @@ return new class extends Migration
             $table->integer('active_today')->default(0);
             $table->timestamp('last_activity')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->foreignUuid('workspace_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('created_by')->constrained('users')->cascadeOnDelete();
+            $table->uuid('workspace_id');
+            $table->uuid('created_by');
             $table->timestamps();
         });
 
@@ -47,9 +47,9 @@ return new class extends Migration
             $table->boolean('is_locked')->default(false);
             $table->boolean('is_featured')->default(false);
             $table->timestamp('last_reply_at')->nullable();
-            $table->foreignUuid('last_reply_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignUuid('community_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('author_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('last_reply_by')->nullable();
+            $table->uuid('community_id');
+            $table->uuid('author_id');
             $table->timestamps();
 
             // Indexes for performance
@@ -61,8 +61,8 @@ return new class extends Migration
         // Create community_thread_views table
         Schema::create('community_thread_views', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('thread_id')->constrained('community_threads')->cascadeOnDelete();
-            $table->foreignUuid('user_id')->nullable()->constrained('users')->nullOnDelete(); // Nullable for guest views
+            $table->uuid('thread_id');
+            $table->uuid('user_id')->nullable(); // Nullable for guest views
             $table->string('session_id')->nullable(); // For tracking guest views
             $table->timestamp('viewed_at')->useCurrent();
             $table->timestamps();
@@ -81,8 +81,8 @@ return new class extends Migration
         // Create community_members table
         Schema::create('community_members', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('community_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->uuid('community_id');
+            $table->uuid('user_id');
             $table->enum('role', ['member', 'moderator', 'admin'])->default('member');
             $table->timestamp('joined_at')->useCurrent();
             $table->boolean('is_active')->default(true);
@@ -101,8 +101,8 @@ return new class extends Migration
         // Create community_thread_replies table
         Schema::create('community_thread_replies', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('thread_id')->constrained('community_threads')->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->uuid('thread_id');
+            $table->uuid('user_id');
             $table->text('content');
             $table->json('images')->nullable();
             $table->boolean('is_solution')->default(false); // For question threads
@@ -123,8 +123,8 @@ return new class extends Migration
         // Create community_thread_reply_likes table
         Schema::create('community_thread_reply_likes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('reply_id')->constrained('community_thread_replies')->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('reply_id');
+            $table->uuid('user_id');
             $table->timestamps();
 
             $table->unique(['reply_id', 'user_id']); // Prevent duplicate likes

@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('ad_inventory', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('placement_id')->constrained('ad_placements')->cascadeOnDelete();
-            $table->foreignId('community_id')->constrained('communities')->cascadeOnDelete();
+            $table->unsignedBigInteger('placement_id');
+            $table->unsignedBigInteger('community_id');
             $table->date('date');
             $table->integer('total_impressions')->default(0);
             $table->integer('sold_impressions')->default(0);

@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->uuid('user_id')->nullable()->cascadeOnDelete();
             $table->string('session_id')->nullable()->index();
             $table->timestamps();
 
@@ -21,9 +21,9 @@ return new class extends Migration
 
         Schema::create('cart_items', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('cart_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('product_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('store_id')->constrained()->cascadeOnDelete();
+            $table->uuid('cart_id');
+            $table->uuid('product_id');
+            $table->uuid('store_id');
             $table->integer('quantity')->default(1);
             $table->decimal('price', 10, 2);
             $table->timestamps();

@@ -20,11 +20,11 @@ return new class extends Migration
             $table->enum('booking_type', ['event', 'venue', 'performer']);
 
             // Booking relationships (polymorphic-like but explicit) - workspace-centric
-            $table->foreignUuid('event_id')->nullable()->constrained('events')->onDelete('cascade');
-            $table->foreignUuid('venue_id')->nullable()->constrained('venues')->onDelete('cascade');
-            $table->foreignUuid('performer_id')->nullable()->constrained('performers')->onDelete('cascade');
-            $table->foreignUuid('workspace_id')->constrained('workspaces')->onDelete('cascade');
-            $table->foreignUuid('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->uuid('event_id')->nullable();
+            $table->uuid('venue_id')->nullable();
+            $table->uuid('performer_id')->nullable();
+            $table->uuid('workspace_id');
+            $table->uuid('created_by')->nullable();
 
             // Contact information
             $table->string('contact_name');

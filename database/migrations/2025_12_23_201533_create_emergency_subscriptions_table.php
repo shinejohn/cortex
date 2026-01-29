@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('emergency_subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('subscriber_id')->constrained('email_subscribers')->cascadeOnDelete();
+            $table->unsignedBigInteger('subscriber_id');
             $table->boolean('email_enabled')->default(true);
             $table->boolean('sms_enabled')->default(false);
             $table->string('phone_number')->nullable();

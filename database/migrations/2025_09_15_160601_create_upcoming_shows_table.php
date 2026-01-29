@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('upcoming_shows', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('performer_id')->constrained('performers')->onDelete('cascade');
+            $table->uuid('performer_id');
             $table->date('date');
             $table->string('venue');
             $table->boolean('tickets_available')->default(true);

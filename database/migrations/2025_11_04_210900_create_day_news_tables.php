@@ -16,8 +16,8 @@ return new class extends Migration
         // Day News Posts table
         Schema::create('day_news_posts', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('workspace_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignUuid('author_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->uuid('workspace_id')->nullable();
+            $table->uuid('author_id')->nullable();
             $table->enum('type', ['article', 'announcement', 'notice', 'ad', 'schedule']);
             $table->enum('category', [
                 'local_news',
@@ -58,8 +58,8 @@ return new class extends Migration
         // Day News Post Payments table
         Schema::create('day_news_post_payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('post_id')->constrained('day_news_posts')->cascadeOnDelete();
-            $table->foreignUuid('workspace_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('post_id');
+            $table->uuid('workspace_id');
             $table->string('stripe_payment_intent_id')->nullable();
             $table->string('stripe_checkout_session_id')->nullable();
             $table->integer('amount');
@@ -98,8 +98,8 @@ return new class extends Migration
         // Day News Post Region pivot table
         Schema::create('day_news_post_region', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('day_news_post_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('region_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('day_news_post_id');
+            $table->uuid('region_id');
             $table->timestamps();
 
             $table->unique(['day_news_post_id', 'region_id']);

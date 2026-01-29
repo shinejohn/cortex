@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('stores', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('workspace_id')->constrained()->cascadeOnDelete();
+            $table->uuid('workspace_id');
             $table->string('name');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
@@ -30,7 +30,7 @@ return new class extends Migration
 
         Schema::create('products', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('store_id')->constrained()->cascadeOnDelete();
+            $table->uuid('store_id');
             $table->string('name');
             $table->string('slug');
             $table->text('description')->nullable();
@@ -54,8 +54,8 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('order_number')->unique();
-            $table->foreignUuid('store_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->uuid('store_id');
+            $table->uuid('user_id')->nullable();
             $table->string('customer_email');
             $table->string('customer_name')->nullable();
             $table->decimal('subtotal', 10, 2);
@@ -76,8 +76,8 @@ return new class extends Migration
 
         Schema::create('order_items', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('order_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('product_id')->nullable()->constrained()->nullOnDelete();
+            $table->uuid('order_id');
+            $table->uuid('product_id')->nullable();
             $table->string('product_name');
             $table->text('product_description')->nullable();
             $table->decimal('price', 10, 2);

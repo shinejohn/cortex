@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('workspaces', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('owner_id')->constrained('users', 'id');
+            $table->uuid('owner_id');
             $table->string('name');
             $table->string('slug')->unique();
             $table->longText('logo')->nullable();
@@ -30,7 +30,7 @@ return new class extends Migration
         });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignUuid('current_workspace_id')->nullable()->constrained('workspaces');
+            $table->uuid('current_workspace_id')->nullable();
         });
 
         Schema::create('roles', function (Blueprint $table) {
@@ -40,8 +40,8 @@ return new class extends Migration
 
         Schema::create('workspace_memberships', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('workspace_id')->constrained('workspaces');
-            $table->foreignUuid('user_id')->constrained('users');
+            $table->uuid('workspace_id');
+            $table->uuid('user_id');
             $table->text('role');
             $table->foreign('role')->references('name')->on('roles');
             $table->timestamps();

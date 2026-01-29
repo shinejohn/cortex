@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('emergency_audit_log', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('alert_id')->nullable()->constrained('emergency_alerts')->nullOnDelete();
-            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('municipal_partner_id')->nullable()->constrained('municipal_partners')->nullOnDelete();
+            $table->unsignedBigInteger('alert_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('municipal_partner_id')->nullable();
             $table->string('action'); // created, published, updated, cancelled, expired
             $table->json('changes')->nullable();
             $table->string('ip_address')->nullable();
