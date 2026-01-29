@@ -23,8 +23,8 @@ return new class extends Migration
             $table->boolean('is_public')->default(true);
             $table->timestamps();
 
-            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             $table->unique(['event_id', 'user_id']);
             $table->index(['event_id', 'checked_in_at']);
             $table->index(['user_id', 'checked_in_at']);

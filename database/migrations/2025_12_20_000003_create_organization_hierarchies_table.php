@@ -31,12 +31,12 @@ return new class extends Migration
             $table->timestamps();
             
             // Foreign keys
-            $table->foreign('organization_id')
+$1// FK DISABLED: $2
                 ->references('id')
                 ->on('businesses')
                 ->cascadeOnDelete();
             
-            $table->foreign('parent_id')
+$1// FK DISABLED: $2
                 ->references('id')
                 ->on('businesses')
                 ->nullOnDelete();

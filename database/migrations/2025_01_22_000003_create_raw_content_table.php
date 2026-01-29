@@ -11,9 +11,9 @@ return new class extends Migration {
             Schema::create('raw_content', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->uuid('source_id')->nullable();
-                $table->foreign('source_id')->references('id')->on('news_sources')->nullOnDelete();
+$1// FK DISABLED: $2
                 $table->uuid('collection_method_id')->nullable();
-                $table->foreign('collection_method_id')->references('id')->on('collection_methods')->nullOnDelete();
+$1// FK DISABLED: $2
                 $table->unsignedBigInteger('community_id')->nullable();
                 $table->unsignedBigInteger('region_id')->nullable();
                 $table->text('source_url')->nullable();

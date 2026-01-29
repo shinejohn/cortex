@@ -27,8 +27,8 @@ return new class extends Migration
             
             $table->timestamps();
             
-            $table->foreign('campaign_id')->references('id')->on('campaigns')->cascadeOnDelete();
-            $table->foreign('customer_id')->references('id')->on('customers')->cascadeOnDelete();
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             $table->unique(['campaign_id', 'customer_id']);
             $table->index('campaign_id');
             $table->index('customer_id');

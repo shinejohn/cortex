@@ -43,9 +43,9 @@ return new class extends Migration
             $table->timestamp('used_at');
             $table->timestamps();
 
-            $table->foreign('promo_code_id')->references('id')->on('promo_codes')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('ticket_order_id')->references('id')->on('ticket_orders')->onDelete('cascade');
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             $table->index(['promo_code_id', 'used_at']);
             $table->index(['user_id', 'used_at']);
         });

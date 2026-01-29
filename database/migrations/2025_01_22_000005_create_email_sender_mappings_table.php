@@ -11,7 +11,7 @@ return new class extends Migration {
             Schema::create('email_sender_mappings', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->uuid('source_id');
-                $table->foreign('source_id')->references('id')->on('news_sources')->cascadeOnDelete();
+$1// FK DISABLED: $2
                 $table->uuid('collection_method_id')->nullable();
                 $table->string('sender_email')->nullable();
                 $table->string('sender_domain')->nullable();

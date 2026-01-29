@@ -37,7 +37,7 @@ return new class extends Migration
             
             $table->timestamps();
             
-            $table->foreign('industry_id')->references('id')->on('industries')->nullOnDelete();
+$1// FK DISABLED: $2
         });
     }
 

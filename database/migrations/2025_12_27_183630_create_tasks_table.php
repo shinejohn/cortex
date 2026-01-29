@@ -28,9 +28,9 @@ return new class extends Migration
             
             $table->timestamps();
             
-            $table->foreign('tenant_id')->references('id')->on('tenants')->cascadeOnDelete();
-            $table->foreign('customer_id')->references('id')->on('customers')->cascadeOnDelete();
-            $table->foreign('assigned_to_id')->references('id')->on('users')->cascadeOnDelete();
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             $table->index('tenant_id');
             $table->index('customer_id');
             $table->index('assigned_to_id');

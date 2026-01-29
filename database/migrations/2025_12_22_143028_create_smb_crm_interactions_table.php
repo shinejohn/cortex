@@ -42,8 +42,8 @@ return new class extends Migration
             
             $table->timestamp('created_at')->useCurrent();
             
-            $table->foreign('business_id')->references('id')->on('businesses')->cascadeOnDelete();
-            $table->foreign('customer_id')->references('id')->on('smb_crm_customers')->nullOnDelete();
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             
             $table->index('business_id');
             $table->index('customer_id');

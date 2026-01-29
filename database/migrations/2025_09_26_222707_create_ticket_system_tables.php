@@ -26,7 +26,7 @@ return new class extends Migration
             $table->integer('sort_order')->default(0);
             $table->timestamps();
 
-            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
+$1// FK DISABLED: $2
             $table->index(['event_id', 'is_active']);
         });
 
@@ -46,8 +46,8 @@ return new class extends Migration
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
 
-            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             $table->index(['user_id', 'status']);
             $table->index(['event_id', 'status']);
         });
@@ -61,8 +61,8 @@ return new class extends Migration
             $table->decimal('total_price', 10, 2);
             $table->timestamps();
 
-            $table->foreign('ticket_order_id')->references('id')->on('ticket_orders')->onDelete('cascade');
-            $table->foreign('ticket_plan_id')->references('id')->on('ticket_plans')->onDelete('cascade');
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
         });
     }
 

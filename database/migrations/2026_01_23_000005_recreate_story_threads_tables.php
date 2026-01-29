@@ -73,7 +73,7 @@ return new class extends Migration {
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('region_id')->references('id')->on('regions')->onDelete('cascade');
+$1// FK DISABLED: $2
             $table->index(['status', 'priority']);
             $table->index(['category', 'status']);
             $table->index('next_check_at');
@@ -98,8 +98,8 @@ return new class extends Migration {
 
             $table->timestamps();
 
-            $table->foreign('story_thread_id')->references('id')->on('story_threads')->onDelete('cascade');
-            $table->foreign('day_news_post_id')->references('id')->on('day_news_posts')->onDelete('cascade');
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             $table->unique(['story_thread_id', 'day_news_post_id']);
             $table->index('narrative_role');
         });
@@ -148,7 +148,7 @@ return new class extends Migration {
 
             $table->timestamps();
 
-            $table->foreign('story_thread_id')->references('id')->on('story_threads')->onDelete('cascade');
+$1// FK DISABLED: $2
             $table->index(['status', 'check_at']);
             $table->index('trigger_type');
         });
@@ -185,8 +185,8 @@ return new class extends Migration {
 
             $table->timestamps();
 
-            $table->foreign('story_thread_id')->references('id')->on('story_threads')->onDelete('cascade');
-            $table->foreign('day_news_post_id')->references('id')->on('day_news_posts')->onDelete('set null');
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             $table->index(['story_thread_id', 'status']);
         });
 
@@ -212,7 +212,7 @@ return new class extends Migration {
             $table->timestamp('calculated_at')->nullable();
             $table->timestamps();
 
-            $table->foreign('region_id')->references('id')->on('regions')->onDelete('cascade');
+$1// FK DISABLED: $2
             $table->unique(['region_id', 'category', 'subcategory']);
         });
     }

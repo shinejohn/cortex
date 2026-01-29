@@ -50,8 +50,8 @@ return new class extends Migration {
                 $table->timestamps();
                 $table->softDeletes();
 
-                $table->foreign('region_id')->references('id')->on('regions')->onDelete('cascade');
-                $table->foreign('business_id')->references('id')->on('businesses')->onDelete('set null');
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
 
                 $table->index(['region_id', 'status']);
                 $table->index(['business_id', 'status']);
@@ -74,7 +74,7 @@ return new class extends Migration {
                 $table->json('metadata')->nullable();
                 $table->timestamps();
 
-                $table->foreign('opportunity_id')->references('id')->on('sales_opportunities')->onDelete('cascade');
+$1// FK DISABLED: $2
                 $table->index(['opportunity_id', 'created_at']);
             });
         }

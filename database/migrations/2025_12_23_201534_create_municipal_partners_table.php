@@ -33,7 +33,7 @@ return new class extends Migration
 
         // Add foreign key to emergency_alerts
         Schema::table('emergency_alerts', function (Blueprint $table) {
-            $table->foreign('municipal_partner_id')
+$1// FK DISABLED: $2
                 ->references('id')
                 ->on('municipal_partners')
                 ->nullOnDelete();
