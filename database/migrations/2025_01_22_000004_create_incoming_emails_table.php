@@ -24,7 +24,7 @@ return new class extends Migration {
                 $table->jsonb('attachments')->nullable();
                 $table->string('email_type', 30)->nullable();
                 $table->uuid('source_id')->nullable();
-$1// FK DISABLED: $2
+// FK DISABLED
                 $table->uuid('collection_method_id')->nullable();
                 $table->string('processing_status', 20)->default('pending');
                 $table->timestamp('processed_at')->nullable();

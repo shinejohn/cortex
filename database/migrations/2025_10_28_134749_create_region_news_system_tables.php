@@ -37,10 +37,7 @@ return new class extends Migration
 
         // Add self-referencing foreign key after table creation
         Schema::table('regions', function (Blueprint $table) {
-$1// FK DISABLED: $2
-                ->references('id')
-                ->on('regions')
-                ->onDelete('cascade');
+// FK DISABLED
         });
 
         // Region zipcodes table - links zipcodes to regions

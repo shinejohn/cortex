@@ -43,9 +43,9 @@ return new class extends Migration
             $table->timestamp('used_at');
             $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
+// FK DISABLED
             $table->index(['promo_code_id', 'used_at']);
             $table->index(['user_id', 'used_at']);
         });

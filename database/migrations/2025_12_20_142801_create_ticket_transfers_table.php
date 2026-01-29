@@ -24,9 +24,9 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
+// FK DISABLED
             $table->index(['from_user_id', 'status']);
             $table->index(['to_email', 'status']);
             $table->index(['transfer_token']);

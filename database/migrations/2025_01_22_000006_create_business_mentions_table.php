@@ -15,7 +15,7 @@ return new class extends Migration {
                 $table->string('business_name_normalized')->nullable();
                 $table->unsignedBigInteger('community_id')->nullable();
                 $table->uuid('raw_content_id')->nullable();
-$1// FK DISABLED: $2
+// FK DISABLED
                 $table->foreignId('article_id')->nullable();
                 $table->foreignId('published_article_id')->nullable();
                 $table->string('mention_type', 30)->default('mentioned');

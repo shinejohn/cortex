@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->uuid('tenant_id')->nullable()->after('id');
-$1// FK DISABLED: $2
+// FK DISABLED
             $table->index('tenant_id');
         });
     }

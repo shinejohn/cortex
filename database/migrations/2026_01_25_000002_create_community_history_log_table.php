@@ -50,7 +50,7 @@ return new class extends Migration {
 
                 $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
 
                 $table->index(['region_id', 'event_date']);
                 $table->index(['content_type', 'content_id']);
@@ -71,7 +71,7 @@ $1// FK DISABLED: $2
                 $table->json('metadata')->nullable();
                 $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
                 $table->index(['history_entry_id']);
                 $table->index(['person_id']);
             });
@@ -87,7 +87,7 @@ $1// FK DISABLED: $2
                 $table->json('vote_breakdown')->nullable(); // {for: [...], against: [...], abstain: [...]}
                 $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
             });
         }
     }

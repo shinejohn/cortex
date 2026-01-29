@@ -64,7 +64,7 @@ return new class extends Migration {
             $table->timestamps();
             $table->softDeletes();
 
-$1// FK DISABLED: $2
+// FK DISABLED
             $table->index(['status', 'priority']);
             $table->index(['category', 'status']);
             $table->index('next_check_at');
@@ -89,8 +89,8 @@ $1// FK DISABLED: $2
 
             $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
             $table->unique(['story_thread_id', 'day_news_post_id']);
             $table->index('narrative_role');
         });
@@ -139,7 +139,7 @@ $1// FK DISABLED: $2
 
             $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
             $table->index(['status', 'check_at']);
             $table->index('trigger_type');
         });
@@ -176,8 +176,8 @@ $1// FK DISABLED: $2
 
             $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
             $table->index(['story_thread_id', 'status']);
         });
 
@@ -203,7 +203,7 @@ $1// FK DISABLED: $2
             $table->timestamp('calculated_at')->nullable();
             $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
             $table->unique(['region_id', 'category', 'subcategory']);
         });
     }

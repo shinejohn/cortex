@@ -26,9 +26,9 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
+// FK DISABLED
             $table->index(['gifter_id', 'status']);
             $table->index(['recipient_email', 'status']);
             $table->index(['gift_token']);

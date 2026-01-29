@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->string('action_url')->nullable();
             $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
             $table->index(['user_id', 'read']);
             $table->index('created_at');
         });

@@ -34,7 +34,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             
-$1// FK DISABLED: $2
+// FK DISABLED
             
             $table->index('business_id');
         });

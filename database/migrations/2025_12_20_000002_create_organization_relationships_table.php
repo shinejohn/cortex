@@ -38,10 +38,7 @@ return new class extends Migration
             $table->softDeletes();
             
             // Foreign key
-$1// FK DISABLED: $2
-                ->references('id')
-                ->on('businesses')
-                ->cascadeOnDelete();
+// FK DISABLED
             
             // Unique constraint: same organization can't have duplicate relationships
             $table->unique(['organization_id', 'relatable_type', 'relatable_id', 'relationship_type'], 'org_rel_unique');

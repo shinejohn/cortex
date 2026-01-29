@@ -73,7 +73,7 @@ return new class extends Migration {
                 $table->timestamp('last_active_at')->nullable();
                 $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
             });
         }
 
@@ -91,7 +91,7 @@ $1// FK DISABLED: $2
 
                 $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
             });
         }
     }

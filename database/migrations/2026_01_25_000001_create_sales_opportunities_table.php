@@ -50,8 +50,8 @@ return new class extends Migration {
                 $table->timestamps();
                 $table->softDeletes();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
 
                 $table->index(['region_id', 'status']);
                 $table->index(['business_id', 'status']);
@@ -74,7 +74,7 @@ $1// FK DISABLED: $2
                 $table->json('metadata')->nullable();
                 $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
                 $table->index(['opportunity_id', 'created_at']);
             });
         }

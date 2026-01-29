@@ -25,10 +25,10 @@ return new class extends Migration
             $table->uuid('sold_to')->nullable();
             $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
+// FK DISABLED
+// FK DISABLED
             $table->index(['event_id', 'status']);
             $table->index(['seller_id', 'status']);
             $table->index(['status', 'expires_at']);

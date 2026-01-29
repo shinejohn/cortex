@@ -21,7 +21,7 @@ return new class extends Migration
             
             $table->timestamps();
             
-$1// FK DISABLED: $2
+// FK DISABLED
             $table->unique(['smb_business_id', 'attribute_key']);
             $table->index('smb_business_id');
         });

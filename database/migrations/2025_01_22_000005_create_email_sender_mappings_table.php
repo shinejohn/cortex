@@ -11,7 +11,7 @@ return new class extends Migration {
             Schema::create('email_sender_mappings', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->uuid('source_id');
-$1// FK DISABLED: $2
+// FK DISABLED
                 $table->uuid('collection_method_id')->nullable();
                 $table->string('sender_email')->nullable();
                 $table->string('sender_domain')->nullable();

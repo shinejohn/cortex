@@ -26,7 +26,7 @@ return new class extends Migration
             
             $table->timestamps();
             
-$1// FK DISABLED: $2
+// FK DISABLED
             $table->index('smb_business_id');
             $table->index('rating');
             $table->index('time');

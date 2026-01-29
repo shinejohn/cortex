@@ -35,8 +35,8 @@ return new class extends Migration
             $table->boolean('is_admin')->default(false);
             $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
 
             $table->unique(['conversation_id', 'user_id']);
             $table->index(['user_id', 'last_read_at']);
@@ -53,8 +53,8 @@ $1// FK DISABLED: $2
             $table->timestamp('edited_at')->nullable();
             $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
 
             $table->index(['conversation_id', 'created_at']);
             $table->index(['sender_id', 'created_at']);
