@@ -27,6 +27,7 @@ RUN install-php-extensions intl
 
 WORKDIR /var/www/html
 COPY --chown=www-data:www-data composer.json composer.lock ./
+COPY --chown=www-data:www-data packages/ ./packages/
 RUN composer install --no-dev --no-interaction --no-plugins --no-scripts --prefer-dist
 
 USER www-data
@@ -136,6 +137,7 @@ COPY --from=static-assets --chown=www-data:www-data /app/bootstrap/ssr ./bootstr
 
 # Copy application source code
 COPY --chown=www-data:www-data composer.json composer.lock ./
+COPY --chown=www-data:www-data packages/ ./packages/
 COPY --chown=www-data:www-data app ./app
 COPY --chown=www-data:www-data bootstrap ./bootstrap
 COPY --chown=www-data:www-data config ./config
