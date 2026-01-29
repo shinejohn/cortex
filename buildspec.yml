@@ -1,0 +1,43 @@
+version: 0.2
+
+# This buildspec builds ALL apps using environment variables passed at build time
+# Usage: aws codebuild start-build --project-name fibonacco-multisite-build --environment-variables-override name=APP_NAME,value=daynews
+
+env:
+  variables:
+    AWS_ACCOUNT_ID: "195430954683"
+    AWS_REGION: "us-east-1"
+    ECS_CLUSTER: "fibonacco-dev"
+    # APP_NAME should be passed as override: daynews, goeventcity, golocalvoices, downtownguide, alphasite
+    APP_NAME: "daynews"
+
+phases:
+  pre_build:
+    commands:
+      - echo "=== Building app:" $APP_NAME "==="
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+      - ECR_REPO="fibonacco/dev/$APP_NAME"
+      - ECS_SERVICE="fibonacco-dev-$APP_NAME"
+      - IMAGE_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:-latest}
+      - |
+        if [ "$APP_NAME" = "ssr" ]; then
+          DOCKERFILE="docker/Dockerfile.inertia-ssr"
+        else
+          DOCKERFILE="docker/standalone/Dockerfile"
+        fi
+      - echo "Using Dockerfile:" $DOCKERFILE
+  build:
+    commands:
+      - echo Building Docker image for $APP_NAME...
+      - docker build -f $DOCKERFILE -t $IMAGE_URI:latest -t $IMAGE_URI:$IMAGE_TAG .
+  post_build:
+    commands:
+      - echo Pushing Docker image...
+      - docker push $IMAGE_URI:latest
+      - docker push $IMAGE_URI:$IMAGE_TAG
+      - echo Updating ECS service $ECS_SERVICE...
+      - aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --force-new-deployment
+      - echo "✅ Build and deploy completed for $APP_NAME on $(date)"
