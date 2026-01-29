@@ -49,8 +49,8 @@ return new class extends Migration
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
 
-            $table->foreign('workspace_id')->references('id')->on('workspaces')->onDelete('cascade');
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             $table->index(['workspace_id', 'is_active']);
             $table->index(['slug']);
             $table->index(['is_featured', 'is_active']);
@@ -69,7 +69,7 @@ return new class extends Migration
             $table->integer('sort_order')->default(0);
             $table->timestamps();
 
-            $table->foreign('hub_id')->references('id')->on('hubs')->onDelete('cascade');
+$1// FK DISABLED: $2
             $table->index(['hub_id', 'sort_order']);
             $table->index(['hub_id', 'is_visible']);
         });
@@ -84,8 +84,8 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
-            $table->foreign('hub_id')->references('id')->on('hubs')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             $table->unique(['hub_id', 'user_id']);
             $table->index(['hub_id', 'role']);
             $table->index(['hub_id', 'is_active']);
@@ -102,7 +102,7 @@ return new class extends Migration
             $table->integer('sort_order')->default(0);
             $table->timestamps();
 
-            $table->foreign('hub_id')->references('id')->on('hubs')->onDelete('cascade');
+$1// FK DISABLED: $2
             $table->unique(['hub_id', 'slug']);
             $table->index(['hub_id', 'sort_order']);
         });
@@ -124,14 +124,14 @@ return new class extends Migration
             $table->json('metadata')->nullable();
             $table->timestamps();
 
-            $table->foreign('hub_id')->references('id')->on('hubs')->onDelete('cascade');
+$1// FK DISABLED: $2
             $table->unique(['hub_id', 'date']);
             $table->index(['hub_id', 'date']);
         });
 
         Schema::table('events', function (Blueprint $table) {
             $table->uuid('hub_id')->nullable()->after('workspace_id');
-            $table->foreign('hub_id')->references('id')->on('hubs')->onDelete('set null');
+$1// FK DISABLED: $2
             $table->index(['hub_id']);
         });
     }

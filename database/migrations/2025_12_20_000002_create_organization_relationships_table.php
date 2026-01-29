@@ -38,7 +38,7 @@ return new class extends Migration
             $table->softDeletes();
             
             // Foreign key
-            $table->foreign('organization_id')
+$1// FK DISABLED: $2
                 ->references('id')
                 ->on('businesses')
                 ->cascadeOnDelete();

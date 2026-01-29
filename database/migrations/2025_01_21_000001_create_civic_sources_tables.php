@@ -74,8 +74,8 @@ return new class extends Migration
             $table->softDeletes();
             
             // Foreign keys
-            $table->foreign('region_id')->references('id')->on('regions')->onDelete('cascade');
-            $table->foreign('platform_id')->references('id')->on('civic_source_platforms')->onDelete('cascade');
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             
             // Unique constraint
             $table->unique(['region_id', 'base_url', 'source_type'], 'civic_sources_unique');
@@ -131,8 +131,8 @@ return new class extends Migration
             $table->timestamps();
             
             // Foreign keys
-            $table->foreign('civic_source_id')->references('id')->on('civic_sources')->onDelete('cascade');
-            $table->foreign('region_id')->references('id')->on('regions')->onDelete('cascade');
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             
             // Prevent duplicates
             $table->unique(['civic_source_id', 'content_hash'], 'civic_content_unique');
@@ -159,8 +159,8 @@ return new class extends Migration
             $table->timestamps();
             
             // Foreign keys
-            $table->foreign('civic_source_id')->references('id')->on('civic_sources')->onDelete('cascade');
-            $table->foreign('region_id')->references('id')->on('regions')->onDelete('cascade');
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
         });
 
         // Seed the platforms

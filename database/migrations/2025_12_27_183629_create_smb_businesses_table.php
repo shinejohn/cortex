@@ -93,7 +93,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             
-            $table->foreign('tenant_id')->references('id')->on('tenants')->cascadeOnDelete();
+$1// FK DISABLED: $2
             $table->index('google_place_id');
             $table->index('tenant_id');
             $table->index('fibonacco_status');

@@ -45,8 +45,8 @@ return new class extends Migration
             
             $table->timestamps();
             
-            $table->foreign('business_id')->references('id')->on('businesses')->cascadeOnDelete();
-            $table->foreign('claimed_by_id')->references('id')->on('users')->nullOnDelete();
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             
             $table->index('business_id');
             $table->index('status');

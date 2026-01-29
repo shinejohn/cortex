@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->uuid('tenant_id')->nullable()->after('id');
-            $table->foreign('tenant_id')->references('id')->on('tenants')->nullOnDelete();
+$1// FK DISABLED: $2
             $table->index('tenant_id');
         });
     }

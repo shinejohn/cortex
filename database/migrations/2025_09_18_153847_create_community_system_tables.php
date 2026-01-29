@@ -132,7 +132,7 @@ return new class extends Migration
 
         // Add the self-referencing foreign key constraint after the table is created for PostgreSQL compatibility
         Schema::table('community_thread_replies', function (Blueprint $table) {
-            $table->foreign('reply_to_id')
+$1// FK DISABLED: $2
                 ->references('id')
                 ->on('community_thread_replies')
                 ->nullOnDelete();

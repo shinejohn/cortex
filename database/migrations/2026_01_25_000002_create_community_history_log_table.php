@@ -50,7 +50,7 @@ return new class extends Migration {
 
                 $table->timestamps();
 
-                $table->foreign('region_id')->references('id')->on('regions')->onDelete('cascade');
+$1// FK DISABLED: $2
 
                 $table->index(['region_id', 'event_date']);
                 $table->index(['content_type', 'content_id']);
@@ -71,7 +71,7 @@ return new class extends Migration {
                 $table->json('metadata')->nullable();
                 $table->timestamps();
 
-                $table->foreign('history_entry_id')->references('id')->on('community_history_entries')->onDelete('cascade');
+$1// FK DISABLED: $2
                 $table->index(['history_entry_id']);
                 $table->index(['person_id']);
             });
@@ -87,7 +87,7 @@ return new class extends Migration {
                 $table->json('vote_breakdown')->nullable(); // {for: [...], against: [...], abstain: [...]}
                 $table->timestamps();
 
-                $table->foreign('history_entry_id')->references('id')->on('community_history_entries')->onDelete('cascade');
+$1// FK DISABLED: $2
             });
         }
     }

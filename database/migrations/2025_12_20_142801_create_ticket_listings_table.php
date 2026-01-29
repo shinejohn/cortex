@@ -25,10 +25,10 @@ return new class extends Migration
             $table->uuid('sold_to')->nullable();
             $table->timestamps();
 
-            $table->foreign('ticket_order_item_id')->references('id')->on('ticket_order_items')->onDelete('cascade');
-            $table->foreign('seller_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
-            $table->foreign('sold_to')->references('id')->on('users')->onDelete('set null');
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             $table->index(['event_id', 'status']);
             $table->index(['seller_id', 'status']);
             $table->index(['status', 'expires_at']);

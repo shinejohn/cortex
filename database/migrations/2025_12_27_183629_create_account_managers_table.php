@@ -28,8 +28,8 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             
-            $table->foreign('tenant_id')->references('id')->on('tenants')->cascadeOnDelete();
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             $table->index('tenant_id');
             $table->index('user_id');
             $table->index('is_active');

@@ -55,7 +55,7 @@ return new class extends Migration
 
         // Add self-referencing foreign key after table creation
         Schema::table('social_post_comments', function (Blueprint $table) {
-            $table->foreign('parent_id')->references('id')->on('social_post_comments')->onDelete('cascade');
+$1// FK DISABLED: $2
         });
 
         // Comment likes table

@@ -24,7 +24,7 @@ return new class extends Migration
             
             $table->timestamps();
             
-            $table->foreign('smb_business_id')->references('id')->on('smb_businesses')->cascadeOnDelete();
+$1// FK DISABLED: $2
             $table->index('smb_business_id');
             $table->index(['smb_business_id', 'is_primary']);
             $table->index(['smb_business_id', 'display_order']);
