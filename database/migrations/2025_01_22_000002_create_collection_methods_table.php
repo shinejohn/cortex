@@ -11,7 +11,7 @@ return new class extends Migration {
             Schema::create('collection_methods', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->uuid('source_id');
-$1// FK DISABLED: $2
+// FK DISABLED
                 $table->string('method_type', 20);
                 $table->string('name')->nullable();
                 $table->text('endpoint_url')->nullable();

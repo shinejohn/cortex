@@ -27,8 +27,8 @@ return new class extends Migration
             
             $table->timestamps();
             
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
             $table->unique(['campaign_id', 'customer_id']);
             $table->index('campaign_id');
             $table->index('customer_id');

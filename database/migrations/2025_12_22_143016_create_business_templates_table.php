@@ -37,7 +37,7 @@ return new class extends Migration
             
             $table->timestamps();
             
-$1// FK DISABLED: $2
+// FK DISABLED
         });
     }
 

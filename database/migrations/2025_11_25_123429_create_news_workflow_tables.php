@@ -31,8 +31,8 @@ return new class extends Migration
             $table->boolean('processed')->default(false)->index();
             $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
         });
 
         // Table 2: AI-generated article drafts tracking workflow progress
@@ -56,9 +56,9 @@ $1// FK DISABLED: $2
             $table->text('rejection_reason')->nullable();
             $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
+// FK DISABLED
 
             $table->index('status');
             $table->index('quality_score'); // For hybrid auto-publish filtering
@@ -76,7 +76,7 @@ $1// FK DISABLED: $2
             $table->json('metadata')->nullable();
             $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
         });
 
         // Table 4: Workflow execution tracking for observability

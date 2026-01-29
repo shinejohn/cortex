@@ -26,7 +26,7 @@ return new class extends Migration
             $table->integer('sort_order')->default(0);
             $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
             $table->index(['event_id', 'is_active']);
         });
 
@@ -46,8 +46,8 @@ $1// FK DISABLED: $2
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
             $table->index(['user_id', 'status']);
             $table->index(['event_id', 'status']);
         });
@@ -61,8 +61,8 @@ $1// FK DISABLED: $2
             $table->decimal('total_price', 10, 2);
             $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
         });
     }
 

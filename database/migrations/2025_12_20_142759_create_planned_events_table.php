@@ -21,8 +21,8 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
             $table->unique(['event_id', 'user_id']);
             $table->index(['user_id', 'planned_at']);
             $table->index(['event_id']);

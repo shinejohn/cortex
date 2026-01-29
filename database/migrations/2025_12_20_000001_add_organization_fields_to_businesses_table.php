@@ -39,10 +39,7 @@ return new class extends Migration
             $table->json('organization_hierarchy')->nullable()->after('organization_identifier');
             
             // Foreign key for parent organization
-$1// FK DISABLED: $2
-                ->references('id')
-                ->on('businesses')
-                ->nullOnDelete();
+// FK DISABLED
             
             // Indexes
             $table->index('organization_type');

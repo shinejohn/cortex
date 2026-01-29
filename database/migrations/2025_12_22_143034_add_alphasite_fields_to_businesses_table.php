@@ -28,8 +28,8 @@ return new class extends Migration
             $table->uuid('industry_id')->nullable()->after('seo_metadata');
             
             // Foreign keys
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
             
             // Indexes
             $table->index('alphasite_subdomain');

@@ -26,7 +26,7 @@ return new class extends Migration {
 
                 $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
                 $table->unique(['region_id', 'year', 'week_number']);
                 $table->index(['region_id', 'status']);
                 $table->index('scheduled_start_date');
@@ -80,7 +80,7 @@ $1// FK DISABLED: $2
                 $table->timestamps();
                 $table->softDeletes();
 
-$1// FK DISABLED: $2
+// FK DISABLED
 
                 $table->index(['region_id', 'poll_type', 'is_active']);
                 $table->index(['region_id', 'voting_starts_at']);
@@ -118,8 +118,8 @@ $1// FK DISABLED: $2
 
                 $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
 
                 $table->index(['poll_id', 'vote_count']);
                 $table->index(['poll_id', 'display_order']);
@@ -139,8 +139,8 @@ $1// FK DISABLED: $2
                 $table->timestamp('voted_at');
                 $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
 
                 $table->index(['poll_id', 'user_id']);
                 $table->index(['poll_id', 'voter_ip']);
@@ -172,7 +172,7 @@ $1// FK DISABLED: $2
 
                 $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
                 $table->index(['calendar_entry_id', 'status']);
                 $table->index(['business_id', 'status']);
             });
@@ -202,8 +202,8 @@ $1// FK DISABLED: $2
 
                 $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
 
                 $table->index(['user_id', 'status']);
                 $table->index(['region_id', 'status']);
@@ -228,8 +228,8 @@ $1// FK DISABLED: $2
 
                 $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
 
                 $table->index(['business_id', 'is_displayed']);
                 $table->index(['business_id', 'year']);
@@ -253,8 +253,8 @@ $1// FK DISABLED: $2
                 $table->timestamps();
                 $table->softDeletes();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
 
                 $table->index(['poll_id', 'created_at']);
                 $table->index(['parent_id']);

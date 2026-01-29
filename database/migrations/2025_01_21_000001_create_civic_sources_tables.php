@@ -74,8 +74,8 @@ return new class extends Migration
             $table->softDeletes();
             
             // Foreign keys
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
             
             // Unique constraint
             $table->unique(['region_id', 'base_url', 'source_type'], 'civic_sources_unique');
@@ -131,8 +131,8 @@ $1// FK DISABLED: $2
             $table->timestamps();
             
             // Foreign keys
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
             
             // Prevent duplicates
             $table->unique(['civic_source_id', 'content_hash'], 'civic_content_unique');
@@ -159,8 +159,8 @@ $1// FK DISABLED: $2
             $table->timestamps();
             
             // Foreign keys
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
         });
 
         // Seed the platforms

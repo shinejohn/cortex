@@ -11,9 +11,9 @@ return new class extends Migration {
             Schema::create('raw_content', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->uuid('source_id')->nullable();
-$1// FK DISABLED: $2
+// FK DISABLED
                 $table->uuid('collection_method_id')->nullable();
-$1// FK DISABLED: $2
+// FK DISABLED
                 $table->unsignedBigInteger('community_id')->nullable();
                 $table->unsignedBigInteger('region_id')->nullable();
                 $table->text('source_url')->nullable();

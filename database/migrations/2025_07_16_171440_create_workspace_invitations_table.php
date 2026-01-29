@@ -24,7 +24,7 @@ return new class extends Migration
             $table->timestamp('accepted_at')->nullable();
             $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
             $table->index(['email', 'workspace_id']);
             $table->index(['token']);
         });

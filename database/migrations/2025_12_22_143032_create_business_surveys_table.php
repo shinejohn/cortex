@@ -34,7 +34,7 @@ return new class extends Migration
             
             $table->timestamps();
             
-$1// FK DISABLED: $2
+// FK DISABLED
             
             $table->index('business_id');
         });
@@ -60,9 +60,9 @@ $1// FK DISABLED: $2
             
             $table->timestamps();
             
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
+// FK DISABLED
             
             $table->index('survey_id');
             $table->index('business_id');
