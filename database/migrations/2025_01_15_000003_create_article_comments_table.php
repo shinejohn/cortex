@@ -12,11 +12,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        // Create article_comments table - NO FOREIGN KEYS during creation
+        // FK constraints will be added in a separate migration after all tables exist
         Schema::create('article_comments', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->unsignedBigInteger('article_id'); // Create column first without foreign key
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignUuid('parent_id')->nullable(); // Removed constrained('article_comments') to avoid self-referencing issue during create
+            $table->unsignedBigInteger('article_id'); // References day_news_posts - FK added later
+            $table->uuid('user_id'); // References users - FK added later
+            $table->uuid('parent_id')->nullable(); // Self-reference - FK added later
             $table->text('content');
             $table->boolean('is_active')->default(true);
             $table->boolean('is_pinned')->default(false);
@@ -28,22 +30,11 @@ return new class extends Migration {
             $table->index(['article_id', 'is_active', 'created_at']);
         });
 
-        // Add foreign key constraint only if day_news_posts table exists
-        // Note: day_news_posts is created in a later migration (backfill), so this check might fail or cause issues
-        // if run in strict order. We will skip this constraint for now to allow fresh installs.
-        /*
-        if (Schema::hasTable('day_news_posts')) {
-            Schema::table('article_comments', function (Blueprint $table) {
-                $table->foreign('article_id')->references('id')->on('day_news_posts')->onDelete('cascade');
-            });
-        }
-        */
-
-        // Article comment likes table
+        // Article comment likes table - NO FOREIGN KEYS during creation
         Schema::create('article_comment_likes', function (Blueprint $table) {
             $table->id();
-            $table->uuid('comment_id')->constrained('article_comments')->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('comment_id'); // References article_comments - FK added later
+            $table->uuid('user_id'); // References users - FK added later
             $table->timestamps();
 
             $table->unique(['comment_id', 'user_id']);
