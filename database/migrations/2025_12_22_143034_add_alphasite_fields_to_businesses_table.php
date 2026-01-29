@@ -28,8 +28,8 @@ return new class extends Migration
             $table->uuid('industry_id')->nullable()->after('seo_metadata');
             
             // Foreign keys
-            $table->foreign('template_id')->references('id')->on('business_templates')->nullOnDelete();
-            $table->foreign('industry_id')->references('id')->on('industries')->nullOnDelete();
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             
             // Indexes
             $table->index('alphasite_subdomain');

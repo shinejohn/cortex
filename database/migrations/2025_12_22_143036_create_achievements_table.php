@@ -34,7 +34,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             
-            $table->foreign('business_id')->references('id')->on('businesses')->cascadeOnDelete();
+$1// FK DISABLED: $2
             
             $table->index('business_id');
         });

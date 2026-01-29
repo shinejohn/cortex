@@ -34,7 +34,7 @@ return new class extends Migration
             
             $table->timestamps();
             
-            $table->foreign('business_id')->references('id')->on('businesses')->cascadeOnDelete();
+$1// FK DISABLED: $2
             
             $table->index('business_id');
         });
@@ -60,9 +60,9 @@ return new class extends Migration
             
             $table->timestamps();
             
-            $table->foreign('survey_id')->references('id')->on('business_surveys')->cascadeOnDelete();
-            $table->foreign('business_id')->references('id')->on('businesses')->cascadeOnDelete();
-            $table->foreign('customer_id')->references('id')->on('smb_crm_customers')->nullOnDelete();
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             
             $table->index('survey_id');
             $table->index('business_id');

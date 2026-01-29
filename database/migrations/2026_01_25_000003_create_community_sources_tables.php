@@ -49,7 +49,7 @@ return new class extends Migration {
                 $table->timestamps();
                 $table->softDeletes();
 
-                $table->foreign('region_id')->references('id')->on('regions')->onDelete('cascade');
+$1// FK DISABLED: $2
 
                 $table->index(['region_id', 'category']);
                 $table->index(['region_id', 'is_influencer']);
@@ -80,7 +80,7 @@ return new class extends Migration {
 
                 $table->timestamps();
 
-                $table->foreign('leader_id')->references('id')->on('community_leaders')->onDelete('cascade');
+$1// FK DISABLED: $2
                 $table->index(['leader_id', 'status']);
                 $table->index(['news_article_draft_id']);
             });
@@ -107,7 +107,7 @@ return new class extends Migration {
 
                 $table->timestamps();
 
-                $table->foreign('region_id')->references('id')->on('regions')->onDelete('cascade');
+$1// FK DISABLED: $2
                 $table->index(['region_id', 'meeting_date']);
                 $table->index(['body_name', 'meeting_date']);
             });

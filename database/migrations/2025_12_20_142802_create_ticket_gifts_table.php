@@ -26,9 +26,9 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
 
-            $table->foreign('ticket_order_item_id')->references('id')->on('ticket_order_items')->onDelete('cascade');
-            $table->foreign('gifter_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('recipient_user_id')->references('id')->on('users')->onDelete('set null');
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             $table->index(['gifter_id', 'status']);
             $table->index(['recipient_email', 'status']);
             $table->index(['gift_token']);

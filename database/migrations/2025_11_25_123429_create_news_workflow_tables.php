@@ -31,8 +31,8 @@ return new class extends Migration
             $table->boolean('processed')->default(false)->index();
             $table->timestamps();
 
-            $table->foreign('region_id')->references('id')->on('regions')->cascadeOnDelete();
-            $table->foreign('business_id')->references('id')->on('businesses')->cascadeOnDelete();
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
         });
 
         // Table 2: AI-generated article drafts tracking workflow progress
@@ -56,9 +56,9 @@ return new class extends Migration
             $table->text('rejection_reason')->nullable();
             $table->timestamps();
 
-            $table->foreign('news_article_id')->references('id')->on('news_articles')->cascadeOnDelete();
-            $table->foreign('region_id')->references('id')->on('regions')->cascadeOnDelete();
-            $table->foreign('published_post_id')->references('id')->on('day_news_posts')->nullOnDelete();
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
 
             $table->index('status');
             $table->index('quality_score'); // For hybrid auto-publish filtering
@@ -76,7 +76,7 @@ return new class extends Migration
             $table->json('metadata')->nullable();
             $table->timestamps();
 
-            $table->foreign('draft_id')->references('id')->on('news_article_drafts')->cascadeOnDelete();
+$1// FK DISABLED: $2
         });
 
         // Table 4: Workflow execution tracking for observability

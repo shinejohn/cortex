@@ -21,8 +21,8 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
 
-            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             $table->unique(['event_id', 'user_id']);
             $table->index(['user_id', 'planned_at']);
             $table->index(['event_id']);

@@ -30,8 +30,8 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             
-            $table->foreign('tenant_id')->references('id')->on('tenants')->cascadeOnDelete();
-            $table->foreign('customer_id')->references('id')->on('customers')->cascadeOnDelete();
+$1// FK DISABLED: $2
+$1// FK DISABLED: $2
             $table->index('tenant_id');
             $table->index('customer_id');
             $table->index('stage');

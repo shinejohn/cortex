@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->string('action_url')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+$1// FK DISABLED: $2
             $table->index(['user_id', 'read']);
             $table->index('created_at');
         });

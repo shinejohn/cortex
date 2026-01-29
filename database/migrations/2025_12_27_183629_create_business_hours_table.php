@@ -23,7 +23,7 @@ return new class extends Migration
             
             $table->timestamps();
             
-            $table->foreign('smb_business_id')->references('id')->on('smb_businesses')->cascadeOnDelete();
+$1// FK DISABLED: $2
             $table->unique(['smb_business_id', 'day_of_week']);
             $table->index('smb_business_id');
         });
