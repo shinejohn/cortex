@@ -55,7 +55,7 @@ return new class extends Migration
 
         // Add self-referencing foreign key after table creation
         Schema::table('social_post_comments', function (Blueprint $table) {
-$1// FK DISABLED: $2
+// FK DISABLED
         });
 
         // Comment likes table

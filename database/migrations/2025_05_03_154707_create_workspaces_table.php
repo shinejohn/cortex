@@ -43,7 +43,7 @@ return new class extends Migration
             $table->uuid('workspace_id');
             $table->uuid('user_id');
             $table->text('role');
-$1// FK DISABLED: $2
+// FK DISABLED
             $table->timestamps();
 
             $table->index(['workspace_id', 'user_id', 'role']);

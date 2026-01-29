@@ -42,8 +42,8 @@ return new class extends Migration
             
             $table->timestamp('created_at')->useCurrent();
             
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
             
             $table->index('business_id');
             $table->index('customer_id');

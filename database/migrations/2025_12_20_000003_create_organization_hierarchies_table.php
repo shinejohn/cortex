@@ -31,15 +31,9 @@ return new class extends Migration
             $table->timestamps();
             
             // Foreign keys
-$1// FK DISABLED: $2
-                ->references('id')
-                ->on('businesses')
-                ->cascadeOnDelete();
+// FK DISABLED
             
-$1// FK DISABLED: $2
-                ->references('id')
-                ->on('businesses')
-                ->nullOnDelete();
+// FK DISABLED
             
             // Unique constraint
             $table->unique(['organization_id', 'parent_id']);

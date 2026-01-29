@@ -49,8 +49,8 @@ return new class extends Migration
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
             $table->index(['workspace_id', 'is_active']);
             $table->index(['slug']);
             $table->index(['is_featured', 'is_active']);
@@ -69,7 +69,7 @@ $1// FK DISABLED: $2
             $table->integer('sort_order')->default(0);
             $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
             $table->index(['hub_id', 'sort_order']);
             $table->index(['hub_id', 'is_visible']);
         });
@@ -84,8 +84,8 @@ $1// FK DISABLED: $2
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
-$1// FK DISABLED: $2
-$1// FK DISABLED: $2
+// FK DISABLED
+// FK DISABLED
             $table->unique(['hub_id', 'user_id']);
             $table->index(['hub_id', 'role']);
             $table->index(['hub_id', 'is_active']);
@@ -102,7 +102,7 @@ $1// FK DISABLED: $2
             $table->integer('sort_order')->default(0);
             $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
             $table->unique(['hub_id', 'slug']);
             $table->index(['hub_id', 'sort_order']);
         });
@@ -124,14 +124,14 @@ $1// FK DISABLED: $2
             $table->json('metadata')->nullable();
             $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
             $table->unique(['hub_id', 'date']);
             $table->index(['hub_id', 'date']);
         });
 
         Schema::table('events', function (Blueprint $table) {
             $table->uuid('hub_id')->nullable()->after('workspace_id');
-$1// FK DISABLED: $2
+// FK DISABLED
             $table->index(['hub_id']);
         });
     }

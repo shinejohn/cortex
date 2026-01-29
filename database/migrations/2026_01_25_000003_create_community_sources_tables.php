@@ -49,7 +49,7 @@ return new class extends Migration {
                 $table->timestamps();
                 $table->softDeletes();
 
-$1// FK DISABLED: $2
+// FK DISABLED
 
                 $table->index(['region_id', 'category']);
                 $table->index(['region_id', 'is_influencer']);
@@ -80,7 +80,7 @@ $1// FK DISABLED: $2
 
                 $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
                 $table->index(['leader_id', 'status']);
                 $table->index(['news_article_draft_id']);
             });
@@ -107,7 +107,7 @@ $1// FK DISABLED: $2
 
                 $table->timestamps();
 
-$1// FK DISABLED: $2
+// FK DISABLED
                 $table->index(['region_id', 'meeting_date']);
                 $table->index(['body_name', 'meeting_date']);
             });
