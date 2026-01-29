@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('photo_albums', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignUuid('workspace_id')->nullable()->constrained()->nullOnDelete();
+            $table->uuid('user_id');
+            $table->uuid('workspace_id')->nullable();
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('cover_image')->nullable();
@@ -31,8 +31,8 @@ return new class extends Migration
 
         Schema::create('photos', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
-            $table->uuid('album_id')->nullable()->constrained('photo_albums')->nullOnDelete();
+            $table->uuid('user_id');
+            $table->uuid('album_id')->nullable();
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('image_path');
@@ -56,8 +56,8 @@ return new class extends Migration
 
         Schema::create('photo_album_photo', function (Blueprint $table) {
             $table->id();
-            $table->uuid('album_id')->constrained('photo_albums')->cascadeOnDelete();
-            $table->uuid('photo_id')->constrained('photos')->cascadeOnDelete();
+            $table->uuid('album_id');
+            $table->uuid('photo_id');
             $table->unsignedInteger('order')->default(0);
             $table->timestamps();
 
@@ -67,8 +67,8 @@ return new class extends Migration
 
         Schema::create('photo_region', function (Blueprint $table) {
             $table->id();
-            $table->uuid('photo_id')->constrained('photos')->cascadeOnDelete();
-            $table->foreignUuid('region_id')->constrained()->cascadeOnDelete();
+            $table->uuid('photo_id');
+            $table->uuid('region_id');
             $table->timestamps();
 
             $table->unique(['photo_id', 'region_id']);

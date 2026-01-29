@@ -20,7 +20,7 @@ return new class extends Migration
             $table->uuidMorphs('ratable'); // ratable_type, ratable_id
 
             // User who gave the rating (not workspace-specific)
-            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
+            $table->uuid('user_id');
 
             // Rating value
             $table->integer('rating')->unsigned(); // 1-5 stars
@@ -31,7 +31,7 @@ return new class extends Migration
 
             // Rating source/type
             $table->enum('type', ['booking', 'general', 'event_attendance'])->default('general');
-            $table->foreignUuid('booking_id')->nullable()->constrained('bookings')->onDelete('cascade');
+            $table->uuid('booking_id')->nullable();
 
             $table->timestamps();
 

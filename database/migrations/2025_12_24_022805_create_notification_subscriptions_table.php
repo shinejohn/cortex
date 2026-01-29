@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('notification_subscriptions', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
+            $table->uuid('user_id');
             
             // Platform identification
             $table->enum('platform', ['daynews', 'goeventcity', 'downtownguide', 'alphasite'])->index();

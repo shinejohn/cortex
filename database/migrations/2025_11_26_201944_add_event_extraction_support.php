@@ -15,11 +15,9 @@ return new class extends Migration
     {
         // Add source tracking to events table
         Schema::table('events', function (Blueprint $table) {
-            $table->foreignUuid('source_news_article_id')
+            $table->uuid('source_news_article_id')
                 ->nullable()
-                ->after('created_by')
-                ->constrained('news_articles')
-                ->nullOnDelete();
+                ->after('created_by');
 
             $table->string('source_type')
                 ->default('manual')
@@ -31,8 +29,8 @@ return new class extends Migration
         // Create event-region pivot table for many-to-many relationship
         Schema::create('event_region', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('event_id')->constrained('events')->cascadeOnDelete();
-            $table->foreignUuid('region_id')->constrained('regions')->cascadeOnDelete();
+            $table->uuid('event_id');
+            $table->uuid('region_id');
             $table->timestamps();
 
             $table->unique(['event_id', 'region_id']);
@@ -41,8 +39,8 @@ return new class extends Migration
         // Create event extraction drafts table for AI-extracted events
         Schema::create('event_extraction_drafts', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('news_article_id')->constrained('news_articles')->cascadeOnDelete();
-            $table->foreignUuid('region_id')->constrained('regions')->cascadeOnDelete();
+            $table->uuid('news_article_id');
+            $table->uuid('region_id');
 
             // Status: pending -> detected -> extracted -> validated -> published/rejected
             $table->string('status')->default('pending');
@@ -56,9 +54,9 @@ return new class extends Migration
             $table->json('extracted_data')->nullable();
 
             // Matched/created references
-            $table->foreignUuid('matched_venue_id')->nullable()->constrained('venues')->nullOnDelete();
-            $table->foreignUuid('matched_performer_id')->nullable()->constrained('performers')->nullOnDelete();
-            $table->foreignUuid('published_event_id')->nullable()->constrained('events')->nullOnDelete();
+            $table->uuid('matched_venue_id')->nullable();
+            $table->uuid('matched_performer_id')->nullable();
+            $table->uuid('published_event_id')->nullable();
 
             // AI metadata (model, tokens, etc.)
             $table->json('ai_metadata')->nullable();

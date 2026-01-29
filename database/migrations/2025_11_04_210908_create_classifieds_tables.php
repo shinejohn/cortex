@@ -19,8 +19,8 @@ return new class extends Migration
         
         Schema::create('classifieds', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignUuid('workspace_id')->nullable()->constrained()->nullOnDelete();
+            $table->uuid('user_id');
+            $table->uuid('workspace_id')->nullable();
             $table->enum('category', [
                 'for_sale',
                 'housing',
@@ -52,7 +52,7 @@ return new class extends Migration
         // Classified images table
         Schema::create('classified_images', function (Blueprint $table) {
             $table->id();
-            $table->uuid('classified_id')->constrained('classifieds')->cascadeOnDelete();
+            $table->uuid('classified_id');
             $table->string('image_path');
             $table->string('image_disk')->default('public');
             $table->unsignedInteger('order')->default(0);
@@ -64,8 +64,8 @@ return new class extends Migration
         // Classified regions pivot table
         Schema::create('classified_region', function (Blueprint $table) {
             $table->id();
-            $table->uuid('classified_id')->constrained('classifieds')->cascadeOnDelete();
-            $table->foreignUuid('region_id')->constrained()->cascadeOnDelete();
+            $table->uuid('classified_id');
+            $table->uuid('region_id');
             $table->unsignedInteger('days')->default(7); // How many days to show in this region
             $table->timestamps();
 
@@ -75,8 +75,8 @@ return new class extends Migration
         // Classified payments table
         Schema::create('classified_payments', function (Blueprint $table) {
             $table->id();
-            $table->uuid('classified_id')->constrained('classifieds')->cascadeOnDelete();
-            $table->foreignUuid('workspace_id')->constrained()->cascadeOnDelete();
+            $table->uuid('classified_id');
+            $table->uuid('workspace_id');
             $table->string('stripe_payment_intent_id')->nullable();
             $table->string('stripe_checkout_session_id')->nullable();
             $table->integer('amount'); // in cents

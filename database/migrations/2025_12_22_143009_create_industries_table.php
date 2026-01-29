@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->string('icon', 100)->nullable();
-            $table->foreignUuid('parent_id')->nullable()->constrained('industries')->nullOnDelete();
+            $table->uuid('parent_id')->nullable();
         });
     }
 

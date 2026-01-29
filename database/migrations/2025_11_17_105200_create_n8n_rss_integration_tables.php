@@ -30,7 +30,7 @@ return new class extends Migration
         // 1. Businesses table
         Schema::create('businesses', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('workspace_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->uuid('workspace_id')->nullable()->cascadeOnDelete();
             $table->string('google_place_id')->unique();
             $table->string('name');
             $table->string('slug')->unique();
@@ -116,8 +116,8 @@ return new class extends Migration
         // 2. Business-Region pivot table
         Schema::create('business_region', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('business_id')->constrained()->cascadeOnDelete();
-            $table->foreignUuid('region_id')->constrained()->cascadeOnDelete();
+            $table->uuid('business_id');
+            $table->uuid('region_id');
             $table->timestamps();
 
             $table->unique(['business_id', 'region_id']);
@@ -126,7 +126,7 @@ return new class extends Migration
         // 3. RSS Feeds table
         Schema::create('rss_feeds', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('business_id')->constrained()->cascadeOnDelete();
+            $table->uuid('business_id');
             $table->string('url')->index();
             $table->string('feed_type')->default('other');
             $table->string('title')->nullable();
@@ -153,7 +153,7 @@ return new class extends Migration
         // 4. RSS Feed Items table
         Schema::create('rss_feed_items', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('rss_feed_id')->constrained()->cascadeOnDelete();
+            $table->uuid('rss_feed_id');
             $table->string('guid');
             $table->string('title');
             $table->text('description')->nullable();
@@ -176,8 +176,8 @@ return new class extends Migration
 
         // 5. Add RSS feed tracking to existing day_news_posts table
         Schema::table('day_news_posts', function (Blueprint $table) {
-            $table->foreignUuid('rss_feed_id')->nullable()->after('author_id')->constrained()->nullOnDelete();
-            $table->foreignUuid('rss_feed_item_id')->nullable()->after('rss_feed_id')->constrained()->nullOnDelete();
+            $table->uuid('rss_feed_id')->nullable()->after('author_id');
+            $table->uuid('rss_feed_item_id')->nullable()->after('rss_feed_id');
             $table->string('source_type')->nullable()->after('rss_feed_item_id');
 
             $table->index('rss_feed_id');

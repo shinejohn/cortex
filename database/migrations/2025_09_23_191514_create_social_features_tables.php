@@ -16,7 +16,7 @@ return new class extends Migration
         // Social posts table
         Schema::create('social_posts', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
+            $table->uuid('user_id');
             $table->text('content');
             $table->json('media')->nullable(); // Store image/video URLs
             $table->enum('visibility', ['public', 'friends', 'private'])->default('public');
@@ -31,8 +31,8 @@ return new class extends Migration
         // Post likes table
         Schema::create('social_post_likes', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('post_id')->constrained('social_posts')->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('post_id');
+            $table->uuid('user_id');
             $table->timestamps();
 
             $table->unique(['post_id', 'user_id']);
@@ -42,8 +42,8 @@ return new class extends Migration
         // Post comments table
         Schema::create('social_post_comments', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('post_id')->constrained('social_posts')->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('post_id');
+            $table->uuid('user_id');
             $table->uuid('parent_id')->nullable();
             $table->text('content');
             $table->boolean('is_active')->default(true);
@@ -61,8 +61,8 @@ return new class extends Migration
         // Comment likes table
         Schema::create('social_comment_likes', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('comment_id')->constrained('social_post_comments')->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('comment_id');
+            $table->uuid('user_id');
             $table->timestamps();
 
             $table->unique(['comment_id', 'user_id']);
@@ -71,8 +71,8 @@ return new class extends Migration
         // Post shares table
         Schema::create('social_post_shares', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('post_id')->constrained('social_posts')->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('post_id');
+            $table->uuid('user_id');
             $table->text('message')->nullable(); // Optional message when sharing
             $table->timestamps();
 
@@ -83,8 +83,8 @@ return new class extends Migration
         // Friends/connections table
         Schema::create('social_friendships', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignUuid('friend_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('user_id');
+            $table->uuid('friend_id');
             $table->enum('status', ['pending', 'accepted', 'blocked'])->default('pending');
             $table->timestamp('requested_at')->useCurrent();
             $table->timestamp('responded_at')->nullable();
@@ -101,7 +101,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('cover_image')->nullable();
-            $table->foreignUuid('creator_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('creator_id');
             $table->enum('privacy', ['public', 'private', 'secret'])->default('public');
             $table->boolean('is_active')->default(true);
             $table->json('settings')->nullable(); // Group-specific settings
@@ -114,8 +114,8 @@ return new class extends Migration
         // Group memberships table
         Schema::create('social_group_members', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('group_id')->constrained('social_groups')->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('group_id');
+            $table->uuid('user_id');
             $table->enum('role', ['admin', 'moderator', 'member'])->default('member');
             $table->enum('status', ['pending', 'approved', 'banned'])->default('approved');
             $table->timestamp('joined_at')->useCurrent();
@@ -129,8 +129,8 @@ return new class extends Migration
         // Group posts table
         Schema::create('social_group_posts', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('group_id')->constrained('social_groups')->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('group_id');
+            $table->uuid('user_id');
             $table->text('content');
             $table->json('media')->nullable();
             $table->boolean('is_pinned')->default(false);
@@ -144,7 +144,7 @@ return new class extends Migration
         // User profiles table (extended social profile info)
         Schema::create('social_user_profiles', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('user_id');
             $table->text('bio')->nullable();
             $table->string('website')->nullable();
             $table->string('location')->nullable();
@@ -163,8 +163,8 @@ return new class extends Migration
         // User followers table (for public profile following)
         Schema::create('social_user_follows', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('follower_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignUuid('following_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('follower_id');
+            $table->uuid('following_id');
             $table->timestamps();
 
             $table->unique(['follower_id', 'following_id']);
@@ -175,9 +175,9 @@ return new class extends Migration
         // Group invitations table
         Schema::create('social_group_invitations', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('group_id')->constrained('social_groups')->cascadeOnDelete();
-            $table->foreignUuid('inviter_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignUuid('invited_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('group_id');
+            $table->uuid('inviter_id');
+            $table->uuid('invited_id');
             $table->string('message')->nullable();
             $table->enum('status', ['pending', 'accepted', 'declined'])->default('pending');
             $table->timestamp('expires_at')->nullable();
@@ -191,8 +191,8 @@ return new class extends Migration
         // Activity feed/notifications table
         Schema::create('social_activities', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete(); // User who will see this activity
-            $table->foreignUuid('actor_id')->constrained('users')->cascadeOnDelete(); // User who performed the action
+            $table->uuid('user_id'); // User who will see this activity
+            $table->uuid('actor_id'); // User who performed the action
             $table->enum('type', [
                 'post_like', 'post_comment', 'post_share',
                 'friend_request', 'friend_accept',

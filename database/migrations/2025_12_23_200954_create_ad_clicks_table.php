@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('ad_clicks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('impression_id')->constrained('ad_impressions')->cascadeOnDelete();
-            $table->foreignId('creative_id')->constrained('ad_creatives')->cascadeOnDelete();
+            $table->unsignedBigInteger('impression_id');
+            $table->unsignedBigInteger('creative_id');
             $table->string('ip_hash', 64)->nullable();
             $table->decimal('cost', 8, 4)->default(0);
             $table->timestamp('clicked_at');

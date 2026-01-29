@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->uuid('id')->primary();
 
             // Context
-            $table->foreignId('region_id')->constrained();
+            $table->unsignedBigInteger('region_id');
 
             // Profile
             $table->string('name');

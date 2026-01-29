@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('email_sends', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('campaign_id')->constrained('email_campaigns')->cascadeOnDelete();
-            $table->foreignId('subscriber_id')->constrained('email_subscribers')->cascadeOnDelete();
+            $table->unsignedBigInteger('campaign_id');
+            $table->unsignedBigInteger('subscriber_id');
             $table->string('message_id')->nullable()->index();
             $table->enum('status', ['queued', 'sent', 'delivered', 'bounced', 'complained', 'failed'])->default('queued');
             $table->timestamp('sent_at')->nullable();

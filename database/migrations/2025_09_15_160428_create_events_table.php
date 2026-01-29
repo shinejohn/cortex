@@ -45,10 +45,10 @@ return new class extends Migration
             $table->string('postal_code')->nullable();
 
             // Relationships - workspace-centric
-            $table->foreignUuid('venue_id')->nullable()->constrained('venues')->onDelete('set null');
-            $table->foreignUuid('performer_id')->nullable()->constrained('performers')->onDelete('set null');
-            $table->foreignUuid('workspace_id')->constrained('workspaces')->onDelete('cascade');
-            $table->foreignUuid('created_by')->nullable()->constrained('users')->onDelete('set null'); // Event creator
+            $table->uuid('venue_id')->nullable();
+            $table->uuid('performer_id')->nullable();
+            $table->uuid('workspace_id');
+            $table->uuid('created_by')->nullable(); // Event creator
 
             // Event status
             $table->enum('status', ['draft', 'published', 'cancelled', 'completed'])->default('draft');

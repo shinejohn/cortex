@@ -19,8 +19,8 @@ return new class extends Migration
         
         Schema::create('legal_notices', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignUuid('workspace_id')->nullable()->constrained()->nullOnDelete();
+            $table->uuid('user_id')->nullable();
+            $table->uuid('workspace_id')->nullable();
             $table->enum('type', [
                 'foreclosure',
                 'probate',
@@ -50,8 +50,8 @@ return new class extends Migration
 
         Schema::create('legal_notice_region', function (Blueprint $table) {
             $table->id();
-            $table->uuid('legal_notice_id')->constrained('legal_notices')->cascadeOnDelete();
-            $table->foreignUuid('region_id')->constrained()->cascadeOnDelete();
+            $table->uuid('legal_notice_id');
+            $table->uuid('region_id');
             $table->timestamps();
 
             $table->unique(['legal_notice_id', 'region_id']);

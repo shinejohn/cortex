@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('social_accounts', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users', 'id')->onDelete('cascade');
+            $table->uuid('user_id');
             $table->string('provider');
             $table->string('provider_id')->unique();
             $table->string('name')->nullable();

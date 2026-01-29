@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('creator_profiles', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('user_id');
             $table->string('display_name');
             $table->string('slug')->unique();
             $table->text('bio')->nullable();
@@ -35,7 +35,7 @@ return new class extends Migration
 
         Schema::create('podcasts', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('creator_profile_id')->constrained('creator_profiles')->cascadeOnDelete();
+            $table->uuid('creator_profile_id');
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
@@ -56,7 +56,7 @@ return new class extends Migration
 
         Schema::create('podcast_episodes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('podcast_id')->constrained('podcasts')->cascadeOnDelete();
+            $table->uuid('podcast_id');
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
@@ -81,8 +81,8 @@ return new class extends Migration
 
         Schema::create('podcast_region', function (Blueprint $table) {
             $table->id();
-            $table->uuid('podcast_id')->constrained('podcasts')->cascadeOnDelete();
-            $table->foreignUuid('region_id')->constrained()->cascadeOnDelete();
+            $table->uuid('podcast_id');
+            $table->uuid('region_id');
             $table->timestamps();
 
             $table->unique(['podcast_id', 'region_id']);

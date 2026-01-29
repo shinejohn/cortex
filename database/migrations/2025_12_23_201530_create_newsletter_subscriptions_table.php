@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('newsletter_subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('subscriber_id')->constrained('email_subscribers')->cascadeOnDelete();
+            $table->unsignedBigInteger('subscriber_id');
             $table->enum('tier', ['free', 'paid'])->default('free');
             $table->decimal('price', 6, 2)->default(1.00);
             $table->string('stripe_subscription_id')->nullable();

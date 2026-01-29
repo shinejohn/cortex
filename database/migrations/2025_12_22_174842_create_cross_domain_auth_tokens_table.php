@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('cross_domain_auth_tokens', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('user_id');
             $table->string('token', 64)->unique();
             $table->string('source_domain')->nullable(); // Domain where login occurred
             $table->json('target_domains')->nullable(); // Domains to sync to

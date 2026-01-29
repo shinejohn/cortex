@@ -18,16 +18,16 @@ return new class extends Migration {
 
         Schema::create('article_comments', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignId('article_id')->constrained('day_news_posts')->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignUuid('parent_id')->nullable()->constrained('article_comments')->cascadeOnDelete();
+            $table->unsignedBigInteger('article_id');
+            $table->uuid('user_id');
+            $table->uuid('parent_id')->nullable()->cascadeOnDelete();
         });
 
         // Article comment likes table
         Schema::create('article_comment_likes', function (Blueprint $table) {
             $table->id();
-            $table->uuid('comment_id')->constrained('article_comments')->cascadeOnDelete();
-            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->uuid('comment_id');
+            $table->uuid('user_id');
             $table->timestamps();
 
             $table->unique(['comment_id', 'user_id']);

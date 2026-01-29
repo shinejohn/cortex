@@ -54,8 +54,8 @@ return new class extends Migration
 
             // Account information - workspace-centric
             $table->enum('status', ['active', 'inactive', 'pending', 'suspended'])->default('active');
-            $table->foreignUuid('workspace_id')->constrained('workspaces')->onDelete('cascade');
-            $table->foreignUuid('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->uuid('workspace_id');
+            $table->uuid('created_by')->nullable();
 
             $table->timestamps();
 
