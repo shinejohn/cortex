@@ -287,6 +287,9 @@ COPY --from=frontend-builder /app/public/build ./public/build
 # Copy SSR bundle from builder stage
 COPY --from=frontend-builder /app/bootstrap/ssr ./bootstrap/ssr
 
+# Copy node_modules for SSR runtime dependencies (react-dom/server)
+COPY --from=frontend-builder /app/node_modules ./node_modules
+
 # Run composer scripts (post-install)
 RUN /usr/local/bin/php /usr/local/bin/composer dump-autoload --optimize
 
