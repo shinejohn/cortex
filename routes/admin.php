@@ -25,7 +25,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     // Advertising routes
     Route::prefix('advertising')->name('advertising.')->group(function () {
-        Route::resource('campaigns', AdCampaignController::class);
+
+        Route::resource('campaigns', AdCampaignController::class)->names([]);
+   
         Route::post('campaigns/{campaign}/status', [AdCampaignController::class, 'updateStatus'])->name('campaigns.status');
         Route::resource('creatives', CreativeController::class);
         Route::resource('placements', PlacementController::class);

@@ -32,9 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     require base_path('routes/auth.php');
                     require base_path('routes/settings.php');
                     require base_path('routes/workspace.php');
-                    require base_path('routes/ads.php');
                     require base_path('routes/email-tracking.php');
-                    require base_path('routes/admin.php');
                     require base_path('routes/day-news.php');
                 });
 
@@ -47,18 +45,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->where(['subdomain' => '[a-z0-9-]+'])
                 ->middleware('web')
                 ->group(function () {
-                    require base_path('routes/ads.php');
                     require base_path('routes/email-tracking.php');
-                    require base_path('routes/admin.php');
                     require base_path('routes/downtown-guide.php');
                 });
             
             Route::domain('downtownsguide.com')
                 ->middleware('web')
                 ->group(function () {
-                    require base_path('routes/ads.php');
                     require base_path('routes/email-tracking.php');
-                    require base_path('routes/admin.php');
                     require base_path('routes/downtown-guide.php');
                 });
             
@@ -67,9 +61,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 Route::domain($downtownGuideDomain)
                     ->middleware('web')
                     ->group(function () {
-                        require base_path('routes/ads.php');
                         require base_path('routes/email-tracking.php');
-                        require base_path('routes/admin.php');
                         require base_path('routes/downtown-guide.php');
                     });
             }
@@ -81,18 +73,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(function () {
                     require base_path('routes/auth.php');
                     require base_path('routes/settings.php');
-                    require base_path('routes/ads.php');
                     require base_path('routes/email-tracking.php');
-                    require base_path('routes/admin.php');
                     require base_path('routes/local-voices.php');
                 });
 
             // AlphaSite domain routes (subdomain and main domain)
             Route::middleware('web')
                 ->group(function () {
-                    require base_path('routes/ads.php');
                     require base_path('routes/email-tracking.php');
-                    require base_path('routes/admin.php');
                     require base_path('routes/alphasite.php');
                 });
 
@@ -104,9 +92,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     require base_path('routes/auth.php');
                     require base_path('routes/settings.php');
                     require base_path('routes/workspace.php');
-                    require base_path('routes/ads.php');
                     require base_path('routes/email-tracking.php');
-                    require base_path('routes/admin.php');
                     require base_path('routes/web.php');
                 });
         },
@@ -209,3 +195,6 @@ return Application::configure(basePath: dirname(__DIR__))
             });
         }
     })->create();
+
+// include ads routes once (fix duplicate route names for route caching)
+require base_path('routes/ads.php');

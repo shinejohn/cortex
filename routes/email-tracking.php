@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/email/track/open/{send}', [TrackingController::class, 'trackOpen'])->name('email.track.open');
-Route::get('/email/track/click/{send}', [TrackingController::class, 'trackClick'])->name('email.track.click');
-Route::get('/email/unsubscribe/{subscriber:uuid}', [TrackingController::class, 'unsubscribe'])->name('email.unsubscribe');
-Route::post('/email/unsubscribe/{subscriber:uuid}', [TrackingController::class, 'processUnsubscribe'])->name('email.unsubscribe.process');
-Route::get('/email/preferences/{subscriber:uuid}', [TrackingController::class, 'preferences'])->name('email.preferences');
-Route::post('/email/preferences/{subscriber:uuid}', [TrackingController::class, 'updatePreferences'])->name('email.preferences.update');
+Route::get('/email/track/open/{send}', [TrackingController::class, 'trackOpen']);
+Route::get('/email/track/click/{send}', [TrackingController::class, 'trackClick']);
+Route::get('/email/unsubscribe/{subscriber:uuid}', [TrackingController::class, 'unsubscribe']);
+Route::post('/email/unsubscribe/{subscriber:uuid}', [TrackingController::class, 'processUnsubscribe']);
+Route::get('/email/preferences/{subscriber:uuid}', [TrackingController::class, 'preferences']);
+Route::post('/email/preferences/{subscriber:uuid}', [TrackingController::class, 'updatePreferences']);
 
