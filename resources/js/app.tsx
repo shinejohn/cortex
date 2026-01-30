@@ -9,7 +9,9 @@ import { initializeAnalytics, trackPageView } from "./lib/analytics";
 
 createInertiaApp({
     title: (title) => `${title}`,
-    resolve: (name) => resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob("./pages/**/*.tsx")),
+ resolve: (name) => resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob("./pages/**/*.tsx")),
+
+
     setup({ el, App, props }) {
         // Initialize Google Analytics with the measurement ID from shared props
         const pageProps = props.initialPage.props;
@@ -23,7 +25,6 @@ createInertiaApp({
         router.on("navigate", (event) => {
             trackPageView(event.detail.page.url);
         });
-
         // Error handling for React rendering errors
         const handleError = (error: Error, errorInfo: React.ErrorInfo) => {
             console.error("React rendering error:", error, errorInfo);
@@ -37,7 +38,7 @@ createInertiaApp({
         const rootElement = (
             <>
                 <App {...props} />
-                <CrossDomainAuthSync />
+                <CrossDomainAuthSync crossDomainAuth={pageProps.crossDomainAuth as { urls?: string[]; logoutUrls?: string[] } | undefined} />
             </>
         );
 
