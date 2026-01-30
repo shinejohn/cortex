@@ -17,6 +17,9 @@ phases:
       - echo "=== Building app:" $APP_NAME "==="
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+      - echo Logging in to Docker Hub...
+      - DOCKERHUB_CREDS=$(aws secretsmanager get-secret-value --secret-id dockerhub-credentials --query SecretString --output text)
+      - echo $DOCKERHUB_CREDS | jq -r '.password' | docker login -u $(echo $DOCKERHUB_CREDS | jq -r '.username') --password-stdin      
       - ECR_REPO="fibonacco/dev/$APP_NAME"
       - ECS_SERVICE="fibonacco-dev-$APP_NAME"
       - IMAGE_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO
