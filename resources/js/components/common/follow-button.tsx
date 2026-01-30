@@ -1,89 +1,38 @@
-import { router, usePage } from "@inertiajs/react";
-import axios from "axios";
-import { Heart } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { route } from "ziggy-js";
-import { Button } from "@/components/ui/button";
+import React from "react";
+import { usePage } from "@inertiajs/react";
 
-interface FollowButtonProps {
-    followableType: "event" | "performer" | "venue" | "calendar";
-    followableId: string;
-    initialFollowing?: boolean;
-    variant?: "default" | "icon" | "text";
-    size?: "default" | "sm" | "lg" | "icon";
-    className?: string;
-}
+type FollowButtonProps = {
+  authUserId?: string;
+  targetUserId: string;
+};
 
-export function FollowButton({
-    followableType,
-    followableId,
-    initialFollowing = false,
-    variant = "default",
-    size = "default",
-    className = "",
-}: FollowButtonProps) {
-    const { auth } = usePage().props as { auth?: { user?: { id: string } } };
-    const [isFollowing, setIsFollowing] = useState(initialFollowing);
-    const [isLoading, setIsLoading] = useState(false);
+export default function FollowButton({ authUserId, targetUserId }: FollowButtonProps) {
+  let resolvedAuthUserId = authUserId;
 
-    // Update state when initialFollowing prop changes
-    useEffect(() => {
-        setIsFollowing(initialFollowing);
-    }, [initialFollowing]);
+  // Safely attempt to read from Inertia context if available
+  try {
+    const page = usePage();
+    resolvedAuthUserId =
+      resolvedAuthUserId ??
+      (page.props as any)?.auth?.user?.id;
+  } catch {
+    // Not running inside Inertia — ignore
+  }
 
-    const handleToggle = async () => {
-        // Redirect to login if not authenticated
-        if (!auth?.user) {
-            router.visit(route("login"));
-            return;
-        }
+  // If user is not logged in or trying to follow self, render nothing
+  if (!resolvedAuthUserId || resolvedAuthUserId === targetUserId) {
+    return null;
+  }
 
-        setIsLoading(true);
-
-        try {
-            const response = await axios.post(route("api.follow.toggle"), {
-                followable_type: followableType,
-                followable_id: followableId,
-            });
-
-            setIsFollowing(response.data.following);
-            const action = response.data.following ? "saved" : "unsaved";
-            toast.success(`Successfully ${action}`);
-        } catch (error: unknown) {
-            console.error("Failed to toggle follow:", error);
-            const errorMessage =
-                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.message ||
-                (error as { response?: { data?: { message?: string; error?: string } } }).response?.data?.error ||
-                "Failed to update follow status. Please try again.";
-            toast.error(errorMessage);
-            // Revert optimistic update
-            setIsFollowing(!isFollowing);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    if (variant === "icon") {
-        return (
-            <Button onClick={handleToggle} disabled={isLoading} size={size} variant="ghost" className={className}>
-                <Heart className={`h-5 w-5 ${isFollowing ? "fill-red-500 text-red-500" : ""}`} />
-            </Button>
-        );
-    }
-
-    if (variant === "text") {
-        return (
-            <Button onClick={handleToggle} disabled={isLoading} size={size} variant={isFollowing ? "outline" : "default"} className={className}>
-                {isFollowing ? "Following" : "Follow"}
-            </Button>
-        );
-    }
-
-    return (
-        <Button onClick={handleToggle} disabled={isLoading} size={size} variant={isFollowing ? "outline" : "default"} className={className}>
-            <Heart className={`h-4 w-4 mr-2 ${isFollowing ? "fill-current" : ""}`} />
-            {isFollowing ? "Saved" : "Save"}
-        </Button>
-    );
+  return (
+    <button
+      type="button"
+      className="px-3 py-1 text-sm font-medium rounded bg-blue-600 text-white hover:bg-blue-700"
+      onClick={() => {
+        console.log("Follow user:", targetUserId);
+      }}
+    >
+      Follow
+    </button>
+  );
 }
