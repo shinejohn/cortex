@@ -24,6 +24,6 @@ export default defineConfig({
         },
     },
     ssr: {
-        noExternal: true,
+        external: ['react-dom/server'],
     },
 });
