@@ -17,12 +17,12 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 // Sitemap routes
-Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
-Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.index');
-Route::get('/sitemap-static.xml', [SitemapController::class, 'static'])->name('sitemap.static');
-Route::get('/sitemap-posts.xml', [SitemapController::class, 'posts'])->name('sitemap.posts');
-Route::get('/sitemap-posts-{page}.xml', [SitemapController::class, 'posts'])->where('page', '[0-9]+')->name('sitemap.posts.page');
-Route::get('/sitemap-regions.xml', [SitemapController::class, 'regions'])->name('sitemap.regions');
+Route::get('/robots.txt', [SitemapController::class, 'robots']);
+Route::get('/sitemap.xml', [SitemapController::class, 'index']);
+Route::get('/sitemap-static.xml', [SitemapController::class, 'static']);
+Route::get('/sitemap-posts.xml', [SitemapController::class, 'posts']);
+Route::get('/sitemap-posts-{page}.xml', [SitemapController::class, 'posts'])->where('page', '[0-9]+');
+Route::get('/sitemap-regions.xml', [SitemapController::class, 'regions']);
 
 // DayNews home page
 Route::get('/', function () {

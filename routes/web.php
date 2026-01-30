@@ -34,17 +34,17 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 // Sitemap routes
-Route::get('/robots.txt', [EventCitySitemapController::class, 'robots'])->name('robots');
-Route::get('/sitemap.xml', [EventCitySitemapController::class, 'index'])->name('sitemap.index');
-Route::get('/sitemap-static.xml', [EventCitySitemapController::class, 'static'])->name('sitemap.static');
-Route::get('/sitemap-events.xml', [EventCitySitemapController::class, 'events'])->name('sitemap.events');
-Route::get('/sitemap-events-{page}.xml', [EventCitySitemapController::class, 'events'])->where('page', '[0-9]+')->name('sitemap.events.page');
-Route::get('/sitemap-venues.xml', [EventCitySitemapController::class, 'venues'])->name('sitemap.venues');
-Route::get('/sitemap-venues-{page}.xml', [EventCitySitemapController::class, 'venues'])->where('page', '[0-9]+')->name('sitemap.venues.page');
-Route::get('/sitemap-performers.xml', [EventCitySitemapController::class, 'performers'])->name('sitemap.performers');
-Route::get('/sitemap-performers-{page}.xml', [EventCitySitemapController::class, 'performers'])->where('page', '[0-9]+')->name('sitemap.performers.page');
-Route::get('/sitemap-calendars.xml', [EventCitySitemapController::class, 'calendars'])->name('sitemap.calendars');
-Route::get('/sitemap-community.xml', [EventCitySitemapController::class, 'community'])->name('sitemap.community');
+Route::get('/robots.txt', [EventCitySitemapController::class, 'robots']);
+Route::get('/sitemap.xml', [EventCitySitemapController::class, 'index']);
+Route::get('/sitemap-static.xml', [EventCitySitemapController::class, 'static']);
+Route::get('/sitemap-events.xml', [EventCitySitemapController::class, 'events']);
+Route::get('/sitemap-events-{page}.xml', [EventCitySitemapController::class, 'events'])->where('page', '[0-9]+');
+Route::get('/sitemap-venues.xml', [EventCitySitemapController::class, 'venues']);
+Route::get('/sitemap-venues-{page}.xml', [EventCitySitemapController::class, 'venues'])->where('page', '[0-9]+');
+Route::get('/sitemap-performers.xml', [EventCitySitemapController::class, 'performers']);
+Route::get('/sitemap-performers-{page}.xml', [EventCitySitemapController::class, 'performers'])->where('page', '[0-9]+');
+Route::get('/sitemap-calendars.xml', [EventCitySitemapController::class, 'calendars']);
+Route::get('/sitemap-community.xml', [EventCitySitemapController::class, 'community']);
 
 // Public routes
 Route::get('/', [HomePageController::class, 'index'])->name('home');
@@ -516,6 +516,5 @@ Route::get('/poll/{slug}/embed', [App\Http\Controllers\PollPageController::class
 Route::post('/api/polls/{slug}/vote', [App\Http\Controllers\PollPageController::class, 'vote'])->name('poll.vote');
 
 require __DIR__ . '/auth.php';
-require __DIR__ . '/ads.php';
 require __DIR__ . '/email-tracking.php';
 require __DIR__ . '/admin.php';
