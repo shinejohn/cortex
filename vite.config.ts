@@ -23,7 +23,4 @@ export default defineConfig({
             "ziggy-js": resolve(__dirname, "vendor/tightenco/ziggy/dist/index.js"),
         },
     },
-    ssr: {
-        external: ['react-dom/server'],
-    },
 });
