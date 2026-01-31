@@ -37,11 +37,10 @@ class TestDataSeeder extends Seeder
         
         foreach ($categories as $index => $category) {
             for ($i = 1; $i <= 5; $i++) {
-                DayNewsPost::firstOrCreate(
+                $post = DayNewsPost::firstOrCreate(
                     ['slug' => "test-{$category}-article-{$i}"],
                     [
                         'id' => Str::uuid(),
-                        'region_id' => $region->id,
                         'title' => ucfirst($category) . " Test Article {$i}: Local Community Update",
                         'slug' => "test-{$category}-article-{$i}",
                         'excerpt' => "This is a test article for the {$category} category. It contains sample content for UI testing purposes.",
@@ -53,6 +52,10 @@ class TestDataSeeder extends Seeder
                         'published_at' => now()->subHours(rand(1, 72)),
                     ]
                 );
+                
+                if (!$post->regions()->where('regions.id', $region->id)->exists()) {
+                    $post->regions()->attach($region->id);
+                }
             }
         }
         
@@ -60,11 +63,10 @@ class TestDataSeeder extends Seeder
 
         // Create test events
         for ($i = 1; $i <= 10; $i++) {
-            Event::firstOrCreate(
+            $event = Event::firstOrCreate(
                 ['slug' => "test-event-{$i}"],
                 [
                     'id' => Str::uuid(),
-                    'region_id' => $region->id,
                     'title' => "Test Event {$i}: Community Gathering",
                     'slug' => "test-event-{$i}",
                     'description' => "This is test event {$i} for UI testing. Join us for this community event.",
@@ -77,6 +79,10 @@ class TestDataSeeder extends Seeder
                     'status' => 'published',
                 ]
             );
+
+            if (!$event->regions()->where('regions.id', $region->id)->exists()) {
+                $event->regions()->attach($region->id);
+            }
         }
         
         $this->command->info('Created 10 test events');
@@ -86,11 +92,10 @@ class TestDataSeeder extends Seeder
         
         foreach ($businessTypes as $type) {
             for ($i = 1; $i <= 3; $i++) {
-                Business::firstOrCreate(
+                $business = Business::firstOrCreate(
                     ['slug' => "test-{$type}-business-{$i}"],
                     [
                         'id' => Str::uuid(),
-                        'region_id' => $region->id,
                         'name' => ucfirst($type) . " Test Business {$i}",
                         'slug' => "test-{$type}-business-{$i}",
                         'description' => "This is a test {$type} business for UI testing purposes.",
@@ -102,6 +107,10 @@ class TestDataSeeder extends Seeder
                         'status' => 'active',
                     ]
                 );
+
+                if (!$business->regions()->where('regions.id', $region->id)->exists()) {
+                    $business->regions()->attach($region->id);
+                }
             }
         }
         
