@@ -6,7 +6,7 @@ type FollowButtonProps = {
   targetUserId: string;
 };
 
-export default function FollowButton({ authUserId, targetUserId }: FollowButtonProps) {
+function FollowButton({ authUserId, targetUserId }: FollowButtonProps) {
   let resolvedAuthUserId = authUserId;
 
   // Safely attempt to read from Inertia context if available
@@ -36,3 +36,7 @@ export default function FollowButton({ authUserId, targetUserId }: FollowButtonP
     </button>
   );
 }
+
+export { FollowButton };
+export default FollowButton;
+
