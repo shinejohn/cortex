@@ -1,0 +1,2089 @@
+{
+  "config": {
+    "configFile": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/playwright.config.ts",
+    "rootDir": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 7
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "day-news",
+        "name": "day-news",
+        "testDir": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "goeventcity",
+        "name": "goeventcity",
+        "testDir": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "golocalvoices",
+        "name": "golocalvoices",
+        "testDir": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "downtownsguide",
+        "name": "downtownsguide",
+        "testDir": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "alphasite",
+        "name": "alphasite",
+        "testDir": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "mobile-chrome",
+        "name": "mobile-chrome",
+        "testDir": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.1",
+    "workers": 7,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "day-news/homepage.spec.ts",
+      "file": "day-news/homepage.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Day.News Homepage",
+          "file": "day-news/homepage.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Core layout elements exist",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "day-news",
+                  "projectName": "day-news",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 9178,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('header, [data-testid=\"header\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('header, [data-testid=\"header\"]')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('header, [data-testid=\"header\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('header, [data-testid=\"header\"]')\u001b[22m\n\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:14:70",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 70,
+                          "line": 14
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 13 |\u001b[39m         \u001b[90m// Header\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 14 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'header, [data-testid=\"header\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 15 |\u001b[39m\n \u001b[90m 16 |\u001b[39m         \u001b[90m// Logo/Brand\u001b[39m\n \u001b[90m 17 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'a[href=\"/\"], .logo, [data-testid=\"logo\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 70,
+                            "line": 14
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('header, [data-testid=\"header\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('header, [data-testid=\"header\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 13 |\u001b[39m         \u001b[90m// Header\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 14 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'header, [data-testid=\"header\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 15 |\u001b[39m\n \u001b[90m 16 |\u001b[39m         \u001b[90m// Logo/Brand\u001b[39m\n \u001b[90m 17 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'a[href=\"/\"], .logo, [data-testid=\"logo\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:14:70\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:30.273Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-6cf90--Core-layout-elements-exist-day-news/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 70,
+                        "line": 14
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-b3d731cf63c96bd1892d",
+              "file": "day-news/homepage.spec.ts",
+              "line": 12,
+              "column": 5
+            },
+            {
+              "title": "Hero/Featured stories display",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "day-news",
+                  "projectName": "day-news",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 9106,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:40:35",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 35,
+                          "line": 40
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 38 |\u001b[39m         }\n \u001b[90m 39 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 40 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 41 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 42 |\u001b[39m\n \u001b[90m 43 |\u001b[39m     test(\u001b[32m'News feed displays articles'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 35,
+                            "line": 40
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n\n\u001b[0m \u001b[90m 38 |\u001b[39m         }\n \u001b[90m 39 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 40 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 41 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 42 |\u001b[39m\n \u001b[90m 43 |\u001b[39m     test(\u001b[32m'News feed displays articles'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:40:35\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:30.253Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-7bf92-ro-Featured-stories-display-day-news/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 35,
+                        "line": 40
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-96e21bd75acdf6d85413",
+              "file": "day-news/homepage.spec.ts",
+              "line": 29,
+              "column": 5
+            },
+            {
+              "title": "News feed displays articles",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "day-news",
+                  "projectName": "day-news",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 9157,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:55:35",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 35,
+                          "line": 55
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 53 |\u001b[39m         }\n \u001b[90m 54 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 55 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 56 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 57 |\u001b[39m\n \u001b[90m 58 |\u001b[39m     test(\u001b[32m'Category tabs/pills work'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 35,
+                            "line": 55
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n\n\u001b[0m \u001b[90m 53 |\u001b[39m         }\n \u001b[90m 54 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 55 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 56 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 57 |\u001b[39m\n \u001b[90m 58 |\u001b[39m     test(\u001b[32m'Category tabs/pills work'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:55:35\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:30.265Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-95a4d-News-feed-displays-articles-day-news/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 35,
+                        "line": 55
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-2469ab8c15257ced0fe4",
+              "file": "day-news/homepage.spec.ts",
+              "line": 43,
+              "column": 5
+            },
+            {
+              "title": "Category tabs/pills work",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "day-news",
+                  "projectName": "day-news",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 4291,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "⚠️ WARNING: No category tabs found\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:30.249Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-a16be8db47423b3db7d9",
+              "file": "day-news/homepage.spec.ts",
+              "line": 58,
+              "column": 5
+            },
+            {
+              "title": "Search functionality works",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "day-news",
+                  "projectName": "day-news",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 4259,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "⚠️ WARNING: Search button not found - check implementation\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:30.248Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-9cedd4ea4b251f2a28c3",
+              "file": "day-news/homepage.spec.ts",
+              "line": 81,
+              "column": 5
+            },
+            {
+              "title": "Location selector works",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "day-news",
+                  "projectName": "day-news",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 4298,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "⚠️ INFO: Location selector not found on homepage\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:30.269Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-f28dfae1cb8722bc3ab9",
+              "file": "day-news/homepage.spec.ts",
+              "line": 102,
+              "column": 5
+            },
+            {
+              "title": "Core layout elements exist",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "goeventcity",
+                  "projectName": "goeventcity",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "failed",
+                      "duration": 9189,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('header, [data-testid=\"header\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('header, [data-testid=\"header\"]')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('header, [data-testid=\"header\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('header, [data-testid=\"header\"]')\u001b[22m\n\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:14:70",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 70,
+                          "line": 14
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 13 |\u001b[39m         \u001b[90m// Header\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 14 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'header, [data-testid=\"header\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 15 |\u001b[39m\n \u001b[90m 16 |\u001b[39m         \u001b[90m// Logo/Brand\u001b[39m\n \u001b[90m 17 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'a[href=\"/\"], .logo, [data-testid=\"logo\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 70,
+                            "line": 14
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('header, [data-testid=\"header\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('header, [data-testid=\"header\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 13 |\u001b[39m         \u001b[90m// Header\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 14 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'header, [data-testid=\"header\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 15 |\u001b[39m\n \u001b[90m 16 |\u001b[39m         \u001b[90m// Logo/Brand\u001b[39m\n \u001b[90m 17 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'a[href=\"/\"], .logo, [data-testid=\"logo\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:14:70\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:30.254Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-6cf90--Core-layout-elements-exist-goeventcity/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 70,
+                        "line": 14
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-cfaf2e91888a36cc9629",
+              "file": "day-news/homepage.spec.ts",
+              "line": 12,
+              "column": 5
+            },
+            {
+              "title": "Hero/Featured stories display",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "goeventcity",
+                  "projectName": "goeventcity",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 7876,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:40:35",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 35,
+                          "line": 40
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 38 |\u001b[39m         }\n \u001b[90m 39 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 40 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 41 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 42 |\u001b[39m\n \u001b[90m 43 |\u001b[39m     test(\u001b[32m'News feed displays articles'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 35,
+                            "line": 40
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n\n\u001b[0m \u001b[90m 38 |\u001b[39m         }\n \u001b[90m 39 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 40 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 41 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 42 |\u001b[39m\n \u001b[90m 43 |\u001b[39m     test(\u001b[32m'News feed displays articles'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:40:35\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:35.833Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-7bf92-ro-Featured-stories-display-goeventcity/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 35,
+                        "line": 40
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-85f9c2d6ed5dc0c18bad",
+              "file": "day-news/homepage.spec.ts",
+              "line": 29,
+              "column": 5
+            },
+            {
+              "title": "News feed displays articles",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "goeventcity",
+                  "projectName": "goeventcity",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 8057,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:55:35",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 35,
+                          "line": 55
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 53 |\u001b[39m         }\n \u001b[90m 54 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 55 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 56 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 57 |\u001b[39m\n \u001b[90m 58 |\u001b[39m     test(\u001b[32m'Category tabs/pills work'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 35,
+                            "line": 55
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n\n\u001b[0m \u001b[90m 53 |\u001b[39m         }\n \u001b[90m 54 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 55 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 56 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 57 |\u001b[39m\n \u001b[90m 58 |\u001b[39m     test(\u001b[32m'Category tabs/pills work'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:55:35\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:35.830Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-95a4d-News-feed-displays-articles-goeventcity/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 35,
+                        "line": 55
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-d5ebfe1d8322c93463e2",
+              "file": "day-news/homepage.spec.ts",
+              "line": 43,
+              "column": 5
+            },
+            {
+              "title": "Category tabs/pills work",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "goeventcity",
+                  "projectName": "goeventcity",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 2882,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "⚠️ WARNING: No category tabs found\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:35.829Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-6af75f4e8aa73295a5e8",
+              "file": "day-news/homepage.spec.ts",
+              "line": 58,
+              "column": 5
+            },
+            {
+              "title": "Search functionality works",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "goeventcity",
+                  "projectName": "goeventcity",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1198,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "⚠️ WARNING: Search button not found - check implementation\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:38.936Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-ee2318af4ebb6ef26a73",
+              "file": "day-news/homepage.spec.ts",
+              "line": 81,
+              "column": 5
+            },
+            {
+              "title": "Location selector works",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "goeventcity",
+                  "projectName": "goeventcity",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 3919,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "⚠️ INFO: Location selector not found on homepage\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:40.144Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-8a4522ae73952c84f483",
+              "file": "day-news/homepage.spec.ts",
+              "line": 102,
+              "column": 5
+            },
+            {
+              "title": "Core layout elements exist",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "golocalvoices",
+                  "projectName": "golocalvoices",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 6,
+                      "status": "failed",
+                      "duration": 8069,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('header, [data-testid=\"header\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('header, [data-testid=\"header\"]')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('header, [data-testid=\"header\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('header, [data-testid=\"header\"]')\u001b[22m\n\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:14:70",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 70,
+                          "line": 14
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 13 |\u001b[39m         \u001b[90m// Header\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 14 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'header, [data-testid=\"header\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 15 |\u001b[39m\n \u001b[90m 16 |\u001b[39m         \u001b[90m// Logo/Brand\u001b[39m\n \u001b[90m 17 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'a[href=\"/\"], .logo, [data-testid=\"logo\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 70,
+                            "line": 14
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('header, [data-testid=\"header\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('header, [data-testid=\"header\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 13 |\u001b[39m         \u001b[90m// Header\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 14 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'header, [data-testid=\"header\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 15 |\u001b[39m\n \u001b[90m 16 |\u001b[39m         \u001b[90m// Logo/Brand\u001b[39m\n \u001b[90m 17 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'a[href=\"/\"], .logo, [data-testid=\"logo\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:14:70\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:40.844Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-6cf90--Core-layout-elements-exist-golocalvoices/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 70,
+                        "line": 14
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-dc52e6cc5a049eb3c084",
+              "file": "day-news/homepage.spec.ts",
+              "line": 12,
+              "column": 5
+            },
+            {
+              "title": "Hero/Featured stories display",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "golocalvoices",
+                  "projectName": "golocalvoices",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 8210,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:40:35",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 35,
+                          "line": 40
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 38 |\u001b[39m         }\n \u001b[90m 39 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 40 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 41 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 42 |\u001b[39m\n \u001b[90m 43 |\u001b[39m     test(\u001b[32m'News feed displays articles'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 35,
+                            "line": 40
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n\n\u001b[0m \u001b[90m 38 |\u001b[39m         }\n \u001b[90m 39 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 40 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 41 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 42 |\u001b[39m\n \u001b[90m 43 |\u001b[39m     test(\u001b[32m'News feed displays articles'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:40:35\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:40.834Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-7bf92-ro-Featured-stories-display-golocalvoices/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 35,
+                        "line": 40
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-1e8f72adee65927025a9",
+              "file": "day-news/homepage.spec.ts",
+              "line": 29,
+              "column": 5
+            },
+            {
+              "title": "News feed displays articles",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "golocalvoices",
+                  "projectName": "golocalvoices",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 8082,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:55:35",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 35,
+                          "line": 55
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 53 |\u001b[39m         }\n \u001b[90m 54 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 55 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 56 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 57 |\u001b[39m\n \u001b[90m 58 |\u001b[39m     test(\u001b[32m'Category tabs/pills work'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 35,
+                            "line": 55
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n\n\u001b[0m \u001b[90m 53 |\u001b[39m         }\n \u001b[90m 54 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 55 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 56 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 57 |\u001b[39m\n \u001b[90m 58 |\u001b[39m     test(\u001b[32m'Category tabs/pills work'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:55:35\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:40.818Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-95a4d-News-feed-displays-articles-golocalvoices/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 35,
+                        "line": 55
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-6e4a097efb56f38a02fb",
+              "file": "day-news/homepage.spec.ts",
+              "line": 43,
+              "column": 5
+            },
+            {
+              "title": "Category tabs/pills work",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "golocalvoices",
+                  "projectName": "golocalvoices",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 3063,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "⚠️ WARNING: No category tabs found\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:40.843Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-1b9430c50298ed2f68a5",
+              "file": "day-news/homepage.spec.ts",
+              "line": 58,
+              "column": 5
+            },
+            {
+              "title": "Search functionality works",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "golocalvoices",
+                  "projectName": "golocalvoices",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 1854,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "⚠️ WARNING: Search button not found - check implementation\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:44.596Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-7bb2d1d067cbf5d2286f",
+              "file": "day-news/homepage.spec.ts",
+              "line": 81,
+              "column": 5
+            },
+            {
+              "title": "Location selector works",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "golocalvoices",
+                  "projectName": "golocalvoices",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 2544,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "⚠️ INFO: Location selector not found on homepage\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:44.056Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-25338e9e6d859880f15e",
+              "file": "day-news/homepage.spec.ts",
+              "line": 102,
+              "column": 5
+            },
+            {
+              "title": "Core layout elements exist",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "downtownsguide",
+                  "projectName": "downtownsguide",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 6891,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('header, [data-testid=\"header\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('header, [data-testid=\"header\"]')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('header, [data-testid=\"header\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('header, [data-testid=\"header\"]')\u001b[22m\n\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:14:70",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 70,
+                          "line": 14
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 13 |\u001b[39m         \u001b[90m// Header\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 14 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'header, [data-testid=\"header\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 15 |\u001b[39m\n \u001b[90m 16 |\u001b[39m         \u001b[90m// Logo/Brand\u001b[39m\n \u001b[90m 17 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'a[href=\"/\"], .logo, [data-testid=\"logo\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 70,
+                            "line": 14
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('header, [data-testid=\"header\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('header, [data-testid=\"header\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 13 |\u001b[39m         \u001b[90m// Header\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 14 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'header, [data-testid=\"header\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 15 |\u001b[39m\n \u001b[90m 16 |\u001b[39m         \u001b[90m// Logo/Brand\u001b[39m\n \u001b[90m 17 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'a[href=\"/\"], .logo, [data-testid=\"logo\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:14:70\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:44.694Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-6cf90--Core-layout-elements-exist-downtownsguide/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 70,
+                        "line": 14
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-fc82bb88ff478981eac0",
+              "file": "day-news/homepage.spec.ts",
+              "line": 12,
+              "column": 5
+            },
+            {
+              "title": "Hero/Featured stories display",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "downtownsguide",
+                  "projectName": "downtownsguide",
+                  "results": [
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 6641,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:40:35",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 35,
+                          "line": 40
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 38 |\u001b[39m         }\n \u001b[90m 39 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 40 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 41 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 42 |\u001b[39m\n \u001b[90m 43 |\u001b[39m     test(\u001b[32m'News feed displays articles'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 35,
+                            "line": 40
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n\n\u001b[0m \u001b[90m 38 |\u001b[39m         }\n \u001b[90m 39 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 40 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 41 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 42 |\u001b[39m\n \u001b[90m 43 |\u001b[39m     test(\u001b[32m'News feed displays articles'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:40:35\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:44.715Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-7bf92-ro-Featured-stories-display-downtownsguide/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 35,
+                        "line": 40
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-a00bc73deaafa3dd4470",
+              "file": "day-news/homepage.spec.ts",
+              "line": 29,
+              "column": 5
+            },
+            {
+              "title": "News feed displays articles",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "downtownsguide",
+                  "projectName": "downtownsguide",
+                  "results": [
+                    {
+                      "workerIndex": 17,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 7552,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:55:35",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 35,
+                          "line": 55
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 53 |\u001b[39m         }\n \u001b[90m 54 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 55 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 56 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 57 |\u001b[39m\n \u001b[90m 58 |\u001b[39m     test(\u001b[32m'Category tabs/pills work'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 35,
+                            "line": 55
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n\n\u001b[0m \u001b[90m 53 |\u001b[39m         }\n \u001b[90m 54 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 55 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 56 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 57 |\u001b[39m\n \u001b[90m 58 |\u001b[39m     test(\u001b[32m'Category tabs/pills work'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:55:35\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:47.324Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-95a4d-News-feed-displays-articles-downtownsguide/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 35,
+                        "line": 55
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-af048332b2c378c58e75",
+              "file": "day-news/homepage.spec.ts",
+              "line": 43,
+              "column": 5
+            },
+            {
+              "title": "Category tabs/pills work",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "downtownsguide",
+                  "projectName": "downtownsguide",
+                  "results": [
+                    {
+                      "workerIndex": 18,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 2491,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "⚠️ WARNING: No category tabs found\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:47.482Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-7ce3d12dfff17d2f2804",
+              "file": "day-news/homepage.spec.ts",
+              "line": 58,
+              "column": 5
+            },
+            {
+              "title": "Search functionality works",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "downtownsguide",
+                  "projectName": "downtownsguide",
+                  "results": [
+                    {
+                      "workerIndex": 19,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 5010,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "⚠️ WARNING: Search button not found - check implementation\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:49.723Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-643cdc5ac30b7624421c",
+              "file": "day-news/homepage.spec.ts",
+              "line": 81,
+              "column": 5
+            },
+            {
+              "title": "Location selector works",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "downtownsguide",
+                  "projectName": "downtownsguide",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4983,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "⚠️ INFO: Location selector not found on homepage\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:49.759Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-a54945d7e79afc322650",
+              "file": "day-news/homepage.spec.ts",
+              "line": 102,
+              "column": 5
+            },
+            {
+              "title": "Core layout elements exist",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "alphasite",
+                  "projectName": "alphasite",
+                  "results": [
+                    {
+                      "workerIndex": 21,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 9741,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('header, [data-testid=\"header\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('header, [data-testid=\"header\"]')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('header, [data-testid=\"header\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('header, [data-testid=\"header\"]')\u001b[22m\n\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:14:70",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 70,
+                          "line": 14
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 13 |\u001b[39m         \u001b[90m// Header\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 14 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'header, [data-testid=\"header\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 15 |\u001b[39m\n \u001b[90m 16 |\u001b[39m         \u001b[90m// Logo/Brand\u001b[39m\n \u001b[90m 17 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'a[href=\"/\"], .logo, [data-testid=\"logo\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 70,
+                            "line": 14
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('header, [data-testid=\"header\"]')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('header, [data-testid=\"header\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 13 |\u001b[39m         \u001b[90m// Header\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 14 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'header, [data-testid=\"header\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                                                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 15 |\u001b[39m\n \u001b[90m 16 |\u001b[39m         \u001b[90m// Logo/Brand\u001b[39m\n \u001b[90m 17 |\u001b[39m         \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'a[href=\"/\"], .logo, [data-testid=\"logo\"]'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:14:70\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:49.884Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-6cf90--Core-layout-elements-exist-alphasite/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 70,
+                        "line": 14
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-ba541c1e1ac468a79341",
+              "file": "day-news/homepage.spec.ts",
+              "line": 12,
+              "column": 5
+            },
+            {
+              "title": "Hero/Featured stories display",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "alphasite",
+                  "projectName": "alphasite",
+                  "results": [
+                    {
+                      "workerIndex": 22,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 9079,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:40:35",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 35,
+                          "line": 40
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 38 |\u001b[39m         }\n \u001b[90m 39 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 40 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 41 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 42 |\u001b[39m\n \u001b[90m 43 |\u001b[39m     test(\u001b[32m'News feed displays articles'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 35,
+                            "line": 40
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n\n\u001b[0m \u001b[90m 38 |\u001b[39m         }\n \u001b[90m 39 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 40 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 41 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 42 |\u001b[39m\n \u001b[90m 43 |\u001b[39m     test(\u001b[32m'News feed displays articles'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:40:35\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:50.809Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-7bf92-ro-Featured-stories-display-alphasite/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 35,
+                        "line": 40
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-47d180f225c649a28327",
+              "file": "day-news/homepage.spec.ts",
+              "line": 29,
+              "column": 5
+            },
+            {
+              "title": "News feed displays articles",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "alphasite",
+                  "projectName": "alphasite",
+                  "results": [
+                    {
+                      "workerIndex": 23,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 6808,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:55:35",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 35,
+                          "line": 55
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 53 |\u001b[39m         }\n \u001b[90m 54 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 55 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 56 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 57 |\u001b[39m\n \u001b[90m 58 |\u001b[39m     test(\u001b[32m'Category tabs/pills work'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 35,
+                            "line": 55
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mnot\u001b[2m.\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: not \u001b[32m\"fail\"\u001b[39m\n\n\u001b[0m \u001b[90m 53 |\u001b[39m         }\n \u001b[90m 54 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 55 |\u001b[39m         expect(result\u001b[33m.\u001b[39mstatus)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoBe(\u001b[32m'fail'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 56 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 57 |\u001b[39m\n \u001b[90m 58 |\u001b[39m     test(\u001b[32m'Category tabs/pills work'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:55:35\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:52.999Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-95a4d-News-feed-displays-articles-alphasite/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 35,
+                        "line": 55
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-147da6481b56c352e4bb",
+              "file": "day-news/homepage.spec.ts",
+              "line": 43,
+              "column": 5
+            },
+            {
+              "title": "Category tabs/pills work",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "alphasite",
+                  "projectName": "alphasite",
+                  "results": [
+                    {
+                      "workerIndex": 24,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1450,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "⚠️ WARNING: No category tabs found\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:53.513Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-68c9b06ae87d569bca02",
+              "file": "day-news/homepage.spec.ts",
+              "line": 58,
+              "column": 5
+            },
+            {
+              "title": "Search functionality works",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "alphasite",
+                  "projectName": "alphasite",
+                  "results": [
+                    {
+                      "workerIndex": 25,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2567,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "⚠️ WARNING: Search button not found - check implementation\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:55.765Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-24527a7d157a3f3c6031",
+              "file": "day-news/homepage.spec.ts",
+              "line": 81,
+              "column": 5
+            },
+            {
+              "title": "Location selector works",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "alphasite",
+                  "projectName": "alphasite",
+                  "results": [
+                    {
+                      "workerIndex": 27,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 2718,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "⚠️ INFO: Location selector not found on homepage\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:55.764Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-321a9f26f5267cf2eb6b",
+              "file": "day-news/homepage.spec.ts",
+              "line": 102,
+              "column": 5
+            },
+            {
+              "title": "Core layout elements exist",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-chrome",
+                  "projectName": "mobile-chrome",
+                  "results": [
+                    {
+                      "workerIndex": 26,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 394,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:9:20",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 20,
+                          "line": 9
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  7 |\u001b[39m     test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m  8 |\u001b[39m         tester \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mUITester\u001b[39m(page)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m         \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 11 |\u001b[39m\n \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 20,
+                            "line": 9
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m  7 |\u001b[39m     test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m  8 |\u001b[39m         tester \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mUITester\u001b[39m(page)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m         \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 11 |\u001b[39m\n \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:9:20\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:55.761Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-6cf90--Core-layout-elements-exist-mobile-chrome/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 20,
+                        "line": 9
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-95276ceff84a394e03b0",
+              "file": "day-news/homepage.spec.ts",
+              "line": 12,
+              "column": 5
+            },
+            {
+              "title": "Hero/Featured stories display",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-chrome",
+                  "projectName": "mobile-chrome",
+                  "results": [
+                    {
+                      "workerIndex": 28,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 384,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:9:20",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 20,
+                          "line": 9
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  7 |\u001b[39m     test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m  8 |\u001b[39m         tester \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mUITester\u001b[39m(page)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m         \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 11 |\u001b[39m\n \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 20,
+                            "line": 9
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m  7 |\u001b[39m     test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m  8 |\u001b[39m         tester \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mUITester\u001b[39m(page)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m         \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 11 |\u001b[39m\n \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:9:20\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:55.811Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-7bf92-ro-Featured-stories-display-mobile-chrome/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 20,
+                        "line": 9
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-c3a7c563034ee403e8b5",
+              "file": "day-news/homepage.spec.ts",
+              "line": 29,
+              "column": 5
+            },
+            {
+              "title": "News feed displays articles",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-chrome",
+                  "projectName": "mobile-chrome",
+                  "results": [
+                    {
+                      "workerIndex": 29,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 259,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:9:20",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 20,
+                          "line": 9
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  7 |\u001b[39m     test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m  8 |\u001b[39m         tester \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mUITester\u001b[39m(page)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m         \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 11 |\u001b[39m\n \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 20,
+                            "line": 9
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m  7 |\u001b[39m     test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m  8 |\u001b[39m         tester \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mUITester\u001b[39m(page)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m         \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 11 |\u001b[39m\n \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:9:20\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:57.080Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-95a4d-News-feed-displays-articles-mobile-chrome/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 20,
+                        "line": 9
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-4efb62c95b0bf1db79d6",
+              "file": "day-news/homepage.spec.ts",
+              "line": 43,
+              "column": 5
+            },
+            {
+              "title": "Category tabs/pills work",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-chrome",
+                  "projectName": "mobile-chrome",
+                  "results": [
+                    {
+                      "workerIndex": 30,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 271,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:9:20",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 20,
+                          "line": 9
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  7 |\u001b[39m     test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m  8 |\u001b[39m         tester \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mUITester\u001b[39m(page)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m         \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 11 |\u001b[39m\n \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 20,
+                            "line": 9
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m  7 |\u001b[39m     test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m  8 |\u001b[39m         tester \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mUITester\u001b[39m(page)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m         \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 11 |\u001b[39m\n \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:9:20\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:57.107Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-Homepage-Category-tabs-pills-work-mobile-chrome/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 20,
+                        "line": 9
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-ffee193ad031ad30f9c5",
+              "file": "day-news/homepage.spec.ts",
+              "line": 58,
+              "column": 5
+            },
+            {
+              "title": "Search functionality works",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-chrome",
+                  "projectName": "mobile-chrome",
+                  "results": [
+                    {
+                      "workerIndex": 32,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 246,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:9:20",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 20,
+                          "line": 9
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  7 |\u001b[39m     test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m  8 |\u001b[39m         tester \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mUITester\u001b[39m(page)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m         \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 11 |\u001b[39m\n \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 20,
+                            "line": 9
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m  7 |\u001b[39m     test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m  8 |\u001b[39m         tester \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mUITester\u001b[39m(page)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m         \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 11 |\u001b[39m\n \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:9:20\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:58.180Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-baeae--Search-functionality-works-mobile-chrome/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 20,
+                        "line": 9
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-a9cc476907ff9f82e967",
+              "file": "day-news/homepage.spec.ts",
+              "line": 81,
+              "column": 5
+            },
+            {
+              "title": "Location selector works",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-chrome",
+                  "projectName": "mobile-chrome",
+                  "results": [
+                    {
+                      "workerIndex": 31,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 255,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n\n    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:9:20",
+                        "location": {
+                          "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                          "column": 20,
+                          "line": 9
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  7 |\u001b[39m     test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m  8 |\u001b[39m         tester \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mUITester\u001b[39m(page)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m         \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 11 |\u001b[39m\n \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                            "column": 20,
+                            "line": 9
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at https://dev.day.news/\nCall log:\n\u001b[2m  - navigating to \"https://dev.day.news/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m  7 |\u001b[39m     test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m  8 |\u001b[39m         tester \u001b[33m=\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mUITester\u001b[39m(page)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m         \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 11 |\u001b[39m\n \u001b[90m 12 |\u001b[39m     test(\u001b[32m'Core layout elements exist'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at /Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts:9:20\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-01T20:52:58.173Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/test-results/day-news-homepage-Day-News-Homepage-Location-selector-works-mobile-chrome/test-failed-1.png"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/tests/e2e/day-news/homepage.spec.ts",
+                        "column": 20,
+                        "line": 9
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "0b2b7ffb9c57f7745c36-4a3926fd08c496223e35",
+              "file": "day-news/homepage.spec.ts",
+              "line": 102,
+              "column": 5
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-02-01T20:52:29.537Z",
+    "duration": 30527.923,
+    "expected": 15,
+    "skipped": 0,
+    "unexpected": 21,
+    "flaky": 0
+  }
+}

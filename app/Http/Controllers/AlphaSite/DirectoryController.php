@@ -33,7 +33,7 @@ final class DirectoryController extends Controller
         $bannerAds = $this->advertisementService->getActiveAds('alphasite', $region, 'banner')->take(1);
         $featuredAds = $this->advertisementService->getActiveAds('alphasite', $region, 'featured')->take(1);
 
-        return Inertia::render('alphasite/home', [
+        return Inertia::render('alphasite/directory/home', [
             'featuredBusinesses' => $this->businessService->getFeatured(12),
             'advertisements' => [
                 'banner' => $bannerAds->map(fn ($ad) => $this->formatAd($ad)),

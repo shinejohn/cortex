@@ -7,6 +7,7 @@ namespace App\Http\Controllers\DayNews;
 use App\Http\Controllers\Controller;
 use App\Models\ArticleComment;
 use App\Models\DayNewsPost;
+use App\Models\Event;
 use App\Models\Region;
 use App\Services\AdvertisementService;
 use App\Services\LocationService;
@@ -108,6 +109,25 @@ final class PublicPostController extends Controller
             ->orderBy('id', 'asc')
             ->first();
 
+        // Get trending posts for the region
+        $trendingPosts = DayNewsPost::published()
+            ->whereHas('regions', function ($q) use ($regionIds) {
+                $q->whereIn('regions.id', $regionIds);
+            })
+            ->orderBy('view_count', 'desc')
+            ->limit(5)
+            ->get();
+
+        // Get upcoming events for the region
+        $upcomingEvents = Event::published()
+            ->upcoming()
+            ->whereHas('regions', function ($q) use ($regionIds) {
+                $q->whereIn('regions.id', $regionIds);
+            })
+            ->orderBy('event_date', 'asc')
+            ->limit(3)
+            ->get();
+
         // Build SEO JSON-LD data
         $plainTextContent = strip_tags($post->content);
         $seoData = [
@@ -195,14 +215,23 @@ final class PublicPostController extends Controller
                     'name' => $relatedPost->writerAgent->name,
                     'avatar' => $relatedPost->writerAgent->avatar_url,
                 ] : null,
-                'workspace' => $relatedPost->workspace ? [
-                    'id' => $relatedPost->workspace->id,
-                    'name' => $relatedPost->workspace->name,
-                ] : null,
                 'regions' => $relatedPost->regions->map(fn ($r) => [
                     'id' => $r->id,
                     'name' => $r->name,
                 ]),
+            ]),
+            'trendingPosts' => $trendingPosts->map(fn ($tp) => [
+                'id' => $tp->id,
+                'title' => $tp->title,
+                'slug' => $tp->slug,
+                'published_at' => $tp->published_at?->toISOString(),
+                'view_count' => $tp->view_count,
+            ]),
+            'upcomingEvents' => $upcomingEvents->map(fn ($event) => [
+                'id' => $event->id,
+                'title' => $event->title,
+                'event_date' => $event->event_date->toISOString(),
+                'location' => $event->getVenueInfoAttribute()['name'],
             ]),
             'advertisements' => [
                 'banner' => $bannerAds->map(fn ($ad) => [

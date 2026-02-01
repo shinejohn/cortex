@@ -9,6 +9,7 @@ use App\Http\Requests\DayNews\StoreAnnouncementRequest;
 use App\Http\Requests\DayNews\UpdateAnnouncementRequest;
 use App\Models\Announcement;
 use App\Models\Region;
+use App\Models\Event;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -47,9 +48,14 @@ final class AnnouncementController extends Controller
         }
 
         $announcements = $query->paginate(20)->withQueryString();
+        
+        // Transform announcements for high-fidelity UI
+        $announcements->getCollection()->transform(function (Announcement $item) {
+            return $this->transformAnnouncement($item);
+        });
 
         // Get featured announcement (most reactions)
-        $featured = Announcement::published()
+        $featuredPost = Announcement::published()
             ->when($currentRegion, function ($q) use ($currentRegion) {
                 $q->forRegion($currentRegion->id);
             })
@@ -57,15 +63,82 @@ final class AnnouncementController extends Controller
             ->with(['user', 'regions'])
             ->first();
 
+        $featured = $featuredPost ? $this->transformAnnouncement($featuredPost) : null;
+
+        // Get memorials for sidebar
+        $memorials = Announcement::published()
+            ->whereIn('type', ['memorial', 'obituary'])
+            ->when($currentRegion, function ($q) use ($currentRegion) {
+                $q->forRegion($currentRegion->id);
+            })
+            ->orderBy('published_at', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function (Announcement $item) {
+                return $this->transformAnnouncement($item);
+            });
+
+        // Get upcoming events for sidebar
+        $upcomingEvents = Event::where('event_date', '>=', now()->toDateString())
+            ->when($currentRegion, function ($q) use ($currentRegion) {
+                $q->whereHas('regions', fn($r) => $r->where('region_id', $currentRegion->id));
+            })
+            ->orderBy('event_date', 'asc')
+            ->limit(5)
+            ->get()
+            ->map(fn ($event) => [
+                'id' => $event->id,
+                'title' => $event->title,
+                'location' => $event->venue?->name ?? $event->location_name ?? 'Local Venue',
+                'month' => $event->event_date->format('M'),
+                'day' => $event->event_date->format('d'),
+            ]);
+
         return Inertia::render('day-news/announcements/index', [
             'announcements' => $announcements,
             'featured' => $featured,
+            'memorials' => $memorials,
+            'upcomingEvents' => $upcomingEvents,
             'filters' => [
                 'type' => $type,
                 'search' => $search,
             ],
-            'currentRegion' => $currentRegion,
+            'currentRegion' => $currentRegion ? [
+                'id' => $currentRegion->id,
+                'name' => $currentRegion->name,
+            ] : null,
         ]);
+    }
+
+    private function transformAnnouncement(Announcement $announcement): array
+    {
+        $eventDate = $announcement->event_date ? \Carbon\Carbon::parse($announcement->event_date) : null;
+        $publishedAt = $announcement->published_at ? \Carbon\Carbon::parse($announcement->published_at) : null;
+
+        return [
+            'id' => $announcement->id,
+            'type' => $announcement->type,
+            'title' => $announcement->title,
+            'content' => $announcement->content,
+            'image' => $announcement->image ? asset('storage/' . $announcement->image) : null,
+            'location' => $announcement->location,
+            'event_date' => $eventDate?->toDateString(),
+            'event_date_formatted' => $eventDate?->format('F j, Y'),
+            'published_at' => $publishedAt?->toISOString(),
+            'published_at_diff' => $publishedAt?->diffForHumans(),
+            'views_count' => $announcement->views_count,
+            'reactions_count' => $announcement->reactions_count,
+            'comments_count' => $announcement->comments_count,
+            'user' => [
+                'id' => $announcement->user->id,
+                'name' => $announcement->user->name,
+                'avatar' => $announcement->user->profile_photo_url ?? null,
+            ],
+            'regions' => $announcement->regions->map(fn ($r) => [
+                'id' => $r->id,
+                'name' => $r->name,
+            ]),
+        ];
     }
 
     /**
@@ -114,53 +187,70 @@ final class AnnouncementController extends Controller
     }
 
     /**
-     * Display single announcement
+     * Display a single announcement
      */
     public function show(Request $request, Announcement $announcement): Response
     {
-        $announcement->load(['user', 'regions', 'ratings', 'reviews']);
-        $announcement->incrementViewsCount();
+        $currentRegion = $request->attributes->get('detected_region');
 
-        // Get related announcements
+        // Transform the announcement
+        $transformedAnnouncement = $this->transformAnnouncement($announcement);
+
+        // Get related announcements (same type, in same region if possible)
         $related = Announcement::published()
             ->where('id', '!=', $announcement->id)
             ->where('type', $announcement->type)
-            ->whereHas('regions', function ($q) use ($announcement) {
-                $q->whereIn('region_id', $announcement->regions->pluck('id'));
+            ->when($currentRegion, function ($q) use ($currentRegion) {
+                $q->forRegion($currentRegion->id);
             })
-            ->with(['user', 'regions'])
-            ->limit(6)
-            ->get();
+            ->orderBy('published_at', 'desc')
+            ->limit(3)
+            ->get()
+            ->map(function (Announcement $item) {
+                return $this->transformAnnouncement($item);
+            });
+
+        // Get memorials for sidebar
+        $memorials = Announcement::published()
+            ->whereIn('type', ['memorial', 'obituary'])
+            ->when($currentRegion, function ($q) use ($currentRegion) {
+                $q->forRegion($currentRegion->id);
+            })
+            ->orderBy('published_at', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function (Announcement $item) {
+                return $this->transformAnnouncement($item);
+            });
+
+        // Get upcoming events for sidebar
+        $upcomingEvents = Event::where('event_date', '>=', now()->toDateString())
+            ->when($currentRegion, function ($q) use ($currentRegion) {
+                $q->whereHas('regions', fn($r) => $r->where('region_id', $currentRegion->id));
+            })
+            ->orderBy('event_date', 'asc')
+            ->limit(5)
+            ->get()
+            ->map(fn ($event) => [
+                'id' => $event->id,
+                'title' => $event->title,
+                'location' => $event->venue?->name ?? $event->location_name ?? 'Local Venue',
+                'month' => $event->event_date->format('M'),
+                'day' => $event->event_date->format('d'),
+            ]);
+
+        // Increment views
+        $announcement->increment('views_count');
 
         return Inertia::render('day-news/announcements/show', [
-            'announcement' => [
-                'id' => $announcement->id,
-                'type' => $announcement->type,
-                'title' => $announcement->title,
-                'content' => $announcement->content,
-                'image' => $announcement->image,
-                'location' => $announcement->location,
-                'event_date' => $announcement->event_date?->toDateString(),
-                'published_at' => $announcement->published_at?->toISOString(),
-                'views_count' => $announcement->views_count,
-                'reactions_count' => $announcement->reactions_count,
-                'comments_count' => $announcement->comments_count,
-                'user' => [
-                    'id' => $announcement->user->id,
-                    'name' => $announcement->user->name,
-                    'avatar' => $announcement->user->profile_photo_url ?? null,
-                ],
-                'regions' => $announcement->regions->map(fn ($r) => [
-                    'id' => $r->id,
-                    'name' => $r->name,
-                ]),
-            ],
-            'related' => $related->map(fn ($item) => [
-                'id' => $item->id,
-                'title' => $item->title,
-                'content' => $item->content,
-                'image' => $item->image,
-            ]),
+            'announcement' => $transformedAnnouncement,
+            'related' => $related,
+            'memorials' => $memorials,
+            'upcomingEvents' => $upcomingEvents,
+            'currentRegion' => $currentRegion ? [
+                'id' => $currentRegion->id,
+                'name' => $currentRegion->name,
+            ] : null,
         ]);
     }
 

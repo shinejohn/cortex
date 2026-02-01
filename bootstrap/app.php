@@ -39,12 +39,18 @@ return Application::configure(basePath: dirname(__DIR__))
             // DowntownGuide domain routes
             // Register routes for downtown-guide domain, with fallback pattern matching
             $downtownGuideDomain = config('domains.downtown-guide');
+            // #region agent log
+            file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'bootstrap/app.php:41','message'=>'DowntownGuide domain config loaded','data'=>['domain'=>$downtownGuideDomain],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'A'])."\n", FILE_APPEND);
+            // #endregion
             
             // Always register routes for downtownsguide.com patterns (handles dev.downtownsguide.com, www.downtownsguide.com, etc.)
             Route::domain('{subdomain}.downtownsguide.com')
                 ->where(['subdomain' => '[a-z0-9-]+'])
                 ->middleware('web')
                 ->group(function () {
+                    // #region agent log
+                    file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'bootstrap/app.php:47','message'=>'Subdomain route matched','data'=>['pattern'=>'{subdomain}.downtownsguide.com'],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'A'])."\n", FILE_APPEND);
+                    // #endregion
                     require base_path('routes/email-tracking.php');
                     require base_path('routes/downtown-guide.php');
                 });
@@ -52,6 +58,9 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::domain('downtownsguide.com')
                 ->middleware('web')
                 ->group(function () {
+                    // #region agent log
+                    file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'bootstrap/app.php:54','message'=>'Main domain route matched','data'=>['pattern'=>'downtownsguide.com'],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'A'])."\n", FILE_APPEND);
+                    // #endregion
                     require base_path('routes/email-tracking.php');
                     require base_path('routes/downtown-guide.php');
                 });
@@ -60,7 +69,10 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($downtownGuideDomain && $downtownGuideDomain !== 'downtownsguide.com' && !str_ends_with($downtownGuideDomain, '.downtownsguide.com')) {
                 Route::domain($downtownGuideDomain)
                     ->middleware('web')
-                    ->group(function () {
+                    ->group(function () use ($downtownGuideDomain) {
+                        // #region agent log
+                        file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'bootstrap/app.php:73','message'=>'Custom domain route matched','data'=>['domain'=>$downtownGuideDomain],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run2','hypothesisId'=>'A'])."\n", FILE_APPEND);
+                        // #endregion
                         require base_path('routes/email-tracking.php');
                         require base_path('routes/downtown-guide.php');
                     });
@@ -77,7 +89,9 @@ return Application::configure(basePath: dirname(__DIR__))
                     require base_path('routes/local-voices.php');
                 });
 
-            // AlphaSite domain routes (subdomain and main domain)
+            // AlphaSite domain routes
+            // Routes are domain-constrained in routes/alphasite.php (handles both .com and .ai domains)
+            // No need to add domain constraints here as routes file handles them
             Route::middleware('web')
                 ->group(function () {
                     require base_path('routes/email-tracking.php');
