@@ -32,13 +32,13 @@ COPY packages/ packages/
 
 # Verify composer is installed
 RUN composer --version || { \
-        echo "❌ Composer not found!"; \
-        echo "PHP version:"; \
-        php -v; \
-        echo "PHP extensions:"; \
-        php -m; \
-        which composer || echo "composer not in PATH"; \
-        exit 1; \
+    echo "❌ Composer not found!"; \
+    echo "PHP version:"; \
+    php -v; \
+    echo "PHP extensions:"; \
+    php -m; \
+    which composer || echo "composer not in PATH"; \
+    exit 1; \
     }
 
 # Install only Ziggy (needed for frontend build)
@@ -105,7 +105,7 @@ RUN apk add --no-cache \
     simplexml \
     && pecl install redis \
     && docker-php-ext-enable redis
-    # Redis extension installed for Laravel cache/session/queue
+# Redis extension installed for Laravel cache/session/queue
 
 # Install Composer using official installer (uses Docker image's PHP, not Alpine's)
 # Download to temp location first, verify it works, then move to final location
@@ -115,66 +115,66 @@ RUN set -eux; \
     RETRY=0; \
     INSTALL_SUCCESS=0; \
     while [ $RETRY -lt $MAX_RETRIES ] && [ $INSTALL_SUCCESS -eq 0 ]; do \
-        echo "=== Composer installation attempt $((RETRY+1))/$MAX_RETRIES ==="; \
-        EXPECTED_SIGNATURE=$(curl -sS https://composer.github.io/installer.sig) || { \
-            echo "⚠️ Failed to fetch expected signature, retrying..."; \
-            RETRY=$((RETRY+1)); \
-            sleep 2; \
-            continue; \
-        }; \
-        curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php || { \
-            echo "⚠️ Failed to download installer, retrying..."; \
-            RETRY=$((RETRY+1)); \
-            sleep 2; \
-            continue; \
-        }; \
-        ACTUAL_SIGNATURE=$(/usr/local/bin/php -r "echo hash_file('sha384', '/tmp/composer-setup.php');") && \
-        if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]; then \
-            echo "⚠️ Invalid Composer installer signature (attempt $((RETRY+1))/$MAX_RETRIES)"; \
-            echo "Expected: $EXPECTED_SIGNATURE"; \
-            echo "Actual: $ACTUAL_SIGNATURE"; \
-            rm -f /tmp/composer-setup.php; \
-            RETRY=$((RETRY+1)); \
-            sleep 2; \
-            continue; \
-        fi; \
-        /usr/local/bin/php /tmp/composer-setup.php --install-dir=/tmp --filename=composer.phar && \
-        rm -f /tmp/composer-setup.php && \
-        # Verify the PHAR works before moving it
-        if /usr/local/bin/php /tmp/composer.phar --version > /dev/null 2>&1; then \
-            # Move verified PHAR to final location
-            mv /tmp/composer.phar /usr/local/bin/composer && \
-            chmod +x /usr/local/bin/composer && \
-            # Create wrapper script to ensure correct PHP is always used
-            echo '#!/bin/sh' > /usr/local/bin/composer-wrapper && \
-            echo 'exec /usr/local/bin/php /usr/local/bin/composer "$@"' >> /usr/local/bin/composer-wrapper && \
-            chmod +x /usr/local/bin/composer-wrapper && \
-            # Verify final installation
-            /usr/local/bin/php /usr/local/bin/composer --version > /dev/null 2>&1 && \
-            echo "✅ Composer installed successfully"; \
-            INSTALL_SUCCESS=1; \
-        else \
-            echo "⚠️ Composer PHAR signature verification failed (attempt $((RETRY+1))/$MAX_RETRIES)"; \
-            rm -f /tmp/composer.phar; \
-            RETRY=$((RETRY+1)); \
-            sleep 2; \
-        fi; \
+    echo "=== Composer installation attempt $((RETRY+1))/$MAX_RETRIES ==="; \
+    EXPECTED_SIGNATURE=$(curl -sS https://composer.github.io/installer.sig) || { \
+    echo "⚠️ Failed to fetch expected signature, retrying..."; \
+    RETRY=$((RETRY+1)); \
+    sleep 2; \
+    continue; \
+    }; \
+    curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php || { \
+    echo "⚠️ Failed to download installer, retrying..."; \
+    RETRY=$((RETRY+1)); \
+    sleep 2; \
+    continue; \
+    }; \
+    ACTUAL_SIGNATURE=$(/usr/local/bin/php -r "echo hash_file('sha384', '/tmp/composer-setup.php');") && \
+    if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]; then \
+    echo "⚠️ Invalid Composer installer signature (attempt $((RETRY+1))/$MAX_RETRIES)"; \
+    echo "Expected: $EXPECTED_SIGNATURE"; \
+    echo "Actual: $ACTUAL_SIGNATURE"; \
+    rm -f /tmp/composer-setup.php; \
+    RETRY=$((RETRY+1)); \
+    sleep 2; \
+    continue; \
+    fi; \
+    /usr/local/bin/php /tmp/composer-setup.php --install-dir=/tmp --filename=composer.phar && \
+    rm -f /tmp/composer-setup.php && \
+    # Verify the PHAR works before moving it
+    if /usr/local/bin/php /tmp/composer.phar --version > /dev/null 2>&1; then \
+    # Move verified PHAR to final location
+    mv /tmp/composer.phar /usr/local/bin/composer && \
+    chmod +x /usr/local/bin/composer && \
+    # Create wrapper script to ensure correct PHP is always used
+    echo '#!/bin/sh' > /usr/local/bin/composer-wrapper && \
+    echo 'exec /usr/local/bin/php /usr/local/bin/composer "$@"' >> /usr/local/bin/composer-wrapper && \
+    chmod +x /usr/local/bin/composer-wrapper && \
+    # Verify final installation
+    /usr/local/bin/php /usr/local/bin/composer --version > /dev/null 2>&1 && \
+    echo "✅ Composer installed successfully"; \
+    INSTALL_SUCCESS=1; \
+    else \
+    echo "⚠️ Composer PHAR signature verification failed (attempt $((RETRY+1))/$MAX_RETRIES)"; \
+    rm -f /tmp/composer.phar; \
+    RETRY=$((RETRY+1)); \
+    sleep 2; \
+    fi; \
     done; \
     if [ $INSTALL_SUCCESS -eq 0 ]; then \
-        echo "❌ All Composer installation attempts failed, trying direct PHAR download..."; \
-        curl -sS https://getcomposer.org/download/latest-stable/composer.phar -o /tmp/composer.phar && \
-        if /usr/local/bin/php /tmp/composer.phar --version > /dev/null 2>&1; then \
-            mv /tmp/composer.phar /usr/local/bin/composer && \
-            chmod +x /usr/local/bin/composer && \
-            echo '#!/bin/sh' > /usr/local/bin/composer-wrapper && \
-            echo 'exec /usr/local/bin/php /usr/local/bin/composer "$@"' >> /usr/local/bin/composer-wrapper && \
-            chmod +x /usr/local/bin/composer-wrapper && \
-            /usr/local/bin/php /usr/local/bin/composer --version && \
-            echo "✅ Composer installed via direct PHAR download"; \
-        else \
-            echo "❌ Direct PHAR download also failed!"; \
-            exit 1; \
-        fi; \
+    echo "❌ All Composer installation attempts failed, trying direct PHAR download..."; \
+    curl -sS https://getcomposer.org/download/latest-stable/composer.phar -o /tmp/composer.phar && \
+    if /usr/local/bin/php /tmp/composer.phar --version > /dev/null 2>&1; then \
+    mv /tmp/composer.phar /usr/local/bin/composer && \
+    chmod +x /usr/local/bin/composer && \
+    echo '#!/bin/sh' > /usr/local/bin/composer-wrapper && \
+    echo 'exec /usr/local/bin/php /usr/local/bin/composer "$@"' >> /usr/local/bin/composer-wrapper && \
+    chmod +x /usr/local/bin/composer-wrapper && \
+    /usr/local/bin/php /usr/local/bin/composer --version && \
+    echo "✅ Composer installed via direct PHAR download"; \
+    else \
+    echo "❌ Direct PHAR download also failed!"; \
+    exit 1; \
+    fi; \
     fi
 
 # Enable installed extensions explicitly
@@ -198,13 +198,13 @@ RUN echo "=== PHP Binary Location ===" && \
     php -r "echo 'xml: ' . (extension_loaded('xml') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
     php -r "echo 'redis: ' . (extension_loaded('redis') ? 'LOADED' : 'NOT LOADED') . PHP_EOL;" && \
     php -m | grep -E "(simplexml|intl|session|pcntl|fileinfo|dom|xml|redis)" || { \
-        echo "❌ Missing PHP extensions!"; \
-        echo "Installed extensions:"; \
-        php -m; \
-        echo ""; \
-        echo "PHP ini files:"; \
-        php --ini; \
-        exit 1; \
+    echo "❌ Missing PHP extensions!"; \
+    echo "Installed extensions:"; \
+    php -m; \
+    echo ""; \
+    echo "PHP ini files:"; \
+    php --ini; \
+    exit 1; \
     } && \
     echo "✅ All required extensions are loaded"
 
@@ -226,30 +226,30 @@ RUN echo "=== PHP Binary Locations ===" && \
     echo "" && \
     echo "=== Composer Installation Check ===" && \
     if [ ! -f /usr/local/bin/composer ]; then \
-        echo "❌ Composer binary not found at /usr/local/bin/composer"; \
-        exit 1; \
+    echo "❌ Composer binary not found at /usr/local/bin/composer"; \
+    exit 1; \
     fi && \
     /usr/local/bin/php /usr/local/bin/composer --version || { \
-        echo "❌ Composer not working! Attempting to reinstall..."; \
-        EXPECTED_SIG=$(curl -sS https://composer.github.io/installer.sig) && \
-        curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php && \
-        ACTUAL_SIG=$(/usr/local/bin/php -r "echo hash_file('sha384', '/tmp/composer-setup.php');") && \
-        if [ "$EXPECTED_SIG" = "$ACTUAL_SIG" ]; then \
-            /usr/local/bin/php /tmp/composer-setup.php --install-dir=/tmp --filename=composer.phar && \
-            rm -f /tmp/composer-setup.php && \
-            if /usr/local/bin/php /tmp/composer.phar --version > /dev/null 2>&1; then \
-                mv /tmp/composer.phar /usr/local/bin/composer && \
-                chmod +x /usr/local/bin/composer && \
-                /usr/local/bin/php /usr/local/bin/composer --version || exit 1; \
-            else \
-                echo "❌ Reinstalled PHAR signature verification failed!"; \
-                exit 1; \
-            fi; \
-        else \
-            echo "❌ Composer installer signature mismatch!"; \
-            rm -f /tmp/composer-setup.php; \
-            exit 1; \
-        fi; \
+    echo "❌ Composer not working! Attempting to reinstall..."; \
+    EXPECTED_SIG=$(curl -sS https://composer.github.io/installer.sig) && \
+    curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php && \
+    ACTUAL_SIG=$(/usr/local/bin/php -r "echo hash_file('sha384', '/tmp/composer-setup.php');") && \
+    if [ "$EXPECTED_SIG" = "$ACTUAL_SIG" ]; then \
+    /usr/local/bin/php /tmp/composer-setup.php --install-dir=/tmp --filename=composer.phar && \
+    rm -f /tmp/composer-setup.php && \
+    if /usr/local/bin/php /tmp/composer.phar --version > /dev/null 2>&1; then \
+    mv /tmp/composer.phar /usr/local/bin/composer && \
+    chmod +x /usr/local/bin/composer && \
+    /usr/local/bin/php /usr/local/bin/composer --version || exit 1; \
+    else \
+    echo "❌ Reinstalled PHAR signature verification failed!"; \
+    exit 1; \
+    fi; \
+    else \
+    echo "❌ Composer installer signature mismatch!"; \
+    rm -f /tmp/composer-setup.php; \
+    exit 1; \
+    fi; \
     } && \
     echo "" && \
     echo "=== Composer PHP Check ===" && \
@@ -261,9 +261,9 @@ RUN echo "=== PHP Binary Locations ===" && \
     echo "" && \
     echo "=== Verifying PHP extensions ===" && \
     /usr/local/bin/php -r "echo 'PHP extensions: '; print_r(get_loaded_extensions());" | grep -E "(simplexml|intl|session|pcntl|fileinfo|dom|xml)" || { \
-        echo "❌ Missing required PHP extensions!"; \
-        /usr/local/bin/php -m; \
-        exit 1; \
+    echo "❌ Missing required PHP extensions!"; \
+    /usr/local/bin/php -m; \
+    exit 1; \
     } && \
     echo "✅ Composer verification successful"
 
@@ -287,8 +287,10 @@ COPY --from=frontend-builder /app/public/build ./public/build
 # Copy SSR bundle from builder stage
 COPY --from=frontend-builder /app/bootstrap/ssr ./bootstrap/ssr
 
-# Copy node_modules for SSR runtime dependencies (react-dom/server)
-COPY --from=frontend-builder /app/node_modules ./node_modules
+# Create necessary directories and set permissions before running composer scripts
+RUN mkdir -p bootstrap/cache storage/framework/sessions storage/framework/views storage/framework/cache storage/logs && \
+    chown -R www-data:www-data bootstrap/cache storage && \
+    chmod -R 775 bootstrap/cache storage
 
 # Run composer scripts (post-install)
 RUN /usr/local/bin/php /usr/local/bin/composer dump-autoload --optimize
@@ -299,16 +301,13 @@ COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
 # Copy supervisor configuration
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html && \
-    chmod -R 755 /var/www/html/storage && \
-    chmod -R 755 /var/www/html/bootstrap/cache && \
-    mkdir -p /var/log/supervisor && \
+# Add final permission check and logs setup
+RUN mkdir -p /var/log/supervisor && \
     chown -R www-data:www-data /var/log/supervisor
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-  CMD curl -f http://localhost:8000/healthcheck || exit 1
+    CMD curl -f http://localhost:8000/healthcheck || exit 1
 
 # Expose port
 EXPOSE 8000
