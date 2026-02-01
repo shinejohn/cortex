@@ -101,6 +101,7 @@ ssr_task_definition = aws.ecs.TaskDefinition(
             {"name": "INERTIA_SSR_PORT", "value": str(ecs_ssr["port"])},
             {"name": "APP_ENV", "value": env},
             {"name": "APP_DEBUG", "value": "false"},
+            {"name": "DB_SSLMODE", "value": "require"},
         ],
         "secrets": [
             {"name": "DB_CONNECTION", "valueFrom": f"{args['secret_arn']}:DB_CONNECTION::"},
@@ -149,6 +150,7 @@ ssr_service = aws.ecs.Service(
     service_registries=aws.ecs.ServiceServiceRegistriesArgs(
         registry_arn=ssr_service_discovery.arn,
     ),
+    enable_execute_command=True,
     tags=common_tags,
 )
 
@@ -176,6 +178,7 @@ horizon_task_definition = aws.ecs.TaskDefinition(
             {"name": "QUEUE_CONNECTION", "value": "redis"},
             {"name": "CACHE_STORE", "value": "redis"},
             {"name": "SESSION_DRIVER", "value": "redis"},
+            {"name": "DB_SSLMODE", "value": "require"},
         ],
         "secrets": [
             {"name": "DB_CONNECTION", "valueFrom": f"{args['secret_arn']}:DB_CONNECTION::"},
@@ -221,6 +224,7 @@ horizon_service = aws.ecs.Service(
         security_groups=[ecs_security_group.id],
         assign_public_ip=False,
     ),
+    enable_execute_command=True,
     tags=common_tags,
 )
 
@@ -260,6 +264,7 @@ def create_web_service(name: str, domain_config: dict, target_group_arn: pulumi.
                 {"name": "INERTIA_SSR_ENABLED", "value": "true"},
                 {"name": "REDIS_SCHEME", "value": "tls"},
                 {"name": "REDIS_TLS", "value": "true"},
+                {"name": "DB_SSLMODE", "value": "require"},
             ],
             "secrets": [
                 {"name": "DB_CONNECTION", "valueFrom": f"{args['secret_arn']}:DB_CONNECTION::"},
@@ -312,6 +317,7 @@ def create_web_service(name: str, domain_config: dict, target_group_arn: pulumi.
                 container_port=8000,
             )
         ],
+        enable_execute_command=True,
         tags=common_tags,
     )
 

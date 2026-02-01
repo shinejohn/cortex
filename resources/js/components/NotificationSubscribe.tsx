@@ -1,6 +1,7 @@
 import { router } from "@inertiajs/react";
 import { Bell, CheckCircle2, Smartphone } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -91,16 +92,17 @@ export default function NotificationSubscribe({ platform, communityId, initialSu
             });
 
             setIsSubscribed(true);
+            toast.success("Browser notifications enabled successfully");
         } catch (error) {
             console.error("Push subscription failed:", error);
-            alert("Failed to enable notifications. Please try again.");
+            toast.error("Failed to enable notifications. Please try again.");
         }
         setIsLoading(false);
     };
 
     const requestSMSVerification = async () => {
         if (!phoneNumber.match(/^\+1[0-9]{10}$/)) {
-            alert("Please enter a valid US phone number (+1XXXXXXXXXX)");
+            toast.error("Please enter a valid US phone number (+1XXXXXXXXXX)");
             return;
         }
 
@@ -124,7 +126,7 @@ export default function NotificationSubscribe({ platform, communityId, initialSu
                 "message" in error.response.data
                     ? String(error.response.data.message)
                     : "Failed to send verification code";
-            alert(message);
+            toast.error(message);
         }
         setIsLoading(false);
     };
@@ -140,6 +142,7 @@ export default function NotificationSubscribe({ platform, communityId, initialSu
                 notification_types: Object.keys(preferences).filter((k) => preferences[k as keyof typeof preferences]),
             });
             setStep("complete");
+            toast.success("SMS notifications enabled successfully");
         } catch (error: unknown) {
             const message =
                 error &&
@@ -153,7 +156,7 @@ export default function NotificationSubscribe({ platform, communityId, initialSu
                 "message" in error.response.data
                     ? String(error.response.data.message)
                     : "Invalid verification code";
-            alert(message);
+            toast.error(message);
         }
         setIsLoading(false);
     };

@@ -93,9 +93,9 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
                                 <DropdownMenuTrigger asChild>
                                     <button className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
                                         <Avatar className="h-8 w-8">
-                                            <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
+                                            <AvatarImage src={auth.user?.avatar} alt={auth.user?.name || 'User'} />
                                             <AvatarFallback className="bg-accent text-accent-foreground">
-                                                {auth.user.name.charAt(0).toUpperCase()}
+                                                {auth.user?.name?.charAt(0).toUpperCase() || 'U'}
                                             </AvatarFallback>
                                         </Avatar>
                                     </button>
@@ -103,8 +103,8 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
                                 <DropdownMenuContent align="end" className="w-56">
                                     <DropdownMenuLabel>
                                         <div className="flex flex-col space-y-1">
-                                            <p className="text-sm font-medium">{auth.user.name}</p>
-                                            <p className="text-xs text-muted-foreground">{auth.user.email}</p>
+                                            <p className="text-sm font-medium">{auth.user?.name || 'User'}</p>
+                                            <p className="text-xs text-muted-foreground">{auth.user?.email || ''}</p>
                                         </div>
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />

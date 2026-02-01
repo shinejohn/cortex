@@ -7,8 +7,10 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Requests\Api\V1\StoreWorkspaceInvitationRequest;
 use App\Models\Workspace;
 use App\Models\WorkspaceInvitation;
+use App\Notifications\WorkspaceInvitationNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 /**
  * @group Workspaces
@@ -70,7 +72,17 @@ final class WorkspaceInvitationController extends BaseController
             'expires_at' => now()->addDays(7),
         ]);
 
-        // TODO: Send invitation email
+        // Send invitation email
+        try {
+            Notification::route('mail', $invitation->email)
+                ->notify(new WorkspaceInvitationNotification($invitation));
+        } catch (\Exception $e) {
+            // Log error but don't fail the invitation
+            \Illuminate\Support\Facades\Log::error('Failed to send invitation email', [
+                'invitation_id' => $invitation->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return $this->success($invitation, 'Invitation sent successfully', 201);
     }

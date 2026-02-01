@@ -10,15 +10,18 @@
         "lint": "biome lint --write resources/",
         "types": "tsc --noEmit",
         "test:e2e": "playwright test",
-        "test:e2e:ui": "playwright test --ui",
-        "test:e2e:setup": "playwright test tests/Playwright/auth.setup.ts",
-        "test:e2e:quick": "playwright test tests/Playwright/quick-page-test.spec.ts",
-        "test:e2e:all": "playwright test tests/Playwright/comprehensive-pages.spec.ts",
-        "test:e2e:pages": "playwright test tests/Playwright/all-pages.spec.ts"
+        "test:day-news": "playwright test --project=day-news",
+        "test:goeventcity": "playwright test --project=goeventcity",
+        "test:golocalvoices": "playwright test --project=golocalvoices",
+        "test:downtownsguide": "playwright test --project=downtownsguide",
+        "test:alphasite": "playwright test --project=alphasite",
+        "test:ui": "playwright test --ui",
+        "test:report": "playwright show-report",
+        "test:debug": "playwright test --debug"
     },
     "devDependencies": {
         "@biomejs/biome": "2.3.10",
-        "@playwright/test": "^1.57.0",
+        "@playwright/test": "^1.58.1",
         "@types/node": "^25.0.3"
     },
     "dependencies": {

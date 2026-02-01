@@ -1,6 +1,7 @@
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import { CalendarIcon, ClockIcon, InfoIcon, MapPinIcon, MinusIcon, PlusIcon, TagIcon, TicketIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
@@ -203,7 +204,8 @@ export default function TicketSelection() {
         } catch (error) {
             console.error("Order failed:", error);
             setIsLoading(false);
-            // TODO: Show error message to user
+            const errorMessage = error instanceof Error ? error.message : "Failed to create order. Please try again.";
+            toast.error(errorMessage);
         }
     };
 

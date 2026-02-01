@@ -537,8 +537,8 @@ function HeaderContent({ auth }: HeaderProps) {
                                         <DropdownMenuTrigger asChild>
                                             <Button variant="ghost" size="icon" className="relative">
                                                 <Avatar className="size-8">
-                                                    <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
-                                                    <AvatarFallback className="text-xs">{auth.user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                                                    <AvatarImage src={auth.user?.avatar} alt={auth.user?.name || 'User'} />
+                                                    <AvatarFallback className="text-xs">{auth.user?.name?.charAt(0).toUpperCase() || 'U'}</AvatarFallback>
                                                 </Avatar>
                                             </Button>
                                         </DropdownMenuTrigger>
@@ -583,9 +583,9 @@ function HeaderContent({ auth }: HeaderProps) {
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" className="size-10 rounded-full p-1">
                                             <Avatar className="size-8 overflow-hidden rounded-full">
-                                                <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
+                                                <AvatarImage src={auth.user?.avatar} alt={auth.user?.name || 'User'} />
                                                 <AvatarFallback className="rounded-lg bg-muted text-foreground">
-                                                    {getUserInitials(auth.user.name)}
+                                                    {auth.user?.name ? getUserInitials(auth.user.name) : 'U'}
                                                 </AvatarFallback>
                                             </Avatar>
                                         </Button>

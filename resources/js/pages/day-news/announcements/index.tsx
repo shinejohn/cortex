@@ -1,12 +1,17 @@
 import { Head, router, useForm, usePage } from "@inertiajs/react";
-import { Calendar, Heart, MapPin, MessageSquare, Plus, Search } from "lucide-react";
-import { useState } from "react";
+import { Plus, Search } from "lucide-react";
+import { useState, useMemo } from "react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LocationProvider } from "@/contexts/location-context";
+import { AnnouncementHero } from "@/components/day-news/announcement-hero";
+import { AnnouncementFilters } from "@/components/day-news/announcement-filters";
+import { AnnouncementSidebar } from "@/components/day-news/announcement-sidebar";
+import { AnnouncementCard } from "@/components/day-news/announcement-card";
+import { FeaturedAnnouncement } from "@/components/day-news/featured-announcement";
+import { cn } from "@/lib/utils";
 import type { Auth } from "@/types";
 
 interface Announcement {
@@ -17,7 +22,9 @@ interface Announcement {
     image: string | null;
     location: string | null;
     event_date: string | null;
+    event_date_formatted: string | null;
     published_at: string;
+    published_at_diff: string;
     views_count: number;
     reactions_count: number;
     comments_count: number;
@@ -26,28 +33,40 @@ interface Announcement {
         name: string;
         avatar: string | null;
     };
-    regions: Array<{
-        id: string;
-        name: string;
-    }>;
 }
 
 interface AnnouncementsPageProps {
+    [key: string]: any;
     auth?: Auth;
     announcements: {
         data: Announcement[];
-        links: any;
+        links: any[];
         meta: any;
     };
     featured: Announcement | null;
+    memorials?: Announcement[];
+    upcomingEvents?: any[];
     filters: {
         type: string;
         search: string;
     };
+    currentRegion?: {
+        id: string;
+        name: string;
+    };
 }
 
 export default function AnnouncementsIndex() {
-    const { auth, announcements, featured, filters } = usePage<AnnouncementsPageProps>().props;
+    const {
+        auth,
+        announcements,
+        featured,
+        memorials = [],
+        upcomingEvents = [],
+        filters,
+        currentRegion
+    } = usePage<AnnouncementsPageProps>().props;
+
     const [activeType, setActiveType] = useState(filters.type || "all");
 
     const searchForm = useForm({
@@ -72,187 +91,145 @@ export default function AnnouncementsIndex() {
         });
     };
 
-    const typeLabels: Record<string, string> = {
-        all: "All",
-        wedding: "Weddings",
-        engagement: "Engagements",
-        birth: "Births",
-        graduation: "Graduations",
-        anniversary: "Anniversaries",
-        celebration: "Celebrations",
-        general: "General",
-        community_event: "Community Events",
-        public_notice: "Public Notices",
-        emergency_alert: "Emergency Alerts",
-        meeting: "Meetings",
-        volunteer_opportunity: "Volunteer Opportunities",
-        road_closure: "Road Closures",
-        school_announcement: "School Announcements",
-    };
-
     return (
         <LocationProvider>
-            <div className="min-h-screen bg-background">
-                <Head title="Announcements - Day News" />
+            <div className="min-h-screen bg-[#F8F9FB]">
+                <Head title="Community Announcements - Day News" />
                 <SEO
                     type="website"
                     site="day-news"
                     data={{
-                        title: "Announcements - Day News",
-                        description: "Community announcements, celebrations, and public notices",
+                        title: "Community Announcements - Day News",
+                        description: "Celebrating community milestones, life transitions, and public notices in your neighborhood.",
                         url: "/announcements",
                     }}
                 />
+
                 <DayNewsHeader auth={auth} />
 
-                <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                    {/* Header */}
-                    <div className="mb-8 flex items-center justify-between">
-                        <div>
-                            <h1 className="text-4xl font-bold">Announcements</h1>
-                            <p className="mt-2 text-muted-foreground">Community celebrations, events, and public notices</p>
-                        </div>
-                        {auth && (
-                            <Button onClick={() => router.visit("/announcements/create")}>
-                                <Plus className="mr-2 size-4" />
-                                Create Announcement
-                            </Button>
-                        )}
-                    </div>
+                <AnnouncementHero
+                    location={currentRegion?.name}
+                    readerCount={247 + (announcements.data.length * 3)}
+                />
 
-                    {/* Search and Filters */}
-                    <div className="mb-6">
-                        <form onSubmit={handleSearch} className="mb-4 flex gap-4">
-                            <div className="relative flex-1">
-                                <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
-                                <Input
-                                    type="text"
-                                    value={searchForm.data.search}
-                                    onChange={(e) => searchForm.setData("search", e.target.value)}
-                                    placeholder="Search announcements..."
-                                    className="pl-10"
-                                />
-                            </div>
-                            <Button type="submit" disabled={searchForm.processing}>
-                                Search
-                            </Button>
-                        </form>
-
-                        {/* Type Tabs */}
-                        <div className="flex flex-wrap gap-2">
-                            {Object.entries(typeLabels).map(([value, label]) => (
-                                <Button
-                                    key={value}
-                                    variant={activeType === value ? "default" : "outline"}
-                                    size="sm"
-                                    onClick={() => handleTypeChange(value)}
-                                >
-                                    {label}
-                                </Button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Featured Announcement */}
-                    {featured && (
-                        <div className="mb-8 rounded-lg border bg-card p-6">
-                            <Badge className="mb-2">Featured</Badge>
-                            <h2 className="mb-2 text-2xl font-bold">{featured.title}</h2>
-                            {featured.image && <img src={featured.image} alt={featured.title} className="mb-4 h-64 w-full rounded-lg object-cover" />}
-                            <p className="mb-4 text-muted-foreground">{featured.content}</p>
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                                {featured.location && (
-                                    <div className="flex items-center gap-1">
-                                        <MapPin className="size-4" />
-                                        {featured.location}
-                                    </div>
-                                )}
-                                {featured.event_date && (
-                                    <div className="flex items-center gap-1">
-                                        <Calendar className="size-4" />
-                                        {new Date(featured.event_date).toLocaleDateString()}
-                                    </div>
-                                )}
-                                <div className="flex items-center gap-1">
-                                    <Heart className="size-4" />
-                                    {featured.reactions_count}
+                <main className="container mx-auto px-4 py-12 lg:px-8">
+                    <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+                        {/* Main Feed */}
+                        <div className="lg:col-span-8">
+                            {/* Search and Filters Bar */}
+                            <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                                <div className="flex-1 max-w-md">
+                                    <form onSubmit={handleSearch} className="group relative">
+                                        <Search className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                                        <Input
+                                            type="text"
+                                            value={searchForm.data.search}
+                                            onChange={(e) => searchForm.setData("search", e.target.value)}
+                                            placeholder="Search celebrations & notices..."
+                                            className="h-12 pl-12 pr-4 shadow-sm border-none bg-white ring-1 ring-muted focus-visible:ring-2 focus-visible:ring-primary"
+                                        />
+                                    </form>
                                 </div>
-                                <div className="flex items-center gap-1">
-                                    <MessageSquare className="size-4" />
-                                    {featured.comments_count}
-                                </div>
-                            </div>
-                            <Button className="mt-4" onClick={() => router.visit(`/announcements/${featured.id}`)}>
-                                Read More
-                            </Button>
-                        </div>
-                    )}
 
-                    {/* Announcements Grid */}
-                    {announcements.data.length === 0 ? (
-                        <div className="py-12 text-center">
-                            <p className="text-muted-foreground">No announcements found.</p>
-                            {auth && (
-                                <Button className="mt-4" onClick={() => router.visit("/announcements/create")}>
-                                    Create First Announcement
-                                </Button>
-                            )}
-                        </div>
-                    ) : (
-                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                            {announcements.data.map((announcement) => (
-                                <div
-                                    key={announcement.id}
-                                    className="cursor-pointer rounded-lg border bg-card p-4 transition-shadow hover:shadow-md"
-                                    onClick={() => router.visit(`/announcements/${announcement.id}`)}
-                                >
-                                    {announcement.image && (
-                                        <img src={announcement.image} alt={announcement.title} className="mb-4 h-48 w-full rounded-lg object-cover" />
+                                <div className="flex items-center gap-4">
+                                    {auth && (
+                                        <Button
+                                            onClick={() => router.visit("/announcements/create")}
+                                            className="h-12 gap-2 px-6 font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20"
+                                        >
+                                            <Plus className="size-4" />
+                                            Post News
+                                        </Button>
                                     )}
-                                    <Badge variant="outline" className="mb-2 capitalize">
-                                        {announcement.type.replace("_", " ")}
-                                    </Badge>
-                                    <h3 className="mb-2 text-xl font-semibold">{announcement.title}</h3>
-                                    <p className="mb-4 line-clamp-3 text-sm text-muted-foreground">{announcement.content}</p>
-                                    <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-                                        {announcement.location && (
-                                            <div className="flex items-center gap-1">
-                                                <MapPin className="size-3" />
-                                                {announcement.location}
-                                            </div>
-                                        )}
-                                        {announcement.event_date && (
-                                            <div className="flex items-center gap-1">
-                                                <Calendar className="size-3" />
-                                                {new Date(announcement.event_date).toLocaleDateString()}
-                                            </div>
-                                        )}
-                                        <div className="flex items-center gap-1">
-                                            <Heart className="size-3" />
-                                            {announcement.reactions_count}
+                                </div>
+                            </div>
+
+                            <div className="mb-12">
+                                <AnnouncementFilters activeType={activeType} onTypeChange={handleTypeChange} />
+                            </div>
+
+                            {/* Content Sections */}
+                            <div className="space-y-16">
+                                {featured && activeType === "all" && !searchForm.data.search && (
+                                    <section>
+                                        <div className="mb-6 flex items-center justify-between">
+                                            <h2 className="font-display text-2xl font-black tracking-tight uppercase italic text-primary">
+                                                Regional Spotlight
+                                            </h2>
+                                        </div>
+                                        <FeaturedAnnouncement announcement={featured} />
+                                    </section>
+                                )}
+
+                                <section>
+                                    <div className="mb-8 flex items-center justify-between">
+                                        <h2 className="font-display text-2xl font-black tracking-tight uppercase">
+                                            {searchForm.data.search ? `Search Results for "${searchForm.data.search}"` : "Recent Community News"}
+                                        </h2>
+                                        <div className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
+                                            {announcements.meta?.total || 0} Announcements
                                         </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
 
-                    {/* Pagination */}
-                    {announcements.links && announcements.links.length > 3 && (
-                        <div className="mt-8 flex justify-center gap-2">
-                            {announcements.links.map((link: any, index: number) => (
-                                <Button
-                                    key={index}
-                                    variant={link.active ? "default" : "outline"}
-                                    size="sm"
-                                    onClick={() => link.url && router.visit(link.url)}
-                                    disabled={!link.url}
-                                    dangerouslySetInnerHTML={{ __html: link.label }}
-                                />
-                            ))}
+                                    {announcements.data.length === 0 ? (
+                                        <div className="rounded-3xl border-2 border-dashed p-20 text-center">
+                                            <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-muted">
+                                                <Search className="size-10 text-muted-foreground" />
+                                            </div>
+                                            <h3 className="mt-6 text-xl font-bold">No announcements found</h3>
+                                            <p className="mt-2 text-muted-foreground">Try adjusting your filters or search query.</p>
+                                            <Button
+                                                variant="outline"
+                                                className="mt-8"
+                                                onClick={() => {
+                                                    setActiveType("all");
+                                                    searchForm.setData({ search: "", type: "all" });
+                                                    router.get("/announcements");
+                                                }}
+                                            >
+                                                Clear All Filters
+                                            </Button>
+                                        </div>
+                                    ) : (
+                                        <div className="grid gap-8 md:grid-cols-2">
+                                            {announcements.data.map((announcement) => (
+                                                <AnnouncementCard key={announcement.id} announcement={announcement} />
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {/* Pagination */}
+                                    {announcements.meta?.last_page > 1 && (
+                                        <div className="mt-16 flex justify-center gap-3">
+                                            {announcements.meta.links.map((link: any, i: number) => (
+                                                <Button
+                                                    key={i}
+                                                    variant={link.active ? "default" : "outline"}
+                                                    disabled={!link.url}
+                                                    onClick={() => link.url && router.visit(link.url)}
+                                                    className={cn(
+                                                        "h-10 min-w-[40px] px-4 font-bold transition-all",
+                                                        link.active && "shadow-lg shadow-primary/20 scale-110"
+                                                    )}
+                                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
+                                </section>
+                            </div>
                         </div>
-                    )}
-                </div>
+
+                        {/* Sidebar */}
+                        <div className="lg:col-span-4">
+                            <AnnouncementSidebar
+                                upcomingEvents={upcomingEvents}
+                                memorials={memorials}
+                                location={currentRegion?.name}
+                            />
+                        </div>
+                    </div>
+                </main>
             </div>
         </LocationProvider>
     );

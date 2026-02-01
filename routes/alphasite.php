@@ -25,7 +25,7 @@ use Inertia\Inertia;
 |
 */
 
-// Subdomain routing for business pages
+// Subdomain routing for business pages (.com domain)
 Route::domain('{subdomain}.alphasite.com')->group(function () {
     Route::get('/', [BusinessPageController::class, 'showBySubdomain'])->name('alphasite.business.subdomain');
     Route::get('/reviews', [BusinessPageController::class, 'reviews'])->name('alphasite.business.reviews');
@@ -40,10 +40,24 @@ Route::domain('{subdomain}.alphasite.com')->group(function () {
     Route::post('/ai/chat', [BusinessPageController::class, 'aiChat'])->name('alphasite.business.ai.chat');
 });
 
-// Main domain routes
+// Subdomain routing for business pages (.ai domain)
+Route::domain('{subdomain}.alphasite.ai')->group(function () {
+    Route::get('/', [BusinessPageController::class, 'showBySubdomain'])->name('alphasite.business.subdomain');
+    Route::get('/reviews', [BusinessPageController::class, 'reviews'])->name('alphasite.business.reviews');
+    Route::get('/photos', [BusinessPageController::class, 'photos'])->name('alphasite.business.photos');
+    Route::get('/menu', [BusinessPageController::class, 'menu'])->name('alphasite.business.menu');
+    Route::get('/articles', [BusinessPageController::class, 'articles'])->name('alphasite.business.articles');
+    Route::get('/events', [BusinessPageController::class, 'events'])->name('alphasite.business.events');
+    Route::get('/coupons', [BusinessPageController::class, 'coupons'])->name('alphasite.business.coupons');
+    Route::get('/achievements', [BusinessPageController::class, 'achievements'])->name('alphasite.business.achievements');
+    
+    // AI Chat endpoint (for premium businesses)
+    Route::post('/ai/chat', [BusinessPageController::class, 'aiChat'])->name('alphasite.business.ai.chat');
+});
+
+// Main domain routes (.com domain)
 Route::domain('alphasite.com')->group(function () {
     // Home
-    Route::get('/', [DirectoryController::class, 'home'])->name('alphasite.home');
     
     // Directory
     Route::get('/directory', [DirectoryController::class, 'index'])->name('alphasite.directory');

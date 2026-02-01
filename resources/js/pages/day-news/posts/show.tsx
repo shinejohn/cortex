@@ -1,17 +1,22 @@
-import { router } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import DOMPurify from "dompurify";
-import { Calendar, ChevronLeft, ChevronRight, Eye, MapPin, User } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Eye, MapPin, User, Share2, Bookmark, MessageSquare, ThumbsUp, Heart, AlertCircle, Clock } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { SEO } from "@/components/common/seo";
 import Advertisement from "@/components/day-news/advertisement";
 import { ArticleComments } from "@/components/day-news/article-comments";
 import DayNewsHeader from "@/components/day-news/day-news-header";
-import NewsArticleCard from "@/components/day-news/news-article-card";
 import { TrustMetrics } from "@/components/day-news/trust-metrics";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { LocationProvider } from "@/contexts/location-context";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { ArticleNavigation } from "@/components/day-news/article-navigation";
+import { ArticleSidebar } from "@/components/day-news/article-sidebar";
+import { MobileArticleBar } from "@/components/day-news/mobile-article-bar";
+import { cn } from "@/lib/utils";
 import type { Auth } from "@/types";
 
 interface Region {
@@ -22,6 +27,7 @@ interface Region {
 interface Author {
     id: number;
     name: string;
+    avatar?: string | null;
 }
 
 interface WriterAgent {
@@ -29,11 +35,6 @@ interface WriterAgent {
     name: string;
     avatar: string | null;
     bio: string | null;
-}
-
-interface Workspace {
-    id: number;
-    name: string;
 }
 
 interface Post {
@@ -49,12 +50,8 @@ interface Post {
     published_at: string | null;
     author: Author | null;
     writer_agent: WriterAgent | null;
-    workspace: Workspace | null;
     regions: Region[];
     metadata?: {
-        image_attribution?: string;
-        image_photographer?: string;
-        image_alt?: string;
         trust_metrics?: {
             fact_accuracy: number;
             bias_level: number;
@@ -65,175 +62,50 @@ interface Post {
             overall_score: number;
             analysis_rationale?: string;
         };
-        is_ai_generated?: boolean;
         [key: string]: unknown;
     };
 }
 
-interface Ad {
-    id: number;
-    placement: string;
-    advertable: {
-        id: number;
-        title: string;
-        excerpt: string | null;
-        featured_image: string | null;
-        slug: string;
-    };
-    expires_at: string;
-}
-
-interface RelatedPost {
-    id: number;
-    type: string;
-    category: string | null;
-    title: string;
-    slug: string;
-    excerpt: string | null;
-    featured_image: string | null;
-    view_count: number;
-    published_at: string;
-    author: Author | null;
-    writer_agent: WriterAgent | null;
-    workspace: Workspace | null;
-    regions: Region[];
-}
-
-interface Comment {
-    id: string;
-    content: string;
-    user: {
-        id: string;
-        name: string;
-        avatar: string | null;
-    };
-    created_at: string;
-    time_ago: string;
-    likes_count: number;
-    replies_count: number;
-    is_liked_by_user: boolean;
-    is_pinned?: boolean;
-    replies?: Comment[];
-}
-
-interface ShowPostProps {
+interface ArticleShowProps {
+    [key: string]: any;
     auth?: Auth;
     post: Post;
-    relatedPosts: RelatedPost[];
-    comments: Comment[];
+    comments: any[];
     commentsCount: number;
-    previousPost?: {
-        id: number;
-        title: string;
-        slug: string;
-    } | null;
-    nextPost?: {
-        id: number;
-        title: string;
-        slug: string;
-    } | null;
+    previousPost?: { id: number; title: string; slug: string } | null;
+    nextPost?: { id: number; title: string; slug: string } | null;
+    relatedPosts: any[];
+    trendingPosts: any[];
+    upcomingEvents: any[];
 }
 
-/**
- * Sanitizes HTML content and removes the first h1 tag (since title is shown separately).
- * Returns sanitized HTML string.
- */
-function sanitizeContent(html: string): string {
-    // Sanitize the HTML first
-    const sanitized = DOMPurify.sanitize(html, {
-        ALLOWED_TAGS: ["p", "h2", "h3", "h4", "h5", "h6", "strong", "em", "a", "ul", "ol", "li", "blockquote", "br", "span"],
-        ALLOWED_ATTR: ["href", "target", "rel", "class"],
-    });
+export default function ArticleShow() {
+    const { auth, post, comments, commentsCount, relatedPosts, trendingPosts, upcomingEvents } = usePage<ArticleShowProps>().props;
+    const [readingProgress, setReadingProgress] = useState(0);
 
-    // Remove the first h1 tag if present (title is already displayed separately)
-    return sanitized.replace(/^\s*<h1[^>]*>.*?<\/h1>\s*/i, "");
-}
-
-/**
- * Splits HTML content at a paragraph boundary near the middle.
- * Returns [firstHalf, secondHalf] of sanitized HTML.
- */
-function splitHtmlContent(html: string): [string, string] {
-    const sanitized = sanitizeContent(html);
-
-    // Find all paragraph-like break points (closing tags that indicate a good split point)
-    const breakPoints = [...sanitized.matchAll(/<\/(p|h[2-6]|li|blockquote)>/gi)];
-
-    if (breakPoints.length < 2) {
-        // Not enough break points, return all content in first half
-        return [sanitized, ""];
-    }
-
-    // Find the break point closest to the middle
-    const midPoint = sanitized.length / 2;
-    let bestBreak = breakPoints[0];
-    let bestDistance = Math.abs((bestBreak.index ?? 0) + bestBreak[0].length - midPoint);
-
-    for (const bp of breakPoints) {
-        const breakPosition = (bp.index ?? 0) + bp[0].length;
-        const distance = Math.abs(breakPosition - midPoint);
-        if (distance < bestDistance) {
-            bestDistance = distance;
-            bestBreak = bp;
-        }
-    }
-
-    const splitIndex = (bestBreak.index ?? 0) + bestBreak[0].length;
-    return [sanitized.slice(0, splitIndex), sanitized.slice(splitIndex)];
-}
-
-export default function ShowPost({ auth, post, relatedPosts, comments, commentsCount, previousPost, nextPost }: ShowPostProps) {
-    const [sidebarAds, setSidebarAds] = useState<Ad[]>([]);
-    const [bannerAds, setBannerAds] = useState<Ad[]>([]);
-    const [inlineAds, setInlineAds] = useState<Ad[]>([]);
-
-    // Split content for inline ad insertion
-    const [firstHalfContent, secondHalfContent] = useMemo(() => splitHtmlContent(post.content), [post.content]);
+    const trustMetrics = useMemo(() => post.metadata?.trust_metrics || null, [post.metadata]);
 
     useEffect(() => {
-        const regionId = post.regions[0]?.id;
+        const updateReadingProgress = () => {
+            const currentProgress = window.scrollY;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            if (scrollHeight > 0) {
+                setReadingProgress(Number((currentProgress / scrollHeight).toFixed(2)));
+            }
+        };
 
-        // Fetch sidebar ads
-        fetch(`/api/advertisements?platform=day_news&placement=sidebar&region_id=${regionId}`)
-            .then((res) => res.json())
-            .then((data) => setSidebarAds(data.ads))
-            .catch((err) => console.error("Failed to fetch sidebar ads:", err));
+        window.addEventListener("scroll", updateReadingProgress);
+        return () => window.removeEventListener("scroll", updateReadingProgress);
+    }, []);
 
-        // Fetch banner ads
-        fetch(`/api/advertisements?platform=day_news&placement=banner&region_id=${regionId}`)
-            .then((res) => res.json())
-            .then((data) => setBannerAds(data.ads))
-            .catch((err) => console.error("Failed to fetch banner ads:", err));
-
-        // Fetch inline ads
-        fetch(`/api/advertisements?platform=day_news&placement=inline&region_id=${regionId}`)
-            .then((res) => res.json())
-            .then((data) => setInlineAds(data.ads))
-            .catch((err) => console.error("Failed to fetch inline ads:", err));
-    }, [post.regions]);
-
-    const handleAdImpression = (adId: number) => {
-        fetch(`/api/advertisements/${adId}/impression`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-        });
-    };
-
-    const handleAdClick = (adId: number) => {
-        fetch(`/api/advertisements/${adId}/click`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-        });
-    };
-
-    // Strip HTML tags for plain text content (for JSON-LD articleBody)
     const plainTextContent = useMemo(() => {
         return post.content.replace(/<[^>]*>/g, "").trim();
     }, [post.content]);
 
     return (
         <LocationProvider>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen bg-background pb-20 md:pb-0">
+                <Head title={`${post.title} - Day News`} />
                 <SEO
                     type="article"
                     site="day-news"
@@ -248,180 +120,195 @@ export default function ShowPost({ auth, post, relatedPosts, comments, commentsC
                         articleBody: plainTextContent,
                     }}
                 />
+
+                {/* Reading Progress Bar */}
+                <div className="fixed top-0 left-0 right-0 z-[60] h-1 bg-muted">
+                    <div
+                        className="h-full bg-primary transition-all duration-150"
+                        style={{ width: `${Math.min(100, readingProgress * 100)}%` }}
+                    />
+                </div>
+
                 <DayNewsHeader auth={auth} />
 
-                {/* Banner Ad */}
-                {bannerAds.length > 0 && (
-                    <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-                        {bannerAds.map((ad) => (
-                            <Advertisement key={ad.id} ad={ad} onImpression={handleAdImpression} onClick={handleAdClick} />
-                        ))}
+                <main className="container mx-auto px-4 py-8 lg:px-8">
+                    {/* Breadcrumbs */}
+                    <div className="mb-6">
+                        <Breadcrumb>
+                            <BreadcrumbList>
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator />
+                                {post.category && (
+                                    <>
+                                        <BreadcrumbItem>
+                                            <BreadcrumbLink href={`/category/${post.category.toLowerCase()}`}>
+                                                {post.category}
+                                            </BreadcrumbLink>
+                                        </BreadcrumbItem>
+                                        <BreadcrumbSeparator />
+                                    </>
+                                )}
+                                <BreadcrumbItem>
+                                    <BreadcrumbPage className="line-clamp-1">{post.title}</BreadcrumbPage>
+                                </BreadcrumbItem>
+                            </BreadcrumbList>
+                        </Breadcrumb>
                     </div>
-                )}
 
-                <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                    <div className="grid gap-8 lg:grid-cols-3">
-                        {/* Main content */}
-                        <article className="lg:col-span-2">
-                            {/* Post header */}
-                            <div className="mb-6">
-                                <div className="mb-4 flex flex-wrap gap-2">
-                                    <Badge className="capitalize">{post.type}</Badge>
-                                    {post.category && (
-                                        <Badge variant="outline" className="capitalize">
-                                            {post.category.replace("_", " ")}
-                                        </Badge>
-                                    )}
-                                    {post.regions.map((region) => (
-                                        <Badge key={region.id} variant="secondary">
-                                            <MapPin className="mr-1 size-3" />
-                                            {region.name}
-                                        </Badge>
-                                    ))}
-                                </div>
+                    <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+                        {/* Left sidebar - Navigation (Hidden on mobile) */}
+                        <div className="hidden lg:col-span-2 lg:block">
+                            <ArticleNavigation commentCount={commentsCount} />
+                        </div>
 
-                                <h1 className="mb-4 text-4xl font-bold leading-tight">{post.title}</h1>
-
-                                {post.excerpt && <p className="mb-4 text-xl text-muted-foreground">{post.excerpt}</p>}
-
-                                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                                    {(post.author || post.writer_agent) && (
-                                        <div className="flex items-center gap-2">
-                                            {post.writer_agent?.avatar ? (
-                                                <img src={post.writer_agent.avatar} alt={post.writer_agent.name} className="size-6 rounded-full" />
-                                            ) : (
-                                                <User className="size-4" />
-                                            )}
-                                            <span>By {post.author?.name || post.writer_agent?.name}</span>
+                        {/* Middle - Content */}
+                        <div className="lg:col-span-7">
+                            <article>
+                                {/* Header section */}
+                                <header className="mb-8">
+                                    <div className="mb-4 flex flex-wrap items-center gap-3">
+                                        {post.category && (
+                                            <Badge variant="default" className="uppercase tracking-widest text-[10px] px-2.5 py-0.5">
+                                                {post.category}
+                                            </Badge>
+                                        )}
+                                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+                                            <Clock className="size-3.5" />
+                                            <span>5 min read</span>
                                         </div>
-                                    )}
-
-                                    {post.workspace && (
-                                        <div className="flex items-center gap-2">
-                                            <span>via {post.workspace.name}</span>
-                                        </div>
-                                    )}
-
-                                    {post.published_at && (
-                                        <div className="flex items-center gap-2">
-                                            <Calendar className="size-4" />
-                                            <span>{new Date(post.published_at).toLocaleDateString()}</span>
-                                        </div>
-                                    )}
-
-                                    <div className="flex items-center gap-2">
-                                        <Eye className="size-4" />
-                                        <span>{post.view_count} views</span>
                                     </div>
-                                </div>
-                            </div>
 
-                            <Separator className="my-6" />
+                                    <h1 className="mb-6 font-display text-3xl font-black leading-tight tracking-tight md:text-5xl">
+                                        {post.title}
+                                    </h1>
 
-                            {/* Trust Metrics for AI-generated articles */}
-                            {post.metadata?.trust_metrics && <TrustMetrics metrics={post.metadata.trust_metrics} />}
+                                    <div className="flex items-center justify-between border-y py-4">
+                                        <div className="flex items-center gap-3">
+                                            <Avatar className="size-10 border">
+                                                <AvatarImage src={post.writer_agent?.avatar || post.author?.avatar || undefined} />
+                                                <AvatarFallback>
+                                                    <User className="size-5" />
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <div>
+                                                <div className="text-sm font-bold leading-none">
+                                                    {post.writer_agent?.name || post.author?.name || "Staff Writer"}
+                                                </div>
+                                                <div className="mt-1 text-xs text-muted-foreground">
+                                                    {post.published_at ? new Date(post.published_at).toLocaleDateString(undefined, {
+                                                        year: 'numeric',
+                                                        month: 'long',
+                                                        day: 'numeric'
+                                                    }) : 'Recently Published'}
+                                                </div>
+                                            </div>
+                                        </div>
 
-                            {/* Featured image */}
-                            {post.featured_image && (
-                                <div className="mb-6">
-                                    <div className="overflow-hidden rounded-lg">
-                                        <img src={post.featured_image} alt={post.metadata?.image_alt || post.title} className="w-full" />
+                                        <div className="flex items-center gap-2">
+                                            <Button variant="ghost" size="icon" className="size-9 rounded-full">
+                                                <Share2 className="size-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" className="size-9 rounded-full">
+                                                <Bookmark className="size-4" />
+                                            </Button>
+                                        </div>
                                     </div>
-                                    {post.metadata?.image_attribution && (
-                                        <div
-                                            className="mt-2 text-xs text-muted-foreground"
-                                            dangerouslySetInnerHTML={{
-                                                __html: DOMPurify.sanitize(post.metadata.image_attribution, {
-                                                    ALLOWED_TAGS: ["a"],
-                                                    ALLOWED_ATTR: ["href", "target", "rel"],
-                                                }),
-                                            }}
+                                </header>
+
+                                {/* Featured image */}
+                                {post.featured_image && (
+                                    <div className="mb-8 overflow-hidden rounded-xl border bg-muted shadow-sm">
+                                        <img
+                                            src={post.featured_image}
+                                            alt={post.title}
+                                            className="aspect-video w-full object-cover"
                                         />
-                                    )}
-                                </div>
-                            )}
+                                    </div>
+                                )}
 
-                            {/* Content with inline ad */}
-                            <div className="prose prose-lg max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: firstHalfContent }} />
-
-                            {/* Inline Ad in the middle of content */}
-                            {inlineAds.length > 0 && secondHalfContent && (
-                                <div className="my-8">
-                                    {inlineAds.slice(0, 1).map((ad) => (
-                                        <Advertisement key={ad.id} ad={ad} onImpression={handleAdImpression} onClick={handleAdClick} />
-                                    ))}
-                                </div>
-                            )}
-
-                            {secondHalfContent && (
+                                {/* Content section */}
                                 <div
-                                    className="prose prose-lg max-w-none dark:prose-invert"
-                                    dangerouslySetInnerHTML={{ __html: secondHalfContent }}
+                                    className="prose prose-slate dark:prose-invert max-w-none
+                                    prose-headings:font-display prose-headings:font-black prose-headings:tracking-tight
+                                    prose-p:leading-relaxed prose-p:text-lg prose-a:text-primary prose-strong:text-foreground"
+                                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
                                 />
-                            )}
 
-                            {/* Article Navigation */}
-                            <div className="mt-8 flex items-center justify-between border-t pt-6">
-                                {previousPost && (
-                                    <Button
-                                        variant="outline"
-                                        onClick={() => router.visit(`/posts/${previousPost.slug}`)}
-                                        className="flex items-center gap-2"
-                                    >
-                                        <ChevronLeft className="size-4" />
-                                        <div className="text-left">
-                                            <div className="text-xs text-muted-foreground">Previous</div>
-                                            <div className="text-sm font-medium">{previousPost.title}</div>
-                                        </div>
-                                    </Button>
+                                {/* AI Trust Metrics */}
+                                {trustMetrics && (
+                                    <div className="mt-12">
+                                        <TrustMetrics metrics={trustMetrics} />
+                                    </div>
                                 )}
-                                {nextPost && (
-                                    <Button
-                                        variant="outline"
-                                        onClick={() => router.visit(`/posts/${nextPost.slug}`)}
-                                        className={`flex items-center gap-2 ${!previousPost ? "ml-auto" : ""}`}
-                                    >
-                                        <div className="text-right">
-                                            <div className="text-xs text-muted-foreground">Next</div>
-                                            <div className="text-sm font-medium">{nextPost.title}</div>
-                                        </div>
-                                        <ChevronRight className="size-4" />
-                                    </Button>
-                                )}
-                            </div>
 
-                            {/* Comments Section */}
-                            <ArticleComments articleId={post.id} comments={comments} total={commentsCount} auth={auth} />
-                        </article>
+                                <Separator className="my-12" />
 
-                        {/* Sidebar */}
-                        <aside className="px-4 space-y-6 lg:px-2">
-                            {/* Related Posts */}
-                            {relatedPosts.length > 0 && (
-                                <div>
-                                    <h2 className="mb-4 border-b-2 border-border pb-2 font-serif text-xl font-bold">More from this Region</h2>
-                                    <div className="space-y-0">
-                                        {relatedPosts.map((relatedPost) => (
-                                            <NewsArticleCard key={relatedPost.id} article={relatedPost} compact />
+                                {/* Reactions Section */}
+                                <div className="mb-12 rounded-xl border bg-card p-6 shadow-sm">
+                                    <h3 className="mb-6 text-center font-bold uppercase tracking-widest text-sm text-muted-foreground">
+                                        How do you feel about this story?
+                                    </h3>
+                                    <div className="flex flex-wrap justify-center gap-8">
+                                        {[
+                                            { icon: ThumbsUp, label: "Helpful", count: 124, color: "text-blue-500" },
+                                            { icon: Heart, label: "Love", count: 45, color: "text-red-500" },
+                                            { icon: AlertCircle, label: "Surprising", count: 23, color: "text-yellow-500" }
+                                        ].map((reaction, i) => (
+                                            <button key={i} className="group flex flex-col items-center gap-2">
+                                                <div className={cn("flex size-14 items-center justify-center rounded-full border bg-background transition-all group-hover:scale-110 group-hover:shadow-md", reaction.color)}>
+                                                    <reaction.icon className="size-6" />
+                                                </div>
+                                                <span className="text-xs font-bold uppercase tracking-wider">{reaction.label}</span>
+                                                <span className="text-sm font-medium text-muted-foreground">{reaction.count}</span>
+                                            </button>
                                         ))}
                                     </div>
                                 </div>
-                            )}
 
-                            {/* Sponsored */}
-                            {sidebarAds.length > 0 && (
-                                <div>
-                                    <h2 className="mb-4 border-b-2 border-border pb-2 font-serif text-xl font-bold">Sponsored</h2>
-                                    <div className="space-y-4">
-                                        {sidebarAds.map((ad) => (
-                                            <Advertisement key={ad.id} ad={ad} onImpression={handleAdImpression} onClick={handleAdClick} />
-                                        ))}
-                                    </div>
+                                {/* Comments section */}
+                                <div id="comments" className="mt-12 pt-8 border-t">
+                                    <h2 className="mb-8 font-display text-2xl font-black tracking-tight">
+                                        Discussion ({commentsCount})
+                                    </h2>
+                                    <ArticleComments articleId={post.id} comments={comments} total={commentsCount} auth={auth} />
                                 </div>
-                            )}
-                        </aside>
+                            </article>
+                        </div>
+
+                        {/* Right sidebar - Discovery */}
+                        <div className="lg:col-span-3">
+                            <ArticleSidebar trendingPosts={trendingPosts} upcomingEvents={upcomingEvents} />
+                        </div>
                     </div>
-                </div>
+
+                    {/* Related Articles Footer */}
+                    {relatedPosts.length > 0 && (
+                        <div className="mt-16 border-t pt-16">
+                            <h2 className="mb-8 font-display text-3xl font-black tracking-tight">Related Stories</h2>
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                                {relatedPosts.slice(0, 3).map((rp) => (
+                                    <div key={rp.id} className="relative aspect-square overflow-hidden rounded-lg border">
+                                        <img src={rp.featured_image || ""} className="h-full w-full object-cover" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-4 flex flex-col justify-end">
+                                            <h4 className="text-sm font-bold text-white line-clamp-2">{rp.title}</h4>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </main>
+
+                {/* Mobile Bottom Bar */}
+                <MobileArticleBar
+                    commentCount={commentsCount}
+                    reactions={{ helpful: 124, love: 45, surprising: 23 }}
+                    onReaction={(type) => console.log(type)}
+                    onShare={() => console.log("share")}
+                    onSave={() => console.log("save")}
+                />
             </div>
         </LocationProvider>
     );
