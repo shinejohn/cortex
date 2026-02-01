@@ -32,6 +32,7 @@ interface Classified {
     user: {
         id: string;
         name: string;
+        email?: string;
     };
     regions: Array<{
         id: string;
@@ -147,8 +148,16 @@ export default function ShowClassified() {
                     {/* Contact/Seller Info */}
                     <div className="mb-8 rounded-lg border bg-card p-6">
                         <h3 className="mb-4 font-semibold">Seller Information</h3>
-                        <p className="text-muted-foreground">Posted by {classified.user.name}</p>
-                        {/* TODO: Add contact button/message functionality */}
+                        <p className="mb-4 text-muted-foreground">Posted by {classified.user.name}</p>
+                        {classified.user.email ? (
+                            <Button asChild>
+                                <a href={`mailto:${classified.user.email}?subject=Inquiry about ${encodeURIComponent(classified.title)}`}>
+                                    Contact Seller
+                                </a>
+                            </Button>
+                        ) : (
+                            <p className="text-sm text-muted-foreground">Contact information not available</p>
+                        )}
                     </div>
 
                     {/* Related Classifieds */}

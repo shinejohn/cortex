@@ -17,6 +17,9 @@ AWS_REGION="us-east-1"
 CLUSTER_NAME="fibonacco-dev"
 ENV="dev"
 
+# Ensure Docker is in PATH (especially for Docker Desktop on Mac)
+PATH="/Applications/Docker.app/Contents/Resources/bin:$PATH"
+
 # Step 1: Build and Push Docker Images
 echo -e "${YELLOW}Step 1: Building and pushing Docker images...${NC}"
 echo "⚠️  Note: This requires Docker to be installed and running."
@@ -50,11 +53,10 @@ fi
 
 # Step 2: Get infrastructure outputs
 echo -e "${YELLOW}Step 2: Getting infrastructure information...${NC}"
-cd INFRASTRUCTURE
 
-DB_ENDPOINT=$(pulumi stack output db_endpoint 2>/dev/null || echo "")
-REDIS_ENDPOINT=$(pulumi stack output cache_endpoint 2>/dev/null || echo "")
-ALB_DNS=$(pulumi stack output load_balancer_dns 2>/dev/null || echo "")
+DB_ENDPOINT=$(pulumi stack output database_endpoint --cwd ./INFRASTRUCTURE 2>/dev/null || echo "")
+REDIS_ENDPOINT=$(pulumi stack output cache_endpoint --cwd ./INFRASTRUCTURE 2>/dev/null || echo "")
+ALB_DNS=$(pulumi stack output load_balancer_dns --cwd ./INFRASTRUCTURE 2>/dev/null || echo "")
 
 if [ -z "$DB_ENDPOINT" ]; then
     echo -e "${RED}✗ Could not get database endpoint. Is infrastructure deployed?${NC}"
@@ -64,8 +66,6 @@ fi
 echo "Database Endpoint: $DB_ENDPOINT"
 echo "Redis Endpoint: $REDIS_ENDPOINT"
 echo "ALB DNS: $ALB_DNS"
-
-cd ..
 
 # Step 3: Create/Update AWS Secrets
 echo -e "${YELLOW}Step 3: Setting up AWS Secrets Manager...${NC}"
@@ -82,7 +82,7 @@ if [ -z "$DB_PASSWORD" ]; then
 fi
 
 # Generate APP_KEY if not exists
-APP_KEY=$(php artisan key:generate --show 2>/dev/null | grep -oP '(?<=base64:)[^ ]+' || echo "")
+APP_KEY=$(php artisan key:generate --show --no-ansi 2>/dev/null | sed -n 's/.*base64:\([^ ]*\).*/\1/p' || echo "")
 
 if [ -z "$APP_KEY" ]; then
     APP_KEY=$(php artisan key:generate --show 2>/dev/null || echo "")
@@ -92,19 +92,21 @@ fi
 SECRET_NAME="fibonacco/$ENV/app-secrets"
 
 # Check if secret exists
-if aws secretsmanager describe-secret --secret-id "$SECRET_NAME" --region $AWS_REGION &>/dev/null; then
-    echo "Secret $SECRET_NAME already exists. Updating..."
-    aws secretsmanager update-secret \
-        --secret-id "$SECRET_NAME" \
-        --secret-string "{\"DB_PASSWORD\":\"$DB_PASSWORD\",\"APP_KEY\":\"$APP_KEY\"}" \
-        --region $AWS_REGION
-else
-    echo "Creating secret $SECRET_NAME..."
-    aws secretsmanager create-secret \
-        --name "$SECRET_NAME" \
-        --secret-string "{\"DB_PASSWORD\":\"$DB_PASSWORD\",\"APP_KEY\":\"$APP_KEY\"}" \
-        --region $AWS_REGION
-fi
+# if aws secretsmanager describe-secret --secret-id "$SECRET_NAME" --region $AWS_REGION &>/dev/null; then
+#     echo "Secret $SECRET_NAME already exists. Updating..."
+#     aws secretsmanager update-secret \
+#         --secret-id "$SECRET_NAME" \
+#         --secret-string "{\"DB_PASSWORD\":\"$DB_PASSWORD\",\"APP_KEY\":\"$APP_KEY\"}" \
+#         --region $AWS_REGION
+# else
+#     echo "Creating secret $SECRET_NAME..."
+#     aws secretsmanager create-secret \
+#         --name "$SECRET_NAME" \
+#         --secret-string "{\"DB_PASSWORD\":\"$DB_PASSWORD\",\"APP_KEY\":\"$APP_KEY\"}" \
+#         --region $AWS_REGION
+# fi
+
+echo -e "${YELLOW}⚠️  Manual secret update required if DB_PASSWORD or APP_KEY changes.${NC}"
 
 echo -e "${GREEN}✓ Secrets configured${NC}"
 

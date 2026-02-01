@@ -1,5 +1,5 @@
 import { Link } from "@inertiajs/react";
-import { Bell, Menu, User } from "lucide-react";
+import { Bell, Menu, User, Search } from "lucide-react";
 import { useState } from "react";
 import { route } from "ziggy-js";
 
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { Auth } from "@/types";
 import { DayNewsUserMenuContent } from "./day-news-user-menu-content";
@@ -58,8 +59,18 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                             <span className="text-2xl font-bold">Day News</span>
                         </Link>
 
-                        {/* Right: Location Search, Notifications, User */}
+                        {/* Right: Search, Location, Notifications, User */}
                         <div className="flex items-center gap-3">
+                            {/* Search Bar - Spec enhancement */}
+                            <form className="relative hidden lg:block w-48">
+                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                    type="search"
+                                    placeholder="Search news..."
+                                    className="pl-8 bg-muted/50 border-none h-9 text-xs focus-visible:ring-news-primary"
+                                />
+                            </form>
+
                             {/* Location Search - Hidden on mobile */}
                             <div className="hidden md:block w-64">
                                 <LocationSelector />
@@ -77,13 +88,13 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" size="icon">
                                             <Avatar className="size-8">
-                                                <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
+                                                <AvatarImage src={auth.user?.avatar} alt={auth.user?.name || 'User'} />
                                                 <AvatarFallback>
-                                                    {auth.user.name
-                                                        .split(" ")
+                                                    {auth.user?.name
+                                                        ?.split(" ")
                                                         .map((n) => n[0])
                                                         .join("")
-                                                        .toUpperCase()}
+                                                        .toUpperCase() || 'U'}
                                                 </AvatarFallback>
                                             </Avatar>
                                             <span className="sr-only">User menu</span>
@@ -105,12 +116,12 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                                         <DropdownMenuLabel>Welcome to Day News</DropdownMenuLabel>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem asChild>
-                                            <Link href={route("login")} className="w-full">
+                                            <Link href={route("login") as string} className="w-full">
                                                 Log In
                                             </Link>
                                         </DropdownMenuItem>
                                         <DropdownMenuItem asChild>
-                                            <Link href={route("register")} className="w-full">
+                                            <Link href={route("register") as string} className="w-full">
                                                 Sign Up
                                             </Link>
                                         </DropdownMenuItem>
@@ -157,7 +168,7 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                                         {actionButtons.map((action) => (
                                             <Link
                                                 key={action.type}
-                                                href={route("daynews.posts.create", { type: action.type })}
+                                                href={route("daynews.posts.create", { type: action.type }) as string}
                                                 className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
                                                 onClick={() => setMobileMenuOpen(false)}
                                             >
@@ -196,7 +207,7 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                         <div className="hidden items-center gap-2 md:flex">
                             {actionButtons.map((action) => (
                                 <Button key={action.type} variant="ghost" size="sm" asChild>
-                                    <Link href={route("daynews.posts.create", { type: action.type })}>{action.title}</Link>
+                                    <Link href={route("daynews.posts.create", { type: action.type }) as string}>{action.title}</Link>
                                 </Button>
                             ))}
                         </div>

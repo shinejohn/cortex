@@ -1,0 +1,289 @@
+Previewing update (dev)
+
+View Live: https://app.pulumi.com/shinejohn-org/fibonacco-infrastructure/dev/previews/360f22d7-4fe3-4add-a149-16e9bd31c66f
+
+
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  Deploying fibonacco infrastructure to dev environment
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Networking configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Database configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Secrets configured
+@ Previewing update....
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  warning: BucketV2 is deprecated: s3.BucketV2 has been deprecated in favor of s3.Bucket
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  warning: BucketVersioningV2 is deprecated: aws.s3/bucketversioningv2.BucketVersioningV2 has been deprecated in favor of aws.s3/bucketversioning.BucketVersioning
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  warning: BucketV2 is deprecated: s3.BucketV2 has been deprecated in favor of s3.Bucket
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  warning: BucketLifecycleConfigurationV2 is deprecated: aws.s3/bucketlifecycleconfigurationv2.BucketLifecycleConfigurationV2 has been deprecated in favor of aws.s3/bucketlifecycleconfiguration.BucketLifecycleConfiguration
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Storage configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  warning: failure_threshold is deprecated: failure_threshold is deprecated. The argument is no longer supported by AWS and the value is always set to 1. The attribute will be removed in a future major version.
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Load balancing configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Compute configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Monitoring configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Automation configured
+@ Previewing update.....
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev running ✓ Automation configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev running ✓ CI/CD configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev running 
+    aws:servicediscovery:Service fibonacco-dev-ssr-discovery  warning: urn:pulumi:dev::fibonacco-infrastructure::aws:servicediscovery/service:Service::fibonacco-dev-ssr-discovery verification warning: failure_threshold is deprecated. The argument is no longer supported by AWS and the value is always set to 1. The attribute will be removed in a future major version.
+    aws:servicediscovery:Service fibonacco-dev-ssr-discovery  warning: urn:pulumi:dev::fibonacco-infrastructure::aws:servicediscovery/service:Service::fibonacco-dev-ssr-discovery verification warning: failure_threshold is deprecated. The argument is no longer supported by AWS and the value is always set to 1. The attribute will be removed in a future major version.
+ ~  aws:rds:Instance fibonacco-dev-db update [diff: ~identifier]
+    aws:codepipeline:Pipeline fibonacco-pipeline  warning: urn:pulumi:dev::fibonacco-infrastructure::aws:codepipeline/pipeline:Pipeline::fibonacco-pipeline verification warning: Use a GitHub version 2 action (with a CodeStar Connection `aws_codestarconnections_connection`) as recommended instead. See https://docs.aws.amazon.com/codepipeline/latest/userguide/update-github-action-connections.html
+    aws:codepipeline:Pipeline fibonacco-pipeline  warning: urn:pulumi:dev::fibonacco-infrastructure::aws:codepipeline/pipeline:Pipeline::fibonacco-pipeline verification warning: Use a GitHub version 2 action (with a CodeStar Connection `aws_codestarconnections_connection`) as recommended instead. See https://docs.aws.amazon.com/codepipeline/latest/userguide/update-github-action-connections.html
+ +  aws:cloudwatch:MetricAlarm fibonacco-dev-rds-cpu-alarm create 
+ +  aws:secretsmanager:SecretVersion fibonacco-dev-app-secrets-version create 
+ -  aws:iam:RolePolicy fibonacco-dev-test-runner-lambda-secrets delete 
+ -  aws:iam:RolePolicy fibonacco-dev-test-runner-lambda-s3 delete 
+ -  aws:iam:RolePolicyAttachment fibonacco-dev-test-runner-lambda-vpc delete 
+ -  aws:iam:RolePolicyAttachment fibonacco-dev-test-runner-lambda-basic delete 
+ -  aws:apigatewayv2:Stage fibonacco-dev-test-runner-stage delete 
+ -- aws:ecs:TaskDefinition fibonacco-dev-downtownguide-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-daynews-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-downtownguide-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-alphasite-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-downtownguide-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-daynews-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-golocalvoices-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-daynews-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-daynews-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-golocalvoices-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-goeventcity-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-ssr-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-golocalvoices-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-goeventcity-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-goeventcity-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-golocalvoices-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-goeventcity-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-goeventcity-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-golocalvoices-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-goeventcity-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-ssr-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-daynews-task replace 
+ -  aws:cloudwatch:EventRule fibonacco-dev-test-runner-schedule delete 
+ -- aws:ecs:TaskDefinition fibonacco-dev-golocalvoices-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-downtownguide-task replace 
+ -- aws:ecs:TaskDefinition fibonacco-dev-horizon-task delete original 
+ -- aws:ecs:TaskDefinition fibonacco-dev-daynews-task replace 
+ -- aws:ecs:TaskDefinition fibonacco-dev-alphasite-task replace 
+ -- aws:ecs:TaskDefinition fibonacco-dev-alphasite-task replace 
+ -  aws:iam:Role fibonacco-dev-test-runner-lambda-role delete 
+ -- aws:ecs:TaskDefinition fibonacco-dev-downtownguide-task replace 
+ -- aws:ecs:TaskDefinition fibonacco-dev-downtownguide-task replace 
+ -- aws:ecs:TaskDefinition fibonacco-dev-downtownguide-task replace 
+ -  aws:apigatewayv2:Api fibonacco-dev-test-runner-api delete 
+ -- aws:ecs:TaskDefinition fibonacco-dev-alphasite-task replace 
+ -- aws:ecs:TaskDefinition fibonacco-dev-alphasite-task replace 
+ -- aws:ecs:TaskDefinition fibonacco-dev-goeventcity-task replace 
+ -- aws:ecs:TaskDefinition fibonacco-dev-golocalvoices-task replace 
+ -- aws:ecs:TaskDefinition fibonacco-dev-alphasite-task replace 
+ -- aws:ecs:TaskDefinition fibonacco-dev-daynews-task replace 
+ -- aws:ecs:TaskDefinition fibonacco-dev-alphasite-task replace 
+ -- aws:ecs:TaskDefinition fibonacco-dev-alphasite-task replace 
+@ Previewing update....
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  5 warnings; 11 messages
+Diagnostics:
+  aws:servicediscovery:Service (fibonacco-dev-ssr-discovery):
+    warning: urn:pulumi:dev::fibonacco-infrastructure::aws:servicediscovery/service:Service::fibonacco-dev-ssr-discovery verification warning: failure_threshold is deprecated. The argument is no longer supported by AWS and the value is always set to 1. The attribute will be removed in a future major version.
+
+  aws:codepipeline:Pipeline (fibonacco-pipeline):
+    warning: urn:pulumi:dev::fibonacco-infrastructure::aws:codepipeline/pipeline:Pipeline::fibonacco-pipeline verification warning: Use a GitHub version 2 action (with a CodeStar Connection `aws_codestarconnections_connection`) as recommended instead. See https://docs.aws.amazon.com/codepipeline/latest/userguide/update-github-action-connections.html
+
+  pulumi:pulumi:Stack (fibonacco-infrastructure-dev):
+    Deploying fibonacco infrastructure to dev environment
+    ✓ Networking configured
+    ✓ Database configured
+    ✓ Secrets configured
+    warning: BucketV2 is deprecated: s3.BucketV2 has been deprecated in favor of s3.Bucket
+    warning: BucketVersioningV2 is deprecated: aws.s3/bucketversioningv2.BucketVersioningV2 has been deprecated in favor of aws.s3/bucketversioning.BucketVersioning
+    warning: BucketV2 is deprecated: s3.BucketV2 has been deprecated in favor of s3.Bucket
+    warning: BucketLifecycleConfigurationV2 is deprecated: aws.s3/bucketlifecycleconfigurationv2.BucketLifecycleConfigurationV2 has been deprecated in favor of aws.s3/bucketlifecycleconfiguration.BucketLifecycleConfiguration
+    ✓ Storage configured
+    warning: failure_threshold is deprecated: failure_threshold is deprecated. The argument is no longer supported by AWS and the value is always set to 1. The attribute will be removed in a future major version.
+    ✓ Load balancing configured
+    ✓ Compute configured
+    ✓ Monitoring configured
+    ✓ Automation configured
+    ✓ CI/CD configured
+    
+    ================================================================================
+    Fibonacco Infrastructure Deployment Summary (dev)
+    ================================================================================
+    
+    VPC:           fibonacco-dev
+    Database:      PostgreSQL (RDS)
+    Cache:         Redis (ElastiCache)
+    Compute:       ECS Fargate
+    
+    Services:
+      - GoEventCity:      dev.goeventcity.com
+      - Day.News:         dev.day.news
+      - Downtown Guide:   dev.downtownsguide.com
+      - Go Local Voices:  dev.golocalvoices.com
+      - AlphaSite:        dev.alphasite.ai
+      - Inertia SSR:      Internal (Service Discovery)
+      - Horizon:          Queue Worker
+    
+    Monitoring:    CloudWatch Dashboard + Alarms
+    Automation:    Auto-scaling remediation disabled
+    
+    ================================================================================
+    Run 'pulumi stack output' to see connection details
+    ================================================================================
+
+    [Pulumi Neo] Would you like help with these diagnostics?
+    https://app.pulumi.com/shinejohn-org/fibonacco-infrastructure/dev/previews/360f22d7-4fe3-4add-a149-16e9bd31c66f?explainFailure
+
+Outputs:
+  + cache_endpoint                  : [unknown]
+  + redis_endpoint                  : [unknown]
+
+Resources:
+    + 2 to create
+    ~ 1 to update
+    - 8 to delete
+    11 changes. 97 unchanged
+
+Updating (dev)
+
+View Live: https://app.pulumi.com/shinejohn-org/fibonacco-infrastructure/dev/updates/104
+
+
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  Deploying fibonacco infrastructure to dev environment
+@ Updating....
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Networking configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Database configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Secrets configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  warning: BucketV2 is deprecated: s3.BucketV2 has been deprecated in favor of s3.Bucket
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  warning: BucketVersioningV2 is deprecated: aws.s3/bucketversioningv2.BucketVersioningV2 has been deprecated in favor of aws.s3/bucketversioning.BucketVersioning
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  warning: BucketV2 is deprecated: s3.BucketV2 has been deprecated in favor of s3.Bucket
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  warning: BucketLifecycleConfigurationV2 is deprecated: aws.s3/bucketlifecycleconfigurationv2.BucketLifecycleConfigurationV2 has been deprecated in favor of aws.s3/bucketlifecycleconfiguration.BucketLifecycleConfiguration
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Storage configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  warning: failure_threshold is deprecated: failure_threshold is deprecated. The argument is no longer supported by AWS and the value is always set to 1. The attribute will be removed in a future major version.
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Load balancing configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Compute configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Monitoring configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev  ✓ Automation configured
+@ Updating....
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev running ✓ Automation configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev running ✓ CI/CD configured
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev running 
+    aws:servicediscovery:Service fibonacco-dev-ssr-discovery  warning: urn:pulumi:dev::fibonacco-infrastructure::aws:servicediscovery/service:Service::fibonacco-dev-ssr-discovery verification warning: failure_threshold is deprecated. The argument is no longer supported by AWS and the value is always set to 1. The attribute will be removed in a future major version.
+    aws:servicediscovery:Service fibonacco-dev-ssr-discovery  warning: urn:pulumi:dev::fibonacco-infrastructure::aws:servicediscovery/service:Service::fibonacco-dev-ssr-discovery verification warning: failure_threshold is deprecated. The argument is no longer supported by AWS and the value is always set to 1. The attribute will be removed in a future major version.
+@ Updating....
+ ~  aws:rds:Instance fibonacco-dev-db updating (0s) [diff: ~identifier]
+    aws:codepipeline:Pipeline fibonacco-pipeline  warning: urn:pulumi:dev::fibonacco-infrastructure::aws:codepipeline/pipeline:Pipeline::fibonacco-pipeline verification warning: Use a GitHub version 2 action (with a CodeStar Connection `aws_codestarconnections_connection`) as recommended instead. See https://docs.aws.amazon.com/codepipeline/latest/userguide/update-github-action-connections.html
+    aws:codepipeline:Pipeline fibonacco-pipeline  warning: urn:pulumi:dev::fibonacco-infrastructure::aws:codepipeline/pipeline:Pipeline::fibonacco-pipeline verification warning: Use a GitHub version 2 action (with a CodeStar Connection `aws_codestarconnections_connection`) as recommended instead. See https://docs.aws.amazon.com/codepipeline/latest/userguide/update-github-action-connections.html
+@ Updating....
+ ~  aws:rds:Instance fibonacco-dev-db updating (1s) [diff: ~identifier]; error:   sdk-v2/provider2.go:572: sdk.helper_schema: updating RDS DB Instance (fibonacco-dev-db5612adb): operation error RDS: ModifyDBInstance, https response error StatusCode: 404, RequestID: b60c2d0d-7819-4093-ab10-9c5145f07500, DBInstanceNotFound: DB instance not found: fibonacco-dev-db27d38cd: provider=aws@7.15.0
+ ~  aws:rds:Instance fibonacco-dev-db updating (1s) [diff: ~identifier]; error: 1 error occurred:
+ ~  aws:rds:Instance fibonacco-dev-db **updating failed** [diff: ~identifier]; error: 1 error occurred:
+@ Updating....
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev running error: update failed
+    pulumi:pulumi:Stack fibonacco-infrastructure-dev **failed** 1 error; 5 warnings; 11 messages
+Diagnostics:
+  pulumi:pulumi:Stack (fibonacco-infrastructure-dev):
+    Deploying fibonacco infrastructure to dev environment
+    ✓ Networking configured
+    ✓ Database configured
+    ✓ Secrets configured
+    warning: BucketV2 is deprecated: s3.BucketV2 has been deprecated in favor of s3.Bucket
+    warning: BucketVersioningV2 is deprecated: aws.s3/bucketversioningv2.BucketVersioningV2 has been deprecated in favor of aws.s3/bucketversioning.BucketVersioning
+    warning: BucketV2 is deprecated: s3.BucketV2 has been deprecated in favor of s3.Bucket
+    warning: BucketLifecycleConfigurationV2 is deprecated: aws.s3/bucketlifecycleconfigurationv2.BucketLifecycleConfigurationV2 has been deprecated in favor of aws.s3/bucketlifecycleconfiguration.BucketLifecycleConfiguration
+    ✓ Storage configured
+    warning: failure_threshold is deprecated: failure_threshold is deprecated. The argument is no longer supported by AWS and the value is always set to 1. The attribute will be removed in a future major version.
+    ✓ Load balancing configured
+    ✓ Compute configured
+    ✓ Monitoring configured
+    ✓ Automation configured
+    ✓ CI/CD configured
+    
+    ================================================================================
+    Fibonacco Infrastructure Deployment Summary (dev)
+    ================================================================================
+    
+    VPC:           fibonacco-dev
+    Database:      PostgreSQL (RDS)
+    Cache:         Redis (ElastiCache)
+    Compute:       ECS Fargate
+    
+    Services:
+      - GoEventCity:      dev.goeventcity.com
+      - Day.News:         dev.day.news
+      - Downtown Guide:   dev.downtownsguide.com
+      - Go Local Voices:  dev.golocalvoices.com
+      - AlphaSite:        dev.alphasite.ai
+      - Inertia SSR:      Internal (Service Discovery)
+      - Horizon:          Queue Worker
+    
+    Monitoring:    CloudWatch Dashboard + Alarms
+    Automation:    Auto-scaling remediation disabled
+    
+    ================================================================================
+    Run 'pulumi stack output' to see connection details
+    ================================================================================
+    error: update failed
+
+  aws:servicediscovery:Service (fibonacco-dev-ssr-discovery):
+    warning: urn:pulumi:dev::fibonacco-infrastructure::aws:servicediscovery/service:Service::fibonacco-dev-ssr-discovery verification warning: failure_threshold is deprecated. The argument is no longer supported by AWS and the value is always set to 1. The attribute will be removed in a future major version.
+
+  aws:codepipeline:Pipeline (fibonacco-pipeline):
+    warning: urn:pulumi:dev::fibonacco-infrastructure::aws:codepipeline/pipeline:Pipeline::fibonacco-pipeline verification warning: Use a GitHub version 2 action (with a CodeStar Connection `aws_codestarconnections_connection`) as recommended instead. See https://docs.aws.amazon.com/codepipeline/latest/userguide/update-github-action-connections.html
+
+  aws:rds:Instance (fibonacco-dev-db):
+    error:   sdk-v2/provider2.go:572: sdk.helper_schema: updating RDS DB Instance (fibonacco-dev-db5612adb): operation error RDS: ModifyDBInstance, https response error StatusCode: 404, RequestID: b60c2d0d-7819-4093-ab10-9c5145f07500, DBInstanceNotFound: DB instance not found: fibonacco-dev-db27d38cd: provider=aws@7.15.0
+    error: 1 error occurred:
+    	* updating urn:pulumi:dev::fibonacco-infrastructure::aws:rds/instance:Instance::fibonacco-dev-db: 1 error occurred:
+    	* updating RDS DB Instance (fibonacco-dev-db5612adb): operation error RDS: ModifyDBInstance, https response error StatusCode: 404, RequestID: b60c2d0d-7819-4093-ab10-9c5145f07500, DBInstanceNotFound: DB instance not found: fibonacco-dev-db27d38cd
+
+    [Pulumi Neo] Would you like help with these diagnostics?
+    https://app.pulumi.com/shinejohn-org/fibonacco-infrastructure/dev/updates/104?explainFailure
+
+Outputs:
+  - alb_arn                         : "arn:aws:elasticloadbalancing:us-east-1:195430954683:loadbalancer/app/fibonacco-dev-alb/98ac210ccfb75e7c"
+  - alb_dns_name                    : "fibonacco-dev-alb-1749938282.us-east-1.elb.amazonaws.com"
+  - alert_topic_arn                 : "arn:aws:sns:us-east-1:195430954683:fibonacco-dev-alerts"
+  - alphasite_domain                : "dev.alphasite.ai"
+  - app_bucket_name                 : "fibonacco-dev-app-storage"
+  - app_secret_arn                  : "arn:aws:secretsmanager:us-east-1:195430954683:secret:fibonacco/dev/app-secrets-mHrTZP"
+  - archive_bucket_name             : "fibonacco-dev-archive"
+  - cluster_arn                     : "arn:aws:ecs:us-east-1:195430954683:cluster/fibonacco-dev"
+  - cluster_name                    : "fibonacco-dev"
+  - database_endpoint               : "fibonacco-dev-dba453d6f.csr8wa00wss4.us-east-1.rds.amazonaws.com:5432"
+  - daynews_domain                  : "dev.day.news"
+  - db_endpoint                     : "fibonacco-dev-dba453d6f.csr8wa00wss4.us-east-1.rds.amazonaws.com:5432"
+  - db_instance_id                  : "db-4KIPXXRD6WYZUIBAWJ7NHZ6YFM"
+  - downtownguide_domain            : "dev.downtownsguide.com"
+  - ecr_repositories                : {
+      - alphasite    : "195430954683.dkr.ecr.us-east-1.amazonaws.com/fibonacco/dev/alphasite"
+      - base-app     : "195430954683.dkr.ecr.us-east-1.amazonaws.com/fibonacco/dev/base-app"
+      - daynews      : "195430954683.dkr.ecr.us-east-1.amazonaws.com/fibonacco/dev/daynews"
+      - downtownguide: "195430954683.dkr.ecr.us-east-1.amazonaws.com/fibonacco/dev/downtownguide"
+      - goeventcity  : "195430954683.dkr.ecr.us-east-1.amazonaws.com/fibonacco/dev/goeventcity"
+      - golocalvoices: "195430954683.dkr.ecr.us-east-1.amazonaws.com/fibonacco/dev/golocalvoices"
+      - inertia-ssr  : "195430954683.dkr.ecr.us-east-1.amazonaws.com/fibonacco/dev/inertia-ssr"
+    }
+  - environment                     : "dev"
+  - goeventcity_domain              : "dev.goeventcity.com"
+  - golocalvoices_domain            : "dev.golocalvoices.com"
+  - load_balancer_dns               : "fibonacco-dev-alb-1749938282.us-east-1.elb.amazonaws.com"
+  - pipeline_arn                    : "arn:aws:codepipeline:us-east-1:195430954683:fibonacco-dev-pipeline"
+  - pipeline_name                   : "fibonacco-dev-pipeline"
+  - private_subnet_ids              : [
+  -     [0]: "subnet-02748071797296e33"
+  -     [1]: "subnet-09a26dc34560e44a7"
+    ]
+  - public_subnet_ids               : [
+  -     [0]: "subnet-0769069b68c9dcf7e"
+  -     [1]: "subnet-0ace160a267b29960"
+    ]
+  - redis_port                      : 6379
+  - service_discovery_namespace_id  : "ns-onaems4ihsqewiny"
+  - service_discovery_namespace_name: "fibonacco-dev.local"
+  - ssr_service_discovery_arn       : "arn:aws:servicediscovery:us-east-1:195430954683:service/srv-ycabiotxl6nxqfpj"
+  - ssr_service_discovery_id        : "srv-ycabiotxl6nxqfpj"
+  - vpc_id                          : "vpc-0fb3792f39da15411"
+
+Resources:
+    97 unchanged
+    2 errored
+
+Duration: 5s
+

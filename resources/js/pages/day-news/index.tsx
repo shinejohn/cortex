@@ -1,11 +1,18 @@
 import { Newspaper } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { Link } from "@inertiajs/react";
+import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/common/seo";
 import Advertisement from "@/components/day-news/advertisement";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import LocationPrompt from "@/components/day-news/location-prompt";
 import NewsArticleCard from "@/components/day-news/news-article-card";
 import NewspaperMasthead from "@/components/day-news/newspaper-masthead";
+import AnnouncementsSection from "@/components/day-news/announcements-section";
+import MarketplaceSection from "@/components/day-news/marketplace-section";
+import CouponsPreview from "@/components/day-news/coupons-preview";
+import EventsPreview from "@/components/day-news/events-preview";
+import ScrollableNewspaper from "@/components/day-news/scrollable-newspaper";
 import { LocationProvider, useLocation } from "@/contexts/location-context";
 import type { Auth } from "@/types";
 
@@ -63,15 +70,47 @@ interface Advertisements {
     sidebar: Ad[];
 }
 
+interface LegalNotice {
+    id: string;
+    title: string;
+    publish_date: string;
+    case_number?: string;
+}
+
 interface DayNewsIndexProps {
     auth?: Auth;
     news: NewsArticle[];
+    announcements: any[];
+    legalNotices: LegalNotice[];
+    classifieds: any[];
+    coupons: any[];
+    events: any[];
     hasRegion: boolean;
     advertisements: Advertisements;
 }
 
-function DayNewsContent({ news, hasRegion, advertisements }: { news: NewsArticle[]; hasRegion: boolean; advertisements: Advertisements }) {
+function DayNewsContent({ news, hasRegion, advertisements, announcements, legalNotices, classifieds, coupons, events }: { news: NewsArticle[]; hasRegion: boolean; advertisements: Advertisements; announcements: any[]; legalNotices: LegalNotice[]; classifieds: any[]; coupons: any[]; events: any[] }) {
     const { currentRegion } = useLocation();
+    const [showNewspaperView, setShowNewspaperView] = useState(false);
+    const [greeting, setGreeting] = useState('');
+    const [activeReaders, setActiveReaders] = useState(247);
+
+    // Set time-based greeting & active readers logic from spec
+    useEffect(() => {
+        const hour = new Date().getHours();
+        if (hour >= 5 && hour < 12) {
+            setGreeting('Good Morning');
+        } else if (hour >= 12 && hour < 18) {
+            setGreeting('Good Afternoon');
+        } else {
+            setGreeting('Good Evening');
+        }
+
+        const interval = setInterval(() => {
+            setActiveReaders((prev) => Math.floor(Math.random() * 20) - 10 + prev);
+        }, 5000);
+        return () => clearInterval(interval);
+    }, []);
 
     const handleAdImpression = (adId: number) => {
         fetch(`/api/advertisements/${adId}/impression`, {
@@ -109,8 +148,29 @@ function DayNewsContent({ news, hasRegion, advertisements }: { news: NewsArticle
 
     return (
         <>
-            {/* Newspaper masthead */}
-            <NewspaperMasthead region={currentRegion} />
+            {/* Header / Masthead */}
+            <div className="bg-white px-4 pt-8 text-center sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-7xl">
+                    <div className="mb-2 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-community-green">
+                        <div className="flex items-center">
+                            <span className="relative flex h-2 w-2 mr-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-community-green opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-community-green"></span>
+                            </span>
+                            {activeReaders} neighbors reading now
+                        </div>
+                    </div>
+                    <p className="mb-1 text-sm font-medium text-muted-foreground">{greeting}, {currentRegion?.name || "Neighbor"}</p>
+                    <NewspaperMasthead region={currentRegion} />
+                    <div className="mt-4 flex items-center justify-center border-y border-border py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                        <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                        <span className="mx-4 h-1 w-1 rounded-full bg-border"></span>
+                        <span>Volume 98 • Issue 245</span>
+                        <span className="mx-4 h-1 w-1 rounded-full bg-border"></span>
+                        <span className="text-news-primary">Official Local Edition</span>
+                    </div>
+                </div>
+            </div>
 
             {/* Banner Ad */}
             {advertisements.banner.length > 0 && (
@@ -123,97 +183,175 @@ function DayNewsContent({ news, hasRegion, advertisements }: { news: NewsArticle
 
             {/* Main content */}
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                {/* Featured article */}
-                <div className="mb-8">
-                    <h2 className="mb-4 border-b-2 border-border pb-2 font-serif text-3xl font-bold">Headlines</h2>
-                    <NewsArticleCard article={featuredArticle} featured />
+                {/* Spec View Toggle */}
+                <div className="mb-6 flex items-center justify-between border-b pb-4">
+                    <h2 className="font-serif text-3xl font-bold">Headlines</h2>
+                    <div className="flex gap-2">
+                        <Button
+                            variant={showNewspaperView ? "outline" : "default"}
+                            size="sm"
+                            onClick={() => setShowNewspaperView(false)}
+                        >
+                            Regular View
+                        </Button>
+                        <Button
+                            variant={showNewspaperView ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setShowNewspaperView(true)}
+                        >
+                            Newspaper View
+                        </Button>
+                    </div>
                 </div>
 
-                {/* Top stories grid with featured ad */}
-                {topStories.length > 0 && (
-                    <div className="mb-8">
-                        <h2 className="mb-4 border-b-2 border-border pb-2 font-serif text-2xl font-bold">Top Stories</h2>
-                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                            {topStories.map((article) => (
-                                <NewsArticleCard key={article.id} article={article} />
-                            ))}
-                            {/* Featured ad in grid */}
-                            {advertisements.featured.length > 0 && (
-                                <NewsArticleCard
-                                    key={`ad-${advertisements.featured[0].id}`}
-                                    article={{
-                                        id: String(advertisements.featured[0].advertable.id),
-                                        title: advertisements.featured[0].advertable.title,
-                                        slug: advertisements.featured[0].advertable.slug,
-                                        excerpt: advertisements.featured[0].advertable.excerpt,
-                                        featured_image: advertisements.featured[0].advertable.featured_image,
-                                        published_at: advertisements.featured[0].expires_at,
-                                        view_count: 0,
-                                        author: null,
-                                        regions: [],
-                                    }}
-                                    isSponsored={true}
-                                />
-                            )}
-                        </div>
-                    </div>
-                )}
-
-                {/* More news with inline ads and sidebar */}
-                {otherStories.length > 0 && (
-                    <div className="grid gap-8 lg:grid-cols-3">
-                        {/* Main column */}
-                        <div className="lg:col-span-2">
-                            <h2 className="mb-4 border-b-2 border-border pb-2 font-serif text-2xl font-bold">Latest News</h2>
-                            <div className="grid gap-6 sm:grid-cols-2">
-                                {otherStories.slice(0, 6).map((article, index) => (
-                                    <React.Fragment key={article.id}>
-                                        <NewsArticleCard article={article} />
-                                        {/* Insert inline ad after every 3rd article */}
-                                        {(index + 1) % 3 === 0 && advertisements.inline.length > Math.floor((index + 1) / 3) - 1 && (
-                                            <div className="sm:col-span-2">
-                                                <Advertisement
-                                                    key={`inline-${advertisements.inline[Math.floor((index + 1) / 3) - 1].id}`}
-                                                    ad={advertisements.inline[Math.floor((index + 1) / 3) - 1]}
-                                                    onImpression={handleAdImpression}
-                                                    onClick={handleAdClick}
-                                                />
-                                            </div>
-                                        )}
-                                    </React.Fragment>
-                                ))}
-                            </div>
+                {showNewspaperView ? (
+                    <ScrollableNewspaper
+                        news={news}
+                        announcements={announcements}
+                        classifieds={classifieds}
+                        regionName={currentRegion?.name}
+                    />
+                ) : (
+                    <>
+                        {/* Featured article */}
+                        <div className="mb-8">
+                            <NewsArticleCard article={featuredArticle} featured />
                         </div>
 
-                        {/* Sidebar with ads */}
-                        <div>
-                            <h2 className="mb-4 border-b-2 border-border pb-2 font-serif text-xl font-bold">More Stories</h2>
-                            <div className="space-y-0">
-                                {otherStories.slice(6).map((article) => (
-                                    <NewsArticleCard key={article.id} article={article} compact />
-                                ))}
+                        {/* Top stories grid with featured ad */}
+                        {topStories.length > 0 && (
+                            <div className="mb-8">
+                                <h2 className="mb-4 border-b-2 border-border pb-2 font-serif text-2xl font-bold">Top Stories</h2>
+                                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                                    {topStories.map((article) => (
+                                        <NewsArticleCard key={article.id} article={article} />
+                                    ))}
+                                    {/* Featured ad in grid */}
+                                    {advertisements.featured.length > 0 && (
+                                        <NewsArticleCard
+                                            key={`ad-${advertisements.featured[0].id}`}
+                                            article={{
+                                                id: String(advertisements.featured[0].advertable.id),
+                                                title: advertisements.featured[0].advertable.title,
+                                                slug: advertisements.featured[0].advertable.slug,
+                                                excerpt: advertisements.featured[0].advertable.excerpt,
+                                                featured_image: advertisements.featured[0].advertable.featured_image,
+                                                published_at: advertisements.featured[0].expires_at,
+                                                view_count: 0,
+                                                author: null,
+                                                regions: [],
+                                            }}
+                                            isSponsored={true}
+                                        />
+                                    )}
+                                </div>
                             </div>
+                        )}
 
-                            {/* Sidebar ads */}
-                            {advertisements.sidebar.length > 0 && (
-                                <div className="mt-8">
-                                    <h3 className="mb-4 border-b border-border pb-2 text-sm font-semibold text-muted-foreground">Sponsored</h3>
-                                    <div className="space-y-4">
-                                        {advertisements.sidebar.map((ad) => (
-                                            <Advertisement key={ad.id} ad={ad} onImpression={handleAdImpression} onClick={handleAdClick} />
+                        {/* Secondary content sections (Spec Previews) */}
+                        <div className="mt-16 space-y-16">
+                            {/* Events Section */}
+                            <section>
+                                <div className="mb-6 flex items-center justify-between border-b-2 border-border pb-2">
+                                    <h2 className="font-serif text-3xl font-bold">Local Events</h2>
+                                    <Link href="/events" className="text-sm font-bold text-news-primary uppercase tracking-wider hover:underline">See Calendar</Link>
+                                </div>
+                                <EventsPreview events={events} />
+                            </section>
+
+                            {/* Coupons Section */}
+                            <section>
+                                <div className="mb-6 flex items-center justify-between border-b-2 border-border pb-2">
+                                    <h2 className="font-serif text-3xl font-bold">Community Deals</h2>
+                                    <Link href="/coupons" className="text-sm font-bold text-news-primary uppercase tracking-wider hover:underline">View All Coupons</Link>
+                                </div>
+                                <CouponsPreview coupons={coupons} />
+                            </section>
+                        </div>
+
+                        {/* More news with sidebar */}
+                        {otherStories.length > 0 && (
+                            <div className="grid gap-8 lg:grid-cols-3">
+                                {/* Main column */}
+                                <div className="lg:col-span-2">
+                                    <h2 className="mb-4 border-b-2 border-border pb-2 font-serif text-2xl font-bold">Latest News</h2>
+                                    <div className="grid gap-6 sm:grid-cols-2">
+                                        {otherStories.slice(0, 6).map((article, index) => (
+                                            <React.Fragment key={article.id}>
+                                                <NewsArticleCard article={article} />
+                                                {/* Insert inline ad after every 3rd article */}
+                                                {(index + 1) % 3 === 0 && advertisements.inline.length > Math.floor((index + 1) / 3) - 1 && (
+                                                    <div className="sm:col-span-2">
+                                                        <Advertisement
+                                                            key={`inline-${advertisements.inline[Math.floor((index + 1) / 3) - 1].id}`}
+                                                            ad={advertisements.inline[Math.floor((index + 1) / 3) - 1]}
+                                                            onImpression={handleAdImpression}
+                                                            onClick={handleAdClick}
+                                                        />
+                                                    </div>
+                                                )}
+                                            </React.Fragment>
                                         ))}
                                     </div>
                                 </div>
-                            )}
-                        </div>
-                    </div>
+
+                                {/* Sidebar with Announcements & Marketplace & Legal Notices */}
+                                <div className="space-y-8">
+                                    {/* Announcements Section (from SPEC) */}
+                                    <AnnouncementsSection announcements={announcements} />
+
+                                    {/* Marketplace Section (from SPEC) */}
+                                    <MarketplaceSection classifieds={classifieds} />
+
+                                    {/* Legal Notices section */}
+                                    {legalNotices.length > 0 && (
+                                        <div className="rounded-md border border-gray-200 bg-white p-3 shadow-sm">
+                                            <h3 className="mb-3 font-display text-sm font-bold uppercase tracking-wider text-news-primary">Legal Notices</h3>
+                                            <div className="space-y-2">
+                                                {legalNotices.map((notice) => (
+                                                    <Link
+                                                        key={notice.id}
+                                                        href={`/legal-notices/${notice.id}`}
+                                                        className="block border-b border-gray-100 pb-2 text-xs hover:text-news-primary"
+                                                    >
+                                                        <span className="font-semibold text-gray-500">{notice.publish_date}: </span>
+                                                        {notice.title}
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                            <Link href="/legal-notices" className="mt-2 block text-[10px] font-bold text-news-primary uppercase">View All</Link>
+                                        </div>
+                                    )}
+
+                                    <h2 className="mb-4 border-b-2 border-border pb-2 font-serif text-xl font-bold">More Stories</h2>
+                                    <div className="space-y-0">
+                                        {otherStories.slice(6).map((article) => (
+                                            <NewsArticleCard key={article.id} article={article} compact />
+                                        ))}
+                                    </div>
+
+                                    {/* Sidebar ads */}
+                                    {advertisements.sidebar.length > 0 && (
+                                        <div className="mt-8">
+                                            <h3 className="mb-4 border-b border-border pb-2 text-sm font-semibold text-muted-foreground">Sponsored</h3>
+                                            <div className="space-y-4">
+                                                {advertisements.sidebar.map((ad) => (
+                                                    <Advertisement key={ad.id} ad={ad} onImpression={handleAdImpression} onClick={handleAdClick} />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </>
     );
 }
 
-export default function DayNewsIndex({ auth, news, hasRegion, advertisements }: DayNewsIndexProps) {
+export default function DayNewsIndex({ auth, news, hasRegion, advertisements, announcements, legalNotices, classifieds, coupons, events }: DayNewsIndexProps) {
     return (
         <LocationProvider>
             <div className="min-h-screen bg-background">
@@ -229,7 +367,16 @@ export default function DayNewsIndex({ auth, news, hasRegion, advertisements }: 
                 />
                 <DayNewsHeader auth={auth} />
                 <LocationPrompt />
-                <DayNewsContent news={news} hasRegion={hasRegion} advertisements={advertisements} />
+                <DayNewsContent
+                    news={news}
+                    hasRegion={hasRegion}
+                    advertisements={advertisements}
+                    announcements={announcements}
+                    legalNotices={legalNotices}
+                    classifieds={classifieds}
+                    coupons={coupons}
+                    events={events}
+                />
             </div>
         </LocationProvider>
     );

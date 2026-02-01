@@ -184,8 +184,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/follow/status', [FollowController::class, 'checkStatus'])->name('api.follow.status');
 });
 
-// N8N Integration API routes (protected with API key authentication)
-Route::prefix('api/n8n')->name('api.n8n.')->middleware('n8n.api')->group(function () {
+// N8N Integration API routes (protected with API key authentication and rate limiting)
+Route::prefix('api/n8n')->name('api.n8n.')->middleware(['n8n.api', 'throttle:60,1'])->group(function () {
     Route::get('/regions', [App\Http\Controllers\Api\N8nIntegrationController::class, 'getRegions'])->name('regions');
     Route::post('/businesses', [App\Http\Controllers\Api\N8nIntegrationController::class, 'upsertBusiness'])->name('businesses.upsert');
     Route::get('/businesses/{business}/feeds', [App\Http\Controllers\Api\N8nIntegrationController::class, 'getBusinessFeeds'])->name('businesses.feeds');

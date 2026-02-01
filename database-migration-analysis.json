@@ -1,0 +1,96 @@
+{
+  "supabase": {
+    "database": "supabase",
+    "url": "https://oqnaxeqyhitkupofwqhr.supabase.co",
+    "tables": {
+      "users": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "profiles": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "communities": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "news": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "events": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "businesses": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "reviews": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "marketplace_listings": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "marketplace_items": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "announcements": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "legal_notices": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "coupons": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "deals": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "ads": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "comments": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "likes": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "saved_items": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "photos": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "business_hours": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      },
+      "business_categories": {
+        "exists": false,
+        "error": "TypeError: fetch failed"
+      }
+    },
+    "totalRecords": 0,
+    "timestamp": "2026-02-01T00:16:52.094Z"
+  },
+  "railway": null,
+  "comparison": {
+    "supabaseTables": [],
+    "railwayTables": []
+  },
+  "timestamp": "2026-02-01T00:16:52.196Z"
+}

@@ -47,7 +47,7 @@ RUN bun i
 COPY . .
 COPY --from=base /var/www/html/vendor/ ./vendor/
 
-RUN bun --bun run build:ssr
+RUN bun run build:ssr
 
 # =================================================================
 # Final Stage: Production image
@@ -147,6 +147,11 @@ COPY --chown=www-data:www-data routes ./routes
 COPY --chown=www-data:www-data storage ./storage
 COPY --chown=www-data:www-data resources ./resources
 COPY --chown=www-data:www-data artisan artisan
+
+# Create required Laravel directories and set permissions
+RUN mkdir -p storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache && \
+    chown -R www-data:www-data storage bootstrap/cache && \
+    chmod -R 775 storage bootstrap/cache
 
 RUN composer dump-autoload
 

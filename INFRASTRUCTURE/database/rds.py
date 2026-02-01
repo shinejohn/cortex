@@ -10,6 +10,7 @@ from networking import vpc, private_subnets
 # Subnet Group for RDS
 db_subnet_group = aws.rds.SubnetGroup(
     f"{project_name}-{env}-db-subnet-group",
+    name="fibonacco-dev-db-subnet-group-e940c18",
     subnet_ids=[subnet.id for subnet in private_subnets],
     tags={**common_tags, "Name": f"{project_name}-{env}-db-subnet-group"},
 )
@@ -51,6 +52,7 @@ db_password = config.get_secret("db_password") or pulumi.Output.secret("ChangeMe
 # RDS Instance
 db_instance = aws.rds.Instance(
     f"{project_name}-{env}-db",
+    identifier="fibonacco-dev-dba453d6f",
     engine=database["engine"],
     engine_version=database["engine_version"],
     instance_class=database["instance_class"],

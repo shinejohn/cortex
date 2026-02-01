@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\DayNews;
 
 use App\Http\Controllers\Controller;
+use App\Models\Announcement;
+use App\Models\LegalNotice;
+use App\Models\Classified;
+use App\Models\Coupon;
+use App\Models\Event;
 use App\Models\DayNewsPost;
 use App\Models\Region;
 use App\Services\AdvertisementService;
@@ -45,6 +50,40 @@ final class RegionHomeController extends Controller
         $inlineAds = $this->advertisementService->getActiveAds('day_news', $region, 'inline')->take(3);
         $sidebarAds = $this->advertisementService->getActiveAds('day_news', $region, 'sidebar')->take(3);
 
+        // Get region-specific content for spec sections
+        $announcements = Announcement::published()
+            ->forRegion($region->id)
+            ->latest('published_at')
+            ->limit(5)
+            ->get();
+
+        $legalNotices = LegalNotice::query()
+            ->whereHas('regions', fn($q) => $q->where('regions.id', $region->id))
+            ->where('status', 'active')
+            ->latest('publish_date')
+            ->limit(5)
+            ->get();
+
+        $classifieds = Classified::active()
+            ->forRegion($region->id)
+            ->latest('posted_at')
+            ->limit(5)
+            ->get();
+
+        $coupons = Coupon::active()
+            ->forRegion($region->id)
+            ->latest('start_date')
+            ->limit(4)
+            ->get();
+
+        $events = Event::published()
+            ->upcoming()
+            ->whereHas('regions', fn($q) => $q->where('regions.id', $region->id))
+            ->with(['venue'])
+            ->orderBy('event_date', 'asc')
+            ->limit(4)
+            ->get();
+
         // Build SEO JSON-LD with region-specific data
         $seoData = [
             'title' => "Local News for {$region->name}",
@@ -57,6 +96,11 @@ final class RegionHomeController extends Controller
                 'jsonLd' => SeoService::buildJsonLd('website', $seoData, 'day-news'),
             ],
             'news' => $allArticles,
+            'announcements' => $announcements,
+            'legalNotices' => $legalNotices,
+            'classifieds' => $classifieds,
+            'coupons' => $coupons,
+            'events' => $events,
             'hasRegion' => true,
             'advertisements' => [
                 'banner' => $bannerAds->map(fn ($ad) => [

@@ -20,7 +20,7 @@ import { useMobileNavigation } from "@/hooks/use-mobile-navigation";
 import { type User } from "@/types";
 
 interface UserMenuContentProps {
-    user: User;
+    user: User | null;
 }
 
 export function UserMenuContent({ user }: UserMenuContentProps) {
@@ -32,6 +32,11 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
         sessionStorage.clear();
         localStorage.clear();
     };
+
+    // Don't render if user is null
+    if (!user) {
+        return null;
+    }
 
     return (
         <>

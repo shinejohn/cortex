@@ -71,7 +71,7 @@ redis_cluster = aws.elasticache.ReplicationGroup(
     tags={**common_tags, "Name": f"{project_name}-{env}-redis"},
 )
 
-redis_endpoint = redis_cluster.configuration_endpoint_address
+redis_endpoint = redis_cluster.configuration_endpoint_address or redis_cluster.primary_endpoint_address
 
 pulumi.export("redis_endpoint", redis_endpoint)
 pulumi.export("redis_port", redis_cluster.port)

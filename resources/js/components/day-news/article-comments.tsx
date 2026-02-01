@@ -8,13 +8,13 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 
 interface User {
-    id: string;
+    id: string | number;
     name: string;
-    avatar: string | null;
+    avatar?: string | null;
 }
 
 interface Comment {
-    id: string;
+    id: string | number;
     content: string;
     user: User;
     created_at: string;
@@ -27,7 +27,7 @@ interface Comment {
 }
 
 interface ArticleCommentsProps {
-    articleId: number;
+    articleId: number | string;
     comments: Comment[];
     total: number;
     auth?: {
@@ -39,11 +39,11 @@ export function ArticleComments({ articleId, comments: initialComments, total, a
     const [comments, setComments] = useState<Comment[]>(initialComments);
     const [sortBy, setSortBy] = useState<"best" | "newest" | "oldest">("best");
     const [showComments] = useState(true);
-    const [replyingTo, setReplyingTo] = useState<string | null>(null);
+    const [replyingTo, setReplyingTo] = useState<string | number | null>(null);
 
     const commentForm = useForm({
         content: "",
-        parent_id: null as string | null,
+        parent_id: null as string | number | null,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -61,12 +61,12 @@ export function ArticleComments({ articleId, comments: initialComments, total, a
         });
     };
 
-    const handleReply = (parentId: string) => {
+    const handleReply = (parentId: string | number) => {
         setReplyingTo(parentId);
         commentForm.setData("parent_id", parentId);
     };
 
-    const handleLike = async (commentId: string) => {
+    const handleLike = async (commentId: string | number) => {
         if (!auth) return;
 
         try {
@@ -94,10 +94,10 @@ export function ArticleComments({ articleId, comments: initialComments, total, a
                             replies: comment.replies?.map((reply) =>
                                 reply.id === commentId
                                     ? {
-                                          ...reply,
-                                          likes_count: data.likes_count,
-                                          is_liked_by_user: data.liked,
-                                      }
+                                        ...reply,
+                                        likes_count: data.likes_count,
+                                        is_liked_by_user: data.liked,
+                                    }
                                     : reply,
                             ),
                         };
@@ -133,9 +133,9 @@ export function ArticleComments({ articleId, comments: initialComments, total, a
                 <div className="border-b p-6">
                     <form onSubmit={handleSubmit} className="flex gap-3">
                         <Avatar className="size-10 shrink-0 ring-2 ring-background">
-                            <AvatarImage src={auth.user.avatar || undefined} alt={auth.user.name} />
+                            <AvatarImage src={auth.user?.avatar || undefined} alt={auth.user?.name || 'User'} />
                             <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
-                                {auth.user.name.slice(0, 2).toUpperCase()}
+                                {auth.user?.name?.slice(0, 2).toUpperCase() || 'U'}
                             </AvatarFallback>
                         </Avatar>
                         <div className="flex-1">

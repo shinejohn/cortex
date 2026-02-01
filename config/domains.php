@@ -15,10 +15,10 @@ return [
     |
     */
 
-    'event-city' => env('GOEVENTCITY_DOMAIN', 'goeventcity.test'),
-    'day-news' => env('DAYNEWS_DOMAIN', 'daynews.test'),
-    'downtown-guide' => env('DOWNTOWNGUIDE_DOMAIN', 'downtownguide.test'),
-    'local-voices' => env('LOCAL_VOICES_DOMAIN', 'golocalvoices.com'),
-    'alphasite' => env('ALPHASITE_DOMAIN', 'alphasite.com'),
+    'event-city' => env('GOEVENTCITY_DOMAIN', parse_url(env('APP_URL', 'http://goeventcity.test'), PHP_URL_HOST)),
+    'day-news' => env('DAYNEWS_DOMAIN', parse_url(env('APP_URL', 'http://daynews.test'), PHP_URL_HOST)),
+    'downtown-guide' => env('DOWNTOWNGUIDE_DOMAIN', parse_url(env('APP_URL', 'http://downtownguide.test'), PHP_URL_HOST)),
+    'local-voices' => env('LOCAL_VOICES_DOMAIN', parse_url(env('APP_URL', 'http://golocalvoices.com'), PHP_URL_HOST)),
+    'alphasite' => env('ALPHASITE_DOMAIN', parse_url(env('APP_URL', 'http://alphasite.com'), PHP_URL_HOST)),
 
 ];
