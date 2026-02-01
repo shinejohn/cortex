@@ -378,7 +378,7 @@ function MobileNavigation({ auth }: MobileNavigationProps) {
                     </nav>
 
                     {/* User Actions */}
-                    {user && (
+                    {auth?.user && (
                         <div className="border-t pt-4 space-y-2">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -391,19 +391,19 @@ function MobileNavigation({ auth }: MobileNavigationProps) {
                                 <DropdownMenuContent align="start" className="w-48">
                                     <DropdownMenuLabel>Create New</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={() => navigate(route("events.create"))}>
+                                    <DropdownMenuItem onClick={() => navigate(route("events.create") as string)}>
                                         <Calendar className="mr-2 size-4" />
                                         Event
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => navigate(route("venues.create"))}>
+                                    <DropdownMenuItem onClick={() => navigate(route("venues.create") as string)}>
                                         <MapPin className="mr-2 size-4" />
                                         Venue
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => navigate(route("performers.create"))}>
+                                    <DropdownMenuItem onClick={() => navigate(route("performers.create") as string)}>
                                         <Music className="mr-2 size-4" />
                                         Performer
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => navigate(route("calendars.create"))}>
+                                    <DropdownMenuItem onClick={() => navigate(route("calendars.create") as string)}>
                                         <CalendarDays className="mr-2 size-4" />
                                         Calendar
                                     </DropdownMenuItem>
@@ -430,7 +430,7 @@ function MobileNavigation({ auth }: MobileNavigationProps) {
 
                     {/* Auth Actions */}
                     <div className="border-t pt-4">
-                        {user ? (
+                        {auth?.user ? (
                             <Button
                                 variant="ghost"
                                 onClick={() => navigate("/logout")}
@@ -496,7 +496,7 @@ function HeaderContent({ auth }: HeaderProps) {
                         <div className="flex items-center gap-4">
                             <SearchBar className="w-64" />
 
-                            {user ? (
+                            {auth?.user ? (
                                 <>
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
@@ -509,19 +509,19 @@ function HeaderContent({ auth }: HeaderProps) {
                                         <DropdownMenuContent align="end" className="w-48">
                                             <DropdownMenuLabel>Create New</DropdownMenuLabel>
                                             <DropdownMenuSeparator />
-                                            <DropdownMenuItem onClick={() => navigate(route("events.create"))}>
+                                            <DropdownMenuItem onClick={() => navigate(route("events.create") as string)}>
                                                 <Calendar className="mr-2 size-4" />
                                                 Event
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => navigate(route("venues.create"))}>
+                                            <DropdownMenuItem onClick={() => navigate(route("venues.create") as string)}>
                                                 <MapPin className="mr-2 size-4" />
                                                 Venue
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => navigate(route("performers.create"))}>
+                                            <DropdownMenuItem onClick={() => navigate(route("performers.create") as string)}>
                                                 <Music className="mr-2 size-4" />
                                                 Performer
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => navigate(route("calendars.create"))}>
+                                            <DropdownMenuItem onClick={() => navigate(route("calendars.create") as string)}>
                                                 <CalendarDays className="mr-2 size-4" />
                                                 Calendar
                                             </DropdownMenuItem>
@@ -537,23 +537,23 @@ function HeaderContent({ auth }: HeaderProps) {
                                         <DropdownMenuTrigger asChild>
                                             <Button variant="ghost" size="icon" className="relative">
                                                 <Avatar className="size-8">
-                                                    <AvatarImage src={user.avatar} alt={user.name} />
-                                                    <AvatarFallback className="text-xs">{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                                                    <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
+                                                    <AvatarFallback className="text-xs">{auth.user.name.charAt(0).toUpperCase()}</AvatarFallback>
                                                 </Avatar>
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end" className="w-56">
-                                            <UserMenuContent user={user} />
+                                            <UserMenuContent user={auth.user} />
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 </>
                             ) : (
                                 <div className="flex items-center gap-3">
                                     <CartDropdown />
-                                    <Link href={route("login")}>
+                                    <Link href={route("login") as string}>
                                         <Button variant="ghost">Log In</Button>
                                     </Link>
-                                    <Link href={route("register")}>
+                                    <Link href={route("register") as string}>
                                         <Button>Sign Up</Button>
                                     </Link>
                                 </div>
@@ -572,26 +572,26 @@ function HeaderContent({ auth }: HeaderProps) {
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center gap-3">
                             <MobileNavigation auth={auth} />
-                            <Link href={route("home")}>
+                            <Link href={route("home") as string}>
                                 <AppLogoIcon className="text-lg" />
                             </Link>
                         </div>
 
                         <div className="flex items-center gap-2">
-                            {user ? (
+                            {auth?.user ? (
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" className="size-10 rounded-full p-1">
                                             <Avatar className="size-8 overflow-hidden rounded-full">
-                                                <AvatarImage src={user.avatar} alt={user.name} />
+                                                <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
                                                 <AvatarFallback className="rounded-lg bg-muted text-foreground">
-                                                    {getUserInitials(user.name)}
+                                                    {getUserInitials(auth.user.name)}
                                                 </AvatarFallback>
                                             </Avatar>
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent className="w-56" align="end">
-                                        <UserMenuContent user={user} />
+                                        <UserMenuContent user={auth.user} />
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             ) : (
