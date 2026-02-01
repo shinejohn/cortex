@@ -88,7 +88,7 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
 
                     {/* User Menu / Auth */}
                     <div className="flex items-center space-x-4">
-                        {auth ? (
+                        {auth?.user ? (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <button className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
@@ -181,7 +181,7 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
                                         >
                                             Browse
                                         </Button>
-                                        {auth ? (
+                                        {auth?.user ? (
                                             <>
                                                 <Button
                                                     variant="ghost"
@@ -227,6 +227,7 @@ export default function GoLocalVoicesHeader({ auth }: GoLocalVoicesHeaderProps) 
                                                 </Button>
                                             </>
                                         )}
+
                                         <Button
                                             variant="ghost"
                                             className="w-full justify-start text-muted-foreground"
