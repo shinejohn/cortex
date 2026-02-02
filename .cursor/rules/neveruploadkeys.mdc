@@ -1,0 +1,7 @@
+---
+alwaysApply: true
+---
+# Overview
+
+Never upload AWS, railway or other keys logins or passwords in a file to github, or railway or aws. this is a strict security concern. there are always methods to achieve this without uploading the key to a file.
+

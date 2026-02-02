@@ -88,3 +88,7 @@
 {"location":"bootstrap\/app.php:54","message":"Main domain route matched","data":{"pattern":"downtownsguide.com"},"timestamp":1769983668000,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
 {"location":"bootstrap\/app.php:73","message":"Custom domain route matched","data":{"domain":"downtownguide.test"},"timestamp":1769983668000,"sessionId":"debug-session","runId":"run2","hypothesisId":"A"}
 {"location":"bootstrap\/app.php:73","message":"Custom domain route matched","data":{"domain":"downtownguide.test"},"timestamp":1769983668000,"sessionId":"debug-session","runId":"run2","hypothesisId":"A"}
+{"location":"bootstrap\/app.php:41","message":"DowntownGuide domain config loaded","data":{"domain":"downtownguide.test"},"timestamp":1770040966000,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"bootstrap\/app.php:47","message":"Subdomain route matched","data":{"pattern":"{subdomain}.downtownsguide.com"},"timestamp":1770040966000,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"bootstrap\/app.php:54","message":"Main domain route matched","data":{"pattern":"downtownsguide.com"},"timestamp":1770040966000,"sessionId":"debug-session","runId":"run1","hypothesisId":"A"}
+{"location":"bootstrap\/app.php:73","message":"Custom domain route matched","data":{"domain":"downtownguide.test"},"timestamp":1770040966000,"sessionId":"debug-session","runId":"run2","hypothesisId":"A"}
