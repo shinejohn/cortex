@@ -26,7 +26,10 @@ final class HomePageController extends Controller
     {
         // #region agent log
         \Illuminate\Support\Facades\Log::info('HomePageController hit', ['host' => $request->getHost(), 'path' => $request->path(), 'route' => $request->route()?->getName(), 'appDomain' => config('app.current_domain')]);
-        file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'app/Http/Controllers/HomePageController.php:25','message'=>'HomePageController index called','data'=>['host'=>$request->getHost(),'path'=>$request->path(),'routeName'=>$request->route()?->getName(),'appDomain'=>config('app.current_domain')],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run2','hypothesisId'=>'A'])."\n", FILE_APPEND);
+        $debugLogPath = base_path('.cursor/debug.log');
+        if (is_dir(dirname($debugLogPath))) {
+            @file_put_contents($debugLogPath, json_encode(['location'=>'app/Http/Controllers/HomePageController.php:25','message'=>'HomePageController index called','data'=>['host'=>$request->getHost(),'path'=>$request->path(),'routeName'=>$request->route()?->getName(),'appDomain'=>config('app.current_domain')],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run2','hypothesisId'=>'A'])."\n", FILE_APPEND);
+        }
         // #endregion
         // Get featured events from the database (defensive check for missing table)
         $featuredEvents = [];

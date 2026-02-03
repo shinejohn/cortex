@@ -20,23 +20,35 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 Route::get('/', function () {
     // #region agent log
     \Illuminate\Support\Facades\Log::info('DTG Route entered', ['host' => request()->getHost(), 'domain' => config('domains.downtown-guide'), 'appDomain' => config('app.current_domain')]);
-    file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'routes/downtown-guide.php:21','message'=>'Route closure entered','data'=>['host'=>request()->getHost(),'domain'=>config('domains.downtown-guide'),'appDomain'=>config('app.current_domain')],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'A'])."\n", FILE_APPEND);
+    $debugLogPath = base_path('.cursor/debug.log');
+    if (is_dir(dirname($debugLogPath))) {
+        @file_put_contents($debugLogPath, json_encode(['location'=>'routes/downtown-guide.php:21','message'=>'Route closure entered','data'=>['host'=>request()->getHost(),'domain'=>config('domains.downtown-guide'),'appDomain'=>config('app.current_domain')],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'A'])."\n", FILE_APPEND);
+    }
     // #endregion
     try {
         // #region agent log
         \Illuminate\Support\Facades\Log::info('DTG Before Inertia render', ['page' => 'downtown-guide/home']);
-        file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'routes/downtown-guide.php:24','message'=>'Before Inertia render','data'=>['page'=>'downtown-guide/home'],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'C'])."\n", FILE_APPEND);
+        $debugLogPath = base_path('.cursor/debug.log');
+        if (is_dir(dirname($debugLogPath))) {
+            @file_put_contents($debugLogPath, json_encode(['location'=>'routes/downtown-guide.php:24','message'=>'Before Inertia render','data'=>['page'=>'downtown-guide/home'],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'C'])."\n", FILE_APPEND);
+        }
         // #endregion
         $response = Inertia::render('downtown-guide/home');
         // #region agent log
         \Illuminate\Support\Facades\Log::info('DTG After Inertia render', ['responseType' => get_class($response)]);
-        file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'routes/downtown-guide.php:28','message'=>'After Inertia render','data'=>['responseType'=>get_class($response)],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'C'])."\n", FILE_APPEND);
+        $debugLogPath = base_path('.cursor/debug.log');
+        if (is_dir(dirname($debugLogPath))) {
+            @file_put_contents($debugLogPath, json_encode(['location'=>'routes/downtown-guide.php:28','message'=>'After Inertia render','data'=>['responseType'=>get_class($response)],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'C'])."\n", FILE_APPEND);
+        }
         // #endregion
         return $response;
     } catch (\Throwable $e) {
         // #region agent log
         \Illuminate\Support\Facades\Log::error('DTG Exception in route', ['error' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
-        file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'routes/downtown-guide.php:32','message'=>'Exception in route closure','data'=>['error'=>$e->getMessage(),'file'=>$e->getFile(),'line'=>$e->getLine()],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'C'])."\n", FILE_APPEND);
+        $debugLogPath = base_path('.cursor/debug.log');
+        if (is_dir(dirname($debugLogPath))) {
+            @file_put_contents($debugLogPath, json_encode(['location'=>'routes/downtown-guide.php:32','message'=>'Exception in route closure','data'=>['error'=>$e->getMessage(),'file'=>$e->getFile(),'line'=>$e->getLine()],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'C'])."\n", FILE_APPEND);
+        }
         // #endregion
         throw $e;
     }
