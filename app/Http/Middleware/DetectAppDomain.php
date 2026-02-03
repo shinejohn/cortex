@@ -67,7 +67,10 @@ final class DetectAppDomain
             // Store in config for use throughout the application
             try {
                 // #region agent log
-                file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'app/Http/Middleware/DetectAppDomain.php:68','message'=>'Detected app domain','data'=>['host'=>$host,'appType'=>$appType,'downtownGuideDomain'=>$downtownGuideDomain],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'B'])."\n", FILE_APPEND);
+                $debugLogPath = base_path('.cursor/debug.log');
+                if (is_dir(dirname($debugLogPath))) {
+                    @file_put_contents($debugLogPath, json_encode(['location'=>'app/Http/Middleware/DetectAppDomain.php:68','message'=>'Detected app domain','data'=>['host'=>$host,'appType'=>$appType,'downtownGuideDomain'=>$downtownGuideDomain],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'B'])."\n", FILE_APPEND);
+                }
                 // #endregion
                 config(['app.current_domain' => $appType]);
                 
@@ -93,7 +96,10 @@ final class DetectAppDomain
                     'app_type' => $appType,
                 ]);
                 // #region agent log
-                file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'app/Http/Middleware/DetectAppDomain.php:87','message'=>'Failed to set site config','data'=>['error'=>$e->getMessage(),'appType'=>$appType],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'B'])."\n", FILE_APPEND);
+                $debugLogPath = base_path('.cursor/debug.log');
+                if (is_dir(dirname($debugLogPath))) {
+                    @file_put_contents($debugLogPath, json_encode(['location'=>'app/Http/Middleware/DetectAppDomain.php:87','message'=>'Failed to set site config','data'=>['error'=>$e->getMessage(),'appType'=>$appType],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'B'])."\n", FILE_APPEND);
+                }
                 // #endregion
             }
 

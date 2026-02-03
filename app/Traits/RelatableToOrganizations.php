@@ -66,7 +66,7 @@ trait RelatableToOrganizations
     /**
      * Get related organizations by relationship type
      */
-    public function getRelatedOrganizations(string $relationshipType = null): Collection
+    public function getRelatedOrganizations(?string $relationshipType = null): Collection
     {
         $query = $this->organizationRelationships()->with('organization');
         
