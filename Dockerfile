@@ -1,0 +1,182 @@
+# Versions
+# https://hub.docker.com/r/serversideup/php/tags?name=8.4-fpm-nginx-alpine
+ARG SERVERSIDEUP_PHP_VERSION=8.4-fpm-nginx-alpine
+
+# https://www.postgresql.org/support/versioning/
+ARG POSTGRES_VERSION=17
+
+# Add user/group
+ARG USER_ID=9999
+ARG GROUP_ID=9999
+
+# =================================================================
+# Stage 1: Composer dependencies
+# =================================================================
+FROM serversideup/php:${SERVERSIDEUP_PHP_VERSION} AS base
+
+USER root
+
+ARG USER_ID
+ARG GROUP_ID
+
+RUN docker-php-serversideup-set-id www-data $USER_ID:$GROUP_ID && \
+    docker-php-serversideup-set-file-permissions --owner $USER_ID:$GROUP_ID --service nginx
+
+# Install the intl extension with root permissions
+RUN install-php-extensions intl
+
+WORKDIR /var/www/html
+COPY --chown=www-data:www-data composer.json composer.lock ./
+COPY --chown=www-data:www-data packages/ ./packages/
+RUN composer install --no-dev --no-interaction --no-plugins --no-scripts --prefer-dist
+
+USER www-data
+
+# =================================================================
+# Stage 2: Frontend assets compilation
+# =================================================================
+FROM oven/bun:alpine AS static-assets
+
+RUN apk add --no-cache python3 py3-pip g++ make
+ENV PYTHON /usr/bin/python3
+
+WORKDIR /app
+COPY package*.json bun.lock vite.config.ts ./
+RUN bun i
+
+COPY . .
+COPY --from=base /var/www/html/vendor/ ./vendor/
+
+RUN bun run build:ssr
+
+# =================================================================
+# Final Stage: Production image
+# =================================================================
+FROM serversideup/php:${SERVERSIDEUP_PHP_VERSION}
+
+ARG USER_ID
+ARG GROUP_ID
+ARG TARGETPLATFORM
+ARG POSTGRES_VERSION
+ARG CI=true
+
+WORKDIR /var/www/html
+
+USER root
+
+RUN docker-php-serversideup-set-id www-data $USER_ID:$GROUP_ID && \
+    docker-php-serversideup-set-file-permissions --owner $USER_ID:$GROUP_ID --service nginx
+
+# Install the intl extension with root permissions
+RUN install-php-extensions intl
+
+# Install PostgreSQL repository and keys
+RUN apk add --no-cache gnupg && \
+    mkdir -p /usr/share/keyrings && \
+    curl -fSsL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor > /usr/share/keyrings/postgresql.gpg
+
+# Install system dependencies including Supervisor for Horizon
+RUN apk add --no-cache \
+    postgresql${POSTGRES_VERSION}-client \
+    openssh-client \
+    git \
+    git-lfs \
+    jq \
+    lsof \
+    vim \
+    curl \
+    nodejs \
+    npm \
+    supervisor
+
+# Install Bun for any runtime scripts that might rely on it
+COPY --from=oven/bun:alpine /usr/local/bin/bun /usr/local/bin/bun
+
+ENV PYTHON /usr/bin/python3
+
+# Configure shell aliases
+RUN echo "alias ll='ls -al'" >> /etc/profile && \
+    echo "alias a='php artisan'" >> /etc/profile && \
+    echo "alias logs='tail -f storage/logs/laravel.log'" >> /etc/profile
+
+ARG AUTORUN_ENABLED=true
+ARG AUTORUN_LARAVEL_CONFIG_CACHE=true
+ARG AUTORUN_LARAVEL_EVENT_CACHE=true
+ARG AUTORUN_LARAVEL_ROUTE_CACHE=true
+ARG AUTORUN_LARAVEL_VIEW_CACHE=true
+ARG AUTORUN_LARAVEL_STORAGE_LINK=true
+ARG MAXMIND_LICENSE_KEY=""
+
+# Configure environment variables
+ENV PHP_OPCACHE_ENABLE=1 \
+    PHP_OPCACHE_MEMORY_CONSUMPTION=128 \
+    PHP_OPCACHE_INTERNED_STRINGS_BUFFER=8 \
+    PHP_OPCACHE_MAX_ACCELERATED_FILES=10000 \
+    PHP_OPCACHE_REVALIDATE_FREQ=2 \
+    PHP_MEMORY_LIMIT=512M \
+    PHP_MAX_EXECUTION_TIME=60 \
+    PHP_POST_MAX_SIZE=100M \
+    PHP_UPLOAD_MAX_FILE_SIZE=100M \
+    NGINX_MAX_BODY_SIZE=100M \
+    AUTORUN_ENABLED=${AUTORUN_ENABLED} \
+    AUTORUN_LARAVEL_CONFIG_CACHE=${AUTORUN_LARAVEL_CONFIG_CACHE} \
+    AUTORUN_LARAVEL_EVENT_CACHE=${AUTORUN_LARAVEL_EVENT_CACHE} \
+    AUTORUN_LARAVEL_ROUTE_CACHE=${AUTORUN_LARAVEL_ROUTE_CACHE} \
+    AUTORUN_LARAVEL_VIEW_CACHE=${AUTORUN_LARAVEL_VIEW_CACHE} \
+    AUTORUN_LARAVEL_STORAGE_LINK=${AUTORUN_LARAVEL_STORAGE_LINK} \
+    APP_BASE_DIR=/var/www/html \
+    NGINX_WEBROOT=/var/www/html/public \
+    SSL_MODE=off \
+    MAXMIND_LICENSE_KEY=${MAXMIND_LICENSE_KEY}
+
+# Configure entrypoint
+COPY --chmod=755 docker/standalone/entrypoint.d/ /etc/entrypoint.d
+
+# Copy application files from previous stages
+COPY --from=base --chown=www-data:www-data /var/www/html/vendor ./vendor
+COPY --from=static-assets --chown=www-data:www-data /app/node_modules ./node_modules
+COPY --from=static-assets --chown=www-data:www-data /app/public/build ./public/build
+COPY --from=static-assets --chown=www-data:www-data /app/bootstrap/ssr ./bootstrap/ssr
+
+# Copy application source code
+COPY --chown=www-data:www-data composer.json composer.lock ./
+COPY --chown=www-data:www-data packages/ ./packages/
+COPY --chown=www-data:www-data app ./app
+COPY --chown=www-data:www-data bootstrap ./bootstrap
+COPY --chown=www-data:www-data config ./config
+COPY --chown=www-data:www-data database ./database
+COPY --chown=www-data:www-data public ./public
+COPY --chown=www-data:www-data routes ./routes
+COPY --chown=www-data:www-data storage ./storage
+COPY --chown=www-data:www-data resources ./resources
+COPY --chown=www-data:www-data artisan artisan
+
+# Create required Laravel directories and set permissions
+RUN mkdir -p storage/app/public storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache && \
+    chown -R www-data:www-data storage bootstrap/cache && \
+    chmod -R 775 storage bootstrap/cache
+
+RUN composer dump-autoload
+
+# Update the location database (MAXMIND_LICENSE_KEY must be passed as build-arg)
+# RUN php artisan location:update # broken license
+
+# Configure Nginx
+COPY docker/standalone/etc/nginx/conf.d/custom.conf /etc/nginx/conf.d/custom.conf
+COPY docker/standalone/etc/nginx/site-opts.d/http.conf /etc/nginx/site-opts.d/http.conf
+COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
+
+# Configure Supervisor for Horizon (required by Laravel Horizon)
+COPY docker/standalone/etc/supervisor/supervisord.conf /etc/supervisord.conf
+COPY docker/standalone/etc/supervisor/conf.d/horizon.conf /etc/supervisor/conf.d/horizon.conf
+
+# Configure s6-overlay for long-running services (Supervisor for Horizon, Nightwatch Agent)
+COPY --chmod=755 docker/standalone/etc/s6-overlay/ /etc/s6-overlay/
+
+# Create nginx and supervisor directories and set permissions
+RUN mkdir -p /etc/nginx/conf.d /etc/nginx/site-opts.d /etc/supervisor/conf.d /var/log && \
+    chown -R www-data:www-data /etc/nginx && \
+    chmod -R 755 /etc/nginx
+
+# Switch to non-root user
+USER www-data
