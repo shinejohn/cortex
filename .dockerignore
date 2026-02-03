@@ -76,3 +76,25 @@ scripts/
 *.tmp
 *.bak
 
+
+# Large/Non-essential directories
+day-news-app/
+magic-spec/
+test-results/
+playwright-report/
+docs/
+Data/
+AI/
+AI-Newsroom/
+
+# Large files
+*.zip
+test-output.txt
+claude-discovery.md
+*.pdf
+database.sqlite
+database/maxmind/
+database/maxmind
+**/maxmind/
+**/maxmind
+
