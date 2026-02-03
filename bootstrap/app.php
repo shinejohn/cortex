@@ -40,7 +40,10 @@ return Application::configure(basePath: dirname(__DIR__))
             // Register routes for downtown-guide domain, with fallback pattern matching
             $downtownGuideDomain = config('domains.downtown-guide');
             // #region agent log
-            file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'bootstrap/app.php:41','message'=>'DowntownGuide domain config loaded','data'=>['domain'=>$downtownGuideDomain],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'A'])."\n", FILE_APPEND);
+            $debugLogPath = base_path('.cursor/debug.log');
+            if (is_dir(dirname($debugLogPath))) {
+                @file_put_contents($debugLogPath, json_encode(['location'=>'bootstrap/app.php:41','message'=>'DowntownGuide domain config loaded','data'=>['domain'=>$downtownGuideDomain],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'A'])."\n", FILE_APPEND);
+            }
             // #endregion
             
             // Always register routes for downtownsguide.com patterns (handles dev.downtownsguide.com, www.downtownsguide.com, etc.)
@@ -49,7 +52,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->middleware('web')
                 ->group(function () {
                     // #region agent log
-                    file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'bootstrap/app.php:47','message'=>'Subdomain route matched','data'=>['pattern'=>'{subdomain}.downtownsguide.com'],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'A'])."\n", FILE_APPEND);
+                    $debugLogPath = base_path('.cursor/debug.log');
+                    if (is_dir(dirname($debugLogPath))) {
+                        @file_put_contents($debugLogPath, json_encode(['location'=>'bootstrap/app.php:47','message'=>'Subdomain route matched','data'=>['pattern'=>'{subdomain}.downtownsguide.com'],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'A'])."\n", FILE_APPEND);
+                    }
                     // #endregion
                     require base_path('routes/email-tracking.php');
                     require base_path('routes/downtown-guide.php');
@@ -59,7 +65,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->middleware('web')
                 ->group(function () {
                     // #region agent log
-                    file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'bootstrap/app.php:54','message'=>'Main domain route matched','data'=>['pattern'=>'downtownsguide.com'],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'A'])."\n", FILE_APPEND);
+                    $debugLogPath = base_path('.cursor/debug.log');
+                    if (is_dir(dirname($debugLogPath))) {
+                        @file_put_contents($debugLogPath, json_encode(['location'=>'bootstrap/app.php:54','message'=>'Main domain route matched','data'=>['pattern'=>'downtownsguide.com'],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run1','hypothesisId'=>'A'])."\n", FILE_APPEND);
+                    }
                     // #endregion
                     require base_path('routes/email-tracking.php');
                     require base_path('routes/downtown-guide.php');
@@ -71,7 +80,10 @@ return Application::configure(basePath: dirname(__DIR__))
                     ->middleware('web')
                     ->group(function () use ($downtownGuideDomain) {
                         // #region agent log
-                        file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'bootstrap/app.php:73','message'=>'Custom domain route matched','data'=>['domain'=>$downtownGuideDomain],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run2','hypothesisId'=>'A'])."\n", FILE_APPEND);
+                        $debugLogPath = base_path('.cursor/debug.log');
+                        if (is_dir(dirname($debugLogPath))) {
+                            @file_put_contents($debugLogPath, json_encode(['location'=>'bootstrap/app.php:73','message'=>'Custom domain route matched','data'=>['domain'=>$downtownGuideDomain],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run2','hypothesisId'=>'A'])."\n", FILE_APPEND);
+                        }
                         // #endregion
                         require base_path('routes/email-tracking.php');
                         require base_path('routes/downtown-guide.php');

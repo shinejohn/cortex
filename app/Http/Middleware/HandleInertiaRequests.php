@@ -49,7 +49,10 @@ final class HandleInertiaRequests extends Middleware
     {
         // #region agent log
         \Illuminate\Support\Facades\Log::info('Inertia share called', ['host' => $request->getHost(), 'path' => $request->path(), 'route' => $request->route()?->getName(), 'appDomain' => config('app.current_domain')]);
-        file_put_contents('/Users/johnshine/Dropbox/Fibonacco/Day-News/Multisite/.cursor/debug.log', json_encode(['location'=>'app/Http/Middleware/HandleInertiaRequests.php:48','message'=>'HandleInertiaRequests share called','data'=>['host'=>$request->getHost(),'path'=>$request->path(),'routeName'=>$request->route()?->getName(),'appDomain'=>config('app.current_domain')],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run2','hypothesisId'=>'A'])."\n", FILE_APPEND);
+        $debugLogPath = base_path('.cursor/debug.log');
+        if (is_dir(dirname($debugLogPath))) {
+            @file_put_contents($debugLogPath, json_encode(['location'=>'app/Http/Middleware/HandleInertiaRequests.php:48','message'=>'HandleInertiaRequests share called','data'=>['host'=>$request->getHost(),'path'=>$request->path(),'routeName'=>$request->route()?->getName(),'appDomain'=>config('app.current_domain')],'timestamp'=>time()*1000,'sessionId'=>'debug-session','runId'=>'run2','hypothesisId'=>'A'])."\n", FILE_APPEND);
+        }
         // #endregion
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
