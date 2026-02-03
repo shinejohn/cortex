@@ -1,0 +1,170 @@
+{
+  "project": {
+    "name": "supportive-rebirth",
+    "id": "0b1f921d-40ba-4608-8d56-19fa3ac1d9b5"
+  },
+  "environment": {
+    "name": "production",
+    "id": "0cf61219-230d-423c-b7b3-b1c5f60e5fc5"
+  },
+  "services": [
+    {
+      "name": "Postgres",
+      "id": "a5a160f5-ee93-4db3-a6f5-ef96d94ba27f",
+      "instanceId": "not-set",
+      "source": {
+        "image": "not-set",
+        "repo": "not-set",
+        "branch": "not-set"
+      },
+      "startCommand": "not-set",
+      "buildCommand": "not-set",
+      "watchPatterns": []
+    },
+    {
+      "name": "Valkey",
+      "id": "1906adfa-4b8f-4455-9949-bf0e76025c77",
+      "instanceId": "not-set",
+      "source": {
+        "image": "not-set",
+        "repo": "not-set",
+        "branch": "not-set"
+      },
+      "startCommand": "not-set",
+      "buildCommand": "not-set",
+      "watchPatterns": []
+    },
+    {
+      "name": "GoEventCity",
+      "id": "d8e77770-c442-4f24-9cff-5db9839956be",
+      "instanceId": "not-set",
+      "source": {
+        "image": "not-set",
+        "repo": "not-set",
+        "branch": "not-set"
+      },
+      "startCommand": "not-set",
+      "buildCommand": "not-set",
+      "watchPatterns": []
+    },
+    {
+      "name": "Day News",
+      "id": "681b88bb-9577-4e69-bcf8-7c053546427e",
+      "instanceId": "not-set",
+      "source": {
+        "image": "not-set",
+        "repo": "not-set",
+        "branch": "not-set"
+      },
+      "startCommand": "not-set",
+      "buildCommand": "not-set",
+      "watchPatterns": []
+    },
+    {
+      "name": "Downtown Guide",
+      "id": "0dfb4509-b5dc-4c31-934d-1cc94cdc5ffd",
+      "instanceId": "not-set",
+      "source": {
+        "image": "not-set",
+        "repo": "not-set",
+        "branch": "not-set"
+      },
+      "startCommand": "not-set",
+      "buildCommand": "not-set",
+      "watchPatterns": []
+    },
+    {
+      "name": "GoLocalVoices",
+      "id": "7b855d10-a227-49f4-b135-a241dbec4b8e",
+      "instanceId": "not-set",
+      "source": {
+        "image": "not-set",
+        "repo": "not-set",
+        "branch": "not-set"
+      },
+      "startCommand": "not-set",
+      "buildCommand": "not-set",
+      "watchPatterns": []
+    },
+    {
+      "name": "AlphaSite",
+      "id": "cf980b14-f523-4bfd-ac91-c4ff2d6906d7",
+      "instanceId": "not-set",
+      "source": {
+        "image": "not-set",
+        "repo": "not-set",
+        "branch": "not-set"
+      },
+      "startCommand": "not-set",
+      "buildCommand": "not-set",
+      "watchPatterns": []
+    },
+    {
+      "name": "Horizon",
+      "id": "b0d7c5e9-e0e5-484d-aa0e-3ca55a493ad3",
+      "instanceId": "not-set",
+      "source": {
+        "image": "not-set",
+        "repo": "not-set",
+        "branch": "not-set"
+      },
+      "startCommand": "not-set",
+      "buildCommand": "not-set",
+      "watchPatterns": []
+    },
+    {
+      "name": "Scheduler",
+      "id": "710c7408-207f-45e1-8769-47b4d37e0d1b",
+      "instanceId": "not-set",
+      "source": {
+        "image": "not-set",
+        "repo": "not-set",
+        "branch": "not-set"
+      },
+      "startCommand": "not-set",
+      "buildCommand": "not-set",
+      "watchPatterns": []
+    },
+    {
+      "name": "Inertia SSR",
+      "id": "33d8bd3d-e6f2-4a9c-b0e7-90663d80b566",
+      "instanceId": "not-set",
+      "source": {
+        "image": "not-set",
+        "repo": "not-set",
+        "branch": "not-set"
+      },
+      "startCommand": "not-set",
+      "buildCommand": "not-set",
+      "watchPatterns": []
+    },
+    {
+      "name": "Listmonk DB",
+      "id": "9bf6ecf0-669f-4fe6-8d7f-9bfbde9b400c",
+      "instanceId": "not-set",
+      "source": {
+        "image": "not-set",
+        "repo": "not-set",
+        "branch": "not-set"
+      },
+      "startCommand": "not-set",
+      "buildCommand": "not-set",
+      "watchPatterns": []
+    },
+    {
+      "name": "Listmonk",
+      "id": "8af692e4-b3ab-4b8e-82d1-0268587f42b1",
+      "instanceId": "not-set",
+      "source": {
+        "image": "not-set",
+        "repo": "not-set",
+        "branch": "not-set"
+      },
+      "startCommand": "not-set",
+      "buildCommand": "not-set",
+      "watchPatterns": []
+    }
+  ],
+  "volumes": [],
+  "discoveredAt": "2026-02-02T16:50:00Z"
+}
