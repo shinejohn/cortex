@@ -1,0 +1,103 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'Service to deploy (all, daynews, goeventcity, golocalvoices, downtownsguide, alphasite)'
+        required: false
+        default: 'all'
+
+jobs:
+  deploy-daynews:
+    name: Deploy Day News
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.inputs.service == 'all' || github.event.inputs.service == 'daynews'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway link 7e7372dd-373a-4e78-a51e-15eab332b67d
+          railway up --service daynews --detach
+
+  deploy-goeventcity:
+    name: Deploy GoEventCity
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.inputs.service == 'all' || github.event.inputs.service == 'goeventcity'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway link 7e7372dd-373a-4e78-a51e-15eab332b67d
+          railway up --service goeventcity --detach
+
+  deploy-golocalvoices:
+    name: Deploy Go Local Voices
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.inputs.service == 'all' || github.event.inputs.service == 'golocalvoices'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway link 7e7372dd-373a-4e78-a51e-15eab332b67d
+          railway up --service golocalvoices --detach
+
+  deploy-downtownsguide:
+    name: Deploy Downtown Guide
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.inputs.service == 'all' || github.event.inputs.service == 'downtownsguide'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway link 7e7372dd-373a-4e78-a51e-15eab332b67d
+          railway up --service downtownsguide --detach
+
+  deploy-alphasite:
+    name: Deploy Alphasite
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.inputs.service == 'all' || github.event.inputs.service == 'alphasite'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway link 7e7372dd-373a-4e78-a51e-15eab332b67d
+          railway up --service alphasite --detach
