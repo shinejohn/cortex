@@ -1,0 +1,18 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "nixpacks",
+    "watchPatterns": [
+      "app/Http/Controllers/DowntownGuide/**",
+      "app/Http/Requests/DowntownGuide/**",
+      "app/Services/DowntownGuide/**",
+      "resources/js/Pages/DowntownGuide/**",
+      "routes/downtownguide.php"
+    ]
+  },
+  "deploy": {
+    "startCommand": "php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan serve --host=0.0.0.0 --port=$PORT",
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 300
+  }
+}
