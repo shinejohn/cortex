@@ -42,17 +42,17 @@ Route::domain('{subdomain}.alphasite.com')->group(function () {
 
 // Subdomain routing for business pages (.ai domain)
 Route::domain('{subdomain}.alphasite.ai')->group(function () {
-    Route::get('/', [BusinessPageController::class, 'showBySubdomain'])->name('alphasite.business.subdomain');
-    Route::get('/reviews', [BusinessPageController::class, 'reviews'])->name('alphasite.business.reviews');
-    Route::get('/photos', [BusinessPageController::class, 'photos'])->name('alphasite.business.photos');
-    Route::get('/menu', [BusinessPageController::class, 'menu'])->name('alphasite.business.menu');
-    Route::get('/articles', [BusinessPageController::class, 'articles'])->name('alphasite.business.articles');
-    Route::get('/events', [BusinessPageController::class, 'events'])->name('alphasite.business.events');
-    Route::get('/coupons', [BusinessPageController::class, 'coupons'])->name('alphasite.business.coupons');
-    Route::get('/achievements', [BusinessPageController::class, 'achievements'])->name('alphasite.business.achievements');
+    Route::get('/', [BusinessPageController::class, 'showBySubdomain'])->name('alphasite.business.subdomain.ai');
+    Route::get('/reviews', [BusinessPageController::class, 'reviews'])->name('alphasite.business.reviews.ai');
+    Route::get('/photos', [BusinessPageController::class, 'photos'])->name('alphasite.business.photos.ai');
+    Route::get('/menu', [BusinessPageController::class, 'menu'])->name('alphasite.business.menu.ai');
+    Route::get('/articles', [BusinessPageController::class, 'articles'])->name('alphasite.business.articles.ai');
+    Route::get('/events', [BusinessPageController::class, 'events'])->name('alphasite.business.events.ai');
+    Route::get('/coupons', [BusinessPageController::class, 'coupons'])->name('alphasite.business.coupons.ai');
+    Route::get('/achievements', [BusinessPageController::class, 'achievements'])->name('alphasite.business.achievements.ai');
     
     // AI Chat endpoint (for premium businesses)
-    Route::post('/ai/chat', [BusinessPageController::class, 'aiChat'])->name('alphasite.business.ai.chat');
+    Route::post('/ai/chat', [BusinessPageController::class, 'aiChat'])->name('alphasite.business.ai.chat.ai');
 });
 
 // Main domain routes (.com domain)
