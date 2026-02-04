@@ -1,0 +1,173 @@
+{
+    "name": "Fibonacco Community Platform",
+    "description": "Comprehensive hyper-local community platform providing news, events, business directories, and community information across multiple cities",
+    "version": "1.0.0",
+    "updated": "2026-02-04T09:19:00Z",
+    "provider": {
+        "name": "Fibonacco",
+        "url": "https://day.news",
+        "contact": "info@day.news"
+    },
+    "platforms": [
+        {
+            "name": "Day News",
+            "url": "https://day.news",
+            "description": "Hyper-local news platform covering community stories, events, and local journalism",
+            "content_types": [
+                "news_articles",
+                "community_posts",
+                "local_stories"
+            ]
+        },
+        {
+            "name": "Go Event City",
+            "url": "https://goeventcity.com",
+            "description": "Comprehensive event discovery platform with venues, performers, and community calendars",
+            "content_types": [
+                "events",
+                "venues",
+                "performers",
+                "calendars"
+            ]
+        },
+        {
+            "name": "Downtown Guide",
+            "url": "https://downtownsguide.com",
+            "description": "Local business directory with reviews, ratings, and neighborhood guides",
+            "content_types": [
+                "businesses",
+                "reviews",
+                "neighborhoods",
+                "coupons"
+            ]
+        },
+        {
+            "name": "Go Local Voices",
+            "url": "https://golocalvoices.com",
+            "description": "Community voice platform for local opinions and grassroots journalism",
+            "content_types": [
+                "community_voices",
+                "local_opinions",
+                "citizen_journalism"
+            ]
+        },
+        {
+            "name": "Alphasite",
+            "url": "https://alphasite.ai",
+            "description": "AI-powered community insights and intelligent local discovery",
+            "content_types": [
+                "ai_insights",
+                "community_analytics",
+                "smart_discovery"
+            ]
+        }
+    ],
+    "endpoints": {
+        "knowledge_api": {
+            "base_url": "/api/v1/knowledge",
+            "endpoints": [
+                "/api/v1/knowledge/community",
+                "/api/v1/knowledge/articles",
+                "/api/v1/knowledge/events",
+                "/api/v1/knowledge/businesses",
+                "/api/v1/knowledge/venues",
+                "/api/v1/knowledge/graph"
+            ],
+            "authentication": "none",
+            "rate_limit": "1000 requests/hour",
+            "format": "JSON"
+        },
+        "sitemaps": {
+            "day_news": "https://day.news/sitemap.xml",
+            "event_city": "https://goeventcity.com/sitemap.xml",
+            "downtown_guide": "https://downtownsguide.com/sitemap.xml"
+        },
+        "rss_feeds": {
+            "all_content": "/feeds/all.xml",
+            "articles": "/feeds/articles.xml",
+            "events": "/feeds/events.xml",
+            "businesses": "/feeds/businesses.xml"
+        },
+        "structured_data": {
+            "format": "JSON-LD (Schema.org)",
+            "types": [
+                "NewsArticle",
+                "Event",
+                "LocalBusiness",
+                "Place",
+                "Person"
+            ],
+            "location": "Embedded in HTML pages"
+        }
+    },
+    "content_coverage": {
+        "geographic": {
+            "primary_regions": [
+                "Springfield",
+                "Downtown",
+                "Metro Area"
+            ],
+            "coverage_type": "hyper-local",
+            "granularity": "neighborhood-level"
+        },
+        "topics": [
+            "local-news",
+            "community-events",
+            "local-businesses",
+            "dining-entertainment",
+            "community-voices",
+            "civic-engagement",
+            "local-government",
+            "education",
+            "arts-culture",
+            "sports-recreation"
+        ],
+        "languages": [
+            "en-US"
+        ],
+        "update_frequency": "real-time"
+    },
+    "data_characteristics": {
+        "structured_metadata": true,
+        "geo_coordinates": true,
+        "temporal_data": true,
+        "relationship_graph": true,
+        "user_generated_content": true,
+        "verified_businesses": true,
+        "event_scheduling": true,
+        "review_ratings": true
+    },
+    "ai_training_suitability": {
+        "local_knowledge": "high",
+        "entity_recognition": "high",
+        "event_understanding": "high",
+        "business_information": "high",
+        "community_context": "high",
+        "temporal_reasoning": "high",
+        "geographic_reasoning": "high"
+    },
+    "usage_terms": {
+        "crawling_allowed": true,
+        "ai_training_allowed": true,
+        "attribution_required": true,
+        "commercial_use": "contact_for_terms",
+        "rate_limits": "respect_crawl_delay",
+        "robots_txt": "/robots.txt"
+    },
+    "technical_details": {
+        "framework": "Laravel + Inertia.js",
+        "rendering": "server-side + client-side hybrid",
+        "structured_data_format": "JSON-LD (Schema.org)",
+        "api_format": "REST JSON",
+        "feed_formats": [
+            "RSS 2.0",
+            "Atom 1.0"
+        ],
+        "sitemap_format": "XML Sitemap Protocol"
+    },
+    "contact": {
+        "ai_partnerships": "ai@day.news",
+        "technical_support": "tech@day.news",
+        "data_licensing": "licensing@day.news"
+    }
+}
