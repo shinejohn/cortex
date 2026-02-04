@@ -508,13 +508,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Stripe webhook (public route, no auth/CSRF)
 Route::post('/stripe/webhook', App\Http\Controllers\StripeWebhookController::class)->name('stripe.webhook');
 
-require __DIR__ . '/workspace.php';
-require __DIR__ . '/settings.php';
+// Admin routes (specific to this app)
+require __DIR__ . '/admin.php';
+
 // Public Poll Routes
 Route::get('/poll/{slug}', [App\Http\Controllers\PollPageController::class, 'show'])->name('poll.show');
 Route::get('/poll/{slug}/embed', [App\Http\Controllers\PollPageController::class, 'embed'])->name('poll.embed');
 Route::post('/api/polls/{slug}/vote', [App\Http\Controllers\PollPageController::class, 'vote'])->name('poll.vote');
-
-require __DIR__ . '/auth.php';
-require __DIR__ . '/email-tracking.php';
-require __DIR__ . '/admin.php';

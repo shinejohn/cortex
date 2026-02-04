@@ -19,65 +19,46 @@ use Sentry\Laravel\Integration;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         using: function () {
+            // Shared routes loaded once globally (no domain restriction)
+            // These routes are shared across all domains and should only be loaded once
+            Route::middleware('web')->group(function () {
+                require base_path('routes/health.php');
+                require base_path('routes/auth.php');
+                require base_path('routes/settings.php');
+                require base_path('routes/workspace.php');
+                require base_path('routes/email-tracking.php');
+            });
+
             // API routes (no domain restriction)
             Route::prefix('api')->group(function () {
                 require base_path('routes/api.php');
             });
 
-            // DayNews domain routes (shared routes loaded first, then day-news routes with wildcard last)
+            // DayNews domain routes (domain-specific routes only)
             Route::domain(config('domains.day-news'))
                 ->middleware('web')
                 ->name('daynews.')
                 ->group(function () {
-                    require base_path('routes/auth.php');
-                    require base_path('routes/settings.php');
-                    require base_path('routes/workspace.php');
-                    require base_path('routes/email-tracking.php');
                     require base_path('routes/day-news.php');
                 });
 
             // DowntownGuide domain routes
-            // Register routes for downtown-guide domain, with fallback pattern matching
             $downtownGuideDomain = config('domains.downtown-guide');
-
-            
-            // Always register routes for downtownsguide.com patterns (handles dev.downtownsguide.com, www.downtownsguide.com, etc.)
-            Route::domain('{subdomain}.downtownsguide.com')
-                ->where(['subdomain' => '[a-z0-9-]+'])
-                ->middleware('web')
-                ->group(function () {
-
-                    require base_path('routes/email-tracking.php');
-                    require base_path('routes/downtown-guide.php');
-                });
-            
-            Route::domain('downtownsguide.com')
-                ->middleware('web')
-                ->group(function () {
-
-                    require base_path('routes/email-tracking.php');
-                    require base_path('routes/downtown-guide.php');
-                });
-            
-            // Also register with configured domain if it's different from downtownsguide.com
-            if ($downtownGuideDomain && $downtownGuideDomain !== 'downtownsguide.com' && !str_ends_with($downtownGuideDomain, '.downtownsguide.com')) {
-                Route::domain($downtownGuideDomain)
+            if ($downtownGuideDomain) {
+                // Support both apex domain and subdomains
+                Route::domain('{subdomain?}.' . $downtownGuideDomain)
+                    ->where(['subdomain' => '[a-z0-9-]*'])
                     ->middleware('web')
-                    ->group(function () use ($downtownGuideDomain) {
-
-                        require base_path('routes/email-tracking.php');
+                    ->group(function () {
                         require base_path('routes/downtown-guide.php');
                     });
             }
 
-            // Go Local Voices domain routes (standalone)
+            // Go Local Voices domain routes (domain-specific routes only)
             Route::domain(config('domains.local-voices'))
                 ->middleware('web')
                 ->name('localvoices.')
                 ->group(function () {
-                    require base_path('routes/auth.php');
-                    require base_path('routes/settings.php');
-                    require base_path('routes/email-tracking.php');
                     require base_path('routes/local-voices.php');
                 });
 
@@ -86,21 +67,20 @@ return Application::configure(basePath: dirname(__DIR__))
             // No need to add domain constraints here as routes file handles them
             Route::middleware('web')
                 ->group(function () {
-                    require base_path('routes/email-tracking.php');
                     require base_path('routes/alphasite.php');
                 });
 
-            // GoEventCity domain routes (fallback - no domain constraint, matches any domain not matched above)
-            Route::middleware('web')
-                ->group(function () {
-                    // Health check routes (no domain restriction)
-                    require base_path('routes/health.php');
-                    require base_path('routes/auth.php');
-                    require base_path('routes/settings.php');
-                    require base_path('routes/workspace.php');
-                    require base_path('routes/email-tracking.php');
-                    require base_path('routes/web.php');
-                });
+            // GoEventCity domain routes
+            $eventCityDomain = config('domains.event-city');
+            if ($eventCityDomain) {
+                // Support both apex domain and subdomains
+                Route::domain('{subdomain?}.' . $eventCityDomain)
+                    ->where(['subdomain' => '[a-z0-9-]*'])
+                    ->middleware('web')
+                    ->group(function () {
+                        require base_path('routes/web.php');
+                    });
+            }
         },
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
