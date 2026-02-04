@@ -1,0 +1,3 @@
+Project: Shine Dev Environment
+Environment: production
+Service: Day News

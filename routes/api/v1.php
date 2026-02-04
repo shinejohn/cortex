@@ -34,6 +34,16 @@ Route::prefix('v1')->group(function () {
     if (file_exists(__DIR__ . '/v1/public.php')) {
         require __DIR__ . '/v1/public.php';
     }
+
+    // Knowledge API routes (for AI training and crawlers)
+    if (file_exists(__DIR__ . '/v1/knowledge.php')) {
+        require __DIR__ . '/v1/knowledge.php';
+    }
+
+    // RSS/Atom feeds (for content syndication and AI training)
+    if (file_exists(__DIR__ . '/v1/feeds.php')) {
+        require __DIR__ . '/v1/feeds.php';
+    }
 });
 
 // Authenticated routes
