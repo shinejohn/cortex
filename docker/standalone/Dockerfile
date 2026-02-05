@@ -47,7 +47,8 @@ RUN bun i
 COPY . .
 COPY --from=base /var/www/html/vendor/ ./vendor/
 
-RUN bun run build:ssr
+# Build frontend assets (client + SSR)
+RUN bun run build:ssr || (echo "❌ Build failed! Showing error:" && bun run build:ssr 2>&1 | tail -50 && exit 1)
 
 # =================================================================
 # Final Stage: Production image
@@ -136,6 +137,7 @@ COPY --chmod=755 docker/standalone/entrypoint.d/ /etc/entrypoint.d
 COPY --from=base --chown=www-data:www-data /var/www/html/vendor ./vendor
 COPY --from=static-assets --chown=www-data:www-data /app/node_modules ./node_modules
 COPY --from=static-assets --chown=www-data:www-data /app/public/build ./public/build
+# Copy SSR bundle (directory is created in build stage even if SSR build fails)
 COPY --from=static-assets --chown=www-data:www-data /app/bootstrap/ssr ./bootstrap/ssr
 
 # Copy application source code
@@ -166,9 +168,10 @@ COPY docker/standalone/etc/nginx/conf.d/custom.conf /etc/nginx/conf.d/custom.con
 COPY docker/standalone/etc/nginx/site-opts.d/http.conf /etc/nginx/site-opts.d/http.conf
 COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
 
-# Configure Supervisor for Horizon (required by Laravel Horizon)
+# Configure Supervisor for Horizon and Inertia SSR
 COPY docker/standalone/etc/supervisor/supervisord.conf /etc/supervisord.conf
 COPY docker/standalone/etc/supervisor/conf.d/horizon.conf /etc/supervisor/conf.d/horizon.conf
+COPY docker/standalone/etc/supervisor/conf.d/inertia-ssr.conf /etc/supervisor/conf.d/inertia-ssr.conf
 
 # Configure s6-overlay for long-running services (Supervisor for Horizon, Nightwatch Agent)
 COPY --chmod=755 docker/standalone/etc/s6-overlay/ /etc/s6-overlay/

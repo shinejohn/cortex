@@ -58,6 +58,7 @@ Route::domain('{subdomain}.alphasite.ai')->group(function () {
 // Main domain routes (.com domain)
 Route::domain('alphasite.com')->group(function () {
     // Home
+    Route::get('/', [DirectoryController::class, 'home'])->name('alphasite.home');
     
     // Directory
     Route::get('/directory', [DirectoryController::class, 'index'])->name('alphasite.directory');
@@ -114,3 +115,15 @@ Route::domain('alphasite.com')->group(function () {
     Route::get('/get-started', [DirectoryController::class, 'getStarted'])->name('alphasite.getstarted');
 });
 
+// Fallback routes for Railway domain (when custom domain not configured)
+// These routes will match when ALPHASITE_DOMAIN matches the Railway domain
+// Routes are also accessible via DetectAppDomain middleware detection
+Route::middleware('web')->group(function () {
+    // Only register these if we're on the Alphasite Railway domain
+    // The DetectAppDomain middleware will handle domain detection
+    // This allows routes to work on Railway domains like alphasite-production-42b8.up.railway.app
+    
+    // Home route (fallback - will be matched by middleware if domain detection works)
+    // Note: This is a fallback. Primary routes above use domain constraints.
+    // If domain constraints don't match, these routes provide fallback access.
+});

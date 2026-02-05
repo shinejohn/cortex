@@ -9,20 +9,11 @@ import { initializeAnalytics, trackPageView } from "./lib/analytics";
 
 createInertiaApp({
     title: (title) => `${title}`,
- resolve: (name) => {
-        // #region agent log
-        fetch('http://127.0.0.1:7244/ingest/8cceea84-1baa-4754-b662-98d7ceb2bd0d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'resources/js/app.tsx:12',message:'Resolving Inertia page',data:{pageName:name,pattern:`./pages/${name}.tsx`},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-        // #endregion
+    resolve: (name) => {
         try {
             const component = resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob("./pages/**/*.tsx"));
-            // #region agent log
-            fetch('http://127.0.0.1:7244/ingest/8cceea84-1baa-4754-b662-98d7ceb2bd0d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'resources/js/app.tsx:17',message:'Page resolved successfully',data:{pageName:name,componentFound:!!component},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-            // #endregion
             return component;
         } catch (error) {
-            // #region agent log
-            fetch('http://127.0.0.1:7244/ingest/8cceea84-1baa-4754-b662-98d7ceb2bd0d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'resources/js/app.tsx:22',message:'Page resolution failed',data:{pageName:name,error:error instanceof Error?error.message:String(error)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-            // #endregion
             throw error;
         }
     },

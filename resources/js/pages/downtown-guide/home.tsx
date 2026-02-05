@@ -4,13 +4,7 @@ import { Button } from "@/components/ui/button";
 import { route } from "ziggy-js";
 
 export default function DowntownGuideHome() {
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/8cceea84-1baa-4754-b662-98d7ceb2bd0d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'resources/js/pages/downtown-guide/home.tsx:6',message:'Component rendering started',data:{windowLocation:typeof window!=='undefined'?window.location.href:'SSR'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
-    // #endregion
     try {
-        // #region agent log
-        fetch('http://127.0.0.1:7244/ingest/8cceea84-1baa-4754-b662-98d7ceb2bd0d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'resources/js/pages/downtown-guide/home.tsx:9',message:'Before route() calls',data:{routeAvailable:typeof route!=='undefined'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
-        // #endregion
         return (
             <>
                 <Head title="DowntownsGuide - Your Complete Guide to Local Businesses" />
@@ -108,9 +102,6 @@ export default function DowntownGuideHome() {
         </>
         );
     } catch (error) {
-        // #region agent log
-        fetch('http://127.0.0.1:7244/ingest/8cceea84-1baa-4754-b662-98d7ceb2bd0d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'resources/js/pages/downtown-guide/home.tsx:102',message:'Component render error',data:{error:error instanceof Error?error.message:String(error),stack:error instanceof Error?error.stack:null},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
-        // #endregion
         throw error;
     }
 }
