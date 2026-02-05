@@ -178,5 +178,3 @@ RUN mkdir -p /etc/nginx/conf.d /etc/nginx/site-opts.d /etc/supervisor/conf.d /va
     chown -R www-data:www-data /etc/nginx && \
     chmod -R 755 /etc/nginx
 
-# Switch to non-root user
-USER www-data
