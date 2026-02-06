@@ -35,9 +35,11 @@ USER www-data
 # =================================================================
 # Stage 2: Frontend assets compilation
 # =================================================================
-FROM oven/bun:alpine AS static-assets
+FROM oven/bun:1 AS static-assets
 
-RUN apk add --no-cache python3 py3-pip g++ make
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends python3 python3-pip g++ make && \
+    rm -rf /var/lib/apt/lists/*
 ENV PYTHON=/usr/bin/python3
 
 WORKDIR /app

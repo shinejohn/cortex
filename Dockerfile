@@ -1,6 +1,6 @@
 # Versions
 # https://hub.docker.com/r/serversideup/php/tags?name=8.4-fpm-nginx-alpine
-ARG SERVERSIDEUP_PHP_VERSION=8.4-fpm-nginx-alpine
+ARG SERVERSIDEUP_PHP_VERSION=8.4-fpm-nginx
 
 # https://www.postgresql.org/support/versioning/
 ARG POSTGRES_VERSION=17
@@ -35,9 +35,11 @@ USER www-data
 # =================================================================
 # Stage 2: Frontend assets compilation
 # =================================================================
-FROM oven/bun:alpine AS static-assets
+FROM oven/bun:1 AS static-assets
 
-RUN apk add --no-cache python3 py3-pip g++ make
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends python3 python3-pip g++ make && \
+    rm -rf /var/lib/apt/lists/*
 ENV PYTHON /usr/bin/python3
 
 WORKDIR /app
@@ -71,13 +73,15 @@ RUN docker-php-serversideup-set-id www-data $USER_ID:$GROUP_ID && \
 RUN install-php-extensions intl
 
 # Install PostgreSQL repository and keys
-RUN apk add --no-cache gnupg && \
+# Install PostgreSQL repository and keys
+RUN apt-get update && apt-get install -y --no-install-recommends gnupg curl ca-certificates lsb-release && \
     mkdir -p /usr/share/keyrings && \
-    curl -fSsL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor > /usr/share/keyrings/postgresql.gpg
+    curl -fSsL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor > /usr/share/keyrings/postgresql.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/postgresql.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 
 # Install system dependencies including Supervisor for Horizon
-RUN apk add --no-cache \
-    postgresql${POSTGRES_VERSION}-client \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    postgresql-client-${POSTGRES_VERSION} \
     openssh-client \
     git \
     git-lfs \
@@ -87,10 +91,11 @@ RUN apk add --no-cache \
     curl \
     nodejs \
     npm \
-    supervisor
+    supervisor && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install Bun for any runtime scripts that might rely on it
-COPY --from=oven/bun:alpine /usr/local/bin/bun /usr/local/bin/bun
+COPY --from=oven/bun:1 /usr/local/bin/bun /usr/local/bin/bun
 
 ENV PYTHON /usr/bin/python3
 
