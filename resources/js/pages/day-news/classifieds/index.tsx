@@ -1,228 +1,159 @@
-import { Head, router, useForm, usePage } from "@inertiajs/react";
-import { DollarSign, MapPin, Plus, Search } from "lucide-react";
 import { SEO } from "@/components/common/seo";
+import { ClassifiedCard } from "@/components/day-news/classified-card";
+import { ClassifiedFilters } from "@/components/day-news/classified-filters";
 import DayNewsHeader from "@/components/day-news/day-news-header";
-import { Badge } from "@/components/ui/badge";
+import LocationPrompt from "@/components/day-news/location-prompt";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
+import type { ClassifiedsIndexPageProps } from "@/types/classified";
+import { Link } from "@inertiajs/react";
+import { List, Package, Plus, ShoppingBag } from "lucide-react";
+import { route } from "ziggy-js";
 
-interface ClassifiedImage {
-    id: number;
-    image_path: string;
-    image_url: string;
-    order: number;
-}
-
-interface Classified {
-    id: string;
-    category: string;
-    subcategory: string | null;
-    title: string;
-    description: string;
-    price: number | null;
-    price_type: string;
-    condition: string | null;
-    location: string;
-    is_featured: boolean;
-    posted_at: string;
-    views_count: number;
-    images: ClassifiedImage[];
-    user: {
-        id: string;
-        name: string;
-    };
-    regions: Array<{
-        id: string;
-        name: string;
-    }>;
-}
-
-interface ClassifiedsPageProps {
+interface Props extends ClassifiedsIndexPageProps {
     auth?: Auth;
-    classifieds: {
-        data: Classified[];
-        links: any;
-        meta: any;
-    };
-    filters: {
-        category: string;
-        subcategory: string;
-        search: string;
-    };
 }
 
-export default function ClassifiedsIndex() {
-    const { auth, classifieds, filters } = usePage<ClassifiedsPageProps>().props;
-
-    const searchForm = useForm({
-        search: filters.search || "",
-        category: filters.category || "all",
-        subcategory: filters.subcategory || "all",
-    });
-
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        searchForm.get("/classifieds", {
-            preserveState: true,
-            preserveScroll: true,
-        });
-    };
-
-    const categories = [
-        { value: "all", label: "All" },
-        { value: "for_sale", label: "For Sale" },
-        { value: "housing", label: "Housing" },
-        { value: "jobs", label: "Jobs" },
-        { value: "services", label: "Services" },
-        { value: "community", label: "Community" },
-        { value: "personals", label: "Personals" },
-    ];
-
-    const formatPrice = (price: number | null, priceType: string) => {
-        if (!price && priceType === "contact_for_pricing") return "Contact for pricing";
-        if (!price) return "Free";
-        return `$${price.toLocaleString()}`;
-    };
-
+export default function ClassifiedsIndex({
+    auth,
+    featuredClassifieds,
+    classifieds,
+    categories,
+    conditions,
+    filters,
+    hasRegion,
+}: Props) {
     return (
         <LocationProvider>
             <div className="min-h-screen bg-background">
-                <Head title="Classifieds - Day News" />
                 <SEO
                     type="website"
                     site="day-news"
                     data={{
-                        title: "Classifieds - Day News",
-                        description: "Buy, sell, and find local services",
+                        title: "Local Classifieds",
+                        description:
+                            "Browse local classifieds in your area. Find great deals on cars, real estate, electronics, furniture, and more from your community.",
                         url: "/classifieds",
                     }}
                 />
                 <DayNewsHeader auth={auth} />
+                <LocationPrompt />
 
-                <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                    {/* Header */}
-                    <div className="mb-8 flex items-center justify-between">
+                <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                    {/* Page header */}
+                    <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <h1 className="text-4xl font-bold">Classifieds</h1>
-                            <p className="mt-2 text-muted-foreground">Buy, sell, and find local services</p>
+                            <h1 className="flex items-center gap-2 font-serif text-3xl font-bold">
+                                <ShoppingBag className="size-8" />
+                                Local Classifieds
+                            </h1>
+                            <p className="mt-1 text-muted-foreground">
+                                Buy, sell, and trade with people in your community
+                            </p>
                         </div>
-                        {auth && (
-                            <Button onClick={() => router.visit("/classifieds/create")}>
-                                <Plus className="mr-2 size-4" />
-                                Post Listing
-                            </Button>
+                        {auth?.user && (
+                            <div className="flex gap-2">
+                                <Button variant="outline" asChild>
+                                    <Link href={route("daynews.classifieds.my")}>
+                                        <List className="mr-2 size-4" />
+                                        My Listings
+                                    </Link>
+                                </Button>
+                                <Button asChild>
+                                    <Link href={route("daynews.classifieds.create")}>
+                                        <Plus className="mr-2 size-4" />
+                                        Post Listing
+                                    </Link>
+                                </Button>
+                            </div>
                         )}
                     </div>
 
-                    {/* Search and Filters */}
-                    <div className="mb-6">
-                        <form onSubmit={handleSearch} className="mb-4 flex gap-4">
-                            <div className="relative flex-1">
-                                <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
-                                <Input
-                                    type="text"
-                                    value={searchForm.data.search}
-                                    onChange={(e) => searchForm.setData("search", e.target.value)}
-                                    placeholder="Search classifieds..."
-                                    className="pl-10"
-                                />
-                            </div>
-                            <Button type="submit" disabled={searchForm.processing}>
-                                Search
-                            </Button>
-                        </form>
-
-                        {/* Category Filters */}
-                        <div className="flex flex-wrap gap-2">
-                            {categories.map((cat) => (
-                                <Button
-                                    key={cat.value}
-                                    variant={searchForm.data.category === cat.value ? "default" : "outline"}
-                                    size="sm"
-                                    onClick={() => {
-                                        searchForm.setData("category", cat.value);
-                                        searchForm.get("/classifieds", {
-                                            preserveState: true,
-                                            preserveScroll: true,
-                                        });
-                                    }}
-                                >
-                                    {cat.label}
-                                </Button>
-                            ))}
-                        </div>
+                    {/* Filters */}
+                    <div className="mb-8">
+                        <ClassifiedFilters
+                            categories={categories}
+                            conditions={conditions}
+                            filters={filters}
+                            hasRegion={hasRegion}
+                        />
                     </div>
 
-                    {/* Classifieds Grid */}
-                    {classifieds.data.length === 0 ? (
-                        <div className="py-12 text-center">
-                            <p className="text-muted-foreground">No classifieds found.</p>
-                            {auth && (
-                                <Button className="mt-4" onClick={() => router.visit("/classifieds/create")}>
-                                    Post First Listing
-                                </Button>
-                            )}
-                        </div>
-                    ) : (
-                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                            {classifieds.data.map((classified) => (
-                                <div
-                                    key={classified.id}
-                                    className="cursor-pointer rounded-lg border bg-card transition-shadow hover:shadow-md"
-                                    onClick={() => router.visit(`/classifieds/${classified.id}`)}
-                                >
-                                    {classified.images.length > 0 && (
-                                        <img
-                                            src={classified.images[0].image_url}
-                                            alt={classified.title}
-                                            className="h-48 w-full rounded-t-lg object-cover"
-                                        />
-                                    )}
-                                    <div className="p-4">
-                                        {classified.is_featured && (
-                                            <Badge className="mb-2" variant="destructive">
-                                                Featured
-                                            </Badge>
-                                        )}
-                                        <Badge variant="outline" className="mb-2 capitalize">
-                                            {classified.category.replace("_", " ")}
-                                        </Badge>
-                                        <h3 className="mb-2 text-xl font-semibold">{classified.title}</h3>
-                                        <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{classified.description}</p>
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-1 text-lg font-bold text-primary">
-                                                <DollarSign className="size-4" />
-                                                {formatPrice(classified.price, classified.price_type)}
-                                            </div>
-                                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                                <MapPin className="size-3" />
-                                                {classified.location}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                    {/* Featured classifieds */}
+                    {featuredClassifieds.length > 0 && !filters.search && !filters.category && (
+                        <section className="mb-12">
+                            <h2 className="mb-4 border-b-2 border-border pb-2 font-serif text-2xl font-bold">
+                                Featured Listings
+                            </h2>
+                            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                                {featuredClassifieds.slice(0, 6).map((classified) => (
+                                    <ClassifiedCard key={classified.id} classified={classified} variant="featured" />
+                                ))}
+                            </div>
+                        </section>
                     )}
 
-                    {/* Pagination */}
-                    {classifieds.links && classifieds.links.length > 3 && (
-                        <div className="mt-8 flex justify-center gap-2">
-                            {classifieds.links.map((link: any, index: number) => (
-                                <Button
-                                    key={index}
-                                    variant={link.active ? "default" : "outline"}
-                                    size="sm"
-                                    onClick={() => link.url && router.visit(link.url)}
-                                    disabled={!link.url}
-                                    dangerouslySetInnerHTML={{ __html: link.label }}
-                                />
-                            ))}
-                        </div>
-                    )}
-                </div>
+                    {/* All classifieds */}
+                    <section>
+                        <h2 className="mb-4 border-b-2 border-border pb-2 font-serif text-2xl font-bold">
+                            {filters.search || filters.category || filters.condition
+                                ? "Search Results"
+                                : "All Listings"}
+                        </h2>
+
+                        {classifieds.data.length > 0 ? (
+                            <>
+                                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                    {classifieds.data.map((classified) => (
+                                        <ClassifiedCard key={classified.id} classified={classified} />
+                                    ))}
+                                </div>
+
+                                {/* Pagination */}
+                                {classifieds.last_page > 1 && (
+                                    <div className="mt-8 flex items-center justify-center gap-2">
+                                        {classifieds.prev_page_url && (
+                                            <Button variant="outline" asChild>
+                                                <Link href={classifieds.prev_page_url}>Previous</Link>
+                                            </Button>
+                                        )}
+                                        <span className="px-4 text-sm text-muted-foreground">
+                                            Page {classifieds.current_page} of {classifieds.last_page}
+                                        </span>
+                                        {classifieds.next_page_url && (
+                                            <Button variant="outline" asChild>
+                                                <Link href={classifieds.next_page_url}>Next</Link>
+                                            </Button>
+                                        )}
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <div className="flex min-h-[40vh] items-center justify-center">
+                                <div className="text-center">
+                                    <Package className="mx-auto mb-4 size-16 text-muted-foreground" />
+                                    <h3 className="mb-2 text-xl font-bold">No Listings Found</h3>
+                                    <p className="mx-auto max-w-md text-muted-foreground">
+                                        {filters.search || filters.category || filters.condition
+                                            ? "Try adjusting your filters or search terms."
+                                            : hasRegion
+                                              ? "There are no listings available for your region yet. Be the first to post one!"
+                                              : "Select your location to see listings relevant to your area."}
+                                    </p>
+                                    {auth?.user && (
+                                        <Button className="mt-4" asChild>
+                                            <Link href={route("daynews.classifieds.create")}>
+                                                <Plus className="mr-2 size-4" />
+                                                Post a Listing
+                                            </Link>
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </section>
+                </main>
             </div>
         </LocationProvider>
     );
