@@ -4,14 +4,28 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Advertisement;
+use App\Models\Announcement;
+use App\Models\DayNewsPost;
+use App\Models\Event;
 use App\Models\OrganizationRelationship;
 use App\Models\Business;
+use App\Models\TicketPlan;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
 final class OrganizationRelationshipController extends Controller
 {
+    /** @var array<string, class-string> */
+    private const ALLOWED_RELATABLE_TYPES = [
+        'event' => Event::class,
+        'business' => Business::class,
+        'day_news_post' => DayNewsPost::class,
+        'advertisement' => Advertisement::class,
+        'announcement' => Announcement::class,
+        'ticket_plan' => TicketPlan::class,
+    ];
     /**
      * Create a new relationship
      */
@@ -27,7 +41,7 @@ final class OrganizationRelationshipController extends Controller
         ]);
 
         $organization = Business::findOrFail($request->input('organization_id'));
-        $relatableClass = $request->input('relatable_type');
+        $relatableClass = $this->resolveRelatableClass($request->input('relatable_type'));
         $relatable = $relatableClass::findOrFail($request->input('relatable_id'));
 
         $relationship = $relatable->relateToOrganization(
@@ -105,7 +119,7 @@ final class OrganizationRelationshipController extends Controller
         $created = [];
 
         foreach ($request->input('relationships') as $relData) {
-            $relatableClass = $relData['relatable_type'];
+            $relatableClass = $this->resolveRelatableClass($relData['relatable_type']);
             $relatable = $relatableClass::findOrFail($relData['relatable_id']);
 
             $relationship = $relatable->relateToOrganization(
@@ -126,6 +140,16 @@ final class OrganizationRelationshipController extends Controller
         }
 
         return redirect()->back()->with('success', count($created).' relationships created successfully');
+    }
+
+    /** @return class-string */
+    private function resolveRelatableClass(string $type): string
+    {
+        if (! isset(self::ALLOWED_RELATABLE_TYPES[$type])) {
+            abort(422, 'Invalid relatable type. Allowed: '.implode(', ', array_keys(self::ALLOWED_RELATABLE_TYPES)));
+        }
+
+        return self::ALLOWED_RELATABLE_TYPES[$type];
     }
 }
 

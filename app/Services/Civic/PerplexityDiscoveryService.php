@@ -51,7 +51,7 @@ class PerplexityDiscoveryService
         ?LegistarService $legistarService = null,
         ?CivicPlusService $civicPlusService = null
     ) {
-        $this->apiKey = config('civic-sources.perplexity.api_key', env('PERPLEXITY_API_KEY', ''));
+        $this->apiKey = config('civic-sources.perplexity.api_key', '');
         $this->model = config('civic-sources.perplexity.model', self::MODEL_SONAR);
         $this->granicusService = $granicusService ?? app(GranicusMediaService::class);
         $this->legistarService = $legistarService ?? app(LegistarService::class);

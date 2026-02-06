@@ -28,3 +28,30 @@ yarn-error.log
 
 # *.mmdb
 /aws/
+
+# Sensitive files - credentials, keys, secrets
+*.bak
+*VARIABLES*
+*CREDENTIALS*
+.railway/token.json
+
+# Logs
+*.log
+
+# Documents and archives (should not be in repo)
+*.docx
+*.zip
+
+# Database dumps
+*.sql
+
+# Word temp files
+~$*
+
+# Testing artifacts
+playwright-report/
+test-results/
+
+# Python virtual environments and cache
+__pycache__/
+INFRASTRUCTURE/venv/

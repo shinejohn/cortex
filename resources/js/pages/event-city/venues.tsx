@@ -1,4 +1,4 @@
-import { Head, usePage } from "@inertiajs/react";
+import { Head, router, usePage } from "@inertiajs/react";
 import { FilterIcon, GridIcon, ListIcon, MapIcon, MapPinIcon, SearchIcon, SlidersIcon, StarIcon, XIcon } from "lucide-react";
 import React, { useState } from "react";
 import { Footer } from "@/components/common/footer";
@@ -47,7 +47,7 @@ export default function VenuesPage() {
                 }
             }
         });
-        window.location.href = `/venues?${searchParams.toString()}`;
+        router.visit(`/venues?${searchParams.toString()}`);
     };
 
     // Handle search
@@ -70,14 +70,14 @@ export default function VenuesPage() {
                 }
             }
         });
-        window.location.href = `/venues?${searchParams.toString()}`;
+        router.visit(`/venues?${searchParams.toString()}`);
     };
 
     // Clear all filters
     const clearAllFilters = () => {
         setCurrentFilters({});
         setSearchQuery("");
-        window.location.href = "/venues";
+        router.visit("/venues");
     };
 
     const renderVenueContent = (venue: Venue) => (
@@ -361,7 +361,7 @@ export default function VenuesPage() {
                                             key={index}
                                             variant={link.active ? "default" : "outline"}
                                             size="sm"
-                                            onClick={() => link.url && (window.location.href = link.url)}
+                                            onClick={() => link.url && router.visit(link.url)}
                                             disabled={!link.url}
                                             className={cn("px-3 py-2 text-sm", !link.url && "opacity-50 cursor-not-allowed")}
                                             dangerouslySetInnerHTML={{

@@ -350,6 +350,11 @@ final class User extends Authenticatable implements FilamentUser
      *
      * @return array<int, string>
      */
+    public function isAdmin(): bool
+    {
+        return in_array($this->email, $this->getAdminEmails(), true);
+    }
+
     private function getAdminEmails(): array
     {
         $emails = config('app.admin_emails', '');

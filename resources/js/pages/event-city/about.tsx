@@ -1,4 +1,4 @@
-import { Link, usePage } from "@inertiajs/react";
+import { Link, router, usePage } from "@inertiajs/react";
 import { Award, Calendar, Heart, MapPin, TrendingUp, Users } from "lucide-react";
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
@@ -164,15 +164,15 @@ export default function AboutPage() {
                     </p>
                     <div className="flex justify-center space-x-4">
                         {auth.user ? (
-                            <Button size="lg" onClick={() => (window.location.href = "/events/create")}>
+                            <Button size="lg" onClick={() => router.visit("/events/create")}>
                                 Create Your First Event
                             </Button>
                         ) : (
                             <>
-                                <Button size="lg" onClick={() => (window.location.href = "/register")}>
+                                <Button size="lg" onClick={() => router.visit("/register")}>
                                     Sign Up Free
                                 </Button>
-                                <Button size="lg" variant="outline" onClick={() => (window.location.href = "/events")}>
+                                <Button size="lg" variant="outline" onClick={() => router.visit("/events")}>
                                     Browse Events
                                 </Button>
                             </>

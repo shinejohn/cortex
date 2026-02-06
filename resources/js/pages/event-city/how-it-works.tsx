@@ -1,4 +1,4 @@
-import { Link, usePage } from "@inertiajs/react";
+import { Link, router, usePage } from "@inertiajs/react";
 import { Bell, Calendar, Heart, MapPin, Search, Share2, Ticket, Users } from "lucide-react";
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
@@ -213,19 +213,19 @@ export default function HowItWorksPage() {
                     <p className="text-xl text-indigo-100 mb-6">Join thousands of people discovering and sharing amazing local events.</p>
                     <div className="flex justify-center space-x-4">
                         {auth.user ? (
-                            <Button size="lg" variant="secondary" onClick={() => (window.location.href = "/events/create")}>
+                            <Button size="lg" variant="secondary" onClick={() => router.visit("/events/create")}>
                                 Create Your First Event
                             </Button>
                         ) : (
                             <>
-                                <Button size="lg" variant="secondary" onClick={() => (window.location.href = "/register")}>
+                                <Button size="lg" variant="secondary" onClick={() => router.visit("/register")}>
                                     Sign Up Free
                                 </Button>
                                 <Button
                                     size="lg"
                                     variant="outline"
                                     className="bg-transparent border-white text-white hover:bg-card/10"
-                                    onClick={() => (window.location.href = "/events")}
+                                    onClick={() => router.visit("/events")}
                                 >
                                     Browse Events
                                 </Button>

@@ -18,6 +18,8 @@ import {
     X,
 } from "lucide-react";
 import { useState } from "react";
+import { CheckInButton } from "@/components/check-in/CheckInButton";
+import { CheckInFeed } from "@/components/check-in/CheckInFeed";
 import { FollowButton } from "@/components/common/follow-button";
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";

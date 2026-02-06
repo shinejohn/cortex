@@ -1,6 +1,6 @@
 import { router, usePage } from "@inertiajs/react";
 import axios from "axios";
-import React, { createContext, type ReactNode, useContext, useState } from "react";
+import React, { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from "react";
 
 // Location API endpoints - using relative URLs to work across all domains
 const LOCATION_API = {
@@ -45,7 +45,7 @@ export function LocationProvider({ children }: LocationProviderProps) {
     const [confirmed, setConfirmed] = useState(location.confirmed);
     const [isLoading, setIsLoading] = useState(false);
 
-    const setRegion = async (regionId: string) => {
+    const setRegion = useCallback(async (regionId: string) => {
         setIsLoading(true);
         try {
             const response = await axios.post(LOCATION_API.setRegion, {
@@ -69,9 +69,9 @@ export function LocationProvider({ children }: LocationProviderProps) {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
 
-    const detectFromBrowser = async () => {
+    const detectFromBrowser = useCallback(async () => {
         if (!navigator.geolocation) {
             throw new Error("Geolocation is not supported by your browser");
         }
@@ -115,9 +115,9 @@ export function LocationProvider({ children }: LocationProviderProps) {
                 },
             );
         });
-    };
+    }, []);
 
-    const searchRegions = async (query: string): Promise<Region[]> => {
+    const searchRegions = useCallback(async (query: string): Promise<Region[]> => {
         try {
             const response = await axios.get(LOCATION_API.search, {
                 params: { query, limit: 10 },
@@ -132,9 +132,9 @@ export function LocationProvider({ children }: LocationProviderProps) {
             console.error("Failed to search regions:", error);
             return [];
         }
-    };
+    }, []);
 
-    const clearLocation = async () => {
+    const clearLocation = useCallback(async () => {
         setIsLoading(true);
         try {
             const response = await axios.post(LOCATION_API.clear);
@@ -150,20 +150,23 @@ export function LocationProvider({ children }: LocationProviderProps) {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, []);
+
+    const value = useMemo(
+        () => ({
+            currentRegion,
+            confirmed,
+            setRegion,
+            detectFromBrowser,
+            searchRegions,
+            clearLocation,
+            isLoading,
+        }),
+        [currentRegion, confirmed, setRegion, detectFromBrowser, searchRegions, clearLocation, isLoading],
+    );
 
     return (
-        <LocationContext.Provider
-            value={{
-                currentRegion,
-                confirmed,
-                setRegion,
-                detectFromBrowser,
-                searchRegions,
-                clearLocation,
-                isLoading,
-            }}
-        >
+        <LocationContext.Provider value={value}>
             {children}
         </LocationContext.Provider>
     );

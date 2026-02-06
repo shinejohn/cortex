@@ -43,6 +43,8 @@ return [
 
     'debug' => (bool) env('APP_DEBUG', false),
 
+    'force_https' => env('FORCE_HTTPS', env('APP_ENV', 'production') === 'production'),
+
     /*
     |--------------------------------------------------------------------------
     | Application URL

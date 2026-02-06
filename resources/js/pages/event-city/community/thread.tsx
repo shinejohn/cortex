@@ -1,6 +1,7 @@
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import axios from "axios";
 import dayjs from "dayjs";
+import { sanitizeHtml } from "@/lib/sanitize";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
     AlertCircleIcon,
@@ -227,7 +228,7 @@ export default function ThreadDetail() {
                             <div
                                 className="prose prose-slate dark:prose-invert max-w-none"
                                 dangerouslySetInnerHTML={{
-                                    __html: thread.content.replace(/\n/g, "<br>"),
+                                    __html: sanitizeHtml(thread.content.replace(/\n/g, "<br>")),
                                 }}
                             />
                         </CardContent>

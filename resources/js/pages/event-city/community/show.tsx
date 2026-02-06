@@ -53,7 +53,7 @@ export default function CommunityShow() {
                 searchParams.append(key, value.toString());
             }
         });
-        window.location.href = `${window.location.pathname}?${searchParams.toString()}`;
+        router.visit(`${window.location.pathname}?${searchParams.toString()}`);
     };
 
     const clearFilters = (): void => {
@@ -65,7 +65,7 @@ export default function CommunityShow() {
             sortBy: "recent",
         });
         setSearchQuery("");
-        window.location.href = window.location.pathname;
+        router.visit(window.location.pathname);
     };
 
     const handleSearch = (): void => {
@@ -75,11 +75,11 @@ export default function CommunityShow() {
                 searchParams.append(key, value.toString());
             }
         });
-        window.location.href = `${window.location.pathname}?${searchParams.toString()}`;
+        router.visit(`${window.location.pathname}?${searchParams.toString()}`);
     };
 
     const handleStartThread = (): void => {
-        window.location.href = `/community/${community.id}/new-thread`;
+        router.visit(`/community/${community.id}/new-thread`);
     };
 
     const handleViewThread = (threadId: string): void => {

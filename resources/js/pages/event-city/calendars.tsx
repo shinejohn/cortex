@@ -347,7 +347,7 @@ export default function CalendarsPage() {
                                                 key={index}
                                                 variant={link.active ? "default" : "outline"}
                                                 size="sm"
-                                                onClick={() => link.url && (window.location.href = link.url)}
+                                                onClick={() => link.url && router.visit(link.url)}
                                                 disabled={!link.url}
                                                 className={cn("px-3 py-2 text-sm", !link.url && "opacity-50 cursor-not-allowed")}
                                                 dangerouslySetInnerHTML={{
