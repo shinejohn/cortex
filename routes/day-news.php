@@ -198,7 +198,6 @@ Route::get('/api/search/suggestions', [\App\Http\Controllers\DayNews\SearchContr
 
 // Announcements routes
 Route::get('/announcements', [\App\Http\Controllers\DayNews\AnnouncementController::class, 'index'])->name('announcements.index');
-Route::get('/announcements/{announcement}', [\App\Http\Controllers\DayNews\AnnouncementController::class, 'show'])->name('announcements.show');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/announcements/create', [\App\Http\Controllers\DayNews\AnnouncementController::class, 'create'])->name('announcements.create');
@@ -208,9 +207,10 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/announcements/{announcement}', [\App\Http\Controllers\DayNews\AnnouncementController::class, 'destroy'])->name('announcements.destroy');
 });
 
+Route::get('/announcements/{announcement}', [\App\Http\Controllers\DayNews\AnnouncementController::class, 'show'])->name('announcements.show');
+
 // Classifieds routes
 Route::get('/classifieds', [\App\Http\Controllers\DayNews\ClassifiedController::class, 'index'])->name('classifieds.index');
-Route::get('/classifieds/{classified}', [\App\Http\Controllers\DayNews\ClassifiedController::class, 'show'])->name('classifieds.show');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/classifieds/create', [\App\Http\Controllers\DayNews\ClassifiedController::class, 'create'])->name('classifieds.create');
@@ -224,10 +224,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/classifieds/{classified}/confirmation', [\App\Http\Controllers\DayNews\ClassifiedController::class, 'confirmation'])->name('classifieds.confirmation');
 });
 
+Route::get('/classifieds/{classified}', [\App\Http\Controllers\DayNews\ClassifiedController::class, 'show'])->name('classifieds.show');
+
 // Coupons routes
 Route::get('/coupons', [\App\Http\Controllers\DayNews\CouponController::class, 'index'])->name('coupons.index');
-Route::get('/coupons/{coupon}', [\App\Http\Controllers\DayNews\CouponController::class, 'show'])->name('coupons.show');
-Route::post('/coupons/{coupon}/use', [\App\Http\Controllers\DayNews\CouponController::class, 'use'])->name('coupons.use');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/coupons/create', [\App\Http\Controllers\DayNews\CouponController::class, 'create'])->name('coupons.create');
@@ -237,11 +237,13 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/coupons/{coupon}', [\App\Http\Controllers\DayNews\CouponController::class, 'destroy'])->name('coupons.destroy');
 });
 
+Route::get('/coupons/{coupon}', [\App\Http\Controllers\DayNews\CouponController::class, 'show'])->name('coupons.show');
+Route::post('/coupons/{coupon}/use', [\App\Http\Controllers\DayNews\CouponController::class, 'use'])->name('coupons.use');
+
 // Photos routes
 Route::get('/photos', [\App\Http\Controllers\DayNews\PhotoController::class, 'index'])->name('photos.index');
 Route::get('/photos/albums', [\App\Http\Controllers\DayNews\PhotoController::class, 'albums'])->name('photos.albums');
 Route::get('/photos/albums/{album}', [\App\Http\Controllers\DayNews\PhotoController::class, 'showAlbum'])->name('photos.album.show');
-Route::get('/photos/{photo}', [\App\Http\Controllers\DayNews\PhotoController::class, 'show'])->name('photos.show');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/photos/create', [\App\Http\Controllers\DayNews\PhotoController::class, 'create'])->name('photos.create');
@@ -250,6 +252,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/photos/albums/create', [\App\Http\Controllers\DayNews\PhotoController::class, 'createAlbum'])->name('photos.albums.create');
     Route::post('/photos/albums', [\App\Http\Controllers\DayNews\PhotoController::class, 'storeAlbum'])->name('photos.albums.store');
 });
+
+Route::get('/photos/{photo}', [\App\Http\Controllers\DayNews\PhotoController::class, 'show'])->name('photos.show');
 
 // Archive routes
 Route::get('/archive', [\App\Http\Controllers\DayNews\ArchiveController::class, 'index'])->name('archive.index');
@@ -260,30 +264,33 @@ Route::get('/trending', [\App\Http\Controllers\DayNews\TrendingController::class
 
 // Authors routes
 Route::get('/authors', [\App\Http\Controllers\DayNews\AuthorController::class, 'index'])->name('authors.index');
-Route::get('/authors/{author}', [\App\Http\Controllers\DayNews\AuthorController::class, 'show'])->name('authors.show')->where('author', '[a-z0-9\-]+');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/authors/create', [\App\Http\Controllers\DayNews\AuthorController::class, 'create'])->name('authors.create');
     Route::post('/authors', [\App\Http\Controllers\DayNews\AuthorController::class, 'store'])->name('authors.store');
 });
 
+Route::get('/authors/{author}', [\App\Http\Controllers\DayNews\AuthorController::class, 'show'])->name('authors.show')->where('author', '[a-z0-9\-]+');
+
 // Legal Notices routes
 Route::get('/legal-notices', [\App\Http\Controllers\DayNews\LegalNoticeController::class, 'index'])->name('legal-notices.index');
-Route::get('/legal-notices/{notice}', [\App\Http\Controllers\DayNews\LegalNoticeController::class, 'show'])->name('legal-notices.show');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/legal-notices/create', [\App\Http\Controllers\DayNews\LegalNoticeController::class, 'create'])->name('legal-notices.create');
     Route::post('/legal-notices', [\App\Http\Controllers\DayNews\LegalNoticeController::class, 'store'])->name('legal-notices.store');
 });
 
+Route::get('/legal-notices/{notice}', [\App\Http\Controllers\DayNews\LegalNoticeController::class, 'show'])->name('legal-notices.show');
+
 // Memorials routes
 Route::get('/memorials', [\App\Http\Controllers\DayNews\MemorialController::class, 'index'])->name('memorials.index');
-Route::get('/memorials/{memorial}', [\App\Http\Controllers\DayNews\MemorialController::class, 'show'])->name('memorials.show');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/memorials/create', [\App\Http\Controllers\DayNews\MemorialController::class, 'create'])->name('memorials.create');
     Route::post('/memorials', [\App\Http\Controllers\DayNews\MemorialController::class, 'store'])->name('memorials.store');
 });
+
+Route::get('/memorials/{memorial}', [\App\Http\Controllers\DayNews\MemorialController::class, 'show'])->name('memorials.show');
 
 // Local Voices (Podcasts) routes
 Route::get('/local-voices', [\App\Http\Controllers\DayNews\CreatorController::class, 'index'])->name('local-voices.index');

@@ -1,6 +1,7 @@
 import { router } from "@inertiajs/react";
 import axios from "axios";
 import dayjs from "dayjs";
+import { sanitizeHtml } from "@/lib/sanitize";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { HeartIcon, MessageCircleIcon, MoreHorizontalIcon, PencilIcon, PinIcon, StarIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
@@ -191,7 +192,7 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
                         <div
                             className="prose prose-sm dark:prose-invert max-w-none text-foreground mb-3"
                             dangerouslySetInnerHTML={{
-                                __html: reply.content.replace(/\n/g, "<br>"),
+                                __html: sanitizeHtml(reply.content.replace(/\n/g, "<br>")),
                             }}
                         />
                     )}

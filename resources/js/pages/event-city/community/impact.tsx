@@ -1,4 +1,4 @@
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { Briefcase, Calendar, Globe, Heart, Landmark, Leaf, TrendingUp, Users } from "lucide-react";
 import { Footer } from "@/components/common/footer";
 import Header from "@/components/common/header";
@@ -98,7 +98,7 @@ export default function CommunityImpact() {
     ];
 
     const navigateTo = (path: string): void => {
-        window.location.href = path;
+        router.visit(path);
     };
 
     return (

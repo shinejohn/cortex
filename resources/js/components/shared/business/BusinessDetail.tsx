@@ -2,6 +2,7 @@ import { Link } from "@inertiajs/react";
 import { CheckCircleIcon, ClockIcon, GlobeIcon, MapPinIcon, PhoneIcon, StarIcon } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { sanitizeHtml } from "@/lib/sanitize";
 import { cn } from "@/lib/utils";
 
 interface BusinessDetailProps {
@@ -187,7 +188,7 @@ export function BusinessDetail({ business, theme = "downtownsguide", className, 
 
             {/* Content */}
             {business.content && (
-                <div className="prose prose-lg max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: business.content }} />
+                <div className="prose prose-lg max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: sanitizeHtml(business.content) }} />
             )}
         </article>
     );

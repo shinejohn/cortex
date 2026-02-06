@@ -3,6 +3,7 @@ import { CalendarIcon, EyeIcon, Share2Icon, UserIcon } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { sanitizeHtml } from "@/lib/sanitize";
 import { cn } from "@/lib/utils";
 
 interface NewsDetailProps {
@@ -112,7 +113,7 @@ export function NewsDetail({ article, theme = "daynews", className, showShare = 
             )}
 
             {/* Content */}
-            <div className="prose prose-lg max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: article.content }} />
+            <div className="prose prose-lg max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.content) }} />
 
             {/* Tags */}
             {article.tags && article.tags.length > 0 && (
