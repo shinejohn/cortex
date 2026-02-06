@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DayNews\StoreCouponRequest;
 use App\Http\Requests\DayNews\UpdateCouponRequest;
 use App\Models\Coupon;
+use App\Services\CouponService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -15,280 +17,358 @@ use Inertia\Response;
 final class CouponController extends Controller
 {
     public function __construct(
-        private readonly \App\Services\CouponService $couponService
+        private readonly CouponService $couponService
     ) {}
 
     /**
-     * Display coupons listing
+     * Display the coupon discovery page.
      */
     public function index(Request $request): Response
     {
         $currentRegion = $request->attributes->get('detected_region');
-        $search = $request->get('search', '');
-        $businessId = $request->get('business_id');
+        $regionId = $currentRegion?->id;
 
-        // Use shared CouponService
-        $filters = [
-            'region_id' => $currentRegion?->id,
-            'business_id' => $businessId,
-        ];
+        $category = $request->query('category');
+        $search = $request->query('search');
+        $showGlobal = $request->boolean('global', false);
 
-        $coupons = $this->couponService->getActiveCoupons($filters, 20);
+        // Get featured coupons
+        $featuredCoupons = $this->couponService->getFeaturedCoupons($regionId, 6);
 
-        // Filter by search if provided
-        if ($search) {
-            $coupons = $coupons->filter(function ($coupon) use ($search) {
-                return stripos($coupon->title, $search) !== false
-                    || stripos($coupon->description ?? '', $search) !== false
-                    || stripos($coupon->business_name ?? '', $search) !== false;
-            });
-        }
+        // Get all coupons with pagination
+        $coupons = $this->couponService->getCoupons(
+            regionId: $regionId,
+            category: $category,
+            search: $search,
+            showGlobal: $showGlobal,
+            perPage: 12
+        );
 
-        // Paginate manually since getActiveCoupons returns Collection
-        $perPage = 20;
-        $currentPage = (int) $request->get('page', 1);
-        $items = $coupons->slice(($currentPage - 1) * $perPage, $perPage);
-        $total = $coupons->count();
+        // Transform coupons for frontend
+        $user = $request->user();
 
-        return Inertia::render('day-news/coupons/index', [
-            'coupons' => [
-                'data' => $items->map(fn ($coupon) => [
+        $transformCoupon = function ($coupon) use ($user) {
+            return [
                 'id' => $coupon->id,
                 'title' => $coupon->title,
+                'slug' => $coupon->slug,
+                'code' => $coupon->code,
                 'description' => $coupon->description,
                 'discount_type' => $coupon->discount_type,
                 'discount_value' => $coupon->discount_value,
-                'terms' => $coupon->terms,
-                'code' => $coupon->code,
+                'discount_display' => $coupon->discount_display,
+                'valid_from' => $coupon->valid_from->toDateString(),
+                'valid_until' => $coupon->valid_until?->toDateString(),
                 'image' => $coupon->image,
-                'business_name' => $coupon->business_name,
-                'business_location' => $coupon->business_location,
-                'start_date' => $coupon->start_date->toDateString(),
-                'end_date' => $coupon->end_date->toDateString(),
-                'usage_limit' => $coupon->usage_limit,
-                'used_count' => $coupon->used_count,
-                'views_count' => $coupon->views_count,
-                'clicks_count' => $coupon->clicks_count,
-                'business' => $coupon->business ? [
+                'category' => $coupon->category,
+                'is_verified' => $coupon->is_verified,
+                'score' => $coupon->score,
+                'upvotes_count' => $coupon->upvotes_count,
+                'downvotes_count' => $coupon->downvotes_count,
+                'saves_count' => $coupon->saves_count,
+                'business' => [
                     'id' => $coupon->business->id,
                     'name' => $coupon->business->name,
-                ] : null,
+                    'slug' => $coupon->business->slug,
+                    'address' => $coupon->business->address,
+                    'city' => $coupon->business->city,
+                    'state' => $coupon->business->state,
+                    'images' => $coupon->business->images,
+                    'categories' => $coupon->business->categories,
+                ],
                 'regions' => $coupon->regions->map(fn ($r) => [
                     'id' => $r->id,
                     'name' => $r->name,
+                    'slug' => $r->slug,
                 ]),
-                ])->values(),
-                'current_page' => $currentPage,
-                'last_page' => (int) ceil($total / $perPage),
-                'per_page' => $perPage,
-                'total' => $total,
-            ],
+                'user_vote' => $user ? $coupon->getUserVote($user) : null,
+                'is_saved' => $user ? $coupon->isSavedBy($user) : false,
+            ];
+        };
+
+        return Inertia::render('day-news/coupons/index', [
+            'featuredCoupons' => $featuredCoupons->map($transformCoupon),
+            'coupons' => $coupons->through($transformCoupon),
+            'categories' => $this->getCategories(),
             'filters' => [
+                'category' => $category,
                 'search' => $search,
-                'business_id' => $businessId,
+                'global' => $showGlobal,
             ],
-            'currentRegion' => $currentRegion,
+            'hasRegion' => $currentRegion !== null,
         ]);
     }
 
     /**
-     * Show coupon creation form
+     * Display a single coupon.
      */
-    public function create(): Response
+    public function show(string $slug, Request $request): Response
     {
-        return Inertia::render('day-news/coupons/create');
-    }
+        $coupon = Coupon::with(['business', 'regions', 'user', 'activeRootComments.user', 'activeRootComments.activeReplies.user'])
+            ->where('slug', $slug)
+            ->firstOrFail();
 
-    /**
-     * Store new coupon
-     */
-    public function store(StoreCouponRequest $request): \Illuminate\Http\RedirectResponse
-    {
-        $validated = $request->validated();
-        $currentRegion = $request->attributes->get('detected_region');
+        $this->authorize('view', $coupon);
 
-        // Prepare data for CouponService
-        $couponData = [
-            'business_id' => $validated['business_id'] ?? null,
-            'title' => $validated['title'],
-            'description' => $validated['description'] ?? null,
-            'discount_type' => $validated['discount_type'],
-            'discount_value' => $validated['discount_value'] ?? null,
-            'terms' => $validated['terms'] ?? null,
-            'code' => $validated['code'] ?? null,
-            'business_name' => $validated['business_name'],
-            'business_location' => $validated['business_location'] ?? null,
-            'start_date' => $validated['start_date'],
-            'end_date' => $validated['end_date'],
-            'usage_limit' => $validated['usage_limit'] ?? null,
-            'status' => 'active', // Coupons are free to publish
-        ];
+        $coupon->incrementViewCount();
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('coupons', 'public');
-            $couponData['image'] = $path;
-        }
+        $user = $request->user();
 
-        // Attach regions
-        if (!empty($validated['region_ids'])) {
-            $couponData['regions'] = $validated['region_ids'];
-        } elseif ($currentRegion) {
-            $couponData['regions'] = [$currentRegion->id];
-        }
-
-        // Use CouponService to create
-        $coupon = $this->couponService->create($couponData, $request->user()->id);
-
-        return redirect()
-            ->route('day-news.coupons.show', $coupon->id)
-            ->with('success', 'Coupon published successfully!');
-    }
-
-    /**
-     * Display single coupon
-     */
-    public function show(Request $request, Coupon $coupon): Response
-    {
-        $coupon->load(['business', 'regions']);
-        
-        // Track view using CouponService
-        $this->couponService->trackView($coupon);
-
-        // Get related coupons using CouponService
-        $relatedFilters = [
-            'region_id' => $coupon->regions->first()?->id,
-        ];
-        $allRelated = $this->couponService->getActiveCoupons($relatedFilters, 10);
-        $related = $allRelated->filter(fn ($c) => $c->id !== $coupon->id)->take(6);
+        // Get related coupons
+        $relatedCoupons = $this->couponService->getRelatedCoupons($coupon, 4);
 
         return Inertia::render('day-news/coupons/show', [
             'coupon' => [
                 'id' => $coupon->id,
                 'title' => $coupon->title,
+                'slug' => $coupon->slug,
+                'code' => $coupon->code,
                 'description' => $coupon->description,
+                'terms_conditions' => $coupon->terms_conditions,
                 'discount_type' => $coupon->discount_type,
                 'discount_value' => $coupon->discount_value,
-                'terms' => $coupon->terms,
-                'code' => $coupon->code,
+                'discount_display' => $coupon->discount_display,
+                'valid_from' => $coupon->valid_from->toDateString(),
+                'valid_until' => $coupon->valid_until?->toDateString(),
                 'image' => $coupon->image,
-                'business_name' => $coupon->business_name,
-                'business_location' => $coupon->business_location,
-                'start_date' => $coupon->start_date->toDateString(),
-                'end_date' => $coupon->end_date->toDateString(),
-                'usage_limit' => $coupon->usage_limit,
-                'used_count' => $coupon->used_count,
-                'views_count' => $coupon->views_count,
-                'clicks_count' => $coupon->clicks_count,
-                'business' => $coupon->business ? [
+                'category' => $coupon->category,
+                'is_verified' => $coupon->is_verified,
+                'score' => $coupon->score,
+                'upvotes_count' => $coupon->upvotes_count,
+                'downvotes_count' => $coupon->downvotes_count,
+                'saves_count' => $coupon->saves_count,
+                'view_count' => $coupon->view_count,
+                'created_at' => $coupon->created_at->toISOString(),
+                'user' => [
+                    'id' => $coupon->user->id,
+                    'name' => $coupon->user->name,
+                ],
+                'business' => [
                     'id' => $coupon->business->id,
                     'name' => $coupon->business->name,
-                ] : null,
+                    'slug' => $coupon->business->slug,
+                    'address' => $coupon->business->address,
+                    'city' => $coupon->business->city,
+                    'state' => $coupon->business->state,
+                    'postal_code' => $coupon->business->postal_code,
+                    'phone' => $coupon->business->phone,
+                    'website' => $coupon->business->website,
+                    'opening_hours' => $coupon->business->opening_hours,
+                    'images' => $coupon->business->images,
+                    'categories' => $coupon->business->categories,
+                    'rating' => $coupon->business->rating,
+                ],
                 'regions' => $coupon->regions->map(fn ($r) => [
                     'id' => $r->id,
                     'name' => $r->name,
+                    'slug' => $r->slug,
                 ]),
+                'user_vote' => $user ? $coupon->getUserVote($user) : null,
+                'is_saved' => $user ? $coupon->isSavedBy($user) : false,
+                'comments' => $coupon->activeRootComments->map(function ($comment) use ($user) {
+                    return $this->transformComment($comment, $user);
+                }),
             ],
-            'related' => $related->map(fn ($item) => [
-                'id' => $item->id,
-                'title' => $item->title,
-                'description' => $item->description,
+            'relatedCoupons' => $relatedCoupons->map(fn ($c) => [
+                'id' => $c->id,
+                'title' => $c->title,
+                'slug' => $c->slug,
+                'code' => $c->code,
+                'discount_display' => $c->discount_display,
+                'valid_until' => $c->valid_until?->toDateString(),
+                'business' => [
+                    'name' => $c->business->name,
+                    'images' => $c->business->images,
+                ],
             ]),
         ]);
     }
 
     /**
-     * Record coupon usage (click/use)
+     * Show the create coupon form.
      */
-    public function use(Request $request, Coupon $coupon): \Illuminate\Http\JsonResponse
+    public function create(): Response
     {
-        // Validate coupon using CouponService
-        $validation = $this->couponService->validate($coupon->code, $request->user()?->id);
-        
-        if (!$validation['valid']) {
-            return response()->json([
-                'error' => $validation['error'],
-            ], 422);
-        }
+        $this->authorize('create', Coupon::class);
 
-        // Track click using CouponService
-        $this->couponService->trackClick($coupon);
-
-        // Record usage if user is authenticated
-        if ($request->user()) {
-            try {
-                $this->couponService->apply($coupon, $request->user()->id);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'error' => $e->getMessage(),
-                ], 422);
-            }
-        }
-
-        return response()->json([
-            'message' => 'Coupon usage recorded',
-            'coupon' => [
-                'code' => $coupon->code,
-                'discount_type' => $coupon->discount_type,
-                'discount_value' => $coupon->discount_value,
-                'terms' => $coupon->terms,
-            ],
+        return Inertia::render('day-news/coupons/create', [
+            'categories' => $this->getCategories(),
         ]);
     }
 
     /**
-     * Show edit form
+     * Store a new coupon.
+     */
+    public function store(StoreCouponRequest $request): RedirectResponse
+    {
+        $coupon = $this->couponService->createCoupon(
+            user: $request->user(),
+            data: $request->validated()
+        );
+
+        return redirect()
+            ->route('daynews.coupons.show', $coupon->slug)
+            ->with('success', 'Coupon created successfully!');
+    }
+
+    /**
+     * Show the edit coupon form.
      */
     public function edit(Coupon $coupon): Response
     {
         $this->authorize('update', $coupon);
 
-        $coupon->load(['regions']);
+        $coupon->load(['business', 'regions']);
 
         return Inertia::render('day-news/coupons/edit', [
-            'coupon' => $coupon,
+            'coupon' => [
+                'id' => $coupon->id,
+                'title' => $coupon->title,
+                'code' => $coupon->code,
+                'description' => $coupon->description,
+                'terms_conditions' => $coupon->terms_conditions,
+                'discount_type' => $coupon->discount_type,
+                'discount_value' => $coupon->discount_value,
+                'valid_from' => $coupon->valid_from->toDateString(),
+                'valid_until' => $coupon->valid_until?->toDateString(),
+                'category' => $coupon->category,
+                'business_id' => $coupon->business_id,
+                'business' => [
+                    'id' => $coupon->business->id,
+                    'name' => $coupon->business->name,
+                ],
+                'region_ids' => $coupon->regions->pluck('id'),
+                'regions' => $coupon->regions->map(fn ($r) => [
+                    'id' => $r->id,
+                    'name' => $r->name,
+                    'type' => $r->type,
+                ]),
+            ],
+            'categories' => $this->getCategories(),
         ]);
     }
 
     /**
-     * Update coupon
+     * Update a coupon.
      */
-    public function update(UpdateCouponRequest $request, Coupon $coupon): \Illuminate\Http\RedirectResponse
+    public function update(UpdateCouponRequest $request, Coupon $coupon): RedirectResponse
     {
-        $validated = $request->validated();
-
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('coupons', 'public');
-            $validated['image'] = $path;
-        }
-
-        // Update regions if provided
-        if (isset($validated['region_ids'])) {
-            $validated['regions'] = $validated['region_ids'];
-            unset($validated['region_ids']);
-        }
-
-        // Use CouponService to update
-        $this->couponService->update($coupon, $validated);
+        $this->couponService->updateCoupon($coupon, $request->validated());
 
         return redirect()
-            ->route('day-news.coupons.show', $coupon->id)
+            ->route('daynews.coupons.show', $coupon->slug)
             ->with('success', 'Coupon updated successfully!');
     }
 
     /**
-     * Delete coupon
+     * Delete a coupon.
      */
-    public function destroy(Coupon $coupon): \Illuminate\Http\RedirectResponse
+    public function destroy(Coupon $coupon): RedirectResponse
     {
         $this->authorize('delete', $coupon);
 
-        $coupon->delete();
+        $this->couponService->deleteCoupon($coupon);
 
         return redirect()
-            ->route('day-news.coupons.index')
-            ->with('success', 'Coupon deleted successfully!');
+            ->route('daynews.coupons.index')
+            ->with('success', 'Coupon deleted successfully.');
+    }
+
+    /**
+     * Display user's submitted coupons.
+     */
+    public function myCoupons(Request $request): Response
+    {
+        $coupons = $this->couponService->getMyCoupons($request->user());
+
+        return Inertia::render('day-news/coupons/my-coupons', [
+            'coupons' => $coupons->through(fn ($coupon) => [
+                'id' => $coupon->id,
+                'title' => $coupon->title,
+                'slug' => $coupon->slug,
+                'code' => $coupon->code,
+                'discount_display' => $coupon->discount_display,
+                'status' => $coupon->status,
+                'is_verified' => $coupon->is_verified,
+                'score' => $coupon->score,
+                'saves_count' => $coupon->saves_count,
+                'view_count' => $coupon->view_count,
+                'valid_until' => $coupon->valid_until?->toDateString(),
+                'created_at' => $coupon->created_at->toISOString(),
+                'business' => [
+                    'name' => $coupon->business->name,
+                ],
+                'can_edit' => $request->user()->can('update', $coupon),
+                'can_delete' => $request->user()->can('delete', $coupon),
+            ]),
+        ]);
+    }
+
+    /**
+     * Display user's saved coupons.
+     */
+    public function savedCoupons(Request $request): Response
+    {
+        $coupons = $this->couponService->getSavedCoupons($request->user());
+
+        return Inertia::render('day-news/coupons/saved', [
+            'coupons' => $coupons->through(fn ($coupon) => [
+                'id' => $coupon->id,
+                'title' => $coupon->title,
+                'slug' => $coupon->slug,
+                'code' => $coupon->code,
+                'discount_display' => $coupon->discount_display,
+                'valid_until' => $coupon->valid_until?->toDateString(),
+                'business' => [
+                    'id' => $coupon->business->id,
+                    'name' => $coupon->business->name,
+                    'images' => $coupon->business->images,
+                ],
+            ]),
+        ]);
+    }
+
+    /**
+     * Get available categories.
+     *
+     * @return array<int, array{value: string, label: string}>
+     */
+    private function getCategories(): array
+    {
+        return [
+            ['value' => 'restaurant', 'label' => 'Restaurant'],
+            ['value' => 'retail', 'label' => 'Retail'],
+            ['value' => 'services', 'label' => 'Services'],
+            ['value' => 'entertainment', 'label' => 'Entertainment'],
+            ['value' => 'health_beauty', 'label' => 'Health & Beauty'],
+            ['value' => 'automotive', 'label' => 'Automotive'],
+            ['value' => 'travel', 'label' => 'Travel'],
+            ['value' => 'grocery', 'label' => 'Grocery'],
+            ['value' => 'electronics', 'label' => 'Electronics'],
+            ['value' => 'other', 'label' => 'Other'],
+        ];
+    }
+
+    /**
+     * Transform a comment for the frontend.
+     *
+     * @return array<string, mixed>
+     */
+    private function transformComment($comment, $user): array
+    {
+        return [
+            'id' => $comment->id,
+            'content' => $comment->content,
+            'created_at' => $comment->created_at->toISOString(),
+            'user' => [
+                'id' => $comment->user->id,
+                'name' => $comment->user->name,
+            ],
+            'likes_count' => $comment->likesCount(),
+            'is_liked' => $user ? $comment->isLikedBy($user) : false,
+            'replies' => $comment->activeReplies->map(function ($reply) use ($user) {
+                return $this->transformComment($reply, $user);
+            }),
+        ];
     }
 }
-

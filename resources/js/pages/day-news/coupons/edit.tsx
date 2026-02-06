@@ -1,19 +1,19 @@
 import { SEO } from "@/components/common/seo";
-import { ClassifiedForm } from "@/components/day-news/classified-form";
+import { CouponForm } from "@/components/day-news/coupon-form";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import { Button } from "@/components/ui/button";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
-import type { ClassifiedCreatePageProps } from "@/types/classified";
+import type { CouponEditPageProps } from "@/types/coupon";
 import { Link } from "@inertiajs/react";
-import { ArrowLeft, ShoppingBag } from "lucide-react";
+import { ArrowLeft, Edit } from "lucide-react";
 import { route } from "ziggy-js";
 
-interface Props extends ClassifiedCreatePageProps {
-    auth: Auth;
+interface Props extends CouponEditPageProps {
+    auth?: Auth;
 }
 
-export default function ClassifiedCreate({ auth, categories, conditions, priceTypes }: Props) {
+export default function CouponEdit({ auth, coupon, categories }: Props) {
     return (
         <LocationProvider>
             <div className="min-h-screen bg-background">
@@ -21,9 +21,9 @@ export default function ClassifiedCreate({ auth, categories, conditions, priceTy
                     type="website"
                     site="day-news"
                     data={{
-                        title: "Post a Listing",
-                        description: "Create a new classified listing to sell your items in your local community.",
-                        url: "/classifieds/create",
+                        title: `Edit: ${coupon.title}`,
+                        description: "Update your coupon details.",
+                        url: `/coupons/${coupon.id}/edit`,
                     }}
                 />
                 <DayNewsHeader auth={auth} />
@@ -32,9 +32,9 @@ export default function ClassifiedCreate({ auth, categories, conditions, priceTy
                     {/* Back link */}
                     <div className="mb-6">
                         <Button variant="ghost" size="sm" asChild>
-                            <Link href={route("daynews.classifieds.index")}>
+                            <Link href={route("daynews.coupons.index")}>
                                 <ArrowLeft className="mr-2 size-4" />
-                                Back to Classifieds
+                                Back to Coupons
                             </Link>
                         </Button>
                     </div>
@@ -42,21 +42,14 @@ export default function ClassifiedCreate({ auth, categories, conditions, priceTy
                     {/* Page header */}
                     <div className="mb-8">
                         <h1 className="flex items-center gap-2 font-serif text-3xl font-bold">
-                            <ShoppingBag className="size-8" />
-                            Post a Listing
+                            <Edit className="size-8" />
+                            Edit Coupon
                         </h1>
-                        <p className="mt-1 text-muted-foreground">
-                            Fill out the form below to create your classified listing.
-                        </p>
+                        <p className="mt-2 text-muted-foreground">Update your coupon details below.</p>
                     </div>
 
                     {/* Form */}
-                    <ClassifiedForm
-                        categories={categories}
-                        conditions={conditions}
-                        priceTypes={priceTypes}
-                        mode="create"
-                    />
+                    <CouponForm categories={categories} initialData={coupon} mode="edit" />
                 </main>
             </div>
         </LocationProvider>

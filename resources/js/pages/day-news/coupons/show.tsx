@@ -1,192 +1,263 @@
-import { Head, router, usePage } from "@inertiajs/react";
-import { Building, Calendar, Copy, Percent, Ticket } from "lucide-react";
-import { useState } from "react";
 import { SEO } from "@/components/common/seo";
+import { CouponBusinessSidebar } from "@/components/day-news/coupon-business-sidebar";
+import { CouponCard } from "@/components/day-news/coupon-card";
+import { CouponCodeDisplay } from "@/components/day-news/coupon-code-display";
+import { CouponCommentSection } from "@/components/day-news/coupon-comment-section";
+import { CouponSaveButton } from "@/components/day-news/coupon-save-button";
+import { CouponVoteButtons } from "@/components/day-news/coupon-vote-buttons";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { LocationProvider } from "@/contexts/location-context";
 import type { Auth } from "@/types";
+import type { CouponShowPageProps } from "@/types/coupon";
+import { Link, router } from "@inertiajs/react";
+import dayjs from "dayjs";
+import { ArrowLeft, BadgeCheck, Calendar, Edit, Eye, MapPin, Store, Tag, Trash2 } from "lucide-react";
+import { route } from "ziggy-js";
 
-interface Coupon {
-    id: string;
-    title: string;
-    description: string | null;
-    discount_type: string;
-    discount_value: number | null;
-    terms: string | null;
-    code: string | null;
-    image: string | null;
-    business_name: string;
-    business_location: string | null;
-    start_date: string;
-    end_date: string;
-    usage_limit: number | null;
-    used_count: number;
-    views_count: number;
-    clicks_count: number;
-    business: {
-        id: string;
-        name: string;
-    } | null;
-    regions: Array<{
-        id: string;
-        name: string;
-    }>;
-}
-
-interface ShowCouponProps {
+interface Props extends CouponShowPageProps {
     auth?: Auth;
-    coupon: Coupon;
-    related: Coupon[];
 }
 
-export default function ShowCoupon() {
-    const { auth, coupon, related } = usePage<ShowCouponProps>().props;
-    const [copied, setCopied] = useState(false);
+export default function CouponShow({ auth, coupon, relatedCoupons }: Props) {
+    const isExpired = coupon.valid_until && new Date(coupon.valid_until) < new Date();
+    const isOwner = auth?.user?.id === coupon.user?.id;
 
-    const formatDiscount = () => {
-        switch (coupon.discount_type) {
-            case "percentage":
-                return `${coupon.discount_value}% OFF`;
-            case "fixed_amount":
-                return `$${coupon.discount_value} OFF`;
-            case "buy_one_get_one":
-                return "Buy One Get One";
-            case "free_item":
-                return "Free Item";
-            default:
-                return "Special Offer";
-        }
+    const handleDelete = () => {
+        if (!confirm("Are you sure you want to delete this coupon?")) return;
+        router.delete(route("daynews.coupons.destroy", { coupon: coupon.id }));
     };
 
-    const handleUseCoupon = async () => {
-        try {
-            const response = await fetch(`/coupons/${coupon.id}/use`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "",
-                },
-            });
-            const data = await response.json();
-            if (data.coupon?.code) {
-                navigator.clipboard.writeText(data.coupon.code);
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-            }
-        } catch (error) {
-            console.error("Error using coupon:", error);
-        }
-    };
-
-    const copyCode = () => {
-        if (coupon.code) {
-            navigator.clipboard.writeText(coupon.code);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-        }
+    const formatCategory = (category: string): string => {
+        return category
+            .split("_")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ");
     };
 
     return (
         <LocationProvider>
             <div className="min-h-screen bg-background">
-                <Head title={`${coupon.title} - Day News`} />
                 <SEO
                     type="article"
                     site="day-news"
                     data={{
-                        title: coupon.title,
-                        description: coupon.description || "",
-                        image: coupon.image,
-                        url: `/coupons/${coupon.id}`,
+                        title: `${coupon.title} - ${coupon.discount_display}`,
+                        description: coupon.description || `Get ${coupon.discount_display} at ${coupon.business.name}`,
+                        url: `/coupons/${coupon.slug}`,
+                        image: coupon.image || coupon.business.images?.[0],
                     }}
                 />
                 <DayNewsHeader auth={auth} />
 
-                <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-                    <div className="mb-8 rounded-lg border bg-card p-8">
-                        {coupon.image && <img src={coupon.image} alt={coupon.title} className="mb-6 h-64 w-full rounded-lg object-cover" />}
-
-                        <div className="mb-6 flex items-center justify-between">
-                            <Badge variant="destructive" className="flex items-center gap-2 px-4 py-2 text-lg">
-                                <Percent className="size-5" />
-                                {formatDiscount()}
-                            </Badge>
-                            {coupon.code && (
-                                <div className="flex items-center gap-2">
-                                    <Badge variant="outline" className="font-mono text-lg">
-                                        {coupon.code}
-                                    </Badge>
-                                    <Button variant="outline" size="sm" onClick={copyCode}>
-                                        <Copy className={`mr-2 size-4 ${copied ? "text-green-500" : ""}`} />
-                                        {copied ? "Copied!" : "Copy"}
-                                    </Button>
-                                </div>
-                            )}
-                        </div>
-
-                        <h1 className="mb-4 text-4xl font-bold">{coupon.title}</h1>
-
-                        {coupon.description && <p className="mb-6 text-lg text-muted-foreground">{coupon.description}</p>}
-
-                        <div className="mb-6 flex flex-wrap items-center gap-4 text-sm">
-                            <div className="flex items-center gap-2">
-                                <Building className="size-4 text-muted-foreground" />
-                                <span className="font-medium">{coupon.business_name}</span>
-                            </div>
-                            {coupon.business_location && (
-                                <div className="flex items-center gap-2 text-muted-foreground">
-                                    <span>•</span>
-                                    <span>{coupon.business_location}</span>
-                                </div>
-                            )}
-                            <div className="flex items-center gap-2 text-muted-foreground">
-                                <Calendar className="size-4" />
-                                <span>
-                                    Valid {new Date(coupon.start_date).toLocaleDateString()} - {new Date(coupon.end_date).toLocaleDateString()}
-                                </span>
-                            </div>
-                        </div>
-
-                        {coupon.terms && (
-                            <div className="mb-6 rounded-lg bg-muted p-4">
-                                <h3 className="mb-2 font-semibold">Terms & Conditions</h3>
-                                <p className="text-sm text-muted-foreground">{coupon.terms}</p>
-                            </div>
-                        )}
-
-                        <Button onClick={handleUseCoupon} size="lg" className="w-full">
-                            <Ticket className="mr-2 size-5" />
-                            Use This Coupon
+                <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                    {/* Back link */}
+                    <div className="mb-6">
+                        <Button variant="ghost" size="sm" asChild>
+                            <Link href={route("daynews.coupons.index")}>
+                                <ArrowLeft className="mr-2 size-4" />
+                                Back to Coupons
+                            </Link>
                         </Button>
-
-                        {coupon.usage_limit && (
-                            <p className="mt-4 text-center text-sm text-muted-foreground">
-                                {coupon.used_count} of {coupon.usage_limit} uses remaining
-                            </p>
-                        )}
                     </div>
 
-                    {/* Related Coupons */}
-                    {related.length > 0 && (
-                        <div>
-                            <h2 className="mb-4 text-2xl font-bold">More Coupons</h2>
-                            <div className="grid gap-4 md:grid-cols-2">
-                                {related.map((item) => (
-                                    <div
-                                        key={item.id}
-                                        className="cursor-pointer rounded-lg border p-4 transition-shadow hover:shadow-md"
-                                        onClick={() => router.visit(`/coupons/${item.id}`)}
-                                    >
-                                        <h3 className="mb-2 font-semibold">{item.title}</h3>
-                                        <p className="line-clamp-2 text-sm text-muted-foreground">{item.description}</p>
+                    <div className="grid gap-8 lg:grid-cols-3">
+                        {/* Main content */}
+                        <div className="lg:col-span-2 space-y-6">
+                            {/* Coupon header */}
+                            <Card>
+                                <CardHeader className="space-y-4">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <Badge className="text-lg px-3 py-1">{coupon.discount_display}</Badge>
+                                        {coupon.is_verified && (
+                                            <Badge variant="secondary" className="gap-1">
+                                                <BadgeCheck className="size-4" />
+                                                Verified
+                                            </Badge>
+                                        )}
+                                        {isExpired && <Badge variant="destructive">Expired</Badge>}
+                                        <Badge variant="outline" className="gap-1">
+                                            <Tag className="size-3" />
+                                            {formatCategory(coupon.category)}
+                                        </Badge>
                                     </div>
-                                ))}
-                            </div>
+
+                                    <CardTitle className="text-2xl sm:text-3xl">{coupon.title}</CardTitle>
+
+                                    <div className="flex items-center gap-2 text-muted-foreground">
+                                        <Store className="size-4" />
+                                        <span className="font-medium">{coupon.business.name}</span>
+                                    </div>
+                                </CardHeader>
+
+                                <CardContent className="space-y-6">
+                                    {/* Coupon code */}
+                                    {coupon.code && (
+                                        <div>
+                                            <h3 className="mb-2 text-sm font-semibold text-muted-foreground">Coupon Code</h3>
+                                            <CouponCodeDisplay code={coupon.code} size="lg" />
+                                        </div>
+                                    )}
+
+                                    {/* Validity dates */}
+                                    <div className="flex flex-wrap gap-4 text-sm">
+                                        <div className="flex items-center gap-2">
+                                            <Calendar className="size-4 text-muted-foreground" />
+                                            <span>Valid from {dayjs(coupon.valid_from).format("MMM D, YYYY")}</span>
+                                        </div>
+                                        {coupon.valid_until && (
+                                            <div className={`flex items-center gap-2 ${isExpired ? "text-red-500" : ""}`}>
+                                                <Calendar className="size-4" />
+                                                <span>
+                                                    {isExpired ? "Expired" : "Valid until"} {dayjs(coupon.valid_until).format("MMM D, YYYY")}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Regions */}
+                                    {coupon.regions.length > 0 && (
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <MapPin className="size-4 text-muted-foreground" />
+                                            {coupon.regions.map((region) => (
+                                                <Badge key={region.id} variant="secondary">
+                                                    {region.name}
+                                                </Badge>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    <Separator />
+
+                                    {/* Vote and save buttons */}
+                                    <div className="flex flex-wrap items-center justify-between gap-4">
+                                        <CouponVoteButtons
+                                            couponId={coupon.id}
+                                            score={coupon.score}
+                                            upvotesCount={coupon.upvotes_count}
+                                            downvotesCount={coupon.downvotes_count}
+                                            userVote={coupon.user_vote}
+                                        />
+                                        <div className="flex items-center gap-2">
+                                            <CouponSaveButton
+                                                couponId={coupon.id}
+                                                isSaved={coupon.is_saved}
+                                                savesCount={coupon.saves_count}
+                                                showCount
+                                            />
+                                            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                                <Eye className="size-4" />
+                                                {coupon.view_count} views
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Owner actions */}
+                                    {isOwner && (
+                                        <>
+                                            <Separator />
+                                            <div className="flex gap-2">
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <Link href={route("daynews.coupons.edit", { coupon: coupon.id })}>
+                                                        <Edit className="mr-2 size-4" />
+                                                        Edit
+                                                    </Link>
+                                                </Button>
+                                                <Button variant="destructive" size="sm" onClick={handleDelete}>
+                                                    <Trash2 className="mr-2 size-4" />
+                                                    Delete
+                                                </Button>
+                                            </div>
+                                        </>
+                                    )}
+                                </CardContent>
+                            </Card>
+
+                            {/* Description */}
+                            {coupon.description && (
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-lg">About This Offer</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <p className="whitespace-pre-wrap text-muted-foreground">{coupon.description}</p>
+                                    </CardContent>
+                                </Card>
+                            )}
+
+                            {/* Terms and conditions */}
+                            {coupon.terms_conditions && (
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-lg">Terms & Conditions</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <p className="whitespace-pre-wrap text-sm text-muted-foreground">{coupon.terms_conditions}</p>
+                                    </CardContent>
+                                </Card>
+                            )}
+
+                            {/* Submitter info */}
+                            <Card>
+                                <CardContent className="py-4">
+                                    <p className="text-sm text-muted-foreground">
+                                        Submitted by <span className="font-medium text-foreground">{coupon.user?.name}</span> &middot;{" "}
+                                        {dayjs(coupon.created_at).fromNow()}
+                                    </p>
+                                </CardContent>
+                            </Card>
+
+                            {/* Comments */}
+                            <CouponCommentSection couponId={coupon.id} comments={coupon.comments ?? []} auth={auth} />
                         </div>
-                    )}
-                </div>
+
+                        {/* Sidebar */}
+                        <div className="space-y-6">
+                            {/* Business info */}
+                            <CouponBusinessSidebar business={coupon.business} />
+
+                            {/* Related coupons */}
+                            {relatedCoupons.length > 0 && (
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-lg">More Deals</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        {relatedCoupons.map((related) => (
+                                            <Link key={related.id} href={route("daynews.coupons.show", { slug: related.slug })} className="block">
+                                                <div className="group flex gap-3 rounded-lg p-2 transition-colors hover:bg-muted">
+                                                    <div className="size-12 flex-shrink-0 overflow-hidden rounded bg-muted">
+                                                        {related.business.images?.[0] ? (
+                                                            <img
+                                                                src={related.business.images[0]}
+                                                                alt={related.business.name}
+                                                                className="size-full object-cover"
+                                                            />
+                                                        ) : (
+                                                            <div className="flex size-full items-center justify-center">
+                                                                <Store className="size-4 text-muted-foreground" />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="line-clamp-1 font-medium text-sm group-hover:text-primary">{related.title}</p>
+                                                        <p className="text-xs text-muted-foreground">{related.business.name}</p>
+                                                        <Badge variant="secondary" className="mt-1 text-xs">
+                                                            {related.discount_display}
+                                                        </Badge>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        ))}
+                                    </CardContent>
+                                </Card>
+                            )}
+                        </div>
+                    </div>
+                </main>
             </div>
         </LocationProvider>
     );

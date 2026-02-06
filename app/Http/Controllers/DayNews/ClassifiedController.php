@@ -6,10 +6,12 @@ namespace App\Http\Controllers\DayNews;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DayNews\StoreClassifiedRequest;
-use App\Services\DayNews\ClassifiedService;
-use App\Services\DayNewsPaymentService;
+use App\Http\Requests\DayNews\UpdateClassifiedRequest;
 use App\Models\Classified;
-use App\Models\ClassifiedPayment;
+use App\Models\ClassifiedCategory;
+use App\Services\ClassifiedService;
+use Closure;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,329 +19,464 @@ use Inertia\Response;
 final class ClassifiedController extends Controller
 {
     public function __construct(
-        private readonly ClassifiedService $classifiedService,
-        private readonly DayNewsPaymentService $paymentService
+        private readonly ClassifiedService $classifiedService
     ) {}
 
     /**
-     * Display classifieds listing
+     * Display the classifieds discovery page.
      */
     public function index(Request $request): Response
     {
         $currentRegion = $request->attributes->get('detected_region');
-        $category = $request->get('category', 'all');
-        $subcategory = $request->get('subcategory', 'all');
-        $search = $request->get('search', '');
+        $regionId = $currentRegion?->id;
 
-        $query = Classified::active()
-            ->with(['user', 'images', 'regions'])
-            ->orderBy('is_featured', 'desc')
-            ->orderBy('posted_at', 'desc');
+        $categoryId = $request->query('category');
+        $condition = $request->query('condition');
+        $minPrice = $request->query('min_price') ? (float) $request->query('min_price') : null;
+        $maxPrice = $request->query('max_price') ? (float) $request->query('max_price') : null;
+        $search = $request->query('search');
+        $showGlobal = $request->boolean('global', false);
 
-        // Filter by region
-        if ($currentRegion) {
-            $query->forRegion($currentRegion->id);
-        }
+        // Get featured classifieds
+        $featuredClassifieds = $this->classifiedService->getFeaturedClassifieds($regionId, 6);
 
-        // Filter by category
-        if ($category !== 'all') {
-            $query->byCategory($category);
-            if ($subcategory !== 'all') {
-                $query->where('subcategory', $subcategory);
-            }
-        }
+        // Get all classifieds with pagination
+        $classifieds = $this->classifiedService->getClassifieds(
+            regionId: $regionId,
+            categoryId: $categoryId,
+            condition: $condition,
+            minPrice: $minPrice,
+            maxPrice: $maxPrice,
+            search: $search,
+            showGlobal: $showGlobal,
+            perPage: 12
+        );
 
-        // Search
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        $classifieds = $query->paginate(20)->withQueryString();
+        // Transform for frontend
+        $user = $request->user();
+        $transformClassified = $this->getCardTransformer($user);
 
         return Inertia::render('day-news/classifieds/index', [
-            'classifieds' => $classifieds,
+            'featuredClassifieds' => $featuredClassifieds->map($transformClassified),
+            'classifieds' => $classifieds->through($transformClassified),
+            'categories' => $this->getCategoryTree(),
+            'conditions' => $this->getConditions(),
             'filters' => [
-                'category' => $category,
-                'subcategory' => $subcategory,
+                'category' => $categoryId,
+                'condition' => $condition,
+                'min_price' => $minPrice,
+                'max_price' => $maxPrice,
                 'search' => $search,
+                'global' => $showGlobal,
             ],
-            'currentRegion' => $currentRegion,
+            'hasRegion' => $currentRegion !== null,
         ]);
     }
 
     /**
-     * Show classified creation form
+     * Display a single classified listing.
      */
-    public function create(): Response
+    public function show(string $slug, Request $request): Response
     {
-        return Inertia::render('day-news/classifieds/create');
-    }
+        $classified = Classified::with([
+            'category.parent',
+            'images',
+            'regions',
+            'user',
+            'specificationValues.specification',
+            'customAttributes',
+            'activeRootComments.user',
+            'activeRootComments.activeReplies.user',
+        ])
+            ->where('slug', $slug)
+            ->firstOrFail();
 
-    /**
-     * Store new classified (step 1: basic info)
-     */
-    public function store(StoreClassifiedRequest $request): \Illuminate\Http\RedirectResponse
-    {
-        $validated = $request->validated();
+        $this->authorize('view', $classified);
 
-        $classified = $this->classifiedService->createListing(
-            $validated,
-            $request->user()->id,
-            $request->user()->currentWorkspace
-        );
+        $classified->incrementViewCount();
 
-        return redirect()
-            ->route('day-news.classifieds.select-regions', $classified->id)
-            ->with('success', 'Listing created! Now select regions.');
-    }
+        $user = $request->user();
 
-    /**
-     * Show region selection page
-     */
-    public function selectRegions(Classified $classified): Response
-    {
-        $this->authorize('update', $classified);
+        // Get similar classifieds
+        $similarClassifieds = $this->classifiedService->getSimilarClassifieds($classified, 4);
 
-        $currentRegion = request()->attributes->get('detected_region');
-        $regions = \App\Models\Region::where('type', 'city')
-            ->orderBy('name')
-            ->get()
-            ->map(fn ($r) => [
-                'id' => $r->id,
-                'name' => $r->name,
-                'type' => $r->type,
-                'full_name' => $r->name . ($r->metadata['state'] ?? ''),
-            ]);
-
-        return Inertia::render('day-news/classifieds/select-regions', [
-            'classified' => [
-                'id' => $classified->id,
-                'title' => $classified->title,
-            ],
-            'regions' => $regions,
-            'currentRegion' => $currentRegion,
-        ]);
-    }
-
-    /**
-     * Store selected regions and show timeframe selection
-     */
-    public function storeRegions(Request $request, Classified $classified): \Illuminate\Http\RedirectResponse
-    {
-        $this->authorize('update', $classified);
-
-        $validated = $request->validate([
-            'region_ids' => 'required|array|min:1',
-            'region_ids.*' => 'exists:regions,id',
-        ]);
-
-        // Store regions temporarily (will be finalized after payment)
-        session(['classified_regions_' . $classified->id => $validated['region_ids']]);
-
-        return redirect()
-            ->route('day-news.classifieds.select-timeframe', $classified->id);
-    }
-
-    /**
-     * Show timeframe selection page
-     */
-    public function selectTimeframe(Classified $classified): Response
-    {
-        $this->authorize('update', $classified);
-
-        $regionIds = session('classified_regions_' . $classified->id, []);
-
-        // Get region names for display
-        $regions = \App\Models\Region::whereIn('id', $regionIds)->get();
-
-        return Inertia::render('day-news/classifieds/select-timeframe', [
-            'classified' => [
-                'id' => $classified->id,
-                'title' => $classified->title,
-            ],
-            'regionIds' => $regionIds,
-            'regions' => $regions->map(fn ($r) => [
-                'id' => $r->id,
-                'name' => $r->name,
-            ]),
-        ]);
-    }
-
-    /**
-     * Store timeframe and proceed to payment
-     */
-    public function storeTimeframe(Request $request, Classified $classified): \Illuminate\Http\RedirectResponse
-    {
-        $this->authorize('update', $classified);
-
-        $validated = $request->validate([
-            'days' => 'required|integer|min:1|max:90',
-        ]);
-
-        $regionIds = session('classified_regions_' . $classified->id, []);
-        $regionsData = array_map(fn ($id) => ['region_id' => $id, 'days' => $validated['days']], $regionIds);
-
-        $totalCost = $this->classifiedService->calculateCost($regionsData, $validated['days']);
-
-        // Create payment record
-        $payment = ClassifiedPayment::create([
-            'classified_id' => $classified->id,
-            'workspace_id' => $classified->workspace_id,
-            'amount' => $totalCost,
-            'status' => 'pending',
-            'regions_data' => $regionsData,
-            'total_days' => $validated['days'],
-        ]);
-
-        // Create Stripe checkout session
-        $session = $this->paymentService->createClassifiedCheckoutSession(
-            $classified,
-            $payment,
-            route('day-news.classifieds.payment.success', ['classified' => $classified->id]),
-            route('day-news.classifieds.payment.cancel', ['classified' => $classified->id])
-        );
-
-        return Inertia::location($session->url);
-    }
-
-    /**
-     * Display single classified
-     */
-    public function show(Request $request, Classified $classified): Response
-    {
-        $classified->load(['user', 'images', 'regions']);
-        $classified->incrementViewsCount();
-
-        // Get related classifieds
-        $related = Classified::active()
-            ->where('id', '!=', $classified->id)
-            ->where('category', $classified->category)
-            ->whereHas('regions', function ($q) use ($classified) {
-                $q->whereIn('region_id', $classified->regions->pluck('id'));
-            })
-            ->with(['user', 'images'])
-            ->limit(6)
-            ->get()
-            ->map(fn ($item) => [
-                'id' => $item->id,
-                'title' => $item->title,
-                'description' => $item->description,
-                'price' => $item->price,
-                'price_type' => $item->price_type,
-                'images' => $item->images->map(fn ($img) => [
-                    'id' => $img->id,
-                    'image_url' => $img->image_url,
-                ]),
-            ]);
+        // Contact info is only shown to authenticated users
+        $contactInfo = $user ? [
+            'email' => $classified->contact_email,
+            'phone' => $classified->contact_phone,
+        ] : null;
 
         return Inertia::render('day-news/classifieds/show', [
             'classified' => [
                 'id' => $classified->id,
-                'category' => $classified->category,
-                'subcategory' => $classified->subcategory,
+                'title' => $classified->title,
+                'slug' => $classified->slug,
+                'description' => $classified->description,
+                'price' => $classified->price,
+                'price_type' => $classified->price_type,
+                'price_display' => $classified->price_display,
+                'condition' => $classified->condition,
+                'condition_display' => $classified->condition_display,
+                'status' => $classified->status,
+                'view_count' => $classified->view_count,
+                'saves_count' => $classified->saves_count,
+                'created_at' => $classified->created_at->toISOString(),
+                'user' => [
+                    'id' => $classified->user->id,
+                    'name' => $classified->user->name,
+                ],
+                'category' => [
+                    'id' => $classified->category->id,
+                    'name' => $classified->category->name,
+                    'slug' => $classified->category->slug,
+                    'parent' => $classified->category->parent ? [
+                        'id' => $classified->category->parent->id,
+                        'name' => $classified->category->parent->name,
+                        'slug' => $classified->category->parent->slug,
+                    ] : null,
+                ],
+                'images' => $classified->images->map(fn ($img) => [
+                    'id' => $img->id,
+                    'url' => $img->url,
+                    'is_primary' => $img->is_primary,
+                ]),
+                'regions' => $classified->regions->map(fn ($r) => [
+                    'id' => $r->id,
+                    'name' => $r->name,
+                    'slug' => $r->slug,
+                ]),
+                'specifications' => $classified->specificationValues->map(fn ($sv) => [
+                    'name' => $sv->specification->name,
+                    'value' => $sv->value,
+                ]),
+                'custom_attributes' => $classified->customAttributes->map(fn ($attr) => [
+                    'key' => $attr->key,
+                    'value' => $attr->value,
+                ]),
+                'is_saved' => $user ? $classified->isSavedBy($user) : false,
+                'is_owner' => $user ? $classified->isOwnedBy($user) : false,
+                'comments' => $classified->activeRootComments->map(function ($comment) use ($user) {
+                    return $this->transformComment($comment, $user);
+                }),
+            ],
+            'contact' => $contactInfo,
+            'canViewContact' => (bool) $user,
+            'similarClassifieds' => $similarClassifieds->map($this->getCardTransformer($user)),
+        ]);
+    }
+
+    /**
+     * Show the create classified form.
+     */
+    public function create(): Response
+    {
+        $this->authorize('create', Classified::class);
+
+        return Inertia::render('day-news/classifieds/create', [
+            'categories' => $this->getCategoryTree(),
+            'conditions' => $this->getConditions(),
+            'priceTypes' => $this->getPriceTypes(),
+        ]);
+    }
+
+    /**
+     * Store a new classified listing.
+     */
+    public function store(StoreClassifiedRequest $request): RedirectResponse|\Illuminate\Http\JsonResponse
+    {
+        $classified = $this->classifiedService->createClassified(
+            user: $request->user(),
+            data: $request->validated()
+        );
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Your listing has been created successfully!',
+                'classified' => [
+                    'id' => $classified->id,
+                    'slug' => $classified->slug,
+                ],
+            ], 201);
+        }
+
+        return redirect()
+            ->route('daynews.classifieds.show', $classified->slug)
+            ->with('success', 'Your listing has been created successfully!');
+    }
+
+    /**
+     * Show the edit classified form.
+     */
+    public function edit(Classified $classified): Response
+    {
+        $this->authorize('update', $classified);
+
+        $classified->load(['category', 'images', 'regions', 'specificationValues.specification', 'customAttributes']);
+
+        // Get specifications for the category
+        $categorySpecs = $classified->category->getAllSpecifications();
+
+        return Inertia::render('day-news/classifieds/edit', [
+            'classified' => [
+                'id' => $classified->id,
                 'title' => $classified->title,
                 'description' => $classified->description,
                 'price' => $classified->price,
                 'price_type' => $classified->price_type,
                 'condition' => $classified->condition,
-                'location' => $classified->location,
-                'is_featured' => $classified->is_featured,
-                'posted_at' => $classified->posted_at?->toISOString(),
-                'expires_at' => $classified->expires_at?->toISOString(),
-                'views_count' => $classified->views_count,
+                'contact_email' => $classified->contact_email,
+                'contact_phone' => $classified->contact_phone,
+                'classified_category_id' => $classified->classified_category_id,
+                'category' => [
+                    'id' => $classified->category->id,
+                    'name' => $classified->category->name,
+                ],
                 'images' => $classified->images->map(fn ($img) => [
                     'id' => $img->id,
-                    'image_url' => $img->image_url,
+                    'url' => $img->url,
+                    'is_primary' => $img->is_primary,
                 ]),
-                'user' => [
-                    'id' => $classified->user->id,
-                    'name' => $classified->user->name,
+                'region_ids' => $classified->regions->pluck('id'),
+                'regions' => $classified->regions->map(fn ($r) => [
+                    'id' => $r->id,
+                    'name' => $r->name,
+                    'type' => $r->type,
+                ]),
+                'specifications' => $classified->specificationValues->pluck('value', 'classified_specification_id'),
+                'custom_attributes' => $classified->customAttributes->map(fn ($attr) => [
+                    'key' => $attr->key,
+                    'value' => $attr->value,
+                ]),
+            ],
+            'categorySpecifications' => $categorySpecs->map(fn ($spec) => [
+                'id' => $spec->id,
+                'name' => $spec->name,
+                'key' => $spec->key,
+                'type' => $spec->type,
+                'options' => $spec->options,
+                'is_required' => $spec->is_required,
+            ]),
+            'categories' => $this->getCategoryTree(),
+            'conditions' => $this->getConditions(),
+            'priceTypes' => $this->getPriceTypes(),
+        ]);
+    }
+
+    /**
+     * Update a classified listing.
+     */
+    public function update(UpdateClassifiedRequest $request, Classified $classified): RedirectResponse|\Illuminate\Http\JsonResponse
+    {
+        $updatedClassified = $this->classifiedService->updateClassified($classified, $request->validated());
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Your listing has been updated successfully!',
+                'classified' => [
+                    'id' => $updatedClassified->id,
+                    'slug' => $updatedClassified->slug,
+                ],
+            ]);
+        }
+
+        return redirect()
+            ->route('daynews.classifieds.show', $classified->slug)
+            ->with('success', 'Your listing has been updated successfully!');
+    }
+
+    /**
+     * Delete a classified listing.
+     */
+    public function destroy(Classified $classified): RedirectResponse
+    {
+        $this->authorize('delete', $classified);
+
+        $this->classifiedService->deleteClassified($classified);
+
+        return redirect()
+            ->route('daynews.classifieds.index')
+            ->with('success', 'Your listing has been deleted.');
+    }
+
+    /**
+     * Mark a classified as sold.
+     */
+    public function markSold(Classified $classified): RedirectResponse
+    {
+        $this->authorize('update', $classified);
+
+        $this->classifiedService->markAsSold($classified);
+
+        return redirect()
+            ->back()
+            ->with('success', 'Your listing has been marked as sold.');
+    }
+
+    /**
+     * Reactivate a classified listing.
+     */
+    public function reactivate(Classified $classified): RedirectResponse
+    {
+        $this->authorize('update', $classified);
+
+        $this->classifiedService->reactivate($classified);
+
+        return redirect()
+            ->back()
+            ->with('success', 'Your listing has been reactivated.');
+    }
+
+    /**
+     * Display user's own classified listings.
+     */
+    public function myClassifieds(Request $request): Response
+    {
+        $classifieds = $this->classifiedService->getMyClassifieds($request->user());
+
+        return Inertia::render('day-news/classifieds/my-classifieds', [
+            'classifieds' => $classifieds->through(fn ($classified) => [
+                'id' => $classified->id,
+                'title' => $classified->title,
+                'slug' => $classified->slug,
+                'price_display' => $classified->price_display,
+                'condition_display' => $classified->condition_display,
+                'status' => $classified->status,
+                'saves_count' => $classified->saves_count,
+                'view_count' => $classified->view_count,
+                'created_at' => $classified->created_at->toISOString(),
+                'primary_image' => $classified->primary_image,
+                'category' => [
+                    'id' => $classified->category->id,
+                    'name' => $classified->category->name,
+                ],
+                'can_edit' => $request->user()->can('update', $classified),
+                'can_delete' => $request->user()->can('delete', $classified),
+            ]),
+        ]);
+    }
+
+    /**
+     * Display user's saved classified listings.
+     */
+    public function savedClassifieds(Request $request): Response
+    {
+        $classifieds = $this->classifiedService->getSavedClassifieds($request->user());
+        $user = $request->user();
+
+        return Inertia::render('day-news/classifieds/saved', [
+            'classifieds' => $classifieds->through($this->getCardTransformer($user)),
+        ]);
+    }
+
+    /**
+     * Get category tree with children.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function getCategoryTree(): array
+    {
+        $categories = ClassifiedCategory::query()
+            ->active()
+            ->topLevel()
+            ->with(['children' => fn ($q) => $q->active()->orderBy('display_order')])
+            ->orderBy('display_order')
+            ->get();
+
+        return $categories->map(fn ($cat) => [
+            'id' => $cat->id,
+            'name' => $cat->name,
+            'slug' => $cat->slug,
+            'icon' => $cat->icon,
+            'children' => $cat->children->map(fn ($child) => [
+                'id' => $child->id,
+                'name' => $child->name,
+                'slug' => $child->slug,
+                'icon' => $child->icon,
+            ])->toArray(),
+        ])->toArray();
+    }
+
+    /**
+     * Get available conditions.
+     *
+     * @return array<int, array{value: string, label: string}>
+     */
+    private function getConditions(): array
+    {
+        return [
+            ['value' => 'new', 'label' => 'New'],
+            ['value' => 'like_new', 'label' => 'Like New'],
+            ['value' => 'good', 'label' => 'Good'],
+            ['value' => 'fair', 'label' => 'Fair'],
+            ['value' => 'for_parts', 'label' => 'For Parts'],
+        ];
+    }
+
+    /**
+     * Get available price types.
+     *
+     * @return array<int, array{value: string, label: string}>
+     */
+    private function getPriceTypes(): array
+    {
+        return [
+            ['value' => 'fixed', 'label' => 'Fixed Price'],
+            ['value' => 'negotiable', 'label' => 'Negotiable'],
+            ['value' => 'free', 'label' => 'Free'],
+            ['value' => 'contact', 'label' => 'Contact for Price'],
+        ];
+    }
+
+    /**
+     * Get a transformer function for classified cards.
+     */
+    private function getCardTransformer($user): Closure
+    {
+        return function ($classified) use ($user) {
+            return [
+                'id' => $classified->id,
+                'title' => $classified->title,
+                'slug' => $classified->slug,
+                'price' => $classified->price,
+                'price_display' => $classified->price_display,
+                'condition' => $classified->condition,
+                'condition_display' => $classified->condition_display,
+                'primary_image' => $classified->primary_image,
+                'created_at' => $classified->created_at->toISOString(),
+                'category' => [
+                    'id' => $classified->category->id,
+                    'name' => $classified->category->name,
                 ],
                 'regions' => $classified->regions->map(fn ($r) => [
                     'id' => $r->id,
                     'name' => $r->name,
+                    'slug' => $r->slug,
                 ]),
+                'is_saved' => $user ? $classified->isSavedBy($user) : false,
+            ];
+        };
+    }
+
+    /**
+     * Transform a comment for the frontend.
+     *
+     * @return array<string, mixed>
+     */
+    private function transformComment($comment, $user): array
+    {
+        return [
+            'id' => $comment->id,
+            'content' => $comment->content,
+            'created_at' => $comment->created_at->toISOString(),
+            'user' => [
+                'id' => $comment->user->id,
+                'name' => $comment->user->name,
             ],
-            'related' => $related,
-        ]);
-    }
-
-    /**
-     * Payment success callback
-     */
-    public function paymentSuccess(Request $request, Classified $classified): \Illuminate\Http\RedirectResponse
-    {
-        $sessionId = $request->get('session_id');
-
-        if (!$sessionId) {
-            return redirect()
-                ->route('day-news.classifieds.index')
-                ->with('error', 'Invalid payment session');
-        }
-
-        $payment = ClassifiedPayment::where('classified_id', $classified->id)
-            ->where('stripe_checkout_session_id', $sessionId)
-            ->firstOrFail();
-
-        // Verify payment via Stripe
-        $classified = $this->paymentService->handleSuccessfulClassifiedPayment($sessionId);
-        $payment = $classified->payment;
-
-        if ($payment && $payment->isPaid()) {
-            // Activate classified
-            $this->classifiedService->activateClassified(
-                $classified,
-                $payment->regions_data,
-                $payment->total_days
-            );
-
-            // Clear session data
-            session()->forget('classified_regions_' . $classified->id);
-
-            return redirect()
-                ->route('day-news.classifieds.confirmation', $classified->id)
-                ->with('success', 'Payment successful! Your listing is now active.');
-        }
-
-        return redirect()
-            ->route('day-news.classifieds.select-timeframe', $classified->id)
-            ->with('error', 'Payment not completed. Please try again.');
-    }
-
-    /**
-     * Payment cancel callback
-     */
-    public function paymentCancel(Classified $classified): \Illuminate\Http\RedirectResponse
-    {
-        return redirect()
-            ->route('day-news.classifieds.select-timeframe', $classified->id)
-            ->with('info', 'Payment cancelled. You can try again.');
-    }
-
-    /**
-     * Show confirmation page
-     */
-    public function confirmation(Classified $classified): Response
-    {
-        $classified->load(['regions', 'payment']);
-
-        return Inertia::render('day-news/classifieds/confirmation', [
-            'classified' => [
-                'id' => $classified->id,
-                'title' => $classified->title,
-                'regions' => $classified->regions->map(fn ($r) => [
-                    'id' => $r->id,
-                    'name' => $r->name,
-                ]),
-                'payment' => $classified->payment ? [
-                    'amount' => $classified->payment->amount,
-                    'total_days' => $classified->payment->total_days,
-                ] : null,
-            ],
-        ]);
+            'likes_count' => $comment->likesCount(),
+            'is_liked' => $user ? $comment->isLikedBy($user) : false,
+            'replies' => $comment->activeReplies->map(function ($reply) use ($user) {
+                return $this->transformComment($reply, $user);
+            }),
+        ];
     }
 }
-
