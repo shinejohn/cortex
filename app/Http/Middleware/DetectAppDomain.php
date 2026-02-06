@@ -16,7 +16,10 @@ final class DetectAppDomain
     public function handle(Request $request, Closure $next): Response
     {
         try {
-            $host = $request->header('X-Forced-Host') ?? $request->getHost();
+            // Only trust X-Forced-Host in local/testing environments to prevent cache poisoning
+            $host = (config('app.env') === 'local' || config('app.env') === 'testing')
+                ? ($request->header('X-Forced-Host') ?? $request->getHost())
+                : $request->getHost();
 
             // Detect the app based on configured domain
             // Check for exact match first, then check if host contains the domain name

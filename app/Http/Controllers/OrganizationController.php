@@ -69,9 +69,23 @@ final class OrganizationController extends Controller
             'metadata' => 'array',
         ]);
 
-        $relatableClass = $request->input('relatable_type');
+        $allowedTypes = [
+            'event' => \App\Models\Event::class,
+            'business' => \App\Models\Business::class,
+            'day_news_post' => \App\Models\DayNewsPost::class,
+            'advertisement' => \App\Models\Advertisement::class,
+            'announcement' => \App\Models\Announcement::class,
+            'ticket_plan' => \App\Models\TicketPlan::class,
+        ];
+
+        $relatableType = $request->input('relatable_type');
+        if (! isset($allowedTypes[$relatableType])) {
+            abort(422, 'Invalid relatable type. Allowed: '.implode(', ', array_keys($allowedTypes)));
+        }
+
+        $relatableClass = $allowedTypes[$relatableType];
         $relatableId = $request->input('relatable_id');
-        
+
         $relatable = $relatableClass::findOrFail($relatableId);
 
         $relationship = $this->organizationService->createRelationship(

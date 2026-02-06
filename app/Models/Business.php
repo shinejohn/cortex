@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -164,9 +165,9 @@ final class Business extends Model
         return $this->belongsTo(BusinessTemplate::class, 'template_id');
     }
 
-    public function subscription(): BelongsTo
+    public function subscription(): HasOne
     {
-        return $this->belongsTo(BusinessSubscription::class, 'business_id');
+        return $this->hasOne(BusinessSubscription::class);
     }
 
     public function achievements(): HasMany

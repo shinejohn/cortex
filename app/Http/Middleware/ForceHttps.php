@@ -30,9 +30,8 @@ final class ForceHttps
         }
         
         // Only force HTTPS redirect in production or if explicitly enabled
-        // Use env() directly to avoid config() calls that might fail during bootstrap
-        $appEnv = env('APP_ENV', 'production');
-        $forceHttps = env('FORCE_HTTPS', $appEnv === 'production');
+        $appEnv = config('app.env', 'production');
+        $forceHttps = config('app.force_https', $appEnv === 'production');
         
         // Check if request is secure (either directly or via proxy headers)
         $requestIsSecure = $request->secure() || $isHttps;

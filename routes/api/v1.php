@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Public routes (no authentication required)
-Route::prefix('v1')->group(function () {
+Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     // Health check
     Route::get('/health', function () {
         return response()->json([
@@ -47,7 +47,7 @@ Route::prefix('v1')->group(function () {
 });
 
 // Authenticated routes
-Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
+Route::prefix('v1')->middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     // User routes
     if (file_exists(__DIR__ . '/v1/users.php')) {
         require __DIR__ . '/v1/users.php';

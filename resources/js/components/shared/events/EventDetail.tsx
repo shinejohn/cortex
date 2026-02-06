@@ -3,6 +3,7 @@ import { CalendarIcon, ClockIcon, DollarSignIcon, MapPinIcon, Share2Icon } from 
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { sanitizeHtml } from "@/lib/sanitize";
 import { cn } from "@/lib/utils";
 
 interface EventDetailProps {
@@ -201,7 +202,7 @@ export function EventDetail({ event, theme = "eventcity", className, showShare =
             </div>
 
             {/* Content */}
-            {event.content && <div className="prose prose-lg max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: event.content }} />}
+            {event.content && <div className="prose prose-lg max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: sanitizeHtml(event.content) }} />}
 
             {/* Ticket Plans */}
             {event.ticket_plans && event.ticket_plans.length > 0 && (

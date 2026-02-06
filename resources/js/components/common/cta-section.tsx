@@ -1,3 +1,4 @@
+import { router } from "@inertiajs/react";
 import { ArrowRightIcon } from "lucide-react";
 import React from "react";
 import { Button } from "../ui/button";
@@ -20,13 +21,13 @@ export const CTASection = () => {
                             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-2">
                                 <Button
                                     size="lg"
-                                    onClick={() => (window.location.href = "/events")}
+                                    onClick={() => router.visit("/events")}
                                     className="min-w-[160px] shadow-md hover:shadow-lg transition-shadow"
                                 >
                                     Explore all events
                                     <ArrowRightIcon className="ml-2 h-4 w-4" />
                                 </Button>
-                                <Button variant="outline" size="lg" onClick={() => (window.location.href = "/register")} className="min-w-[160px]">
+                                <Button variant="outline" size="lg" onClick={() => router.visit("/register")} className="min-w-[160px]">
                                     Sign up
                                 </Button>
                             </div>

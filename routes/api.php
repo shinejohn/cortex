@@ -32,19 +32,21 @@ Route::middleware([ApiVersion::class, ApiResponseFormatter::class])->group(funct
     })->middleware('auth:sanctum');
 
     // Legacy Organization Routes (will be migrated to v1)
-    Route::prefix('organizations')->group(function () {
-        Route::get('/search', [OrganizationController::class, 'search']);
-        Route::get('/{organization}/content', [OrganizationController::class, 'getContent']);
-        Route::post('/{organization}/relate', [OrganizationController::class, 'relate']);
-        Route::get('/{organization}/hierarchy', [OrganizationController::class, 'hierarchy']);
-    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::prefix('organizations')->group(function () {
+            Route::get('/search', [OrganizationController::class, 'search']);
+            Route::get('/{organization}/content', [OrganizationController::class, 'getContent']);
+            Route::post('/{organization}/relate', [OrganizationController::class, 'relate']);
+            Route::get('/{organization}/hierarchy', [OrganizationController::class, 'hierarchy']);
+        });
 
-    // Legacy Organization Relationship Routes
-    Route::prefix('organization-relationships')->group(function () {
-        Route::post('/', [OrganizationRelationshipController::class, 'store']);
-        Route::post('/bulk', [OrganizationRelationshipController::class, 'bulkStore']);
-        Route::put('/{relationship}', [OrganizationRelationshipController::class, 'update']);
-        Route::delete('/{relationship}', [OrganizationRelationshipController::class, 'destroy']);
+        // Legacy Organization Relationship Routes
+        Route::prefix('organization-relationships')->group(function () {
+            Route::post('/', [OrganizationRelationshipController::class, 'store']);
+            Route::post('/bulk', [OrganizationRelationshipController::class, 'bulkStore']);
+            Route::put('/{relationship}', [OrganizationRelationshipController::class, 'update']);
+            Route::delete('/{relationship}', [OrganizationRelationshipController::class, 'destroy']);
+        });
     });
 
     // AlphaSite 4calls.ai Webhooks (no auth required, signature verified)

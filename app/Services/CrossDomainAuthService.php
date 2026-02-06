@@ -21,15 +21,15 @@ final class CrossDomainAuthService
         $allDomains = $this->getAllDomains();
         $targetDomains = array_filter($allDomains, fn($domain) => $domain !== $sourceDomain);
 
-        // Generate secure token (store plain token temporarily)
+        // Generate secure token (store hashed, return plain)
         $plainToken = Str::random(64);
 
-        // Create token record (expires in 24 hours for testing, configurable)
-        // Store plain token in token field (we'll hash it when validating)
-        $expirationMinutes = (int) config('auth.cross_domain_token_expiration', 1440); // Default 24 hours
+        // Create token record with hashed token (SHA-256 like Sanctum)
+        // Default 5 minutes - these are short-lived handoff tokens, not session tokens
+        $expirationMinutes = (int) config('auth.cross_domain_token_expiration', 5);
         $tokenRecord = CrossDomainAuthToken::create([
             'user_id' => $user->id,
-            'token' => $plainToken, // Store plain token, hash on validation
+            'token' => hash('sha256', $plainToken),
             'source_domain' => $sourceDomain,
             'target_domains' => array_values($targetDomains),
             'expires_at' => now()->addMinutes($expirationMinutes),
@@ -47,10 +47,10 @@ final class CrossDomainAuthService
      */
     public function validateAndUseToken(string $token, string $currentDomain): ?User
     {
-        // Find unused, non-expired tokens
+        // Find unused, non-expired tokens (compare SHA-256 hash)
         $tokenRecord = CrossDomainAuthToken::where('used', false)
             ->where('expires_at', '>', now())
-            ->where('token', $token) // Direct comparison since we store plain token
+            ->where('token', hash('sha256', $token))
             ->first();
 
         if (!$tokenRecord) {

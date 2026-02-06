@@ -183,7 +183,7 @@ final class GeocodingService implements GeocodingServiceInterface
      */
     private function geocodeWithGoogle(string $address): ?array
     {
-        $apiKey = $this->apiKey ?? config('services.google.maps_api_key') ?? env('GOOGLE_MAPS_API_KEY');
+        $apiKey = $this->apiKey ?? config('services.google.maps_api_key');
 
         if (empty($apiKey)) {
             Log::info('GeocodingService: No Google Maps API key configured, skipping Google geocoding');
@@ -380,7 +380,7 @@ final class GeocodingService implements GeocodingServiceInterface
      */
     private function geocodeWithSerpApiGoogleMaps(string $address): ?array
     {
-        $apiKey = config('news-workflow.apis.serpapi_key') ?? config('services.serpapi.key') ?? env('SERPAPI_KEY');
+        $apiKey = config('news-workflow.apis.serpapi_key') ?? config('services.serpapi.key');
 
         if (empty($apiKey)) {
             Log::info('GeocodingService: No SerpAPI key configured, skipping Google Maps fallback');
