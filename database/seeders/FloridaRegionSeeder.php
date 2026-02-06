@@ -30,7 +30,7 @@ final class FloridaRegionSeeder extends Seeder
                 'longitude' => -81.5158,
                 'metadata' => [
                     'abbreviation' => 'FL',
-                    'workflow_enabled' => true // Enable News Discovery
+                    'workflow_enabled' => false // Disabled by default until transition
                 ],
             ]
         );
@@ -47,7 +47,7 @@ final class FloridaRegionSeeder extends Seeder
                 'latitude' => 27.8764,
                 'longitude' => -82.7779,
                 'metadata' => [
-                    'workflow_enabled' => true
+                    'workflow_enabled' => false
                 ],
             ]
         );
@@ -146,7 +146,7 @@ final class FloridaRegionSeeder extends Seeder
                     'latitude' => $data['lat'],
                     'longitude' => $data['lng'],
                     'metadata' => [
-                        'workflow_enabled' => true
+                        'workflow_enabled' => false
                     ]
                 ]
             );
