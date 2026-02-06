@@ -4,29 +4,43 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 final class ClassifiedImage extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuid;
 
     protected $fillable = [
         'classified_id',
-        'image_path',
-        'image_disk',
+        'path',
+        'disk',
         'order',
+        'is_primary',
     ];
 
     public function classified(): BelongsTo
     {
-        return $this->belongsTo(Classified::class, 'classified_id');
+        return $this->belongsTo(Classified::class);
     }
 
-    public function getImageUrlAttribute(): string
+    public function getUrlAttribute(): string
     {
-        return \Illuminate\Support\Facades\Storage::disk($this->image_disk)->url($this->image_path);
+        if ($this->disk === 's3') {
+            return route('daynews.img-cdn', ['path' => $this->path]);
+        }
+
+        return Storage::disk($this->disk)->url($this->path);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'order' => 'integer',
+            'is_primary' => 'boolean',
+        ];
     }
 }
-
