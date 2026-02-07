@@ -20,5 +20,6 @@ return [
     'downtown-guide' => env('DOWNTOWNGUIDE_DOMAIN', parse_url(env('APP_URL', 'http://downtownguide.test'), PHP_URL_HOST)),
     'local-voices' => env('LOCAL_VOICES_DOMAIN', parse_url(env('APP_URL', 'http://golocalvoices.com'), PHP_URL_HOST)),
     'alphasite' => env('ALPHASITE_DOMAIN', parse_url(env('APP_URL', 'http://alphasite.com'), PHP_URL_HOST)),
+    'api' => env('API_DOMAIN', 'api.day.news'),
 
 ];
