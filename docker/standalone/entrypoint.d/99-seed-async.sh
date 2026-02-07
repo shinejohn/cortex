@@ -12,6 +12,8 @@ echo "   DB_HOST='$DB_HOST'"
 # Check against likely names for the Day News service
 if [ "$APP_NAME" = "Day News" ] || [ "$RAILWAY_SERVICE_NAME" = "Day News" ]; then
     echo "🌱 Starting Sync DB Seed (Background as www-data)..."
+    # Fix permissions in case valid log file exists but owned by root
+    chown -R www-data:www-data /var/www/html/storage
     # Run as www-data to prevent log permission issues (root owning laravel.log)
     nohup su -s /bin/sh www-data -c "php artisan db:seed --force" > /var/www/html/storage/logs/seeder_bg.log 2>&1 &
 else
