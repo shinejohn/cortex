@@ -1,4 +1,4 @@
-import type { SiteConfigMap, SiteKey } from "@/types/seo";
+import type { SiteConfig, SiteConfigMap, SiteKey } from "@/types/seo";
 
 /**
  * Site configuration for SEO
@@ -25,8 +25,13 @@ export const siteConfig: SiteConfigMap = {
 /**
  * Get site configuration by key
  */
-export function getSiteConfig(site: SiteKey) {
-    return siteConfig[site];
+export function getSiteConfig(site: SiteKey): SiteConfig {
+    const config = siteConfig[site];
+    if (!config) {
+        console.error(`[SEO] Critical Error: No site config found for site "${site}"!`);
+        return siteConfig["day-news"] || Object.values(siteConfig)[0];
+    }
+    return config;
 }
 
 /**
