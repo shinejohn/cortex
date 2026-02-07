@@ -62,6 +62,12 @@ return Application::configure(basePath: dirname(__DIR__))
                     require base_path('routes/local-voices.php');
                 });
 
+            // Ads routes
+            Route::middleware('web')
+                ->group(function () {
+                    require base_path('routes/ads.php');
+                });
+
             // AlphaSite domain routes
             // Routes are domain-constrained in routes/alphasite.php (handles both .com and .ai domains)
             // No need to add domain constraints here as routes file handles them
@@ -181,6 +187,3 @@ return Application::configure(basePath: dirname(__DIR__))
             });
         }
     })->create();
-
-// include ads routes once (fix duplicate route names for route caching)
-require base_path('routes/ads.php');
