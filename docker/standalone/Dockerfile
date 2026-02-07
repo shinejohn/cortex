@@ -175,7 +175,7 @@ COPY docker/standalone/etc/nginx/site-opts.d/http.conf /etc/nginx/site-opts.d/ht
 
 # Configure Supervisor for Horizon (required by Laravel Horizon)
 COPY docker/standalone/etc/supervisor/supervisord.conf /etc/supervisord.conf
-COPY docker/standalone/etc/supervisor/conf.d/horizon.conf /etc/supervisor/conf.d/horizon.conf
+COPY docker/standalone/etc/supervisor/conf.d/*.conf /etc/supervisor/conf.d/
 
 # Configure s6-overlay for long-running services (Supervisor for Horizon, Nightwatch Agent)
 COPY --chmod=755 docker/standalone/etc/s6-overlay/ /etc/s6-overlay/
