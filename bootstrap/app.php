@@ -29,10 +29,21 @@ return Application::configure(basePath: dirname(__DIR__))
                 require base_path('routes/email-tracking.php');
             });
 
-            // API routes (no domain restriction)
-            Route::prefix('api')->group(function () {
-                require base_path('routes/api.php');
-            });
+            // API routes
+            $apiDomain = config('domains.api');
+            if ($apiDomain && $apiDomain !== 'api.day.news') { 
+                // Dedicated API Domain Mode
+                Route::domain($apiDomain)
+                    ->name('api.')
+                    ->group(function () {
+                        require base_path('routes/api.php');
+                    });
+            } else {
+                // Legacy/Dev Mode (Global /api prefix on all domains)
+                Route::prefix('api')->group(function () {
+                    require base_path('routes/api.php');
+                });
+            }
 
             // DayNews domain routes (domain-specific routes only)
             Route::domain(config('domains.day-news'))
