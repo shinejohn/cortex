@@ -15,6 +15,10 @@ final class Role extends Model
         'name',
     ];
 
+    protected $primaryKey = 'name';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected $appends = [
         'permissions',
     ];
