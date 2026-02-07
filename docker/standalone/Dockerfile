@@ -38,7 +38,7 @@ USER www-data
 FROM oven/bun:1 AS static-assets
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends python3 python3-pip g++ make && \
+    apt-get install -y --no-install-recommends python3 python3-pip g++ make nodejs npm && \
     rm -rf /var/lib/apt/lists/*
 ENV PYTHON=/usr/bin/python3
 
@@ -49,7 +49,7 @@ RUN bun i
 COPY . .
 COPY --from=base /var/www/html/vendor/ ./vendor/
 
-RUN bun --bun run build:ssr
+RUN bun run build:ssr
 
 # =================================================================
 # Final Stage: Production image
