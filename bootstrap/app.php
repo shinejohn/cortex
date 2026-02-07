@@ -56,8 +56,15 @@ return Application::configure(basePath: dirname(__DIR__))
             // DowntownGuide domain routes
             $downtownGuideDomain = config('domains.downtown-guide');
             if ($downtownGuideDomain) {
-                // Support both apex domain and subdomains
-                Route::domain('{subdomain?}.' . $downtownGuideDomain)
+                // Apex domain (matches config/env value exactly)
+                Route::domain($downtownGuideDomain)
+                    ->middleware('web')
+                    ->group(function () {
+                        require base_path('routes/downtown-guide.php');
+                    });
+
+                // Subdomain support
+                Route::domain('{subdomain}.' . $downtownGuideDomain)
                     ->where(['subdomain' => '[a-z0-9-]*'])
                     ->middleware('web')
                     ->group(function () {
@@ -90,8 +97,15 @@ return Application::configure(basePath: dirname(__DIR__))
             // GoEventCity domain routes
             $eventCityDomain = config('domains.event-city');
             if ($eventCityDomain) {
-                // Support both apex domain and subdomains
-                Route::domain('{subdomain?}.' . $eventCityDomain)
+                // Apex domain (matches config/env value exactly)
+                Route::domain($eventCityDomain)
+                    ->middleware('web')
+                    ->group(function () {
+                        require base_path('routes/web.php');
+                    });
+
+                // Subdomain support
+                Route::domain('{subdomain}.' . $eventCityDomain)
                     ->where(['subdomain' => '[a-z0-9-]*'])
                     ->middleware('web')
                     ->group(function () {

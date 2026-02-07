@@ -56,9 +56,11 @@ Route::domain('{subdomain}.alphasite.ai')->group(function () {
 });
 
 // Main domain routes (.com domain)
-Route::domain('alphasite.com')->group(function () {
+// Main domain routes (matches configured domain, e.g. Railway URL or custom domain)
+Route::domain(config('domains.alphasite'))->group(function () {
     // Home
     Route::get('/', [DirectoryController::class, 'home'])->name('alphasite.home');
+
     
     // Directory
     Route::get('/directory', [DirectoryController::class, 'index'])->name('alphasite.directory');
