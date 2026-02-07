@@ -183,7 +183,9 @@ COPY --chmod=755 docker/standalone/etc/s6-overlay/ /etc/s6-overlay/
 # Create nginx and supervisor directories and set permissions
 RUN mkdir -p /etc/nginx/conf.d /etc/nginx/site-opts.d /etc/supervisor/conf.d /var/log && \
     chown -R www-data:www-data /etc/nginx && \
-    chmod -R 755 /etc/nginx
+    chmod -R 755 /etc/nginx && \
+    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
+    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Switch to non-root user
 USER www-data
