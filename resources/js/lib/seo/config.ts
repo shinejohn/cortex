@@ -42,7 +42,12 @@ export function getImageUrl(image: string | null | undefined, site: SiteKey): st
         return image;
     }
     // Fall back to site default image
-    return siteConfig[site].defaultImage;
+    const config = siteConfig[site] || siteConfig["day-news"] || Object.values(siteConfig)[0];
+    if (!config) {
+        console.error(`[SEO] Critical Error: No site config found for site "${site}"!`);
+        return "/images/default-meta-image.jpg"; // Absolute fallback
+    }
+    return config.defaultImage;
 }
 
 /**
