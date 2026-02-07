@@ -2,25 +2,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import type { Coupon } from "@/types/coupon";
 import { Link } from "@inertiajs/react";
 import { Clock, MapPin, Tag } from "lucide-react";
 import { route } from "ziggy-js";
-
-interface Coupon {
-    id: number;
-    title: string;
-    description: string;
-    code: string;
-    discount_value: string;
-    discount_type: "percentage" | "fixed_amount";
-    expires_at: string;
-    category?: {
-        name: string;
-    };
-    image?: string;
-    business_name?: string;
-    location?: string;
-}
 
 interface Props {
     coupon: Coupon;
@@ -28,15 +13,19 @@ interface Props {
 }
 
 export function CouponCard({ coupon, featured = false }: Props) {
-    const isExpired = new Date(coupon.expires_at) < new Date();
+    const isExpired = coupon.valid_until ? new Date(coupon.valid_until) < new Date() : false;
+
+    const formatCategory = (cat: string) => {
+        return cat.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    };
 
     return (
         <Card className={`flex flex-col h-full overflow-hidden transition-all hover:shadow-md ${featured ? 'border-primary/50 shadow-sm' : ''}`}>
             {/* Image Placeholder or Actual Image */}
             <div className="relative h-48 w-full bg-muted">
-                {coupon.image ? (
+                {coupon.image || (coupon.business && coupon.business.images && coupon.business.images[0]) ? (
                     <img
-                        src={coupon.image}
+                        src={coupon.image || (coupon.business.images ? coupon.business.images[0] : '')}
                         alt={coupon.title}
                         className="h-full w-full object-cover"
                     />
@@ -52,7 +41,7 @@ export function CouponCard({ coupon, featured = false }: Props) {
                 )}
                 {coupon.category && (
                     <Badge variant="secondary" className="absolute left-2 top-2">
-                        {coupon.category.name}
+                        {formatCategory(coupon.category)}
                     </Badge>
                 )}
             </div>
@@ -63,19 +52,16 @@ export function CouponCard({ coupon, featured = false }: Props) {
                         {coupon.title}
                     </CardTitle>
                 </div>
-                {coupon.business_name && (
+                {coupon.business && (
                     <CardDescription className="font-medium text-foreground/80">
-                        {coupon.business_name}
+                        {coupon.business.name}
                     </CardDescription>
                 )}
             </CardHeader>
 
             <CardContent className="flex-1 pb-2">
                 <div className="flex items-center gap-2 mb-2 text-2xl font-bold text-primary">
-                    {coupon.discount_type === 'percentage'
-                        ? `${coupon.discount_value}% OFF`
-                        : `$${coupon.discount_value} OFF`
-                    }
+                    {coupon.discount_display}
                 </div>
 
                 <p className="line-clamp-2 text-sm text-muted-foreground mb-4">
@@ -83,16 +69,20 @@ export function CouponCard({ coupon, featured = false }: Props) {
                 </p>
 
                 <div className="grid gap-1 text-xs text-muted-foreground">
-                    {coupon.location && (
+                    {coupon.regions && coupon.regions.length > 0 && (
                         <div className="flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
-                            <span className="line-clamp-1">{coupon.location}</span>
+                            <span className="line-clamp-1">
+                                {coupon.regions.map(r => r.name).join(', ')}
+                            </span>
                         </div>
                     )}
-                    <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        <span>Expires {new Date(coupon.expires_at).toLocaleDateString()}</span>
-                    </div>
+                    {coupon.valid_until && (
+                        <div className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            <span>Expires {new Date(coupon.valid_until).toLocaleDateString()}</span>
+                        </div>
+                    )}
                 </div>
             </CardContent>
 
@@ -108,7 +98,7 @@ export function CouponCard({ coupon, featured = false }: Props) {
                     {isExpired ? (
                         "Expired"
                     ) : (
-                        <Link href={route('daynews.coupons.show', coupon.id)}>
+                        <Link href={route('daynews.coupons.show', { slug: coupon.slug })}>
                             View Deal
                         </Link>
                     )}
