@@ -57,25 +57,27 @@ return Application::configure(basePath: dirname(__DIR__))
             $downtownGuideDomain = config('domains.downtown-guide');
             if ($downtownGuideDomain) {
                 // Apex domain (matches config/env value exactly)
+                // Note: routes/downtown-guide.php already has Route::name('downtown-guide.') group
                 Route::domain($downtownGuideDomain)
                     ->middleware('web')
                     ->group(function () {
                         require base_path('routes/downtown-guide.php');
                     });
 
-                // Subdomain support
+                // Subdomain support - add prefix to differentiate from apex
                 Route::domain('{subdomain}.' . $downtownGuideDomain)
                     ->where(['subdomain' => '[a-z0-9-]*'])
                     ->middleware('web')
+                    ->name('subdomain.') // Prefix subdomain routes to avoid name collision with apex domain
                     ->group(function () {
                         require base_path('routes/downtown-guide.php');
                     });
             }
 
             // Go Local Voices domain routes (domain-specific routes only)
+            // Note: routes/local-voices.php already has 'localvoices.' prefix on each route
             Route::domain(config('domains.local-voices'))
                 ->middleware('web')
-                ->name('localvoices.')
                 ->group(function () {
                     require base_path('routes/local-voices.php');
                 });
@@ -98,16 +100,18 @@ return Application::configure(basePath: dirname(__DIR__))
             $eventCityDomain = config('domains.event-city');
             if ($eventCityDomain) {
                 // Apex domain (matches config/env value exactly)
+                // Note: routes/web.php does not have a top-level Route::name() group
                 Route::domain($eventCityDomain)
                     ->middleware('web')
                     ->group(function () {
                         require base_path('routes/web.php');
                     });
 
-                // Subdomain support
+                // Subdomain support - add prefix to differentiate from apex
                 Route::domain('{subdomain}.' . $eventCityDomain)
                     ->where(['subdomain' => '[a-z0-9-]*'])
                     ->middleware('web')
+                    ->name('subdomain.') // Prefix subdomain routes to avoid name collision with apex domain
                     ->group(function () {
                         require base_path('routes/web.php');
                     });

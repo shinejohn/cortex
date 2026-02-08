@@ -93,7 +93,7 @@ services:
     volumes:
       - storage:/var/www/html/storage
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:8080/healthcheck"]
+      test: [ "CMD", "curl", "-f", "http://127.0.0.1:8080/healthcheck" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -107,14 +107,14 @@ services:
         <<: *common-build-args
     image: "${REGISTRY_IMAGE:-makerkit}:${IMAGE_TAG:-latest}"
     restart: unless-stopped
-    command: ["php", "/var/www/html/artisan", "inertia:start-ssr"]
+    command: [ "php", "/var/www/html/artisan", "inertia:start-ssr" ]
     environment:
       <<: *common-env
       # any service-specific overrides go here
     volumes:
       - storage:/var/www/html/storage
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:8080/healthcheck"]
+      test: [ "CMD", "curl", "-f", "http://127.0.0.1:8080/healthcheck" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -135,9 +135,9 @@ services:
       <<: *common-env
     volumes:
       - storage:/var/www/html/storage
-    command: ["php", "/var/www/html/artisan", "queue:work", "--tries=2"]
+    command: [ "php", "/var/www/html/artisan", "queue:work", "--tries=2", "--sleep=3", "--max-jobs=1000", "--max-time=3600", "--memory=128", "--timeout=85" ]
     healthcheck:
-      test: ["CMD", "healthcheck-queue"]
+      test: [ "CMD", "healthcheck-queue" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -158,9 +158,9 @@ services:
       <<: *common-env
     volumes:
       - storage:/var/www/html/storage
-    command: ["php", "/var/www/html/artisan", "schedule:work"]
+    command: [ "php", "/var/www/html/artisan", "schedule:work" ]
     healthcheck:
-      test: ["CMD", "healthcheck-schedule"]
+      test: [ "CMD", "healthcheck-schedule" ]
       interval: 30s
       timeout: 10s
       retries: 3
