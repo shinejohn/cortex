@@ -46,22 +46,27 @@ final class DetectAppDomain
             $appType = match (true) {
                 // Day News detection - check exact match first, then hostname patterns
                 $dayNewsDomain && $host === $dayNewsDomain => 'day-news',
+                $dayNewsDomain && str_ends_with($host, '.' . $dayNewsDomain) => 'day-news', // Subdomains
                 str_contains($host, 'daynews') || str_contains($host, 'day.news') => 'day-news',
                 
                 // Downtown Guide detection - check exact match first, then hostname patterns
                 $downtownGuideDomain && $host === $downtownGuideDomain => 'downtown-guide',
+                $downtownGuideDomain && str_ends_with($host, '.' . $downtownGuideDomain) => 'downtown-guide', // Subdomains
                 str_contains($host, 'downtownsguide') || str_contains($host, 'downtown-guide') => 'downtown-guide',
                 
                 // AlphaSite detection - check exact match first, then hostname patterns
                 $alphaSiteDomain && $host === $alphaSiteDomain => 'alphasite',
+                $alphaSiteDomain && str_ends_with($host, '.' . $alphaSiteDomain) => 'alphasite', // Subdomains
                 str_contains($host, 'alphasite') => 'alphasite',
                 
                 // Local Voices detection - check exact match first, then hostname patterns
                 $localVoicesDomain && $host === $localVoicesDomain => 'local-voices',
+                $localVoicesDomain && str_ends_with($host, '.' . $localVoicesDomain) => 'local-voices', // Subdomains
                 str_contains($host, 'golocalvoices') || str_contains($host, 'local-voices') => 'local-voices',
                 
                 // Event City detection - check exact match first, then hostname patterns
                 $eventCityDomain && $host === $eventCityDomain => 'event-city',
+                $eventCityDomain && str_ends_with($host, '.' . $eventCityDomain) => 'event-city', // Subdomains
                 str_contains($host, 'goeventcity') || str_contains($host, 'event-city') => 'event-city',
                 
                 default => 'event-city', // Default to event-city for any unmatched domain
