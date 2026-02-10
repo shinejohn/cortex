@@ -58,3 +58,29 @@ INFRASTRUCTURE/venv/
 
 # Private migration data
 private_migration_data.json
+
+# OS files
+.DS_Store
+
+# AI/Editor config and temp files
+.claude/
+.cursorrules
+_cursor_refs/
+cursor-refactor-rules
+cursor-refactor-rules.md
+cursor-refector-rules
+CLAUDE-CODE-PROMPT*.md
+_DESIGN_STANDARD.tsx
+
+# Project reference/scratch files
+Design_standard/
+UI-Compare-fix/
+ui-overhaul-playbook/
+AdvertisementPayment.php}
+Shine-MacDaddy:multisite-fibonacco
+all_routes.json
+backend-routes.txt
+frontend-routes.txt
+test_classified.php
+*.php_snippet
+packages/.DS_Store
