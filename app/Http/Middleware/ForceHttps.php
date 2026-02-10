@@ -36,7 +36,7 @@ final class ForceHttps
         // Check if request is secure (either directly or via proxy headers)
         $requestIsSecure = $request->secure() || $isHttps;
         
-        if ($forceHttps && !$requestIsSecure && !$request->is('healthcheck', 'up', 'health')) {
+        if ($forceHttps && !$requestIsSecure && !$request->is('healthcheck', 'up', 'health', 'Health')) {
             // Redirect to HTTPS
             $url = $request->getRequestUri();
             $host = $request->getHost();
