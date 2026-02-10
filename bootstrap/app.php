@@ -19,10 +19,13 @@ use Sentry\Laravel\Integration;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         using: function () {
+            // Health routes loaded WITHOUT middleware for maximum reliability
+            // These must respond even when Redis/sessions/etc are unavailable
+            require base_path('routes/health.php');
+
             // Shared routes loaded once globally (no domain restriction)
             // These routes are shared across all domains and should only be loaded once
             Route::middleware('web')->group(function () {
-                require base_path('routes/health.php');
                 require base_path('routes/auth.php');
                 require base_path('routes/settings.php');
                 require base_path('routes/workspace.php');
