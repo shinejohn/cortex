@@ -23,7 +23,7 @@ export default function ClassifiedEdit({
 }: Props) {
     return (
         <LocationProvider>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen bg-gray-50">
                 <SEO
                     type="website"
                     site="day-news"
@@ -38,7 +38,7 @@ export default function ClassifiedEdit({
                 <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
                     {/* Back link */}
                     <div className="mb-6">
-                        <Button variant="ghost" size="sm" asChild>
+                        <Button variant="ghost" size="sm" asChild className="text-indigo-600 hover:text-indigo-700">
                             <Link href={route("daynews.classifieds.my")}>
                                 <ArrowLeft className="mr-2 size-4" />
                                 Back to My Listings
@@ -48,37 +48,39 @@ export default function ClassifiedEdit({
 
                     {/* Page header */}
                     <div className="mb-8">
-                        <h1 className="flex items-center gap-2 font-serif text-3xl font-bold">
-                            <Edit className="size-8" />
+                        <h1 className="flex items-center gap-2 font-display text-2xl font-black tracking-tight text-gray-900">
+                            <Edit className="size-7 text-indigo-600" />
                             Edit Listing
                         </h1>
-                        <p className="mt-1 text-muted-foreground">Update the details of your listing below.</p>
+                        <p className="mt-2 text-gray-600">Update the details of your listing below.</p>
                     </div>
 
                     {/* Form */}
-                    <ClassifiedForm
-                        categories={categories}
-                        conditions={conditions}
-                        priceTypes={priceTypes}
-                        initialData={{
-                            id: classified.id,
-                            title: classified.title,
-                            description: classified.description,
-                            price: classified.price,
-                            price_type: classified.price_type,
-                            condition: classified.condition,
-                            contact_email: classified.contact_email,
-                            contact_phone: classified.contact_phone,
-                            classified_category_id: classified.classified_category_id,
-                            images: classified.images,
-                            region_ids: classified.region_ids,
-                            regions: classified.regions,
-                            specifications: classified.specifications,
-                            custom_attributes: classified.custom_attributes,
-                        }}
-                        categorySpecifications={categorySpecifications}
-                        mode="edit"
-                    />
+                    <div className="overflow-hidden rounded-lg bg-white shadow-sm p-6">
+                        <ClassifiedForm
+                            categories={categories}
+                            conditions={conditions}
+                            priceTypes={priceTypes}
+                            initialData={{
+                                id: classified.id,
+                                title: classified.title,
+                                description: classified.description,
+                                price: classified.price,
+                                price_type: classified.price_type,
+                                condition: classified.condition,
+                                contact_email: classified.contact_email,
+                                contact_phone: classified.contact_phone,
+                                classified_category_id: classified.classified_category_id,
+                                images: classified.images,
+                                region_ids: classified.region_ids,
+                                regions: classified.regions,
+                                specifications: classified.specifications,
+                                custom_attributes: classified.custom_attributes,
+                            }}
+                            categorySpecifications={categorySpecifications}
+                            mode="edit"
+                        />
+                    </div>
                 </main>
             </div>
         </LocationProvider>

@@ -42,8 +42,6 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Use post with _method: PATCH for file upload compatibility in some environments
-        // Use post with _method: PATCH for file upload compatibility in some environments
         form.post(route("daynews.announcements.update", announcement.id) as any, {
             forceFormData: true,
         });
@@ -80,15 +78,15 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
                 />
                 <DayNewsHeader auth={auth} />
 
-                <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                <main className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
                     {/* Navigation */}
                     <div className="mb-10">
                         <Link
                             href={route("daynews.announcements.show", announcement.id) as any}
-                            className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-colors group"
+                            className="flex items-center gap-2 text-[10px] font-black text-muted-foreground hover:text-primary transition-colors group uppercase tracking-widest"
                         >
                             <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
-                            BACK TO ANNOUNCEMENT
+                            Back to Announcement
                         </Link>
                     </div>
 
@@ -107,7 +105,7 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
                                 <h1 className="font-display text-4xl font-black tracking-tight text-zinc-900 md:text-5xl">
                                     Edit Announcement
                                 </h1>
-                                <p className="mt-4 text-lg text-muted-foreground leading-relaxed max-w-2xl">
+                                <p className="mt-4 text-lg text-muted-foreground leading-relaxed max-w-2xl font-medium">
                                     Update your milestone details to keep the community informed.
                                 </p>
                             </div>
@@ -124,7 +122,7 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
 
                                     <div className="grid gap-8 md:grid-cols-2">
                                         <div className="space-y-3">
-                                            <Label htmlFor="type" className="text-xs font-black uppercase tracking-widest text-zinc-500">Category *</Label>
+                                            <Label htmlFor="type" className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Category *</Label>
                                             <Select value={form.data.type} onValueChange={(value) => form.setData("type", value)}>
                                                 <SelectTrigger className="h-12 border-zinc-200 bg-zinc-50/50 focus:bg-white transition-colors rounded-xl font-bold">
                                                     <SelectValue placeholder="Select a category" />
@@ -141,13 +139,13 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
                                         </div>
 
                                         <div className="space-y-3">
-                                            <Label htmlFor="title" className="text-xs font-black uppercase tracking-widest text-zinc-500">Announcement Title *</Label>
+                                            <Label htmlFor="title" className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Announcement Title *</Label>
                                             <Input
                                                 id="title"
                                                 className="h-12 border-zinc-200 bg-zinc-50/50 focus:bg-white transition-colors rounded-xl font-bold"
                                                 value={form.data.title}
                                                 onChange={(e) => form.setData("title", e.target.value)}
-                                                placeholder="e.target.value"
+                                                placeholder="Enter a clear, attention-grabbing title"
                                                 required
                                             />
                                             {form.errors.title && <p className="text-[11px] font-bold text-destructive uppercase tracking-widest">{form.errors.title}</p>}
@@ -155,7 +153,7 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
                                     </div>
 
                                     <div className="space-y-3">
-                                        <Label htmlFor="content" className="text-xs font-black uppercase tracking-widest text-zinc-500">Announcement Details *</Label>
+                                        <Label htmlFor="content" className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Announcement Details *</Label>
                                         <Textarea
                                             id="content"
                                             className="min-h-[200px] border-zinc-200 bg-zinc-50/50 focus:bg-white transition-colors rounded-2xl font-medium leading-relaxed resize-none p-6"
@@ -179,7 +177,7 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
 
                                     <div className="grid gap-8 md:grid-cols-2">
                                         <div className="space-y-3">
-                                            <Label htmlFor="location" className="text-xs font-black uppercase tracking-widest text-zinc-500">Location</Label>
+                                            <Label htmlFor="location" className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Location</Label>
                                             <div className="relative">
                                                 <MapPin className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
                                                 <Input
@@ -193,7 +191,7 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
                                         </div>
 
                                         <div className="space-y-3">
-                                            <Label htmlFor="event_date" className="text-xs font-black uppercase tracking-widest text-zinc-500">Event Date</Label>
+                                            <Label htmlFor="event_date" className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Event Date</Label>
                                             <div className="relative">
                                                 <Calendar className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
                                                 <Input
@@ -208,7 +206,7 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
                                     </div>
 
                                     <div className="space-y-4">
-                                        <Label className="text-xs font-black uppercase tracking-widest text-zinc-500">Image Cover</Label>
+                                        <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Image Cover</Label>
                                         <div className="grid gap-6 md:grid-cols-2">
                                             <label
                                                 htmlFor="image-upload"
@@ -221,7 +219,7 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
                                                     <span className="block text-sm font-black text-zinc-900">
                                                         {form.data.image ? form.data.image.name : "Replace current image"}
                                                     </span>
-                                                    <span className="text-[10px] font-bold text-muted-foreground uppercase mt-1 block">PNG, JPG, or WEBP (MAX. 5MB)</span>
+                                                    <span className="text-[10px] font-bold text-muted-foreground uppercase mt-1 block tracking-widest">PNG, JPG, or WEBP (MAX. 5MB)</span>
                                                 </div>
                                                 <input id="image-upload" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                                             </label>
@@ -239,7 +237,7 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
                                                             onClick={() => form.setData("image", null)}
                                                             className="absolute top-4 right-4 size-8 flex items-center justify-center bg-white/90 backdrop-blur rounded-full shadow-sm text-zinc-900 border font-black text-xs hover:bg-red-500 hover:text-white transition-all"
                                                         >
-                                                            ×
+                                                            x
                                                         </button>
                                                     )}
                                                 </div>
@@ -253,13 +251,13 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
                                 </section>
 
                                 <div className="flex items-center justify-end gap-6 pt-6">
-                                    <Link href={route("daynews.announcements.show", announcement.id) as any} className="text-xs font-black text-muted-foreground hover:text-zinc-900 uppercase tracking-widest transition-colors">
+                                    <Link href={route("daynews.announcements.show", announcement.id) as any} className="text-[10px] font-black text-muted-foreground hover:text-zinc-900 uppercase tracking-widest transition-colors">
                                         Cancel & Discard
                                     </Link>
                                     <Button
                                         type="submit"
                                         disabled={form.processing}
-                                        className="h-14 px-10 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-primary/20"
+                                        className="h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/20"
                                     >
                                         {form.processing ? "Saving Changes..." : "Save Announcement"}
                                     </Button>
@@ -273,7 +271,7 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
                                 <Card className="border-none shadow-lg shadow-zinc-200/50 rounded-3xl overflow-hidden">
                                     <div className="bg-zinc-900 p-6 text-white">
                                         <h3 className="font-display text-xl font-black tracking-tight">Community Guidelines</h3>
-                                        <p className="text-xs text-zinc-400 font-bold uppercase tracking-widest mt-1">For sharing milestones</p>
+                                        <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-1">For sharing milestones</p>
                                     </div>
                                     <CardContent className="p-8 space-y-6">
                                         {[
@@ -298,7 +296,7 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
                                     <p className="text-sm text-zinc-600 font-medium leading-relaxed mb-6">
                                         If you're unsure about where to post or have questions, reach out to our community curators.
                                     </p>
-                                    <Link href="/contact" className="text-xs font-black text-primary hover:underline uppercase tracking-widest">
+                                    <Link href="/contact" className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">
                                         Contact Support →
                                     </Link>
                                 </div>

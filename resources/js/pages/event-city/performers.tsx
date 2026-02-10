@@ -82,7 +82,7 @@ export default function Performers() {
 
                     {!searchQuery && (
                         <div className="mt-8 text-center">
-                            <button className="text-primary hover:text-primary/80 text-sm font-medium">View all performers</button>
+                            <button className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 text-sm font-medium">View all performers</button>
                         </div>
                     )}
                 </div>

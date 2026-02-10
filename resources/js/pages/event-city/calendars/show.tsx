@@ -125,14 +125,14 @@ export default function CalendarShow() {
     };
 
     return (
-        <div className="min-h-screen bg-card">
+        <div className="min-h-screen bg-background">
             <Head title={calendar.title} />
             <Header auth={auth} />
 
             {/* Hero Section */}
             <div className="relative h-96 overflow-hidden">
                 <img src={calendar.image || "/images/calendar-placeholder.jpg"} alt={calendar.title} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-black bg-opacity-40" />
+                <div className="absolute inset-0 bg-black/40" />
                 <div className="absolute bottom-0 left-0 right-0 p-8">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-white">
@@ -181,12 +181,12 @@ export default function CalendarShow() {
             </div>
 
             {/* Context Bar */}
-            <div className="bg-accent/50 py-3">
+            <div className="bg-indigo-50 dark:bg-indigo-950/30 py-3">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-wrap items-center justify-between gap-4">
                         <div className="flex items-center text-sm">
                             <Calendar className="h-4 w-4 text-indigo-500 mr-1" />
-                            <span className="font-medium text-gray-800">{calendar.category}</span>
+                            <span className="font-medium text-gray-800 dark:text-gray-200">{calendar.category}</span>
                         </div>
                         <div className="flex items-center text-sm text-foreground">
                             <Clock className="h-4 w-4 text-muted-foreground mr-1" />
@@ -341,13 +341,13 @@ export default function CalendarShow() {
                                             </div>
 
                                             {calendar.about && (
-                                                <div className="border-t border pt-4">
+                                                <div className="border-t border-border pt-4">
                                                     <h4 className="text-sm font-medium text-foreground mb-2">More Details</h4>
                                                     <p className="text-foreground leading-relaxed whitespace-pre-wrap">{calendar.about}</p>
                                                 </div>
                                             )}
 
-                                            <div className="border-t border pt-4">
+                                            <div className="border-t border-border pt-4">
                                                 <h4 className="text-sm font-medium text-foreground mb-2">Calendar Stats</h4>
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div>
@@ -567,7 +567,7 @@ export default function CalendarShow() {
                                         </Link>
                                     ))}
                                     <Separator />
-                                    <Button variant="ghost" size="sm" className="w-full text-primary" onClick={() => setActiveTab("events")}>
+                                    <Button variant="ghost" size="sm" className="w-full text-indigo-600 dark:text-indigo-400" onClick={() => setActiveTab("events")}>
                                         View all events
                                         <ArrowRight className="h-4 w-4 ml-1" />
                                     </Button>
@@ -595,7 +595,7 @@ export default function CalendarShow() {
                                     <input
                                         type="text"
                                         placeholder="Enter your name"
-                                        className="w-full px-3 py-2 border border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
                                 <div>
@@ -603,7 +603,7 @@ export default function CalendarShow() {
                                     <input
                                         type="email"
                                         placeholder="Enter your email"
-                                        className="w-full px-3 py-2 border border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
                                 <div>
@@ -611,7 +611,7 @@ export default function CalendarShow() {
                                     <textarea
                                         rows={4}
                                         placeholder="What would you like to know about this calendar?"
-                                        className="w-full px-3 py-2 border border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     ></textarea>
                                 </div>
                             </div>

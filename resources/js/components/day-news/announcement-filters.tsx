@@ -15,7 +15,7 @@ import {
     Construction,
     MapPin,
     Ghost,
-    Cross
+    Cross,
 } from "lucide-react";
 
 interface AnnouncementFiltersProps {
@@ -54,7 +54,7 @@ export function AnnouncementFilters({ activeType, onTypeChange }: AnnouncementFi
                         )}
                     >
                         <type.icon className={cn("size-4", activeType === type.id ? "text-primary-foreground" : "text-primary")} />
-                        {type.label}
+                        <span className="text-[10px] font-black uppercase tracking-widest">{type.label}</span>
                     </button>
                 ))}
             </div>

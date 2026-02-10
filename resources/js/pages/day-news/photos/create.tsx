@@ -1,5 +1,5 @@
 import { Head, router, useForm, usePage } from "@inertiajs/react";
-import { Camera, Upload, X } from "lucide-react";
+import { Camera, ImagePlus, Upload, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
@@ -68,7 +68,7 @@ export default function PhotoCreate() {
 
     return (
         <LocationProvider>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen bg-[#F8F9FB]">
                 <Head title="Upload Photo - Day News" />
                 <SEO
                     type="website"
@@ -81,22 +81,26 @@ export default function PhotoCreate() {
                 />
                 <DayNewsHeader auth={auth} />
 
-                <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
-                    <h1 className="mb-8 text-4xl font-bold">Upload Photo</h1>
+                <div className="container mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+                    <div className="mb-2 flex items-center gap-2 text-primary">
+                        <Camera className="size-4 fill-current" />
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em]">Photo Gallery</span>
+                    </div>
+                    <h1 className="mb-8 font-display text-4xl font-black tracking-tight">Upload Photo</h1>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-8">
                         {/* Image Upload */}
-                        <div>
-                            <Label>Photo</Label>
-                            <div className="mt-2">
+                        <div className="overflow-hidden rounded-2xl border-none bg-white p-6 shadow-sm">
+                            <Label className="mb-3 block font-bold">Photo</Label>
+                            <div>
                                 {preview ? (
                                     <div className="relative">
-                                        <img src={preview} alt="Preview" className="h-64 w-full rounded-lg border object-cover" />
+                                        <img src={preview} alt="Preview" className="h-72 w-full rounded-xl object-cover" />
                                         <Button
                                             type="button"
                                             variant="destructive"
                                             size="sm"
-                                            className="absolute right-2 top-2"
+                                            className="absolute right-3 top-3 rounded-full"
                                             onClick={() => {
                                                 setPreview(null);
                                                 form.setData("image", null);
@@ -111,85 +115,88 @@ export default function PhotoCreate() {
                                 ) : (
                                     <div
                                         onClick={() => fileInputRef.current?.click()}
-                                        className="flex h-64 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 transition-colors hover:border-muted-foreground/50"
+                                        className="flex h-72 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-zinc-200 bg-zinc-50 transition-all hover:border-primary/40 hover:bg-primary/5"
                                     >
-                                        <Camera className="mb-4 size-12 text-muted-foreground" />
-                                        <p className="text-sm text-muted-foreground">Click to upload photo</p>
-                                        <p className="mt-1 text-xs text-muted-foreground">Max 10MB</p>
+                                        <div className="flex size-16 items-center justify-center rounded-full bg-primary/10">
+                                            <ImagePlus className="size-8 text-primary" />
+                                        </div>
+                                        <p className="mt-4 font-bold text-zinc-700">Click to upload photo</p>
+                                        <p className="mt-1 text-sm text-muted-foreground">Max 10MB &middot; JPG, PNG, GIF</p>
                                     </div>
                                 )}
                                 <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" required />
                             </div>
-                            {form.errors.image && <p className="mt-1 text-sm text-destructive">{form.errors.image}</p>}
+                            {form.errors.image && <p className="mt-2 text-sm text-destructive">{form.errors.image}</p>}
                         </div>
 
-                        {/* Title */}
-                        <div>
-                            <Label htmlFor="title">Title *</Label>
-                            <Input
-                                id="title"
-                                value={form.data.title}
-                                onChange={(e) => form.setData("title", e.target.value)}
-                                className="mt-2"
-                                required
-                            />
-                            {form.errors.title && <p className="mt-1 text-sm text-destructive">{form.errors.title}</p>}
-                        </div>
-
-                        {/* Description */}
-                        <div>
-                            <Label htmlFor="description">Description</Label>
-                            <Textarea
-                                id="description"
-                                value={form.data.description}
-                                onChange={(e) => form.setData("description", e.target.value)}
-                                className="mt-2"
-                                rows={4}
-                            />
-                            {form.errors.description && <p className="mt-1 text-sm text-destructive">{form.errors.description}</p>}
-                        </div>
-
-                        {/* Category */}
-                        <div>
-                            <Label htmlFor="category">Category</Label>
-                            <Select value={form.data.category} onValueChange={(value) => form.setData("category", value)}>
-                                <SelectTrigger className="mt-2">
-                                    <SelectValue placeholder="Select category" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {categories.map((cat) => (
-                                        <SelectItem key={cat.value} value={cat.value}>
-                                            {cat.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        {/* Album */}
-                        {albums.length > 0 && (
+                        {/* Title & Description */}
+                        <div className="overflow-hidden rounded-2xl border-none bg-white p-6 shadow-sm space-y-6">
                             <div>
-                                <Label htmlFor="album_id">Album (Optional)</Label>
-                                <Select value={form.data.album_id} onValueChange={(value) => form.setData("album_id", value)}>
-                                    <SelectTrigger className="mt-2">
-                                        <SelectValue placeholder="Select album" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="">None</SelectItem>
-                                        {albums.map((album) => (
-                                            <SelectItem key={album.id} value={album.id}>
-                                                {album.title}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <Label htmlFor="title" className="font-bold">Title *</Label>
+                                <Input
+                                    id="title"
+                                    value={form.data.title}
+                                    onChange={(e) => form.setData("title", e.target.value)}
+                                    className="mt-2 h-11 border-none bg-zinc-50 ring-1 ring-zinc-200"
+                                    required
+                                />
+                                {form.errors.title && <p className="mt-1 text-sm text-destructive">{form.errors.title}</p>}
                             </div>
-                        )}
+
+                            <div>
+                                <Label htmlFor="description" className="font-bold">Description</Label>
+                                <Textarea
+                                    id="description"
+                                    value={form.data.description}
+                                    onChange={(e) => form.setData("description", e.target.value)}
+                                    className="mt-2 border-none bg-zinc-50 ring-1 ring-zinc-200"
+                                    rows={4}
+                                />
+                                {form.errors.description && <p className="mt-1 text-sm text-destructive">{form.errors.description}</p>}
+                            </div>
+
+                            <div className="grid gap-6 md:grid-cols-2">
+                                <div>
+                                    <Label htmlFor="category" className="font-bold">Category</Label>
+                                    <Select value={form.data.category} onValueChange={(value) => form.setData("category", value)}>
+                                        <SelectTrigger className="mt-2 h-11 border-none bg-zinc-50 ring-1 ring-zinc-200">
+                                            <SelectValue placeholder="Select category" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {categories.map((cat) => (
+                                                <SelectItem key={cat.value} value={cat.value}>
+                                                    {cat.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                {albums.length > 0 && (
+                                    <div>
+                                        <Label htmlFor="album_id" className="font-bold">Album (Optional)</Label>
+                                        <Select value={form.data.album_id} onValueChange={(value) => form.setData("album_id", value)}>
+                                            <SelectTrigger className="mt-2 h-11 border-none bg-zinc-50 ring-1 ring-zinc-200">
+                                                <SelectValue placeholder="Select album" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="">None</SelectItem>
+                                                {albums.map((album) => (
+                                                    <SelectItem key={album.id} value={album.id}>
+                                                        {album.title}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
 
                         {/* Error Display */}
                         {Object.keys(form.errors).length > 0 && (
-                            <div className="rounded-lg border border-destructive bg-destructive/10 p-4">
-                                <p className="mb-2 font-semibold text-destructive">Please fix the following errors:</p>
+                            <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-4">
+                                <p className="mb-2 font-bold text-destructive">Please fix the following errors:</p>
                                 <ul className="list-disc list-inside space-y-1 text-sm text-destructive">
                                     {Object.entries(form.errors).map(([field, error]) => (
                                         <li key={field}>
@@ -202,11 +209,11 @@ export default function PhotoCreate() {
 
                         {/* Submit */}
                         <div className="flex gap-4">
-                            <Button type="submit" disabled={form.processing}>
-                                <Upload className={`mr-2 size-4 ${form.processing ? "animate-spin" : ""}`} />
+                            <Button type="submit" disabled={form.processing} className="gap-2 rounded-xl px-8 font-bold shadow-lg shadow-primary/20">
+                                <Upload className={`size-4 ${form.processing ? "animate-spin" : ""}`} />
                                 {form.processing ? "Uploading..." : "Upload Photo"}
                             </Button>
-                            <Button type="button" variant="outline" onClick={() => router.visit("/photos")} disabled={form.processing}>
+                            <Button type="button" variant="outline" onClick={() => router.visit("/photos")} disabled={form.processing} className="rounded-xl font-bold">
                                 Cancel
                             </Button>
                         </div>

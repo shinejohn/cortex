@@ -220,7 +220,7 @@ export default function Events() {
                     </div>
 
                     <div className="mt-4 text-center">
-                        <Button variant="link" size="sm" className="text-primary hover:text-primary/80 text-sm font-medium p-0">
+                        <Button variant="link" size="sm" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 text-sm font-medium p-0">
                             Promote your event here
                         </Button>
                     </div>
@@ -280,7 +280,7 @@ export default function Events() {
                                     </div>
 
                                     <div className="mt-4 text-center">
-                                        <Button variant="link" size="sm" className="text-primary hover:text-primary/80 text-sm font-medium p-0">
+                                        <Button variant="link" size="sm" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 text-sm font-medium p-0">
                                             Promote your event here
                                         </Button>
                                     </div>

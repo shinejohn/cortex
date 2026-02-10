@@ -1,11 +1,12 @@
 import { Head, Link, router } from "@inertiajs/react";
-import { CalendarIcon, NewspaperIcon, SearchIcon, StoreIcon, TagIcon } from "lucide-react";
+import { CalendarIcon, ChevronLeft, MapPin, NewspaperIcon, Search, StoreIcon, TagIcon, Ticket } from "lucide-react";
 import { useState } from "react";
 import { BusinessList } from "@/components/shared/business/BusinessList";
 import { EventList } from "@/components/shared/events/EventList";
 import { NewsList } from "@/components/shared/news/NewsList";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface DowntownGuideSearchIndexProps {
     query: string;
@@ -50,7 +51,8 @@ interface DowntownGuideSearchIndexProps {
 export default function DowntownGuideSearchIndex({ query, results, suggestions = [], filters, type }: DowntownGuideSearchIndexProps) {
     const [searchQuery, setSearchQuery] = useState(query);
 
-    const handleSearch = () => {
+    const handleSearch = (e?: React.FormEvent) => {
+        e?.preventDefault();
         router.get(route("downtown-guide.search.index"), { q: searchQuery, type, ...filters }, { preserveState: true });
     };
 
@@ -61,73 +63,78 @@ export default function DowntownGuideSearchIndex({ query, results, suggestions =
         <>
             <Head title={`Search${query ? `: ${query}` : ""} - DowntownsGuide`} />
 
-            <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
-                {/* Header */}
-                <div className="border-b-4 border-purple-600 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        <h1 className="text-2xl font-bold text-white">Search</h1>
-                    </div>
-                </div>
+            <div className="min-h-screen bg-background">
+                <main className="container mx-auto px-4 py-8">
+                    {/* Breadcrumb */}
+                    <nav className="mb-6">
+                        <Link href={route("downtown-guide.home")} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+                            <ChevronLeft className="size-4" />
+                            Back to Home
+                        </Link>
+                    </nav>
 
-                <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                    {/* Search Bar */}
-                    <div className="mb-6 rounded-xl border-2 border bg-card p-6 shadow-lg">
-                        <div className="flex gap-4">
+                    {/* Header */}
+                    <div className="mb-8">
+                        <h1 className="font-display text-3xl font-black tracking-tight">Search</h1>
+                    </div>
+
+                    {/* Search Form */}
+                    <form onSubmit={handleSearch} className="mb-8">
+                        <div className="flex gap-2">
                             <div className="relative flex-1">
-                                <SearchIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                                <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
                                 <Input
-                                    type="text"
-                                    placeholder="Search businesses, events, articles, coupons..."
+                                    placeholder="Search for places, restaurants, coupons..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                                    className="pl-10 text-lg"
+                                    className="h-12 pl-10 text-lg"
+                                    autoFocus
                                 />
                             </div>
-                            <Button onClick={handleSearch} className="bg-primary hover:bg-primary">
+                            <Button type="submit" size="lg" className="h-12 px-8">
                                 Search
                             </Button>
                         </div>
+                    </form>
 
-                        {/* Suggestions */}
-                        {suggestions.length > 0 && (
-                            <div className="mt-4">
-                                <p className="mb-2 text-sm text-muted-foreground">Suggestions:</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {suggestions.map((suggestion, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() => {
-                                                setSearchQuery(suggestion);
-                                                router.get(route("downtown-guide.search.index"), { q: suggestion, type, ...filters });
-                                            }}
-                                            className="rounded-full bg-accent px-3 py-1 text-sm text-primary hover:bg-accent/80"
-                                        >
-                                            {suggestion}
-                                        </button>
-                                    ))}
-                                </div>
+                    {/* Suggestions */}
+                    {suggestions.length > 0 && (
+                        <div className="mb-6">
+                            <p className="mb-2 text-sm text-muted-foreground">Suggestions:</p>
+                            <div className="flex flex-wrap gap-2">
+                                {suggestions.map((suggestion, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => {
+                                            setSearchQuery(suggestion);
+                                            router.get(route("downtown-guide.search.index"), { q: suggestion, type, ...filters });
+                                        }}
+                                        className="rounded-full bg-muted px-3 py-1 text-sm text-foreground transition-colors hover:bg-muted/80"
+                                    >
+                                        {suggestion}
+                                    </button>
+                                ))}
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
 
                     {/* Results */}
                     {query ? (
                         <>
+                            {/* Results count */}
+                            <p className="mb-4 text-muted-foreground">
+                                {totalResults} {totalResults === 1 ? "result" : "results"} for "{query}"
+                            </p>
+
                             {totalResults > 0 ? (
                                 <div className="space-y-8">
-                                    {/* Results Summary */}
-                                    <div className="text-sm text-muted-foreground">
-                                        Found {totalResults} result{totalResults === 1 ? "" : "s"} for "{query}"
-                                    </div>
-
                                     {/* Businesses */}
                                     {results.businesses && results.businesses.length > 0 && (
                                         <section>
-                                            <div className="mb-4 flex items-center gap-2">
-                                                <StoreIcon className="h-5 w-5 text-primary" />
-                                                <h2 className="text-xl font-bold text-foreground">Businesses ({results.businesses.length})</h2>
-                                            </div>
+                                            <h2 className="mb-4 flex items-center gap-2 text-xl font-bold">
+                                                <MapPin className="size-5" />
+                                                Places ({results.businesses.length})
+                                            </h2>
                                             <BusinessList businesses={results.businesses} theme="downtownsguide" gridCols={3} />
                                         </section>
                                     )}
@@ -135,10 +142,10 @@ export default function DowntownGuideSearchIndex({ query, results, suggestions =
                                     {/* Events */}
                                     {results.events && results.events.length > 0 && (
                                         <section>
-                                            <div className="mb-4 flex items-center gap-2">
-                                                <CalendarIcon className="h-5 w-5 text-primary" />
-                                                <h2 className="text-xl font-bold text-foreground">Events ({results.events.length})</h2>
-                                            </div>
+                                            <h2 className="mb-4 flex items-center gap-2 text-xl font-bold">
+                                                <CalendarIcon className="size-5" />
+                                                Events ({results.events.length})
+                                            </h2>
                                             <EventList events={results.events} theme="downtownsguide" gridCols={3} />
                                         </section>
                                     )}
@@ -146,10 +153,10 @@ export default function DowntownGuideSearchIndex({ query, results, suggestions =
                                     {/* Articles */}
                                     {results.articles && results.articles.length > 0 && (
                                         <section>
-                                            <div className="mb-4 flex items-center gap-2">
-                                                <NewspaperIcon className="h-5 w-5 text-primary" />
-                                                <h2 className="text-xl font-bold text-foreground">Articles ({results.articles.length})</h2>
-                                            </div>
+                                            <h2 className="mb-4 flex items-center gap-2 text-xl font-bold">
+                                                <NewspaperIcon className="size-5" />
+                                                Articles ({results.articles.length})
+                                            </h2>
                                             <NewsList articles={results.articles} theme="downtownsguide" gridCols={3} />
                                         </section>
                                     )}
@@ -157,18 +164,18 @@ export default function DowntownGuideSearchIndex({ query, results, suggestions =
                                     {/* Coupons */}
                                     {results.coupons && results.coupons.length > 0 && (
                                         <section>
-                                            <div className="mb-4 flex items-center gap-2">
-                                                <TagIcon className="h-5 w-5 text-primary" />
-                                                <h2 className="text-xl font-bold text-foreground">Coupons ({results.coupons.length})</h2>
-                                            </div>
+                                            <h2 className="mb-4 flex items-center gap-2 text-xl font-bold">
+                                                <Ticket className="size-5" />
+                                                Coupons ({results.coupons.length})
+                                            </h2>
                                             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                                                 {results.coupons.map((coupon) => (
                                                     <Link
                                                         key={coupon.id}
                                                         href={route("downtown-guide.coupons.show", coupon.slug)}
-                                                        className="rounded-xl border-2 border bg-card p-4 shadow-lg hover:border-purple-400"
+                                                        className="block rounded-lg border bg-card p-4 transition-colors hover:bg-muted"
                                                     >
-                                                        <h3 className="font-bold text-foreground">{coupon.title}</h3>
+                                                        <h3 className="font-semibold">{coupon.title}</h3>
                                                     </Link>
                                                 ))}
                                             </div>
@@ -176,21 +183,27 @@ export default function DowntownGuideSearchIndex({ query, results, suggestions =
                                     )}
                                 </div>
                             ) : (
-                                <div className="rounded-xl border-2 border-dashed border bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
-                                    <SearchIcon className="mx-auto h-12 w-12 text-purple-400" />
-                                    <p className="mt-4 text-lg font-bold text-foreground">No results found</p>
-                                    <p className="mt-2 text-sm text-muted-foreground">Try different keywords or browse our categories</p>
+                                <div className="flex min-h-[40vh] items-center justify-center">
+                                    <div className="text-center">
+                                        <Search className="mx-auto mb-4 size-16 text-muted-foreground" />
+                                        <h3 className="mb-2 text-xl font-bold">No results found</h3>
+                                        <p className="mx-auto max-w-md text-muted-foreground">Try different keywords or browse our categories</p>
+                                    </div>
                                 </div>
                             )}
                         </>
                     ) : (
-                        <div className="rounded-xl border-2 border-dashed border bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
-                            <SearchIcon className="mx-auto h-12 w-12 text-purple-400" />
-                            <p className="mt-4 text-lg font-bold text-foreground">Start your search</p>
-                            <p className="mt-2 text-sm text-muted-foreground">Enter keywords to search businesses, events, articles, and coupons</p>
+                        <div className="flex min-h-[40vh] items-center justify-center">
+                            <div className="text-center">
+                                <Search className="mx-auto mb-4 size-16 text-muted-foreground" />
+                                <h3 className="mb-2 text-xl font-bold">Start your search</h3>
+                                <p className="mx-auto max-w-md text-muted-foreground">
+                                    Enter a search term to find places, restaurants, and coupons in your area.
+                                </p>
+                            </div>
                         </div>
                     )}
-                </div>
+                </main>
             </div>
         </>
     );

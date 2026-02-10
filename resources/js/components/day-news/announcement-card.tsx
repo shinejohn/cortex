@@ -14,11 +14,13 @@ interface AnnouncementCardProps {
 
 export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
     const typeColor: Record<string, string> = {
-        wedding: "bg-pink-100 text-pink-700 border-pink-200",
         birth: "bg-blue-100 text-blue-700 border-blue-200",
+        wedding: "bg-pink-100 text-pink-700 border-pink-200",
+        engagement: "bg-pink-100 text-pink-700 border-pink-200",
         graduation: "bg-indigo-100 text-indigo-700 border-indigo-200",
         celebration: "bg-yellow-100 text-yellow-700 border-yellow-200",
         memorial: "bg-zinc-100 text-zinc-700 border-zinc-200",
+        obituary: "bg-zinc-100 text-zinc-700 border-zinc-200",
         meeting: "bg-emerald-100 text-emerald-700 border-emerald-200",
     };
     const activeColor = typeColor[announcement.type] || "bg-muted text-muted-foreground border-muted";
@@ -53,12 +55,12 @@ export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
                         <Avatar className="size-6 border">
                             <AvatarImage src={announcement.user?.avatar} />
                             <AvatarFallback className="text-[10px] font-bold">
-                                {announcement.user?.name?.substring(0, 2).toUpperCase()}
+                                {announcement.user?.name?.substring(0, 2).toUpperCase() ?? "AN"}
                             </AvatarFallback>
                         </Avatar>
-                        <span className="text-xs font-bold text-muted-foreground">{announcement.user?.name}</span>
+                        <span className="text-xs font-bold text-muted-foreground">{announcement.user?.name ?? "Anonymous"}</span>
                     </div>
-                    <span className="text-[10px] font-medium text-muted-foreground uppercase">{announcement.published_at_diff}</span>
+                    <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">{announcement.published_at_diff ?? ""}</span>
                 </div>
 
                 <Link href={route("daynews.announcements.show", announcement.id) as any}>
@@ -81,7 +83,7 @@ export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
                     {announcement.event_date && (
                         <div className="flex items-center gap-1">
                             <Calendar className="size-3.5 text-primary" />
-                            <span>{announcement.event_date_formatted}</span>
+                            <span>{announcement.event_date_formatted ?? announcement.event_date}</span>
                         </div>
                     )}
                 </div>
@@ -93,11 +95,11 @@ export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
                 <div className="flex items-center gap-4">
                     <button className="flex items-center gap-1.5 text-xs font-bold hover:text-red-500 transition-colors">
                         <Heart className="size-4" />
-                        <span>{announcement.reactions_count || 0}</span>
+                        <span>{announcement.reactions_count ?? 0}</span>
                     </button>
                     <button className="flex items-center gap-1.5 text-xs font-bold hover:text-primary transition-colors">
                         <MessageSquare className="size-4" />
-                        <span>{announcement.comments_count || 0}</span>
+                        <span>{announcement.comments_count ?? 0}</span>
                     </button>
                 </div>
 

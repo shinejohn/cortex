@@ -1,7 +1,7 @@
 import { Head, Link } from "@inertiajs/react";
-import { GiftIcon, StarIcon, TrendingUpIcon, TrophyIcon, UserIcon, UsersIcon } from "lucide-react";
-import { BusinessList } from "@/components/shared/business/BusinessList";
-import { ReviewList } from "@/components/shared/reviews/ReviewList";
+import { GiftIcon, Star, TrendingUpIcon, TrophyIcon, UserIcon, UsersIcon } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface DowntownGuideProfileShowProps {
@@ -68,233 +68,250 @@ export default function DowntownGuideProfileShow({
         <>
             <Head title={`${user.name}'s Profile - DowntownsGuide`} />
 
-            <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
-                {/* Header */}
-                <div className="border-b-4 border-purple-600 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600">
-                    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <div className="min-h-screen bg-background">
+                {/* Profile Header */}
+                <section className="bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-12">
+                    <div className="container mx-auto px-4">
                         <div className="flex items-center gap-6">
-                            {user.avatar ? (
-                                <img src={user.avatar} alt={user.name} className="h-24 w-24 rounded-full border-4 border-white shadow-lg" />
-                            ) : (
-                                <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-card/20 shadow-lg">
-                                    <UserIcon className="h-12 w-12 text-white" />
-                                </div>
-                            )}
+                            <Avatar className="size-24 border-4 border-background shadow-lg">
+                                <AvatarImage src={user.avatar || undefined} alt={user.name} />
+                                <AvatarFallback className="text-2xl">
+                                    {user.name
+                                        .split(" ")
+                                        .map((n) => n[0])
+                                        .join("")
+                                        .toUpperCase()}
+                                </AvatarFallback>
+                            </Avatar>
                             <div>
-                                <h1 className="text-3xl font-bold text-white">{user.name}</h1>
-                                {user.bio && <p className="mt-2 text-purple-100">{user.bio}</p>}
+                                <h1 className="font-display text-3xl font-black tracking-tight">{user.name}</h1>
+                                {user.bio && <p className="mt-2 text-muted-foreground">{user.bio}</p>}
                                 <div className="mt-4 flex items-center gap-4">
                                     <div className="flex items-center gap-2">
-                                        <TrophyIcon className="h-5 w-5 text-yellow-300" />
-                                        <span className="text-white">Level {level}</span>
+                                        <TrophyIcon className="h-5 w-5 text-yellow-500" />
+                                        <span className="font-medium">Level {level}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <StarIcon className="h-5 w-5 text-yellow-300" />
-                                        <span className="text-white">{points.toLocaleString()} Points</span>
+                                        <Star className="h-5 w-5 text-yellow-500" />
+                                        <span className="font-medium">{points.toLocaleString()} Points</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                <main className="container mx-auto px-4 py-8">
                     {/* Stats Cards */}
                     <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                        <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
-                            <div className="flex items-center gap-3">
-                                <div className="rounded-lg bg-accent p-2">
-                                    <StarIcon className="h-6 w-6 text-primary" />
+                        <Card className="overflow-hidden border-none shadow-sm">
+                            <CardContent className="p-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
+                                        <Star className="size-5 text-primary" />
+                                    </div>
+                                    <div>
+                                        <p className="text-2xl font-bold">{stats?.reviews_count ?? 0}</p>
+                                        <p className="text-sm text-muted-foreground">Reviews</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-2xl font-bold text-foreground">{stats.reviews_count}</p>
-                                    <p className="text-sm text-muted-foreground">Reviews</p>
+                            </CardContent>
+                        </Card>
+                        <Card className="overflow-hidden border-none shadow-sm">
+                            <CardContent className="p-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
+                                        <TrophyIcon className="size-5 text-primary" />
+                                    </div>
+                                    <div>
+                                        <p className="text-2xl font-bold">{stats?.achievements_count ?? 0}</p>
+                                        <p className="text-sm text-muted-foreground">Achievements</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
-                            <div className="flex items-center gap-3">
-                                <div className="rounded-lg bg-pink-100 p-2">
-                                    <TrophyIcon className="h-6 w-6 text-pink-600" />
+                            </CardContent>
+                        </Card>
+                        <Card className="overflow-hidden border-none shadow-sm">
+                            <CardContent className="p-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
+                                        <UsersIcon className="size-5 text-primary" />
+                                    </div>
+                                    <div>
+                                        <p className="text-2xl font-bold">{stats?.followers_count ?? 0}</p>
+                                        <p className="text-sm text-muted-foreground">Followers</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-2xl font-bold text-foreground">{stats.achievements_count}</p>
-                                    <p className="text-sm text-muted-foreground">Achievements</p>
+                            </CardContent>
+                        </Card>
+                        <Card className="overflow-hidden border-none shadow-sm">
+                            <CardContent className="p-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
+                                        <GiftIcon className="size-5 text-primary" />
+                                    </div>
+                                    <div>
+                                        <p className="text-2xl font-bold">{loyaltyPrograms?.length ?? 0}</p>
+                                        <p className="text-sm text-muted-foreground">Loyalty Programs</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
-                            <div className="flex items-center gap-3">
-                                <div className="rounded-lg bg-accent p-2">
-                                    <UsersIcon className="h-6 w-6 text-primary" />
-                                </div>
-                                <div>
-                                    <p className="text-2xl font-bold text-foreground">{stats.followers_count}</p>
-                                    <p className="text-sm text-muted-foreground">Followers</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
-                            <div className="flex items-center gap-3">
-                                <div className="rounded-lg bg-pink-100 p-2">
-                                    <GiftIcon className="h-6 w-6 text-pink-600" />
-                                </div>
-                                <div>
-                                    <p className="text-2xl font-bold text-foreground">{loyaltyPrograms.length}</p>
-                                    <p className="text-sm text-muted-foreground">Loyalty Programs</p>
-                                </div>
-                            </div>
-                        </div>
+                            </CardContent>
+                        </Card>
                     </div>
 
                     {/* Tabs */}
                     <Tabs defaultValue="activity" className="w-full">
-                        <TabsList className="grid w-full grid-cols-4 bg-accent/50">
-                            <TabsTrigger value="activity" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-                                Activity
+                        <TabsList className="mb-6">
+                            <TabsTrigger value="activity">Activity</TabsTrigger>
+                            <TabsTrigger value="achievements">
+                                Achievements ({achievements?.length ?? 0})
                             </TabsTrigger>
-                            <TabsTrigger value="achievements" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-                                <TrophyIcon className="mr-2 h-4 w-4" />
-                                Achievements ({achievements.length})
+                            <TabsTrigger value="loyalty">
+                                Loyalty ({loyaltyPrograms?.length ?? 0})
                             </TabsTrigger>
-                            <TabsTrigger value="loyalty" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-                                <GiftIcon className="mr-2 h-4 w-4" />
-                                Loyalty ({loyaltyPrograms.length})
-                            </TabsTrigger>
-                            <TabsTrigger value="referrals" className="data-[state=active]:bg-primary data-[state=active]:text-white">
-                                <UsersIcon className="mr-2 h-4 w-4" />
-                                Referrals ({referrals.length})
+                            <TabsTrigger value="referrals">
+                                Referrals ({referrals?.length ?? 0})
                             </TabsTrigger>
                         </TabsList>
 
-                        <TabsContent value="activity" className="mt-6">
-                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
-                                <h2 className="mb-4 text-xl font-bold text-foreground">Recent Activity</h2>
-                                {activity.length > 0 ? (
-                                    <div className="space-y-4">
-                                        {activity.map((item) => (
-                                            <div key={item.id} className="flex items-start gap-4 border-b border pb-4 last:border-0">
-                                                <TrendingUpIcon className="h-5 w-5 text-primary" />
-                                                <div className="flex-1">
-                                                    <p className="text-sm text-foreground">{item.description}</p>
-                                                    {item.created_at && (
-                                                        <p className="mt-1 text-xs text-muted-foreground">
-                                                            {new Date(item.created_at).toLocaleDateString()}
+                        <TabsContent value="activity">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Recent Activity</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    {activity.length > 0 ? (
+                                        <div className="space-y-4">
+                                            {activity.map((item) => (
+                                                <div key={item.id} className="flex items-start gap-4 border-b pb-4 last:border-0 last:pb-0">
+                                                    <TrendingUpIcon className="mt-0.5 size-5 shrink-0 text-primary" />
+                                                    <div className="flex-1">
+                                                        <p className="text-sm">{item.description}</p>
+                                                        {item.created_at && (
+                                                            <p className="mt-1 text-xs text-muted-foreground">
+                                                                {new Date(item.created_at).toLocaleDateString()}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="py-8 text-center text-muted-foreground">No recent activity</p>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        <TabsContent value="achievements">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Achievements</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    {achievements.length > 0 ? (
+                                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                            {achievements.map((achievement) => (
+                                                <div
+                                                    key={achievement.id}
+                                                    className="rounded-lg border bg-muted/50 p-4 transition-colors hover:bg-muted"
+                                                >
+                                                    {achievement.icon && <div className="mb-2 text-3xl">{achievement.icon}</div>}
+                                                    <h3 className="font-bold">{achievement.name}</h3>
+                                                    {achievement.description && (
+                                                        <p className="mt-1 text-sm text-muted-foreground">{achievement.description}</p>
+                                                    )}
+                                                    {achievement.unlocked_at && (
+                                                        <p className="mt-2 text-xs text-muted-foreground">
+                                                            Unlocked {new Date(achievement.unlocked_at).toLocaleDateString()}
                                                         </p>
                                                     )}
                                                 </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="py-8 text-center text-muted-foreground">
-                                        <p>No recent activity</p>
-                                    </div>
-                                )}
-                            </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="py-8 text-center">
+                                            <TrophyIcon className="mx-auto size-12 text-muted-foreground" />
+                                            <p className="mt-4 text-muted-foreground">No achievements yet</p>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
                         </TabsContent>
 
-                        <TabsContent value="achievements" className="mt-6">
-                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
-                                <h2 className="mb-4 text-xl font-bold text-foreground">Achievements</h2>
-                                {achievements.length > 0 ? (
-                                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                                        {achievements.map((achievement) => (
-                                            <div
-                                                key={achievement.id}
-                                                className="rounded-lg border-2 border bg-gradient-to-r from-purple-50 to-pink-50 p-4"
-                                            >
-                                                {achievement.icon && <div className="mb-2 text-3xl">{achievement.icon}</div>}
-                                                <h3 className="font-bold text-foreground">{achievement.name}</h3>
-                                                {achievement.description && (
-                                                    <p className="mt-1 text-sm text-muted-foreground">{achievement.description}</p>
-                                                )}
-                                                {achievement.unlocked_at && (
-                                                    <p className="mt-2 text-xs text-muted-foreground">
-                                                        Unlocked {new Date(achievement.unlocked_at).toLocaleDateString()}
-                                                    </p>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="py-8 text-center text-muted-foreground">
-                                        <TrophyIcon className="mx-auto h-12 w-12 text-muted-foreground" />
-                                        <p className="mt-4">No achievements yet</p>
-                                    </div>
-                                )}
-                            </div>
-                        </TabsContent>
-
-                        <TabsContent value="loyalty" className="mt-6">
-                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
-                                <h2 className="mb-4 text-xl font-bold text-foreground">Loyalty Programs</h2>
-                                {loyaltyPrograms.length > 0 ? (
-                                    <div className="space-y-4">
-                                        {loyaltyPrograms.map((program) => (
-                                            <div
-                                                key={program.id}
-                                                className="flex items-center justify-between rounded-lg border-2 border bg-gradient-to-r from-purple-50 to-pink-50 p-4"
-                                            >
-                                                <div>
-                                                    <h3 className="font-bold text-foreground">{program.business_name}</h3>
-                                                    <p className="text-sm text-muted-foreground">Loyalty Program</p>
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="text-2xl font-bold text-primary">{program.points}</p>
-                                                    <p className="text-xs text-muted-foreground">Points</p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="py-8 text-center text-muted-foreground">
-                                        <GiftIcon className="mx-auto h-12 w-12 text-muted-foreground" />
-                                        <p className="mt-4">Not enrolled in any loyalty programs</p>
-                                    </div>
-                                )}
-                            </div>
-                        </TabsContent>
-
-                        <TabsContent value="referrals" className="mt-6">
-                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
-                                <h2 className="mb-4 text-xl font-bold text-foreground">Referrals</h2>
-                                {referrals.length > 0 ? (
-                                    <div className="space-y-4">
-                                        {referrals.map((referral) => (
-                                            <div
-                                                key={referral.id}
-                                                className="flex items-center justify-between rounded-lg border-2 border bg-card p-4"
-                                            >
-                                                <div>
-                                                    <p className="font-medium text-foreground">{referral.referred_user_name}</p>
-                                                    <p className="text-sm text-muted-foreground">Referred user</p>
-                                                </div>
-                                                <span
-                                                    className={`rounded-full px-3 py-1 text-xs font-medium ${
-                                                        referral.status === "completed"
-                                                            ? "bg-green-100 text-green-800"
-                                                            : "bg-yellow-100 text-yellow-800"
-                                                    }`}
+                        <TabsContent value="loyalty">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Loyalty Programs</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    {loyaltyPrograms.length > 0 ? (
+                                        <div className="space-y-3">
+                                            {loyaltyPrograms.map((program) => (
+                                                <div
+                                                    key={program.id}
+                                                    className="flex items-center justify-between rounded-lg border bg-muted/50 p-4"
                                                 >
-                                                    {referral.status}
-                                                </span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="py-8 text-center text-muted-foreground">
-                                        <UsersIcon className="mx-auto h-12 w-12 text-muted-foreground" />
-                                        <p className="mt-4">No referrals yet</p>
-                                    </div>
-                                )}
-                            </div>
+                                                    <div>
+                                                        <h3 className="font-bold">{program.business_name}</h3>
+                                                        <p className="text-sm text-muted-foreground">Loyalty Program</p>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <p className="text-2xl font-bold text-primary">{program.points}</p>
+                                                        <p className="text-xs text-muted-foreground">Points</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="py-8 text-center">
+                                            <GiftIcon className="mx-auto size-12 text-muted-foreground" />
+                                            <p className="mt-4 text-muted-foreground">Not enrolled in any loyalty programs</p>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        <TabsContent value="referrals">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Referrals</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    {referrals.length > 0 ? (
+                                        <div className="space-y-3">
+                                            {referrals.map((referral) => (
+                                                <div
+                                                    key={referral.id}
+                                                    className="flex items-center justify-between rounded-lg border bg-card p-4"
+                                                >
+                                                    <div>
+                                                        <p className="font-medium">{referral.referred_user_name}</p>
+                                                        <p className="text-sm text-muted-foreground">Referred user</p>
+                                                    </div>
+                                                    <span
+                                                        className={`rounded-full px-3 py-1 text-xs font-medium ${
+                                                            referral.status === "completed"
+                                                                ? "bg-green-100 text-green-800"
+                                                                : "bg-yellow-100 text-yellow-800"
+                                                        }`}
+                                                    >
+                                                        {referral.status}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="py-8 text-center">
+                                            <UsersIcon className="mx-auto size-12 text-muted-foreground" />
+                                            <p className="mt-4 text-muted-foreground">No referrals yet</p>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
                         </TabsContent>
                     </Tabs>
-                </div>
+                </main>
             </div>
         </>
     );

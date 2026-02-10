@@ -1,3 +1,4 @@
+import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { EventCard } from "./EventCard";
 
@@ -48,14 +49,18 @@ export function EventList({
 
     if (events.length === 0) {
         return (
-            <div className="rounded-lg border border-dashed p-8 text-center">
-                <p className="text-muted-foreground">No events found</p>
+            <div className="rounded-xl border border-dashed p-12 text-center">
+                <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-muted">
+                    <CalendarIcon className="size-6 text-muted-foreground" />
+                </div>
+                <p className="font-display font-black tracking-tight text-foreground">No events found</p>
+                <p className="mt-1 text-sm text-muted-foreground">Check back later for upcoming events</p>
             </div>
         );
     }
 
     return (
-        <div className={cn("grid gap-4", gridClasses[gridCols], className)}>
+        <div className={cn("grid gap-6", gridClasses[gridCols], className)}>
             {events.map((event) => (
                 <EventCard
                     key={event.id}

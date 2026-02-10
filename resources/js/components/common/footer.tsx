@@ -139,7 +139,7 @@ const APP_STORE_LINKS: readonly AppStoreLink[] = [
 function FooterSection({ section }: { readonly section: FooterSection }) {
     return (
         <div>
-            <h3 className="text-lg font-semibold mb-4 text-foreground">{section.title}</h3>
+            <h3 className="font-display text-lg font-bold tracking-tight mb-4 text-foreground">{section.title}</h3>
             <ul className="space-y-2">
                 {section.links.map((link) => (
                     <li key={link.href}>
@@ -158,7 +158,7 @@ function FooterSection({ section }: { readonly section: FooterSection }) {
 
 function SocialMediaLinks() {
     return (
-        <div className="flex space-x-4 mb-4">
+        <div className="flex gap-3 mb-4">
             {SOCIAL_LINKS.map((social) => {
                 const Icon = social.icon;
                 return (
@@ -181,7 +181,7 @@ function SocialMediaLinks() {
 
 function LegalLinks() {
     return (
-        <div className="flex flex-wrap space-x-4 mt-2">
+        <div className="flex flex-wrap gap-4 mt-2">
             {LEGAL_LINKS.map((link, index) => (
                 <span key={link.href} className="flex items-center">
                     <Link
@@ -217,7 +217,7 @@ export function Footer() {
 
     return (
         <footer className="bg-background border-t" role="contentinfo">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 {/* Main footer content */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {FOOTER_SECTIONS.map((section) => (
@@ -227,10 +227,10 @@ export function Footer() {
 
                 {/* Footer bottom section */}
                 <div className="mt-12 pt-8 border-t border-border">
-                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-6 lg:space-y-0">
+                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
                         {/* Copyright and legal links */}
                         <div className="flex-1">
-                            <p className="text-sm text-muted-foreground mb-2">© {currentYear} Go Event City | Part of Fibonacco</p>
+                            <p className="text-sm text-muted-foreground mb-2">&copy; {currentYear} Go Event City | Part of Fibonacco</p>
                             <LegalLinks />
                         </div>
 

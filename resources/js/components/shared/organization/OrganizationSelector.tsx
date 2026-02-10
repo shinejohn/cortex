@@ -66,16 +66,29 @@ export function OrganizationSelector({
     }, [query, organizationType, organizationLevel]);
 
     return (
-        <div className={cn("space-y-2", className)}>
+        <div className={cn("space-y-3", className)}>
             <div className="relative">
-                <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input type="text" placeholder="Search organizations..." value={query} onChange={(e) => setQuery(e.target.value)} className="pl-10" />
+                <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                    type="text"
+                    placeholder="Search organizations..."
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    className="rounded-xl pl-10"
+                />
             </div>
 
-            {loading && <div className="rounded-lg border p-4 text-center text-sm text-muted-foreground">Searching...</div>}
+            {loading && (
+                <div className="rounded-xl border-none bg-card p-4 text-center shadow-sm">
+                    <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                        <div className="size-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                        Searching...
+                    </div>
+                </div>
+            )}
 
             {!loading && organizations.length > 0 && (
-                <div className="max-h-60 space-y-1 overflow-y-auto rounded-lg border bg-card p-2">
+                <div className="max-h-60 space-y-1 overflow-y-auto rounded-xl border-none bg-card p-2 shadow-sm">
                     {organizations.map((org) => (
                         <button
                             key={org.id}
@@ -84,15 +97,17 @@ export function OrganizationSelector({
                                 setQuery("");
                                 setOrganizations([]);
                             }}
-                            className="flex w-full items-center gap-2 rounded-md p-2 text-left hover:bg-muted"
+                            className="flex w-full items-center gap-3 rounded-lg p-3 text-left transition-colors hover:bg-muted"
                         >
-                            <BuildingIcon className="h-4 w-4 text-muted-foreground" />
-                            <div className="flex-1">
-                                <p className="text-sm font-medium text-foreground">{org.name}</p>
+                            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-indigo-50">
+                                <BuildingIcon className="size-4 text-primary" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="truncate font-medium text-foreground">{org.name}</p>
                                 {org.organization_type && (
                                     <p className="text-xs text-muted-foreground">
                                         {org.organization_type}
-                                        {org.organization_level && ` • ${org.organization_level}`}
+                                        {org.organization_level && ` \u00b7 ${org.organization_level}`}
                                     </p>
                                 )}
                             </div>
@@ -102,7 +117,10 @@ export function OrganizationSelector({
             )}
 
             {!loading && query.length >= 2 && organizations.length === 0 && (
-                <div className="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">No organizations found</div>
+                <div className="rounded-xl border border-dashed p-6 text-center">
+                    <p className="font-display font-black tracking-tight text-foreground">No organizations found</p>
+                    <p className="mt-1 text-sm text-muted-foreground">Try a different search term</p>
+                </div>
             )}
         </div>
     );

@@ -38,63 +38,71 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post, onDelete }: PostCardProps) {
-    const getTypeVariant = (type: string): "default" | "secondary" | "destructive" | "outline" => {
-        const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-            article: "default",
-            announcement: "secondary",
-            notice: "outline",
-            ad: "secondary",
-            schedule: "default",
+    const getTypeColor = (type: string) => {
+        const colors: Record<string, string> = {
+            article: "bg-blue-500 text-white",
+            announcement: "bg-yellow-500 text-white",
+            notice: "bg-orange-500 text-white",
+            ad: "bg-purple-500 text-white",
+            schedule: "bg-green-500 text-white",
         };
-        return variants[type] || "secondary";
+        return colors[type] || "bg-muted text-muted-foreground";
     };
 
     const getStatusColor = (status: string) => {
-        const colors = {
+        const colors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
             draft: "secondary",
             published: "default",
             expired: "destructive",
             removed: "outline",
         };
-        return colors[status as keyof typeof colors] || "secondary";
+        return colors[status] || "secondary";
     };
 
     return (
-        <Card className="overflow-hidden">
+        <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-all duration-300">
             <CardHeader>
                 <div className="mb-2 flex flex-wrap items-center gap-2">
-                    <Badge variant={getTypeVariant(post.type)}>{post.type}</Badge>
-                    <Badge variant={getStatusColor(post.status)}>{post.status}</Badge>
-                    {post.category && <Badge variant="outline">{post.category.replace("_", " ")}</Badge>}
+                    <Badge className={getTypeColor(post.type)}>
+                        <span className="text-[10px] font-black uppercase tracking-widest">{post.type}</span>
+                    </Badge>
+                    <Badge variant={getStatusColor(post.status)}>
+                        <span className="text-[10px] font-black uppercase tracking-widest">{post.status}</span>
+                    </Badge>
+                    {post.category && (
+                        <Badge variant="outline">
+                            <span className="text-[10px] uppercase tracking-widest">{post.category.replace("_", " ")}</span>
+                        </Badge>
+                    )}
                 </div>
-                <CardTitle className="line-clamp-2">{post.title}</CardTitle>
-                {post.excerpt && <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{post.excerpt}</p>}
+                <CardTitle className="line-clamp-2 font-display font-black tracking-tight">{post.title}</CardTitle>
+                {post.excerpt && <p className="mt-2 line-clamp-2 text-sm text-muted-foreground/90 leading-relaxed">{post.excerpt}</p>}
             </CardHeader>
 
             <CardContent>
                 <div className="space-y-2 text-sm">
                     {post.regions.length > 0 && (
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                            <MapPin className="size-4" />
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                            <MapPin className="size-3.5 text-primary" />
                             <span>{post.regions.map((r) => r.name).join(", ")}</span>
                         </div>
                     )}
 
                     {post.published_at && (
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                            <Calendar className="size-4" />
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                            <Calendar className="size-3.5 text-primary" />
                             <span>{new Date(post.published_at).toLocaleDateString()}</span>
                         </div>
                     )}
 
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                        <Eye className="size-4" />
+                    <div className="flex items-center gap-1 text-muted-foreground">
+                        <Eye className="size-3.5 text-primary" />
                         <span>{post.view_count} views</span>
                     </div>
 
                     {post.payment && (
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                            <DollarSign className="size-4" />
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                            <DollarSign className="size-3.5 text-primary" />
                             <span>
                                 ${post.payment.amount.toFixed(2)} ({post.payment.status})
                             </span>
@@ -103,7 +111,7 @@ export default function PostCard({ post, onDelete }: PostCardProps) {
                 </div>
             </CardContent>
 
-            <CardFooter className="flex gap-2">
+            <CardFooter className="flex gap-2 bg-muted/5 pt-4">
                 {post.can_edit && (
                     <Button asChild size="sm" variant="outline">
                         <Link href={route("daynews.posts.edit", post.id) as any}>

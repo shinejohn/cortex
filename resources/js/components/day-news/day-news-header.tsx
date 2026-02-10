@@ -1,5 +1,5 @@
 import { Link } from "@inertiajs/react";
-import { Bell, Menu, User, Search } from "lucide-react";
+import { Bell, CalendarPlus, FileText, Megaphone, Menu, PenLine, Scale, Search, User } from "lucide-react";
 import { useState } from "react";
 import { route } from "ziggy-js";
 
@@ -38,11 +38,11 @@ const navigationTabs = [
 ] as const;
 
 const actionButtons = [
-    { title: "Write", route: "daynews.posts.create", params: { type: "article" } },
-    { title: "Post Ad", route: "daynews.classifieds.create", params: {} },
-    { title: "Announce", route: "daynews.announcements.create", params: {} },
-    { title: "Notice", route: "daynews.legal-notices.create", params: {} },
-    { title: "Schedule", route: "events.create", params: {} },
+    { title: "Write", route: "daynews.posts.create", params: { type: "article" }, icon: PenLine },
+    { title: "Post Ad", route: "daynews.classifieds.create", params: {}, icon: FileText },
+    { title: "Announce", route: "daynews.announcements.create", params: {}, icon: Megaphone },
+    { title: "Notice", route: "daynews.legal-notices.create", params: {}, icon: Scale },
+    { title: "Schedule", route: "events.create", params: {}, icon: CalendarPlus },
 ] as const;
 
 export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
@@ -56,18 +56,18 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                     <div className="flex h-16 items-center justify-between">
                         {/* Left: Logo */}
                         <Link href={route("daynews.home") as any} className="flex items-center gap-2">
-                            <span className="text-2xl font-bold">Day News</span>
+                            <span className="font-display text-2xl font-bold">Day News</span>
                         </Link>
 
                         {/* Right: Search, Location, Notifications, User */}
                         <div className="flex items-center gap-3">
-                            {/* Search Bar - Spec enhancement */}
+                            {/* Search Bar */}
                             <form className="relative hidden lg:block w-48">
-                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
                                 <Input
                                     type="search"
                                     placeholder="Search news..."
-                                    className="pl-8 bg-muted/50 border-none h-9 text-xs focus-visible:ring-news-primary"
+                                    className="pl-8 bg-muted/50 border-none h-9 text-xs focus-visible:ring-primary"
                                 />
                             </form>
 
@@ -79,6 +79,7 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                             {/* Notification Bell */}
                             <Button variant="ghost" size="icon" className="relative">
                                 <Bell className="size-5" />
+                                <span className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-red-500" />
                                 <span className="sr-only">Notifications</span>
                             </Button>
 
@@ -133,14 +134,14 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                 </div>
             </div>
 
-            {/* Navigation Bar */}
+            {/* Navigation Bar - Centered */}
             <div className="border-b">
                 <div className="container mx-auto px-4">
-                    <div className="flex h-12 items-center justify-between">
+                    <div className="flex h-12 items-center justify-center">
                         {/* Mobile Menu Toggle */}
                         <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                             <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon" className="md:hidden">
+                                <Button variant="ghost" size="icon" className="absolute left-4 md:hidden">
                                     <Menu className="size-5" />
                                     <span className="sr-only">Toggle menu</span>
                                 </Button>
@@ -151,7 +152,7 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                                 </SheetHeader>
                                 <div className="mt-6 flex flex-col gap-4">
                                     <div className="flex flex-col gap-2">
-                                        <h3 className="text-sm font-semibold text-muted-foreground">Navigation</h3>
+                                        <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Navigation</h3>
                                         {navigationTabs.map((tab) => (
                                             <Link
                                                 key={tab.href}
@@ -164,27 +165,28 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                                         ))}
                                     </div>
                                     <div className="flex flex-col gap-2">
-                                        <h3 className="text-sm font-semibold text-muted-foreground">Actions</h3>
+                                        <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Actions</h3>
                                         {actionButtons.map((action) => (
                                             <Link
                                                 key={action.title}
                                                 href={route(action.route, action.params) as any}
-                                                className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+                                                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
                                                 onClick={() => setMobileMenuOpen(false)}
                                             >
+                                                <action.icon className="size-4" />
                                                 {action.title}
                                             </Link>
                                         ))}
                                     </div>
                                     <div className="md:hidden">
-                                        <h3 className="mb-2 text-sm font-semibold text-muted-foreground">Location</h3>
+                                        <h3 className="mb-2 text-xs font-black uppercase tracking-widest text-muted-foreground">Location</h3>
                                         <LocationSelector />
                                     </div>
                                 </div>
                             </SheetContent>
                         </Sheet>
 
-                        {/* Desktop Navigation Tabs - Left */}
+                        {/* Desktop Navigation Tabs - Centered */}
                         <NavigationMenu className="hidden md:flex">
                             <NavigationMenuList>
                                 {navigationTabs.map((tab) => (
@@ -202,12 +204,21 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                                 ))}
                             </NavigationMenuList>
                         </NavigationMenu>
+                    </div>
+                </div>
+            </div>
 
-                        {/* Desktop Action Buttons - Right */}
-                        <div className="hidden items-center gap-2 md:flex">
+            {/* Action Bar - Centered with Icons */}
+            <div className="hidden border-b md:block">
+                <div className="container mx-auto px-4">
+                    <div className="flex h-10 items-center justify-center">
+                        <div className="flex items-center gap-2">
                             {actionButtons.map((action) => (
                                 <Button key={action.title} variant="ghost" size="sm" asChild>
-                                    <Link href={route(action.route, action.params) as any}>{action.title}</Link>
+                                    <Link href={route(action.route, action.params) as any}>
+                                        <action.icon className="size-4" />
+                                        {action.title}
+                                    </Link>
                                 </Button>
                             ))}
                         </div>

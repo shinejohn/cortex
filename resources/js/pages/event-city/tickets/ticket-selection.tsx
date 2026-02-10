@@ -214,24 +214,24 @@ export default function TicketSelection() {
             <Head title={`Get Tickets - ${event.title}`} />
             <Header auth={auth} />
 
-            <div className="min-h-screen bg-muted/50">
+            <div className="min-h-screen bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     {/* Breadcrumb */}
                     <nav className="mb-8">
-                        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                            <Link href="/" className="hover:text-foreground">
+                        <div className="flex items-center space-x-2 text-sm text-gray-500">
+                            <Link href="/" className="hover:text-gray-700">
                                 Home
                             </Link>
                             <span>/</span>
-                            <Link href="/events" className="hover:text-foreground">
+                            <Link href="/events" className="hover:text-gray-700">
                                 Events
                             </Link>
                             <span>/</span>
-                            <Link href={`/events/${event.id}`} className="hover:text-foreground">
+                            <Link href={`/events/${event.id}`} className="hover:text-gray-700">
                                 {event.title}
                             </Link>
                             <span>/</span>
-                            <span className="text-foreground">Tickets</span>
+                            <span className="text-gray-900">Tickets</span>
                         </div>
                     </nav>
 
@@ -239,14 +239,14 @@ export default function TicketSelection() {
                         {/* Main ticket selection column */}
                         <div className="lg:col-span-2">
                             {/* Event info */}
-                            <div className="bg-card rounded-lg shadow-sm p-6 mb-6">
+                            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
                                 <div className="flex items-start">
                                     <div className="h-20 w-20 rounded-md overflow-hidden flex-shrink-0">
                                         <img src={event.image} alt={event.title} className="h-full w-full object-cover" />
                                     </div>
                                     <div className="ml-4">
-                                        <h1 className="text-xl font-bold text-foreground">{event.title}</h1>
-                                        <div className="mt-1 flex items-center text-sm text-muted-foreground">
+                                        <h1 className="text-xl font-bold text-gray-900">{event.title}</h1>
+                                        <div className="mt-1 flex items-center text-sm text-gray-600">
                                             <CalendarIcon className="h-4 w-4 mr-1" />
                                             <span>
                                                 {new Date(event.event_date).toLocaleDateString("en-US", {
@@ -256,11 +256,11 @@ export default function TicketSelection() {
                                                 })}
                                             </span>
                                         </div>
-                                        <div className="mt-1 flex items-center text-sm text-muted-foreground">
+                                        <div className="mt-1 flex items-center text-sm text-gray-600">
                                             <ClockIcon className="h-4 w-4 mr-1" />
                                             <span>{event.time}</span>
                                         </div>
-                                        <div className="mt-1 flex items-center text-sm text-muted-foreground">
+                                        <div className="mt-1 flex items-center text-sm text-gray-600">
                                             <MapPinIcon className="h-4 w-4 mr-1" />
                                             <span>{event.venue?.name}</span>
                                         </div>
@@ -269,19 +269,19 @@ export default function TicketSelection() {
                             </div>
 
                             {/* Ticket selection */}
-                            <div className="bg-card rounded-lg shadow-sm p-6 mb-6">
-                                <h2 className="text-lg font-bold text-foreground mb-4 flex items-center">
-                                    <TicketIcon className="h-5 w-5 text-primary mr-2" />
+                            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+                                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                                    <TicketIcon className="h-5 w-5 text-indigo-600 mr-2" />
                                     Select Tickets
                                 </h2>
                                 <div className="space-y-4">
                                     {selectedTickets.map((ticket) => (
-                                        <div key={ticket.id} className="border border rounded-lg p-4">
+                                        <div key={ticket.id} className="border border-border rounded-lg p-4">
                                             <div className="flex justify-between">
                                                 <div>
-                                                    <h3 className="font-medium text-foreground">{ticket.name}</h3>
-                                                    <p className="text-sm text-muted-foreground">{ticket.description}</p>
-                                                    <p className="mt-1 font-medium text-foreground">
+                                                    <h3 className="font-medium text-gray-900">{ticket.name}</h3>
+                                                    <p className="text-sm text-gray-600">{ticket.description}</p>
+                                                    <p className="mt-1 font-medium text-gray-900">
                                                         {Number(ticket.price) === 0 ? (
                                                             <span className="text-green-600">Free</span>
                                                         ) : (
@@ -314,20 +314,20 @@ export default function TicketSelection() {
                                             {ticket.quantity >= ticket.max_quantity && (
                                                 <p className="mt-2 text-sm text-orange-600">Maximum {ticket.max_quantity} tickets per order</p>
                                             )}
-                                            {ticket.available_quantity <= 0 && <p className="mt-2 text-sm text-destructive">Sold out</p>}
+                                            {ticket.available_quantity <= 0 && <p className="mt-2 text-sm text-red-600">Sold out</p>}
                                         </div>
                                     ))}
                                 </div>
                             </div>
 
                             {/* Promo code */}
-                            <div className="bg-card rounded-lg shadow-sm p-6 mb-6">
-                                <h2 className="text-lg font-bold text-foreground mb-4">Promo Code</h2>
+                            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+                                <h2 className="text-lg font-bold text-gray-900 mb-4">Promo Code</h2>
                                 <div className="flex space-x-2">
                                     <input
                                         type="text"
                                         className={`flex-grow rounded-md border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                                            promoError ? "border-red-300" : promoApplied ? "border-green-300" : ""
+                                            promoError ? "border-red-300" : promoApplied ? "border-green-300" : "border-border"
                                         }`}
                                         placeholder="Enter promo code"
                                         value={promoCode}
@@ -356,15 +356,15 @@ export default function TicketSelection() {
                                     <p className="mt-2 text-sm text-green-600">Promo code applied! ${promoDiscount.toFixed(2)} discount added.</p>
                                 )}
                                 {promoError && (
-                                    <p className="mt-2 text-sm text-destructive">{promoErrorMessage || "Invalid promo code. Please try again."}</p>
+                                    <p className="mt-2 text-sm text-red-600">{promoErrorMessage || "Invalid promo code. Please try again."}</p>
                                 )}
                             </div>
                         </div>
 
                         {/* Order summary column */}
                         <div>
-                            <div className="bg-card rounded-lg shadow-sm p-6 sticky top-6">
-                                <h2 className="text-lg font-bold text-foreground mb-4">Order Summary</h2>
+                            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-6">
+                                <h2 className="text-lg font-bold text-gray-900 mb-4">Order Summary</h2>
                                 {hasSelectedTickets ? (
                                     <>
                                         <div className="space-y-4 mb-6">
@@ -374,7 +374,7 @@ export default function TicketSelection() {
                                                     <div key={ticket.id} className="flex justify-between">
                                                         <div>
                                                             <p className="font-medium">{ticket.name}</p>
-                                                            <p className="text-sm text-muted-foreground">
+                                                            <p className="text-sm text-gray-600">
                                                                 {ticket.quantity} x ${Number(ticket.price).toFixed(2)}
                                                             </p>
                                                         </div>
@@ -382,16 +382,16 @@ export default function TicketSelection() {
                                                     </div>
                                                 ))}
                                         </div>
-                                        <div className="border-t border pt-4 mb-4">
+                                        <div className="border-t border-border pt-4 mb-4">
                                             <div className="flex justify-between text-sm mb-2">
-                                                <p className="text-muted-foreground">Subtotal</p>
+                                                <p className="text-gray-600">Subtotal</p>
                                                 <p>${calculateSubtotal().toFixed(2)}</p>
                                             </div>
                                             {calculateSubtotal() > 0 && (
                                                 <div className="flex justify-between text-sm mb-2">
                                                     <div className="flex items-start">
-                                                        <p className="text-muted-foreground">Marketplace Fee (10%)</p>
-                                                        <InfoIcon className="h-4 w-4 ml-1 text-muted-foreground" />
+                                                        <p className="text-gray-600">Marketplace Fee (10%)</p>
+                                                        <InfoIcon className="h-4 w-4 ml-1 text-gray-400" />
                                                     </div>
                                                     <p>${calculateMarketplaceFee().toFixed(2)}</p>
                                                 </div>
@@ -403,7 +403,7 @@ export default function TicketSelection() {
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="border-t border pt-4 mb-6">
+                                        <div className="border-t border-border pt-4 mb-6">
                                             <div className="flex justify-between font-bold">
                                                 <p>Total</p>
                                                 <p>${calculateTotal().toFixed(2)}</p>
@@ -418,10 +418,10 @@ export default function TicketSelection() {
                                             </Button>
                                         ) : (
                                             <div className="space-y-3">
-                                                <p className="text-sm text-muted-foreground text-center">Please log in to purchase tickets</p>
+                                                <p className="text-sm text-gray-600 text-center">Please log in to purchase tickets</p>
                                                 <Link
                                                     href="/login"
-                                                    className="block w-full bg-primary text-primary-foreground py-3 px-4 rounded-md font-medium hover:bg-primary/90 text-center"
+                                                    className="block w-full bg-indigo-600 text-white py-3 px-4 rounded-md font-medium hover:bg-indigo-700 text-center"
                                                 >
                                                     Log In
                                                 </Link>
@@ -431,16 +431,16 @@ export default function TicketSelection() {
                                 ) : (
                                     <div className="text-center py-8">
                                         <TicketIcon className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                                        <p className="text-muted-foreground">Select tickets to continue</p>
+                                        <p className="text-gray-500">Select tickets to continue</p>
                                     </div>
                                 )}
-                                <div className="mt-6 text-sm text-muted-foreground">
+                                <div className="mt-6 text-sm text-gray-600">
                                     <p className="mb-2">
                                         <span className="font-medium">Ticket Policy:</span> All sales are final. No refunds or exchanges.
                                     </p>
                                     <p>
                                         <span className="font-medium">Questions?</span>{" "}
-                                        <Link href="/help" className="text-primary hover:text-primary/80">
+                                        <Link href="/help" className="text-indigo-600 hover:text-indigo-800">
                                             Contact support
                                         </Link>
                                     </p>

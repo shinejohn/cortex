@@ -10,6 +10,8 @@ interface PerformerHeroProps {
 }
 
 export function PerformerHero({ performer, isFollowing }: PerformerHeroProps) {
+    const { auth } = usePage().props as { auth?: { user?: { id: string } } };
+
     const getYearsActiveString = () => {
         const currentYear = new Date().getFullYear();
         const startYear = currentYear - performer.yearsActive;

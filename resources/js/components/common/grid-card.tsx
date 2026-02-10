@@ -38,11 +38,11 @@ export const GridCard = ({
     return (
         <Card
             key={id}
-            className={`gap-0 bg-card rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer p-0 border-0 flex ${isHorizontal ? "flex-row h-auto w-full" : "flex-col h-full"} ${className}`}
+            className={`group gap-0 bg-card rounded-lg overflow-hidden border-none shadow-sm hover:shadow-md transition-all cursor-pointer p-0 flex ${isHorizontal ? "flex-row h-auto w-full" : "flex-col h-full"} ${className}`}
         >
             <Link href={href} className={isHorizontal ? "flex-shrink-0" : "block"}>
                 <div className={`overflow-hidden relative ${isHorizontal ? "w-48 h-32 sm:w-56 sm:h-36" : "h-48"}`}>
-                    <img src={image} alt={imageAlt} className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
+                    <img src={image} alt={imageAlt} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
                     {badge && (
                         <div className="absolute top-2 right-2">
                             <Badge variant="secondary" className="px-2 py-1 bg-black/30 backdrop-blur-sm text-white text-xs rounded-full border-0">

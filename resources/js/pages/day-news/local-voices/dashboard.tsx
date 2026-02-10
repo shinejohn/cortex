@@ -1,5 +1,5 @@
 import { Head, router, usePage } from "@inertiajs/react";
-import { Headphones, Mic, Plus, Users } from "lucide-react";
+import { ArrowRight, BarChart3, Headphones, Mic, Play, Plus, TrendingUp, Users } from "lucide-react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import { Badge } from "@/components/ui/badge";
@@ -46,15 +46,15 @@ interface CreatorDashboardPageProps {
 const getStatusColor = (status: string) => {
     switch (status) {
         case "approved":
-            return "bg-green-100 text-green-700";
+            return "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200";
         case "pending":
-            return "bg-yellow-100 text-yellow-700";
+            return "bg-amber-50 text-amber-700 ring-1 ring-amber-200";
         case "rejected":
-            return "bg-destructive/10 text-destructive";
+            return "bg-red-50 text-red-700 ring-1 ring-red-200";
         case "suspended":
-            return "bg-muted text-foreground";
+            return "bg-zinc-100 text-zinc-600 ring-1 ring-zinc-200";
         default:
-            return "bg-muted text-foreground";
+            return "bg-zinc-100 text-zinc-600 ring-1 ring-zinc-200";
     }
 };
 
@@ -63,7 +63,7 @@ export default function CreatorDashboard() {
 
     return (
         <LocationProvider>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen bg-[#F8F9FB]">
                 <Head title="Creator Dashboard - Local Voices" />
                 <SEO
                     type="website"
@@ -76,100 +76,196 @@ export default function CreatorDashboard() {
                 />
                 <DayNewsHeader auth={auth} />
 
-                <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                     {/* Profile Header */}
-                    <div className="mb-8 rounded-lg border bg-card p-8">
+                    <div className="mb-8 overflow-hidden rounded-2xl border-none bg-white shadow-sm">
+                        {/* Cover image */}
                         {profile.cover_image && (
-                            <div className="mb-6 -mx-8 -mt-8">
-                                <img src={profile.cover_image} alt="Cover" className="h-48 w-full object-cover" />
+                            <div className="h-48 w-full">
+                                <img src={profile.cover_image} alt="Cover" className="h-full w-full object-cover" />
                             </div>
                         )}
-                        <div className="flex items-start gap-6">
-                            {profile.avatar && <img src={profile.avatar} alt={profile.display_name} className="size-24 rounded-full object-cover" />}
-                            <div className="flex-1">
-                                <div className="mb-2 flex items-center gap-2">
-                                    <h1 className="text-3xl font-bold">{profile.display_name}</h1>
-                                    <Badge className={getStatusColor(profile.status)}>{profile.status.toUpperCase()}</Badge>
+                        <div className="p-6 sm:p-8">
+                            <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+                                {/* Avatar */}
+                                {profile.avatar ? (
+                                    <img
+                                        src={profile.avatar}
+                                        alt={profile.display_name}
+                                        className={`size-24 rounded-full object-cover ring-4 ring-white shadow-md ${profile.cover_image ? "-mt-16" : ""}`}
+                                    />
+                                ) : (
+                                    <div className={`flex size-24 items-center justify-center rounded-full bg-gradient-to-br from-indigo-100 to-blue-50 ring-4 ring-white shadow-md ${profile.cover_image ? "-mt-16" : ""}`}>
+                                        <Mic className="size-10 text-indigo-300" />
+                                    </div>
+                                )}
+                                <div className="flex-1">
+                                    <div className="mb-2 flex flex-wrap items-center gap-3">
+                                        <h1 className="font-display text-3xl font-black tracking-tight text-zinc-900">{profile.display_name}</h1>
+                                        <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ${getStatusColor(profile.status)}`}>
+                                            {profile.status.toUpperCase()}
+                                        </span>
+                                    </div>
+                                    {profile.bio && <p className="max-w-2xl text-zinc-500">{profile.bio}</p>}
                                 </div>
-                                {profile.bio && <p className="text-muted-foreground">{profile.bio}</p>}
                             </div>
                         </div>
                     </div>
 
-                    {/* Stats */}
-                    <div className="mb-8 grid gap-4 md:grid-cols-4">
-                        <div className="rounded-lg border bg-card p-4">
-                            <div className="text-sm text-muted-foreground">Podcasts</div>
-                            <div className="text-2xl font-bold">{profile.podcasts_count}</div>
+                    {/* Stats Grid */}
+                    <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                        <div className="overflow-hidden rounded-2xl border-none bg-white p-5 shadow-sm">
+                            <div className="flex items-center gap-4">
+                                <div className="flex size-12 items-center justify-center rounded-xl bg-indigo-50">
+                                    <Mic className="size-6 text-indigo-600" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Podcasts</p>
+                                    <p className="text-2xl font-black text-zinc-900">{profile.podcasts_count}</p>
+                                </div>
+                            </div>
                         </div>
-                        <div className="rounded-lg border bg-card p-4">
-                            <div className="text-sm text-muted-foreground">Episodes</div>
-                            <div className="text-2xl font-bold">{profile.episodes_count}</div>
+                        <div className="overflow-hidden rounded-2xl border-none bg-white p-5 shadow-sm">
+                            <div className="flex items-center gap-4">
+                                <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50">
+                                    <Play className="size-6 text-blue-600" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Episodes</p>
+                                    <p className="text-2xl font-black text-zinc-900">{profile.episodes_count}</p>
+                                </div>
+                            </div>
                         </div>
-                        <div className="rounded-lg border bg-card p-4">
-                            <div className="text-sm text-muted-foreground">Followers</div>
-                            <div className="text-2xl font-bold">{profile.followers_count}</div>
+                        <div className="overflow-hidden rounded-2xl border-none bg-white p-5 shadow-sm">
+                            <div className="flex items-center gap-4">
+                                <div className="flex size-12 items-center justify-center rounded-xl bg-violet-50">
+                                    <Users className="size-6 text-violet-600" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Followers</p>
+                                    <p className="text-2xl font-black text-zinc-900">{profile.followers_count}</p>
+                                </div>
+                            </div>
                         </div>
-                        <div className="rounded-lg border bg-card p-4">
-                            <div className="text-sm text-muted-foreground">Total Listens</div>
-                            <div className="text-2xl font-bold">{profile.total_listens.toLocaleString()}</div>
+                        <div className="overflow-hidden rounded-2xl border-none bg-white p-5 shadow-sm">
+                            <div className="flex items-center gap-4">
+                                <div className="flex size-12 items-center justify-center rounded-xl bg-emerald-50">
+                                    <Headphones className="size-6 text-emerald-600" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Total Listens</p>
+                                    <p className="text-2xl font-black text-zinc-900">{profile.total_listens.toLocaleString()}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Podcasts */}
+                    {/* Podcasts Section */}
                     <div>
-                        <div className="mb-4 flex items-center justify-between">
-                            <h2 className="text-2xl font-bold">Your Podcasts</h2>
+                        <div className="mb-6 flex items-center justify-between">
+                            <h2 className="font-display text-2xl font-black tracking-tight text-zinc-900">Your Podcasts</h2>
                             {profile.status === "approved" && (
-                                <Button onClick={() => router.visit(route("daynews.local-voices.podcast.create") as any)}>
+                                <Button
+                                    onClick={() => router.visit(route("daynews.local-voices.podcast.create") as any)}
+                                    className="rounded-xl font-bold shadow-lg shadow-primary/20"
+                                >
                                     <Plus className="mr-2 size-4" />
                                     Create Podcast
                                 </Button>
                             )}
                         </div>
+
                         {podcasts.length === 0 ? (
-                            <div className="rounded-lg border bg-card p-12 text-center">
-                                <Headphones className="mx-auto mb-4 size-12 text-muted-foreground" />
-                                <p className="mb-4 text-muted-foreground">No podcasts yet.</p>
+                            <div className="rounded-3xl border-2 border-dashed border-zinc-200 bg-white p-16 text-center">
+                                <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-100 to-blue-50">
+                                    <Headphones className="size-8 text-indigo-400" />
+                                </div>
+                                <h3 className="mb-2 font-display text-xl font-black tracking-tight text-zinc-900">No podcasts yet</h3>
+                                <p className="mx-auto mb-6 max-w-md text-zinc-500">
+                                    {profile.status === "approved"
+                                        ? "Create your first podcast and start sharing your voice with the community."
+                                        : "Your creator profile is pending approval. You'll be able to create podcasts once approved."}
+                                </p>
                                 {profile.status === "approved" && (
-                                    <Button onClick={() => router.visit(route("daynews.local-voices.podcast.create") as any)}>Create Your First Podcast</Button>
-                                )}
-                                {profile.status === "pending" && (
-                                    <p className="text-sm text-muted-foreground">
-                                        Your creator profile is pending approval. You'll be able to create podcasts once approved.
-                                    </p>
+                                    <Button
+                                        onClick={() => router.visit(route("daynews.local-voices.podcast.create") as any)}
+                                        className="rounded-xl font-bold shadow-lg shadow-primary/20"
+                                    >
+                                        Create Your First Podcast
+                                    </Button>
                                 )}
                             </div>
                         ) : (
-                            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                                 {podcasts.map((podcast) => (
                                     <div
                                         key={podcast.id}
-                                        className="cursor-pointer rounded-lg border bg-card transition-shadow hover:shadow-md"
+                                        className="group cursor-pointer overflow-hidden rounded-2xl border-none bg-white shadow-sm transition-all hover:shadow-md"
                                         onClick={() => router.visit(route("daynews.local-voices.podcast.show", podcast.slug) as any)}
                                     >
-                                        {podcast.cover_image ? (
-                                            <img src={podcast.cover_image} alt={podcast.title} className="h-48 w-full rounded-t-lg object-cover" />
-                                        ) : (
-                                            <div className="flex h-48 w-full items-center justify-center rounded-t-lg bg-muted">
-                                                <Headphones className="size-12 text-muted-foreground" />
-                                            </div>
-                                        )}
-                                        <div className="p-4">
-                                            <div className="mb-2 flex items-center justify-between">
-                                                <h3 className="font-semibold">{podcast.title}</h3>
-                                                <Badge variant={podcast.status === "published" ? "default" : "secondary"}>{podcast.status}</Badge>
-                                            </div>
-                                            {podcast.description && (
-                                                <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">{podcast.description}</p>
+                                        {/* Podcast cover */}
+                                        <div className="relative aspect-[16/10] overflow-hidden">
+                                            {podcast.cover_image ? (
+                                                <img
+                                                    src={podcast.cover_image}
+                                                    alt={podcast.title}
+                                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                />
+                                            ) : (
+                                                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-100 to-blue-50">
+                                                    <Headphones className="size-12 text-indigo-300" />
+                                                </div>
                                             )}
-                                            <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                                <span>{podcast.episodes_count} episodes</span>
-                                                <span>{podcast.total_listens.toLocaleString()} listens</span>
+                                            {/* Status badge overlay */}
+                                            <div className="absolute right-3 top-3">
+                                                <span
+                                                    className={`inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
+                                                        podcast.status === "published"
+                                                            ? "bg-emerald-500/90 text-white"
+                                                            : "bg-white/90 text-zinc-600 ring-1 ring-zinc-200"
+                                                    }`}
+                                                >
+                                                    {podcast.status}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="p-5">
+                                            <h3 className="mb-1 font-display text-lg font-bold tracking-tight text-zinc-900 group-hover:text-primary">
+                                                {podcast.title}
+                                            </h3>
+                                            {podcast.description && (
+                                                <p className="mb-4 line-clamp-2 text-sm text-zinc-500">{podcast.description}</p>
+                                            )}
+
+                                            {/* Stats */}
+                                            <div className="flex items-center justify-between border-t border-zinc-100 pt-4 text-xs text-zinc-400">
+                                                <span className="flex items-center gap-1.5">
+                                                    <Play className="size-3.5 text-primary" />
+                                                    <span className="font-bold text-zinc-600">{podcast.episodes_count}</span> episodes
+                                                </span>
+                                                <span className="flex items-center gap-1.5">
+                                                    <Headphones className="size-3.5 text-blue-500" />
+                                                    <span className="font-bold text-zinc-600">{podcast.total_listens.toLocaleString()}</span> listens
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
                                 ))}
+
+                                {/* Add New Podcast Card */}
+                                {profile.status === "approved" && (
+                                    <div
+                                        className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-200 bg-white/50 p-8 transition-all hover:border-primary/40 hover:bg-primary/5"
+                                        onClick={() => router.visit(route("daynews.local-voices.podcast.create") as any)}
+                                    >
+                                        <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-primary/10">
+                                            <Plus className="size-6 text-primary" />
+                                        </div>
+                                        <p className="font-bold text-zinc-700">Add New Podcast</p>
+                                        <p className="mt-1 text-sm text-zinc-400">Create another show</p>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

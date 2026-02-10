@@ -28,27 +28,6 @@ export function CalendarView({ events, theme = "eventcity", className, view = "m
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-    const themeColors = {
-        daynews: {
-            header: "bg-muted",
-            today: "bg-primary text-primary-foreground",
-            selected: "bg-accent",
-            hover: "hover:bg-accent/50",
-        },
-        downtownsguide: {
-            header: "bg-muted",
-            today: "bg-primary text-primary-foreground",
-            selected: "bg-accent",
-            hover: "hover:bg-accent/50",
-        },
-        eventcity: {
-            header: "bg-muted",
-            today: "bg-primary text-primary-foreground",
-            selected: "bg-accent",
-            hover: "hover:bg-accent/50",
-        },
-    };
-
     const getEventsForDate = (date: Date) => {
         const dateStr = date.toISOString().split("T")[0];
         return events.filter((event) => {
@@ -115,36 +94,36 @@ export function CalendarView({ events, theme = "eventcity", className, view = "m
     const selectedDateEvents = selectedDate ? getEventsForDate(selectedDate) : [];
 
     return (
-        <div className={cn("space-y-4", className)}>
+        <div className={cn("space-y-6", className)}>
             {/* Calendar Header */}
             <div className="flex items-center justify-between">
-                <Button variant="ghost" size="icon" onClick={() => navigateMonth("prev")} aria-label="Previous month">
-                    <ChevronLeftIcon className="h-5 w-5" />
+                <Button variant="ghost" size="icon" onClick={() => navigateMonth("prev")} aria-label="Previous month" className="rounded-lg">
+                    <ChevronLeftIcon className="size-5" />
                 </Button>
 
-                <div className="flex items-center gap-2">
-                    <CalendarIcon className="h-5 w-5 text-muted-foreground" />
-                    <h2 className="text-xl font-semibold text-foreground">{monthName}</h2>
+                <div className="flex items-center gap-3">
+                    <CalendarIcon className="size-5 text-primary" />
+                    <h2 className="font-display text-xl font-black tracking-tight text-foreground">{monthName}</h2>
                 </div>
 
-                <Button variant="ghost" size="icon" onClick={() => navigateMonth("next")} aria-label="Next month">
-                    <ChevronRightIcon className="h-5 w-5" />
+                <Button variant="ghost" size="icon" onClick={() => navigateMonth("next")} aria-label="Next month" className="rounded-lg">
+                    <ChevronRightIcon className="size-5" />
                 </Button>
             </div>
 
             {/* Calendar Grid */}
-            <div className="rounded-lg border bg-card">
+            <div className="overflow-hidden rounded-xl border-none bg-card shadow-sm">
                 {/* Week Day Headers */}
-                <div className={cn("grid grid-cols-7 rounded-t-lg", themeColors[theme].header)}>
+                <div className="grid grid-cols-7 bg-muted/50">
                     {weekDays.map((day) => (
-                        <div key={day} className="p-2 text-center text-sm font-medium">
+                        <div key={day} className="p-3 text-center text-[10px] uppercase tracking-widest font-black text-muted-foreground">
                             {day}
                         </div>
                     ))}
                 </div>
 
                 {/* Calendar Days */}
-                <div className="grid grid-cols-7 gap-px bg-border">
+                <div className="grid grid-cols-7 gap-px bg-border/50">
                     {days.map((date, index) => {
                         if (!date) {
                             return <div key={`empty-${index}`} className="aspect-square bg-background" />;
@@ -160,10 +139,10 @@ export function CalendarView({ events, theme = "eventcity", className, view = "m
                                 variant="ghost"
                                 onClick={() => handleDateClick(date)}
                                 className={cn(
-                                    "aspect-square h-auto p-1 text-left transition-colors",
-                                    today && themeColors[theme].today,
-                                    selected && !today && themeColors[theme].selected,
-                                    !today && !selected && themeColors[theme].hover,
+                                    "aspect-square h-auto rounded-none p-1 text-left transition-all",
+                                    today && "bg-primary text-primary-foreground hover:bg-primary/90",
+                                    selected && !today && "bg-accent",
+                                    !today && !selected && "hover:bg-accent/50",
                                 )}
                             >
                                 <div className={cn("flex h-full flex-col", today ? "text-white" : "text-foreground")}>
@@ -173,12 +152,12 @@ export function CalendarView({ events, theme = "eventcity", className, view = "m
                                             {dayEvents.slice(0, 2).map((event) => (
                                                 <div
                                                     key={event.id}
-                                                    className={cn("h-1 w-full rounded", today ? "bg-white/50" : themeColors[theme].selected)}
+                                                    className={cn("h-1 w-full rounded-full", today ? "bg-white/50" : "bg-primary/40")}
                                                     title={event.title}
                                                 />
                                             ))}
                                             {dayEvents.length > 2 && (
-                                                <span className={cn("text-xs", today ? "text-white/80" : "text-muted-foreground")}>
+                                                <span className={cn("text-[10px]", today ? "text-white/80" : "text-muted-foreground")}>
                                                     +{dayEvents.length - 2}
                                                 </span>
                                             )}
@@ -193,8 +172,8 @@ export function CalendarView({ events, theme = "eventcity", className, view = "m
 
             {/* Selected Date Events */}
             {selectedDate && selectedDateEvents.length > 0 && (
-                <div className="space-y-2">
-                    <h3 className="font-semibold text-foreground">
+                <div className="space-y-3">
+                    <h3 className="font-display font-black tracking-tight text-foreground">
                         Events on{" "}
                         {selectedDate.toLocaleDateString("en-US", {
                             month: "long",

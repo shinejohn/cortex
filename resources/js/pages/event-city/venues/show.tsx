@@ -157,7 +157,7 @@ export default function VenueShow() {
             {/* Hero Section */}
             <div className="relative h-96 overflow-hidden">
                 <img src={venue.images[0] || "/images/venue-placeholder.jpg"} alt={venue.name} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-black bg-opacity-40" />
+                <div className="absolute inset-0 bg-black/40" />
                 <div className="absolute bottom-0 left-0 right-0 p-8">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-white">
@@ -165,7 +165,7 @@ export default function VenueShow() {
                                 <ArrowLeft className="h-4 w-4 mr-1" />
                                 Back to Venues
                             </Button>
-                            <h1 className="text-4xl font-bold mb-4 flex items-center">
+                            <h1 className="font-display text-4xl font-black tracking-tight mb-4 flex items-center">
                                 {venue.name}
                                 {venue.verified && (
                                     <Badge className="ml-2 bg-accent text-primary">
@@ -326,7 +326,7 @@ export default function VenueShow() {
                                                             href={`/events/${event.id}`}
                                                             className="flex items-start hover:bg-muted/50 p-3 -mx-3 rounded-md"
                                                         >
-                                                            <div className="h-12 w-12 rounded-md overflow-hidden flex-shrink-0 bg-muted">
+                                                            <div className="h-12 w-12 rounded-md overflow-hidden shrink-0 bg-muted">
                                                                 <img
                                                                     src={event.image || "/images/event-placeholder.jpg"}
                                                                     alt={event.name}
@@ -364,7 +364,7 @@ export default function VenueShow() {
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                 {venue.amenities.map((amenity, index) => (
                                                     <div key={index} className="flex items-center">
-                                                        <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                                                        <Check className="h-4 w-4 text-green-500 mr-2 shrink-0" />
                                                         <span className="text-foreground">{amenity}</span>
                                                     </div>
                                                 ))}
@@ -590,7 +590,7 @@ export default function VenueShow() {
                                             href={`/events/${event.id}`}
                                             className="flex items-start hover:bg-muted/50 p-2 -mx-2 rounded-md"
                                         >
-                                            <div className="flex-shrink-0 w-10 text-center">
+                                            <div className="shrink-0 w-10 text-center">
                                                 <div className="text-sm font-bold text-foreground">{new Date(event.event_date).getDate()}</div>
                                                 <div className="text-xs text-muted-foreground">
                                                     {new Date(event.event_date).toLocaleDateString("en-US", {
@@ -637,7 +637,7 @@ export default function VenueShow() {
                                     <input
                                         type="text"
                                         placeholder="Enter your name"
-                                        className="w-full px-3 py-2 border border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
                                 <div>
@@ -645,7 +645,7 @@ export default function VenueShow() {
                                     <input
                                         type="email"
                                         placeholder="Enter your email"
-                                        className="w-full px-3 py-2 border border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
                                 <div>
@@ -653,7 +653,7 @@ export default function VenueShow() {
                                     <textarea
                                         rows={4}
                                         placeholder="What would you like to know about this venue?"
-                                        className="w-full px-3 py-2 border border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     ></textarea>
                                 </div>
                             </div>

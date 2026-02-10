@@ -8,8 +8,8 @@ interface GridSectionProps {
     readonly description?: string;
     readonly viewAllHref: string;
     readonly viewAllText: string;
-    readonly promoteHref: string;
-    readonly promoteText: string;
+    readonly promoteHref?: string;
+    readonly promoteText?: string;
     readonly className?: string;
     readonly children: ReactNode;
 }
@@ -26,10 +26,10 @@ export const GridSection = ({
 }: GridSectionProps) => {
     return (
         <div className={`py-4 ${className}`}>
-            <div className="max-w-7xl mx-auto px-3 sm:px-4">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center mb-3">
                     <div>
-                        <h2 className="text-xl font-bold text-foreground">{title}</h2>
+                        <h2 className="font-display text-xl font-black tracking-tight text-foreground">{title}</h2>
                         <p className="text-xs text-muted-foreground mt-0.5 flex items-center">
                             <TagIcon className="h-3 w-3 mr-1" />
                             {description}
@@ -45,11 +45,17 @@ export const GridSection = ({
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">{children}</div>
 
-                <div className="mt-4 text-center">
-                    <Button variant="link" size="sm" asChild className="text-primary hover:text-primary/80 text-sm font-medium p-0">
-                        <Link href={promoteHref}>{promoteText}</Link>
-                    </Button>
-                </div>
+                {promoteText && (
+                    <div className="mt-4 text-center">
+                        {promoteHref ? (
+                            <Button variant="link" size="sm" asChild className="text-primary hover:text-primary/80 text-sm font-medium p-0">
+                                <Link href={promoteHref}>{promoteText}</Link>
+                            </Button>
+                        ) : (
+                            <span className="text-primary text-sm font-medium">{promoteText}</span>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );

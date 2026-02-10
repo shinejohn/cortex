@@ -48,10 +48,10 @@ export default function Advertise() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-gradient-to-r from-indigo-700 to-purple-700 text-white py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <Megaphone className="h-16 w-16 mx-auto mb-4" />
-                    <h1 className="text-5xl font-bold mb-4">Advertise With GoEventCity</h1>
+            <div className="bg-gradient-to-r from-indigo-700 to-purple-700 text-white py-20">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <Megaphone className="h-16 w-16 mx-auto mb-6" />
+                    <h1 className="text-5xl font-display font-black tracking-tight mb-4">Advertise With GoEventCity</h1>
                     <p className="text-xl text-indigo-100 max-w-3xl mx-auto">
                         Reach thousands of event-goers, performers, and venue owners in your local area
                     </p>
@@ -59,22 +59,22 @@ export default function Advertise() {
             </div>
 
             {/* Benefits Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <h2 className="text-3xl font-bold text-foreground text-center mb-12">Why Advertise With Us?</h2>
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <h2 className="text-3xl font-display font-black tracking-tight text-foreground text-center mb-12">Why Advertise With Us?</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                    <Card>
+                    <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                         <CardContent className="p-6 text-center">
-                            <div className="h-16 w-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
-                                <Users className="h-8 w-8 text-primary" />
+                            <div className="h-16 w-16 rounded-full bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center mx-auto mb-4">
+                                <Users className="h-8 w-8 text-indigo-600" />
                             </div>
                             <h3 className="text-xl font-semibold text-foreground mb-2">Targeted Audience</h3>
                             <p className="text-muted-foreground">Reach people actively looking for events, venues, and performers in your area</p>
                         </CardContent>
                     </Card>
-                    <Card>
+                    <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                         <CardContent className="p-6 text-center">
-                            <div className="h-16 w-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
-                                <TrendingUp className="h-8 w-8 text-primary" />
+                            <div className="h-16 w-16 rounded-full bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center mx-auto mb-4">
+                                <TrendingUp className="h-8 w-8 text-indigo-600" />
                             </div>
                             <h3 className="text-xl font-semibold text-foreground mb-2">High Engagement</h3>
                             <p className="text-muted-foreground">
@@ -82,9 +82,9 @@ export default function Advertise() {
                             </p>
                         </CardContent>
                     </Card>
-                    <Card>
+                    <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                         <CardContent className="p-6 text-center">
-                            <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+                            <div className="h-16 w-16 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center mx-auto mb-4">
                                 <Target className="h-8 w-8 text-green-600" />
                             </div>
                             <h3 className="text-xl font-semibold text-foreground mb-2">Local Focus</h3>
@@ -95,9 +95,9 @@ export default function Advertise() {
 
                 {/* Advertising Options */}
                 <div className="mb-16">
-                    <h2 className="text-3xl font-bold text-foreground text-center mb-12">Advertising Options</h2>
+                    <h2 className="text-3xl font-display font-black tracking-tight text-foreground text-center mb-12">Advertising Options</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <Card>
+                        <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                             <CardHeader>
                                 <CardTitle>Event Listings</CardTitle>
                             </CardHeader>
@@ -119,7 +119,7 @@ export default function Advertise() {
                                 <p className="text-2xl font-bold text-foreground mb-2">Starting at $99/month</p>
                             </CardContent>
                         </Card>
-                        <Card>
+                        <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                             <CardHeader>
                                 <CardTitle>Banner Advertising</CardTitle>
                             </CardHeader>
@@ -145,7 +145,7 @@ export default function Advertise() {
                 </div>
 
                 {/* Contact Form */}
-                <Card>
+                <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                     <CardHeader>
                         <CardTitle>Get Started</CardTitle>
                     </CardHeader>
@@ -192,7 +192,7 @@ export default function Advertise() {
                                     id="campaign_type"
                                     value={data.campaign_type}
                                     onChange={(e) => setData("campaign_type", e.target.value)}
-                                    className="w-full border rounded-md"
+                                    className="w-full border rounded-md p-2"
                                 >
                                     <option value="">Select campaign type</option>
                                     <option value="event-listing">Event Listing</option>
@@ -207,7 +207,7 @@ export default function Advertise() {
                                     id="budget"
                                     value={data.budget}
                                     onChange={(e) => setData("budget", e.target.value)}
-                                    className="w-full border rounded-md"
+                                    className="w-full border rounded-md p-2"
                                 >
                                     <option value="">Select budget range</option>
                                     <option value="under-500">Under $500/month</option>

@@ -31,8 +31,6 @@ interface NewsDetailProps {
 export function NewsDetail({ article, theme = "daynews", className, showShare = true }: NewsDetailProps) {
     const [shareSuccess, setShareSuccess] = useState(false);
 
-    // Use semantic tokens - consistent across themes
-
     const handleShare = async () => {
         if (navigator.share) {
             try {
@@ -47,7 +45,6 @@ export function NewsDetail({ article, theme = "daynews", className, showShare = 
                 // User cancelled or error
             }
         } else {
-            // Fallback: copy to clipboard
             navigator.clipboard.writeText(window.location.href);
             setShareSuccess(true);
             setTimeout(() => setShareSuccess(false), 2000);
@@ -55,22 +52,28 @@ export function NewsDetail({ article, theme = "daynews", className, showShare = 
     };
 
     return (
-        <article className={cn("space-y-6", className)}>
+        <article className={cn("space-y-8", className)}>
             {/* Header */}
             <header className="space-y-4">
-                {article.category && <Badge variant="secondary">{article.category}</Badge>}
+                {article.category && (
+                    <Badge variant="secondary" className="text-[10px] uppercase tracking-widest font-black">
+                        {article.category}
+                    </Badge>
+                )}
 
-                <h1 className="text-3xl font-bold text-foreground md:text-4xl">{article.title}</h1>
+                <h1 className="font-display text-3xl font-black tracking-tight text-foreground md:text-4xl lg:text-5xl">{article.title}</h1>
 
                 <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                     {article.author && (
                         <div className="flex items-center gap-2">
                             {article.author.avatar ? (
-                                <img src={article.author.avatar} alt={article.author.name} className="h-8 w-8 rounded-full" />
+                                <img src={article.author.avatar} alt={article.author.name} className="size-8 rounded-full" />
                             ) : (
-                                <UserIcon className="h-5 w-5" />
+                                <div className="flex size-8 items-center justify-center rounded-full bg-muted">
+                                    <UserIcon className="size-4 text-muted-foreground" />
+                                </div>
                             )}
-                            <Link href={`/authors/${article.author.id}`} className="hover:text-foreground">
+                            <Link href={`/authors/${article.author.id}`} className="font-medium hover:text-primary">
                                 {article.author.name}
                             </Link>
                         </div>
@@ -78,7 +81,7 @@ export function NewsDetail({ article, theme = "daynews", className, showShare = 
 
                     {article.published_at && (
                         <div className="flex items-center gap-1">
-                            <CalendarIcon className="h-4 w-4" />
+                            <CalendarIcon className="size-3.5 text-primary" />
                             <time dateTime={article.published_at}>
                                 {new Date(article.published_at).toLocaleDateString("en-US", {
                                     year: "numeric",
@@ -91,14 +94,14 @@ export function NewsDetail({ article, theme = "daynews", className, showShare = 
 
                     {article.view_count !== undefined && (
                         <div className="flex items-center gap-1">
-                            <EyeIcon className="h-4 w-4" />
+                            <EyeIcon className="size-3.5 text-primary" />
                             <span>{article.view_count.toLocaleString()} views</span>
                         </div>
                     )}
 
                     {showShare && (
-                        <Button variant="ghost" size="sm" onClick={handleShare} className="ml-auto" title="Share article">
-                            <Share2Icon className="h-4 w-4" />
+                        <Button variant="ghost" size="sm" onClick={handleShare} className="ml-auto rounded-lg" title="Share article">
+                            <Share2Icon className="size-4" />
                             {shareSuccess ? "Copied!" : "Share"}
                         </Button>
                     )}
@@ -107,7 +110,7 @@ export function NewsDetail({ article, theme = "daynews", className, showShare = 
 
             {/* Featured Image */}
             {article.featured_image && (
-                <div className="aspect-video w-full overflow-hidden rounded-lg">
+                <div className="aspect-[21/9] w-full overflow-hidden rounded-xl">
                     <img src={article.featured_image} alt={article.title} className="h-full w-full object-cover" />
                 </div>
             )}
@@ -117,10 +120,14 @@ export function NewsDetail({ article, theme = "daynews", className, showShare = 
 
             {/* Tags */}
             {article.tags && article.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 pt-4">
-                    <span className="text-sm font-medium text-muted-foreground">Tags:</span>
+                <div className="flex flex-wrap items-center gap-2 border-t pt-6">
+                    <span className="text-[10px] uppercase tracking-widest font-black text-muted-foreground">Tags:</span>
                     {article.tags.map((tag) => (
-                        <Link key={tag.id} href={`/tags/${tag.slug}`} className="rounded-full bg-muted px-3 py-1 text-sm hover:bg-muted/80">
+                        <Link
+                            key={tag.id}
+                            href={`/tags/${tag.slug}`}
+                            className="rounded-full bg-muted px-3 py-1 text-sm transition-colors hover:bg-muted/80 hover:text-primary"
+                        >
                             #{tag.name}
                         </Link>
                     ))}

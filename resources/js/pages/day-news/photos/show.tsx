@@ -1,5 +1,5 @@
 import { Head, router, useForm, usePage } from "@inertiajs/react";
-import { Calendar, Camera, Heart, MapPin, MessageSquare, Share2, Trash2, User } from "lucide-react";
+import { ArrowLeft, Calendar, Camera, Eye, Heart, MapPin, MessageSquare, Share2, Trash2, User } from "lucide-react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import { Badge } from "@/components/ui/badge";
@@ -54,7 +54,7 @@ export default function PhotoShow() {
 
     return (
         <LocationProvider>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen bg-[#F8F9FB]">
                 <Head title={`${photo.title} - Photo Gallery`} />
                 <SEO
                     type="website"
@@ -68,29 +68,33 @@ export default function PhotoShow() {
                 />
                 <DayNewsHeader auth={auth} />
 
-                <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                    <div className="mb-4">
-                        <Button variant="ghost" onClick={() => router.visit("/photos")}>
-                            ← Back to Gallery
-                        </Button>
+                <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+                    <div className="mb-6">
+                        <button
+                            onClick={() => router.visit("/photos")}
+                            className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-colors group"
+                        >
+                            <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
+                            BACK TO GALLERY
+                        </button>
                     </div>
 
                     <div className="grid gap-8 lg:grid-cols-3">
                         {/* Main Photo */}
                         <div className="lg:col-span-2">
-                            <div className="mb-4 overflow-hidden rounded-lg border bg-card">
+                            <div className="mb-6 overflow-hidden rounded-2xl border-none bg-white shadow-sm">
                                 <img src={photo.image_url} alt={photo.title} className="h-auto w-full object-contain" />
                             </div>
 
                             {/* Photo Info */}
-                            <div className="rounded-lg border bg-card p-6">
-                                <div className="mb-4 flex items-start justify-between">
+                            <div className="overflow-hidden rounded-2xl border-none bg-white p-8 shadow-sm">
+                                <div className="mb-6 flex items-start justify-between">
                                     <div>
-                                        <h1 className="mb-2 text-3xl font-bold">{photo.title}</h1>
-                                        {photo.description && <p className="text-muted-foreground">{photo.description}</p>}
+                                        <h1 className="mb-2 font-display text-3xl font-black tracking-tight">{photo.title}</h1>
+                                        {photo.description && <p className="text-lg text-muted-foreground leading-relaxed">{photo.description}</p>}
                                     </div>
                                     {auth && auth.user?.id === photo.user.id && (
-                                        <Button variant="destructive" size="sm" onClick={handleDelete} disabled={deleteForm.processing}>
+                                        <Button variant="destructive" size="sm" onClick={handleDelete} disabled={deleteForm.processing} className="rounded-xl font-bold">
                                             <Trash2 className="mr-2 size-4" />
                                             Delete
                                         </Button>
@@ -98,40 +102,53 @@ export default function PhotoShow() {
                                 </div>
 
                                 <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                                    <div className="flex items-center gap-1">
-                                        <User className="size-4" />
-                                        {photo.user.name}
+                                    <div className="flex items-center gap-2">
+                                        {photo.user.avatar ? (
+                                            <img src={photo.user.avatar} alt={photo.user.name} className="size-6 rounded-full object-cover" />
+                                        ) : (
+                                            <User className="size-4" />
+                                        )}
+                                        <span className="font-medium">{photo.user.name}</span>
                                     </div>
-                                    <div className="flex items-center gap-1">
+                                    <div className="flex items-center gap-1.5">
                                         <Calendar className="size-4" />
                                         {new Date(photo.created_at).toLocaleDateString()}
                                     </div>
-                                    {photo.category && <Badge variant="outline">{photo.category}</Badge>}
+                                    {photo.category && (
+                                        <span className="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-primary">
+                                            {photo.category}
+                                        </span>
+                                    )}
                                     {photo.regions.length > 0 && (
-                                        <div className="flex items-center gap-1">
-                                            <MapPin className="size-4" />
-                                            {photo.regions.map((r) => r.name).join(", ")}
+                                        <div className="flex items-center gap-1.5">
+                                            <MapPin className="size-4 text-primary" />
+                                            <span>{photo.regions.map((r) => r.name).join(", ")}</span>
                                         </div>
                                     )}
                                 </div>
 
-                                <div className="mt-4 flex items-center gap-6 border-t pt-4">
-                                    <div className="flex items-center gap-2">
+                                <div className="mt-6 flex items-center gap-6 border-t pt-6">
+                                    <div className="flex items-center gap-2 text-muted-foreground">
                                         <Eye className="size-5" />
-                                        <span>{photo.views_count} views</span>
+                                        <span className="font-bold">{photo.views_count}</span>
+                                        <span className="text-sm">views</span>
                                     </div>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2 text-muted-foreground">
                                         <Heart className="size-5" />
-                                        <span>{photo.likes_count} likes</span>
+                                        <span className="font-bold">{photo.likes_count}</span>
+                                        <span className="text-sm">likes</span>
                                     </div>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2 text-muted-foreground">
                                         <MessageSquare className="size-5" />
-                                        <span>{photo.comments_count} comments</span>
+                                        <span className="font-bold">{photo.comments_count}</span>
+                                        <span className="text-sm">comments</span>
                                     </div>
-                                    <Button variant="outline" size="sm">
-                                        <Share2 className="mr-2 size-4" />
-                                        Share
-                                    </Button>
+                                    <div className="ml-auto">
+                                        <Button variant="outline" size="sm" className="gap-2 rounded-xl font-bold">
+                                            <Share2 className="size-4" />
+                                            Share
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -140,9 +157,9 @@ export default function PhotoShow() {
                         <div className="space-y-6">
                             {/* Album Info */}
                             {photo.album && (
-                                <div className="rounded-lg border bg-card p-4">
-                                    <h3 className="mb-2 font-semibold">Album</h3>
-                                    <Button variant="link" className="h-auto p-0" onClick={() => router.visit(`/photos/albums/${photo.album!.id}`)}>
+                                <div className="overflow-hidden rounded-2xl border-none bg-white p-6 shadow-sm">
+                                    <h3 className="mb-3 font-display font-black tracking-tight">Album</h3>
+                                    <Button variant="link" className="h-auto p-0 font-bold text-primary" onClick={() => router.visit(`/photos/albums/${photo.album!.id}`)}>
                                         {photo.album.title}
                                     </Button>
                                 </div>
@@ -150,19 +167,19 @@ export default function PhotoShow() {
 
                             {/* Related Photos */}
                             {related.length > 0 && (
-                                <div className="rounded-lg border bg-card p-4">
-                                    <h3 className="mb-4 font-semibold">Related Photos</h3>
+                                <div className="overflow-hidden rounded-2xl border-none bg-white p-6 shadow-sm">
+                                    <h3 className="mb-4 font-display font-black tracking-tight">Related Photos</h3>
                                     <div className="grid grid-cols-2 gap-2">
                                         {related.slice(0, 6).map((relatedPhoto) => (
                                             <div
                                                 key={relatedPhoto.id}
-                                                className="cursor-pointer overflow-hidden rounded-lg"
+                                                className="group cursor-pointer overflow-hidden rounded-xl"
                                                 onClick={() => router.visit(`/photos/${relatedPhoto.id}`)}
                                             >
                                                 <img
                                                     src={relatedPhoto.thumbnail_url || relatedPhoto.image_url}
                                                     alt={relatedPhoto.title}
-                                                    className="h-24 w-full object-cover transition-transform hover:scale-105"
+                                                    className="h-24 w-full object-cover transition-transform duration-300 group-hover:scale-110"
                                                 />
                                             </div>
                                         ))}

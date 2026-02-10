@@ -114,7 +114,7 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href={route("venues.index") as any} as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={route("venues") as any} as="button" prefetch onClick={cleanup}>
                         <Building className="mr-2 size-4" />
                         Venue Management
                     </Link>

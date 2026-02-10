@@ -1,11 +1,13 @@
 import { Head, Link } from "@inertiajs/react";
-import { ArrowLeftIcon, CalendarIcon, NewspaperIcon, StarIcon, StoreIcon, TagIcon } from "lucide-react";
+import { ArrowLeft, BadgeCheck, CalendarIcon, Globe, MapPin, NewspaperIcon, Phone, Star, StarIcon, StoreIcon, TagIcon } from "lucide-react";
 import { BusinessDetail } from "@/components/shared/business/BusinessDetail";
 import { BusinessList } from "@/components/shared/business/BusinessList";
 import { EventList } from "@/components/shared/events/EventList";
 import { NewsList } from "@/components/shared/news/NewsList";
 import { ReviewList } from "@/components/shared/reviews/ReviewList";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface DowntownGuideBusinessShowProps {
@@ -101,71 +103,111 @@ export default function DowntownGuideBusinessShow({
     relatedArticles,
     relatedBusinesses,
 }: DowntownGuideBusinessShowProps) {
+    const fullAddress = [business.address, business.city, business.state, business.postal_code].filter(Boolean).join(", ");
+
     return (
         <>
             <Head title={`${business.name} - DowntownsGuide`} />
 
-            <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
-                {/* Header */}
-                <div className="relative overflow-hidden border-b-4 border-purple-600 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 shadow-xl">
-                    <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-                    <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        <Link
-                            href={route("downtown-guide.businesses.index")}
-                            className="mb-4 inline-flex items-center gap-2 text-purple-100 hover:text-white"
-                        >
-                            <ArrowLeftIcon className="h-4 w-4" />
-                            <span>Back to Business Directory</span>
-                        </Link>
-                        <div className="flex items-center gap-4">
-                            <div className="rounded-xl bg-card/20 p-2 backdrop-blur-sm">
-                                <StoreIcon className="h-6 w-6 text-white" />
-                            </div>
-                            <div>
-                                <h1 className="text-2xl font-bold text-white">Business Profile</h1>
-                                <p className="mt-1 text-sm text-purple-100">Complete business information, reviews, deals, and more</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div className="min-h-screen bg-background">
+                <main className="container mx-auto px-4 py-8">
+                    {/* Back link */}
+                    <Link
+                        href={route("downtown-guide.businesses.index")}
+                        className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                        <ArrowLeft className="size-4" />
+                        Back to Places
+                    </Link>
 
-                <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                     <div className="grid gap-8 lg:grid-cols-3">
                         {/* Main Content */}
-                        <div className="lg:col-span-2 space-y-8">
+                        <div className="space-y-6 lg:col-span-2">
                             {/* Business Details */}
-                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
-                                <BusinessDetail business={business} theme="downtownsguide" showMap={true} />
-                            </div>
+                            <Card>
+                                <CardContent className="p-6">
+                                    {/* Badges */}
+                                    <div className="mb-3 flex flex-wrap items-center gap-2">
+                                        {business.is_verified && (
+                                            <Badge variant="default">
+                                                <BadgeCheck className="mr-1 size-3" />
+                                                Verified
+                                            </Badge>
+                                        )}
+                                        {business.categories?.map((cat) => (
+                                            <Badge key={cat} variant="secondary" className="capitalize">{cat}</Badge>
+                                        ))}
+                                    </div>
+                                    <BusinessDetail business={business} theme="downtownsguide" showMap={true} />
+                                </CardContent>
+                            </Card>
+
+                            {/* Contact & Location */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Contact & Location</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    {fullAddress && (
+                                        <div className="flex items-start gap-3">
+                                            <MapPin className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+                                            <div>
+                                                <p className="font-medium">Address</p>
+                                                <p className="text-muted-foreground">{fullAddress}</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {business.phone && (
+                                        <div className="flex items-start gap-3">
+                                            <Phone className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+                                            <div>
+                                                <p className="font-medium">Phone</p>
+                                                <a href={`tel:${business.phone}`} className="text-primary hover:underline">{business.phone}</a>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {business.website && (
+                                        <div className="flex items-start gap-3">
+                                            <Globe className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
+                                            <div>
+                                                <p className="font-medium">Website</p>
+                                                <a href={business.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                                                    Visit Website
+                                                </a>
+                                            </div>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
 
                             {/* Tabs */}
                             <Tabs defaultValue="reviews" className="w-full">
-                                <TabsList className="grid w-full grid-cols-4 bg-accent/50">
-                                    <TabsTrigger value="reviews" className="data-[state=active]:bg-primary data-[state=active]:text-white">
+                                <TabsList className="mb-6">
+                                    <TabsTrigger value="reviews">
                                         <StarIcon className="mr-2 h-4 w-4" />
                                         Reviews ({reviews.data.length})
                                     </TabsTrigger>
-                                    <TabsTrigger value="deals" className="data-[state=active]:bg-primary data-[state=active]:text-white">
+                                    <TabsTrigger value="deals">
                                         <TagIcon className="mr-2 h-4 w-4" />
-                                        Deals & Coupons ({activeCoupons.length + deals.length})
+                                        Deals ({activeCoupons.length + deals.length})
                                     </TabsTrigger>
-                                    <TabsTrigger value="events" className="data-[state=active]:bg-primary data-[state=active]:text-white">
+                                    <TabsTrigger value="events">
                                         <CalendarIcon className="mr-2 h-4 w-4" />
                                         Events ({upcomingEvents.length})
                                     </TabsTrigger>
-                                    <TabsTrigger value="news" className="data-[state=active]:bg-primary data-[state=active]:text-white">
+                                    <TabsTrigger value="news">
                                         <NewspaperIcon className="mr-2 h-4 w-4" />
                                         News ({relatedArticles.length})
                                     </TabsTrigger>
                                 </TabsList>
 
-                                <TabsContent value="reviews" className="mt-6">
+                                <TabsContent value="reviews">
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
-                                            <h2 className="text-xl font-bold text-foreground">Customer Reviews</h2>
+                                            <h2 className="font-display text-xl font-black tracking-tight">Customer Reviews</h2>
                                             {averageRating > 0 && (
                                                 <div className="flex items-center gap-2">
-                                                    <StarIcon className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                                                    <Star className="size-5 fill-yellow-400 text-yellow-400" />
                                                     <span className="text-lg font-semibold">{averageRating.toFixed(1)} / 5.0</span>
                                                 </div>
                                             )}
@@ -174,61 +216,70 @@ export default function DowntownGuideBusinessShow({
                                     </div>
                                 </TabsContent>
 
-                                <TabsContent value="deals" className="mt-6">
+                                <TabsContent value="deals">
                                     <div className="space-y-4">
-                                        <h2 className="text-xl font-bold text-foreground">Active Deals & Coupons</h2>
+                                        <h2 className="font-display text-xl font-black tracking-tight">Active Deals & Coupons</h2>
                                         {deals.length > 0 || activeCoupons.length > 0 ? (
-                                            <div className="grid gap-4 md:grid-cols-2">
+                                            <div className="grid gap-4 sm:grid-cols-2">
                                                 {deals.map((deal) => (
-                                                    <div
-                                                        key={deal.id}
-                                                        className="rounded-lg border-2 border bg-gradient-to-r from-purple-50 to-pink-50 p-4"
-                                                    >
-                                                        <h3 className="font-bold text-purple-900">{deal.title}</h3>
-                                                        {deal.description && <p className="mt-1 text-sm text-foreground">{deal.description}</p>}
-                                                    </div>
+                                                    <Card key={deal.id} className="transition-shadow hover:shadow-md">
+                                                        <CardContent className="p-4">
+                                                            <h3 className="font-semibold">{deal.title}</h3>
+                                                            {deal.description && <p className="mt-1 text-sm text-muted-foreground">{deal.description}</p>}
+                                                        </CardContent>
+                                                    </Card>
                                                 ))}
                                                 {activeCoupons.map((coupon) => (
-                                                    <div key={coupon.id} className="rounded-lg border-2 border bg-card p-4">
-                                                        <h3 className="font-bold text-purple-900">{coupon.title}</h3>
-                                                        {coupon.code && <p className="mt-1 text-sm font-mono text-primary">Code: {coupon.code}</p>}
-                                                    </div>
+                                                    <Card key={coupon.id} className="transition-shadow hover:shadow-md">
+                                                        <CardContent className="p-4">
+                                                            <h3 className="font-semibold">{coupon.title}</h3>
+                                                            {coupon.code && (
+                                                                <Badge variant="secondary" className="mt-2 font-mono">Code: {coupon.code}</Badge>
+                                                            )}
+                                                        </CardContent>
+                                                    </Card>
                                                 ))}
                                             </div>
                                         ) : (
-                                            <div className="rounded-xl border-2 border-dashed border bg-gradient-to-br from-purple-50 to-pink-50 p-8 text-center">
-                                                <TagIcon className="mx-auto h-12 w-12 text-purple-400" />
-                                                <p className="mt-4 text-lg font-bold text-foreground">No active deals</p>
-                                                <p className="mt-2 text-sm text-muted-foreground">Check back later for deals and coupons</p>
-                                            </div>
+                                            <Card>
+                                                <CardContent className="py-8 text-center">
+                                                    <TagIcon className="mx-auto h-12 w-12 text-muted-foreground" />
+                                                    <p className="mt-4 text-lg font-bold">No active deals</p>
+                                                    <p className="mt-2 text-sm text-muted-foreground">Check back later for deals and coupons</p>
+                                                </CardContent>
+                                            </Card>
                                         )}
                                     </div>
                                 </TabsContent>
 
-                                <TabsContent value="events" className="mt-6">
+                                <TabsContent value="events">
                                     <div className="space-y-4">
-                                        <h2 className="text-xl font-bold text-foreground">Upcoming Events</h2>
+                                        <h2 className="font-display text-xl font-black tracking-tight">Upcoming Events</h2>
                                         {upcomingEvents.length > 0 ? (
                                             <EventList events={upcomingEvents} theme="downtownsguide" gridCols={2} />
                                         ) : (
-                                            <div className="rounded-xl border-2 border-dashed border bg-gradient-to-br from-purple-50 to-pink-50 p-8 text-center">
-                                                <CalendarIcon className="mx-auto h-12 w-12 text-purple-400" />
-                                                <p className="mt-4 text-lg font-bold text-foreground">No upcoming events</p>
-                                            </div>
+                                            <Card>
+                                                <CardContent className="py-8 text-center">
+                                                    <CalendarIcon className="mx-auto h-12 w-12 text-muted-foreground" />
+                                                    <p className="mt-4 text-lg font-bold">No upcoming events</p>
+                                                </CardContent>
+                                            </Card>
                                         )}
                                     </div>
                                 </TabsContent>
 
-                                <TabsContent value="news" className="mt-6">
+                                <TabsContent value="news">
                                     <div className="space-y-4">
-                                        <h2 className="text-xl font-bold text-foreground">News & Articles</h2>
+                                        <h2 className="font-display text-xl font-black tracking-tight">News & Articles</h2>
                                         {relatedArticles.length > 0 ? (
                                             <NewsList articles={relatedArticles} theme="downtownsguide" gridCols={2} />
                                         ) : (
-                                            <div className="rounded-xl border-2 border-dashed border bg-gradient-to-br from-purple-50 to-pink-50 p-8 text-center">
-                                                <NewspaperIcon className="mx-auto h-12 w-12 text-purple-400" />
-                                                <p className="mt-4 text-lg font-bold text-foreground">No articles found</p>
-                                            </div>
+                                            <Card>
+                                                <CardContent className="py-8 text-center">
+                                                    <NewspaperIcon className="mx-auto h-12 w-12 text-muted-foreground" />
+                                                    <p className="mt-4 text-lg font-bold">No articles found</p>
+                                                </CardContent>
+                                            </Card>
                                         )}
                                     </div>
                                 </TabsContent>
@@ -237,16 +288,52 @@ export default function DowntownGuideBusinessShow({
 
                         {/* Sidebar */}
                         <div className="space-y-6">
+                            {/* Quick actions */}
+                            <Card>
+                                <CardContent className="space-y-3 pt-6">
+                                    {business.phone && (
+                                        <Button asChild className="w-full">
+                                            <a href={`tel:${business.phone}`}>
+                                                <Phone className="mr-2 size-4" />
+                                                Call Now
+                                            </a>
+                                        </Button>
+                                    )}
+                                    {business.website && (
+                                        <Button asChild variant="outline" className="w-full">
+                                            <a href={business.website} target="_blank" rel="noopener noreferrer">
+                                                <Globe className="mr-2 size-4" />
+                                                Visit Website
+                                            </a>
+                                        </Button>
+                                    )}
+                                    {fullAddress && (
+                                        <Button asChild variant="outline" className="w-full">
+                                            <a
+                                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                <MapPin className="mr-2 size-4" />
+                                                Get Directions
+                                            </a>
+                                        </Button>
+                                    )}
+                                </CardContent>
+                            </Card>
+
                             {/* Quick Stats */}
-                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
-                                <h3 className="mb-4 text-lg font-bold text-foreground">Quick Stats</h3>
-                                <div className="space-y-3">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="text-lg">Quick Stats</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-3">
                                     {business.rating !== undefined && (
                                         <div className="flex items-center justify-between">
                                             <span className="text-sm text-muted-foreground">Rating</span>
                                             <div className="flex items-center gap-1">
-                                                <StarIcon className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                                                <span className="font-semibold">{business.rating.toFixed(1)}</span>
+                                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                                <span className="font-semibold">{Number(business.rating).toFixed(1)}</span>
                                             </div>
                                         </div>
                                     )}
@@ -262,19 +349,23 @@ export default function DowntownGuideBusinessShow({
                                             <span className="font-semibold">{activeCoupons.length + deals.length}</span>
                                         </div>
                                     )}
-                                </div>
-                            </div>
+                                </CardContent>
+                            </Card>
 
                             {/* Related Businesses */}
                             {relatedBusinesses.length > 0 && (
-                                <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
-                                    <h3 className="mb-4 text-lg font-bold text-foreground">Similar Businesses</h3>
-                                    <BusinessList businesses={relatedBusinesses} theme="downtownsguide" gridCols={1} />
-                                </div>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-lg">Similar Places</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <BusinessList businesses={relatedBusinesses} theme="downtownsguide" gridCols={1} />
+                                    </CardContent>
+                                </Card>
                             )}
                         </div>
                     </div>
-                </div>
+                </main>
             </div>
         </>
     );

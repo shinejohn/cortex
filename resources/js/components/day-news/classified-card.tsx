@@ -1,98 +1,181 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Classified } from "@/types/classified";
 import { Link } from "@inertiajs/react";
-import { Clock, MapPin, Tag } from "lucide-react";
+import { Calendar, ImageOff, MapPin, Tag } from "lucide-react";
 import { route } from "ziggy-js";
+import { ClassifiedSaveButton } from "./classified-save-button";
 
 interface Props {
     classified: Classified;
-    variant?: "default" | "featured";
+    variant?: "default" | "featured" | "compact";
 }
 
 export function ClassifiedCard({ classified, variant = "default" }: Props) {
-    // Get the first image or use a placeholder
+    const classifiedUrl = route("daynews.classifieds.show", { slug: classified.slug });
     const mainImage = classified.images && classified.images.length > 0 ? classified.images[0].url : null;
-    const isFeatured = variant === "featured";
 
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffInDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (diffInDays === 0) return "Today";
+        if (diffInDays === 1) return "Yesterday";
+        if (diffInDays < 7) return `${diffInDays} days ago`;
+        return date.toLocaleDateString();
+    };
+
+    if (variant === "compact") {
+        return (
+            <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-all p-0">
+                <div className="flex gap-3 p-4">
+                    <div className="size-16 flex-shrink-0 overflow-hidden rounded-md bg-muted">
+                        {mainImage ? (
+                            <img src={mainImage} alt={classified.title} className="size-full object-cover" />
+                        ) : (
+                            <div className="flex size-full items-center justify-center">
+                                <ImageOff className="size-6 text-muted-foreground" />
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <Link href={classifiedUrl}>
+                            <h3 className="line-clamp-1 font-display font-black tracking-tight text-sm transition-colors group-hover:text-primary">{classified.title}</h3>
+                        </Link>
+                        <p className="text-sm font-bold text-primary">{classified.price_display}</p>
+                        <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                            {classified.condition_display && (
+                                <Badge variant="secondary" className="text-[10px] uppercase tracking-widest font-black">{classified.condition_display}</Badge>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </Card>
+        );
+    }
+
+    if (variant === "featured") {
+        return (
+            <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-all p-0">
+                <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+                    {mainImage ? (
+                        <img
+                            src={mainImage}
+                            alt={classified.title}
+                            className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                    ) : (
+                        <div className="flex size-full items-center justify-center">
+                            <ImageOff className="size-12 text-muted-foreground" />
+                        </div>
+                    )}
+                    <div className="absolute top-3 left-3">
+                        <Badge className="bg-primary text-primary-foreground font-black">{classified.price_display}</Badge>
+                    </div>
+                    {classified.condition_display && (
+                        <div className="absolute top-3 right-3">
+                            <Badge variant="secondary" className="text-[10px] uppercase tracking-widest font-black">{classified.condition_display}</Badge>
+                        </div>
+                    )}
+                </div>
+                <CardHeader className="pb-2">
+                    <div className="flex items-start justify-between gap-2">
+                        <Link href={classifiedUrl} className="flex-1">
+                            <CardTitle className="line-clamp-2 font-display font-black tracking-tight text-lg transition-colors group-hover:text-primary">{classified.title}</CardTitle>
+                        </Link>
+                        <ClassifiedSaveButton classifiedId={classified.id} isSaved={classified.is_saved ?? false} savesCount={classified.saves_count ?? 0} />
+                    </div>
+                </CardHeader>
+                <CardContent className="space-y-3 pb-4">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <div className="flex items-center gap-3">
+                            {classified.regions && classified.regions.length > 0 && (
+                                <span className="flex items-center gap-1">
+                                    <MapPin className="size-3.5 text-primary" />
+                                    {classified.regions[0].name}
+                                </span>
+                            )}
+                            <span className="flex items-center gap-1">
+                                <Calendar className="size-3.5 text-primary" />
+                                {formatDate(classified.created_at)}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="flex items-center justify-between pt-2 border-t bg-muted/5">
+                        {classified.category && (
+                            <Badge variant="outline" className="text-xs">
+                                <Tag className="mr-1 size-3" />
+                                {classified.category.name}
+                            </Badge>
+                        )}
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    // Default card
     return (
-        <Card className={`flex flex-col h-full overflow-hidden transition-all hover:shadow-md ${isFeatured ? 'border-primary shadow-lg ring-1 ring-primary/20' : ''}`}>
-            {/* Image Placeholder or Actual Image */}
-            <div className="relative h-48 w-full bg-muted">
+        <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-all p-0">
+            <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                 {mainImage ? (
                     <img
                         src={mainImage}
                         alt={classified.title}
-                        className="h-full w-full object-cover"
+                        className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                 ) : (
-                    <div className="flex h-full items-center justify-center bg-secondary text-secondary-foreground">
-                        <Tag className="h-12 w-12 opacity-20" />
+                    <div className="flex size-full items-center justify-center">
+                        <ImageOff className="size-10 text-muted-foreground" />
                     </div>
                 )}
-                {classified.category && (
-                    <Badge variant="secondary" className="absolute left-2 top-2">
-                        {classified.category.name}
-                    </Badge>
-                )}
+                <div className="absolute top-2 left-2">
+                    <Badge className="bg-primary text-primary-foreground font-black text-sm">{classified.price_display}</Badge>
+                </div>
                 {classified.condition_display && (
-                    <Badge className="absolute right-2 top-2 bg-black/50 hover:bg-black/70 backdrop-blur-sm">
-                        {classified.condition_display}
-                    </Badge>
+                    <div className="absolute top-2 right-2">
+                        <Badge variant="secondary" className="text-[10px] uppercase tracking-widest font-black">
+                            {classified.condition_display}
+                        </Badge>
+                    </div>
                 )}
             </div>
-
             <CardHeader className="pb-2">
-                <div className="flex justify-between items-start gap-2">
-                    <CardTitle className={`line-clamp-1 ${isFeatured ? 'text-lg font-bold' : 'text-base'}`}>
-                        {classified.title}
-                    </CardTitle>
+                <div className="flex items-start justify-between gap-2">
+                    <Link href={classifiedUrl} className="flex-1">
+                        <CardTitle className="line-clamp-2 font-display font-black tracking-tight text-base transition-colors group-hover:text-primary">{classified.title}</CardTitle>
+                    </Link>
+                    <ClassifiedSaveButton classifiedId={classified.id} isSaved={classified.is_saved ?? false} savesCount={classified.saves_count ?? 0} />
                 </div>
             </CardHeader>
-
-            <CardContent className="flex-1 pb-2">
-                <div className="flex items-baseline gap-2 mb-2">
-                    <span className="text-xl font-bold text-primary">
-                        {classified.price_display}
+            <CardContent className="space-y-2 pb-4">
+                {classified.price_type !== "fixed" && (
+                    <span className="text-[10px] uppercase tracking-widest font-black text-muted-foreground">
+                        {classified.price_type}
                     </span>
-                    {classified.price_type !== 'fixed' && (
-                        <span className="text-xs text-muted-foreground capitalize">
-                            {classified.price_type}
+                )}
+                <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                    {classified.regions && classified.regions.length > 0 && (
+                        <span className="flex items-center gap-1">
+                            <MapPin className="size-3.5 text-primary" />
+                            {classified.regions[0]?.name}
                         </span>
                     )}
+                    <span className="flex items-center gap-1">
+                        <Calendar className="size-3.5 text-primary" />
+                        {formatDate(classified.created_at)}
+                    </span>
                 </div>
-
-                <p className="line-clamp-2 text-sm text-muted-foreground mb-4">
-                    {classified.description}
-                </p>
-
-                <div className="grid gap-1 text-xs text-muted-foreground">
-                    {classified.regions && classified.regions.length > 0 && (
-                        <div className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            <span className="line-clamp-1">
-                                {classified.regions.map(r => r.name).join(', ')}
-                            </span>
-                        </div>
+                <div className="flex items-center justify-between pt-2 border-t">
+                    {classified.category && (
+                        <Badge variant="outline" className="text-xs">
+                            <Tag className="mr-1 size-3" />
+                            {classified.category.name}
+                        </Badge>
                     )}
-                    <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        <span>Posted {new Date(classified.created_at).toLocaleDateString()}</span>
-                    </div>
                 </div>
             </CardContent>
-
-            <Separator className="my-2" />
-
-            <CardFooter className="pt-2">
-                <Button className="w-full" asChild variant={isFeatured ? "default" : "outline"}>
-                    <Link href={route('daynews.classifieds.show', { slug: classified.slug })}>
-                        View Details
-                    </Link>
-                </Button>
-            </CardFooter>
         </Card>
     );
 }

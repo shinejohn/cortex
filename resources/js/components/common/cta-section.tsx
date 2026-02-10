@@ -7,12 +7,12 @@ import { Card, CardContent } from "../ui/card";
 export const CTASection = () => {
     return (
         <div className="py-8 bg-muted/30">
-            <div className="max-w-5xl mx-auto px-3 sm:px-4">
-                <Card className="border-primary/20 bg-gradient-to-br from-card to-card/80 shadow-lg">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-all bg-gradient-to-br from-card to-card/80">
                     <CardContent className="p-8 sm:p-12">
                         <div className="text-center space-y-6">
                             <div className="space-y-3">
-                                <h3 className="text-2xl sm:text-3xl font-bold text-foreground">Ready to discover more events?</h3>
+                                <h3 className="font-display text-2xl sm:text-3xl font-black tracking-tight text-foreground">Ready to discover more events?</h3>
                                 <p className="text-muted-foreground text-lg sm:text-xl max-w-3xl mx-auto leading-relaxed">
                                     Join thousands of locals finding the best things to do in Clearwater every day
                                 </p>

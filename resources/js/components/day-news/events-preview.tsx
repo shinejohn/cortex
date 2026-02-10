@@ -1,5 +1,5 @@
 import { Link } from "@inertiajs/react";
-import { Calendar, MapPin, Clock, ExternalLink } from "lucide-react";
+import { Calendar, ChevronRight, Clock, ExternalLink, MapPin } from "lucide-react";
 import React from "react";
 
 interface EventItem {
@@ -26,55 +26,55 @@ export const EventsPreview = ({ events }: EventsPreviewProps) => {
     const upcomingEvents = events.slice(1);
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Featured Event - Takes up 1/3 of the width */}
             {featuredEvent && (
                 <div className="lg:col-span-1">
-                    <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden h-full flex flex-col hover:shadow-md transition-shadow">
-                        <div className="p-4 border-b border-gray-100 bg-gray-50/50">
-                            <h3 className="font-bold text-gray-800 flex items-center text-sm">
-                                <Calendar className="h-4 w-4 mr-2 text-news-primary" />
+                    <div className="group flex h-full flex-col overflow-hidden rounded-lg border-none bg-card shadow-sm transition-all hover:shadow-md">
+                        <div className="border-b bg-muted/30 p-4">
+                            <h3 className="flex items-center text-sm font-bold text-foreground">
+                                <Calendar className="mr-2 size-4 text-primary" />
                                 Featured Event
                             </h3>
                         </div>
-                        <div className="relative h-48">
+                        <div className="relative h-48 overflow-hidden">
                             {featuredEvent.image ? (
                                 <img
                                     src={featuredEvent.image}
                                     alt={featuredEvent.title}
-                                    className="w-full h-full object-cover"
+                                    className="size-full object-cover transition-transform group-hover:scale-105"
                                 />
                             ) : (
-                                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                                    <Calendar className="h-12 w-12 text-gray-300" />
+                                <div className="flex size-full items-center justify-center bg-muted">
+                                    <Calendar className="size-12 text-muted-foreground/30" />
                                 </div>
                             )}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                             <div className="absolute bottom-3 left-3 right-3">
-                                <h3 className="text-white font-bold text-lg leading-tight">
+                                <h3 className="font-display text-lg font-black leading-tight tracking-tight text-white">
                                     {featuredEvent.title}
                                 </h3>
-                                <div className="flex items-center text-white/90 text-xs mt-1">
-                                    <Calendar className="h-3 w-3 mr-1" />
+                                <div className="mt-1 flex items-center text-xs text-white/90">
+                                    <Calendar className="mr-1 size-3" />
                                     <span>{new Date(featuredEvent.event_date).toLocaleDateString()}</span>
                                 </div>
                             </div>
                         </div>
-                        <div className="p-4 flex-1 flex flex-col">
-                            <div className="flex items-center text-gray-500 text-xs mb-2">
-                                <Clock className="h-3.5 w-3.5 mr-1" />
+                        <div className="flex flex-1 flex-col p-4">
+                            <div className="mb-2 flex items-center gap-1 text-xs text-muted-foreground">
+                                <Clock className="size-3.5 text-primary" />
                                 <span>{featuredEvent.time}</span>
                             </div>
-                            <div className="flex items-center text-gray-500 text-xs mb-3">
-                                <MapPin className="h-3.5 w-3.5 mr-1" />
+                            <div className="mb-3 flex items-center gap-1 text-xs text-muted-foreground">
+                                <MapPin className="size-3.5 text-primary" />
                                 <span>{featuredEvent.venue?.name || "TBD"}</span>
                             </div>
-                            <p className="text-sm text-gray-600 mb-4 flex-1 line-clamp-3">
+                            <p className="mb-4 flex-1 line-clamp-3 text-sm text-muted-foreground">
                                 {featuredEvent.description}
                             </p>
                             <Link
                                 href={`/events/${featuredEvent.id}`}
-                                className="w-full bg-news-primary text-white py-2 rounded-md hover:bg-news-primary-dark transition-colors text-center text-sm font-medium"
+                                className="w-full rounded-md bg-primary py-2 text-center text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                             >
                                 View Details & Tickets
                             </Link>
@@ -85,55 +85,51 @@ export const EventsPreview = ({ events }: EventsPreviewProps) => {
 
             {/* Upcoming Events - Takes up 2/3 of the width */}
             <div className="lg:col-span-2">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {upcomingEvents.map((event) => (
                         <div
                             key={event.id}
-                            className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden flex hover:shadow-md transition-shadow h-[160px]"
+                            className="group flex h-[160px] overflow-hidden rounded-lg border-none bg-card shadow-sm transition-all hover:shadow-md"
                         >
-                            <div className="w-1/3">
-                                <div className="h-full">
-                                    {event.image ? (
-                                        <img
-                                            src={event.image}
-                                            alt={event.title}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full bg-gray-50 flex items-center justify-center">
-                                            <Calendar className="h-6 w-6 text-gray-200" />
-                                        </div>
-                                    )}
-                                </div>
+                            <div className="w-1/3 overflow-hidden">
+                                {event.image ? (
+                                    <img
+                                        src={event.image}
+                                        alt={event.title}
+                                        className="size-full object-cover transition-transform group-hover:scale-105"
+                                    />
+                                ) : (
+                                    <div className="flex size-full items-center justify-center bg-muted">
+                                        <Calendar className="size-6 text-muted-foreground/30" />
+                                    </div>
+                                )}
                             </div>
-                            <div className="w-2/3 p-3 flex flex-col overflow-hidden">
+                            <div className="flex w-2/3 flex-col overflow-hidden p-3">
                                 <div className="mb-1">
-                                    <span className="inline-block text-[10px] font-bold bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full uppercase tracking-tight">
+                                    <span className="inline-block rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-primary">
                                         {event.category}
                                     </span>
                                 </div>
-                                <h3 className="font-bold text-gray-800 mb-1 text-xs truncate">
-                                    {event.title}
-                                </h3>
-                                <div className="flex items-center text-gray-500 text-[10px] mb-1">
-                                    <Calendar className="h-3 w-3 mr-1" />
+                                <h3 className="mb-1 truncate text-xs font-bold text-foreground">{event.title}</h3>
+                                <div className="mb-1 flex items-center gap-1 text-[10px] text-muted-foreground">
+                                    <Calendar className="size-3 text-primary" />
                                     <span>{new Date(event.event_date).toLocaleDateString()}</span>
                                 </div>
-                                <div className="flex items-center text-gray-500 text-[10px] mb-1">
-                                    <Clock className="h-3 w-3 mr-1" />
+                                <div className="mb-1 flex items-center gap-1 text-[10px] text-muted-foreground">
+                                    <Clock className="size-3 text-primary" />
                                     <span>{event.time}</span>
                                 </div>
-                                <div className="flex items-center text-gray-500 text-[10px] truncate">
-                                    <MapPin className="h-3 w-3 mr-1" />
+                                <div className="flex items-center gap-1 truncate text-[10px] text-muted-foreground">
+                                    <MapPin className="size-3 text-primary" />
                                     <span>{event.venue?.name || "TBD"}</span>
                                 </div>
-                                <div className="mt-auto pt-2 flex justify-between items-center">
+                                <div className="mt-auto flex items-center justify-between pt-2">
                                     <Link
                                         href={`/events/${event.id}`}
-                                        className="text-[10px] text-news-primary font-bold uppercase tracking-tight flex items-center hover:underline"
+                                        className="flex items-center text-[10px] font-black uppercase tracking-widest text-primary hover:underline"
                                     >
                                         Details
-                                        <ExternalLink className="h-2.5 w-2.5 ml-1" />
+                                        <ExternalLink className="ml-1 size-2.5" />
                                     </Link>
                                 </div>
                             </div>
@@ -141,7 +137,7 @@ export const EventsPreview = ({ events }: EventsPreviewProps) => {
                     ))}
 
                     {upcomingEvents.length === 0 && (
-                        <div className="sm:col-span-2 flex items-center justify-center h-full border-2 border-dashed border-gray-200 rounded-lg p-8 text-muted-foreground">
+                        <div className="flex h-full items-center justify-center rounded-lg border-2 border-dashed p-8 text-muted-foreground sm:col-span-2">
                             No more upcoming events scheduled.
                         </div>
                     )}
@@ -150,18 +146,15 @@ export const EventsPreview = ({ events }: EventsPreviewProps) => {
                 <div className="mt-6 text-center">
                     <Link
                         href="/events"
-                        className="inline-flex items-center px-6 py-2 border-2 border-news-primary text-news-primary rounded-md font-bold text-sm tracking-tight hover:bg-news-primary hover:text-white transition-all"
+                        className="inline-flex items-center rounded-md border-2 border-primary px-6 py-2 text-sm font-black tracking-tight text-primary transition-all hover:bg-primary hover:text-primary-foreground"
                     >
                         View All Upcoming Events
-                        <ChevronRight className="h-4 w-4 ml-1" />
+                        <ChevronRight className="ml-1 size-4" />
                     </Link>
                 </div>
             </div>
         </div>
     );
 };
-
-// ChevronRight was used but not imported
-import { ChevronRight } from "lucide-react";
 
 export default EventsPreview;

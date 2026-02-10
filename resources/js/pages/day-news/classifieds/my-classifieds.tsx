@@ -63,7 +63,7 @@ export default function MyClassifieds({ auth, classifieds }: Props) {
         >
             {/* Back link */}
             <div className="mb-6">
-                <Button variant="ghost" size="sm" asChild>
+                <Button variant="ghost" size="sm" asChild className="text-indigo-600 hover:text-indigo-700">
                     <Link href={route("daynews.classifieds.index") as any}>
                         <ArrowLeft className="mr-2 size-4" />
                         Back to Classifieds
@@ -74,13 +74,13 @@ export default function MyClassifieds({ auth, classifieds }: Props) {
             {/* Page header */}
             <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="flex items-center gap-2 font-serif text-3xl font-bold">
-                        <ShoppingBag className="size-8" />
+                    <h1 className="flex items-center gap-2 font-display text-3xl font-black tracking-tight text-gray-900">
+                        <ShoppingBag className="size-8 text-indigo-600" />
                         My Listings
                     </h1>
-                    <p className="mt-1 text-muted-foreground">Manage your classified listings</p>
+                    <p className="mt-1 text-gray-600">Manage your classified listings</p>
                 </div>
-                <Button asChild>
+                <Button asChild className="bg-indigo-600 hover:bg-indigo-700">
                     <Link href={route("daynews.classifieds.create") as any}>
                         <Plus className="mr-2 size-4" />
                         Post New Listing
@@ -90,7 +90,7 @@ export default function MyClassifieds({ auth, classifieds }: Props) {
 
             {/* Classifieds table */}
             {classifieds.data.length > 0 ? (
-                <Card>
+                <div className="overflow-hidden rounded-lg border-none bg-white shadow-sm">
                     <CardContent className="p-0">
                         <Table>
                             <TableHeader>
@@ -109,7 +109,7 @@ export default function MyClassifieds({ auth, classifieds }: Props) {
                                     <TableRow key={classified.id}>
                                         <TableCell>
                                             <div className="flex items-center gap-3">
-                                                <div className="size-12 flex-shrink-0 overflow-hidden rounded bg-muted">
+                                                <div className="size-12 flex-shrink-0 overflow-hidden rounded bg-gray-100">
                                                     {classified.primary_image ? (
                                                         <img
                                                             src={classified.primary_image}
@@ -118,7 +118,7 @@ export default function MyClassifieds({ auth, classifieds }: Props) {
                                                         />
                                                     ) : (
                                                         <div className="flex size-full items-center justify-center">
-                                                            <Package className="size-4 text-muted-foreground" />
+                                                            <Package className="size-4 text-gray-400" />
                                                         </div>
                                                     )}
                                                 </div>
@@ -127,26 +127,26 @@ export default function MyClassifieds({ auth, classifieds }: Props) {
                                                         href={route("daynews.classifieds.show", {
                                                             slug: classified.slug,
                                                         }) as any}
-                                                        className="font-medium hover:text-primary"
+                                                        className="font-medium text-gray-900 hover:text-indigo-600"
                                                     >
                                                         {classified.title}
                                                     </Link>
-                                                    <p className="text-sm text-muted-foreground">
+                                                    <p className="text-sm text-gray-500">
                                                         {classified.category.name}
                                                         {classified.condition_display &&
-                                                            ` • ${classified.condition_display}`}
+                                                            ` \u2022 ${classified.condition_display}`}
                                                     </p>
                                                 </div>
                                             </div>
                                         </TableCell>
                                         <TableCell>{getStatusBadge(classified.status)}</TableCell>
                                         <TableCell>
-                                            <span className="font-medium">{classified.price_display}</span>
+                                            <span className="font-medium text-indigo-600">{classified.price_display}</span>
                                         </TableCell>
                                         <TableCell className="text-center">{classified.saves_count}</TableCell>
                                         <TableCell className="text-center">{classified.view_count}</TableCell>
                                         <TableCell>
-                                            <span className="text-sm text-muted-foreground">
+                                            <span className="text-sm text-gray-500">
                                                 {dayjs(classified.created_at).fromNow()}
                                             </span>
                                         </TableCell>
@@ -210,16 +210,16 @@ export default function MyClassifieds({ auth, classifieds }: Props) {
                             </TableBody>
                         </Table>
                     </CardContent>
-                </Card>
+                </div>
             ) : (
                 <div className="flex min-h-[40vh] items-center justify-center">
                     <div className="text-center">
-                        <Package className="mx-auto mb-4 size-16 text-muted-foreground" />
-                        <h3 className="mb-2 text-xl font-bold">No Listings Yet</h3>
-                        <p className="mx-auto max-w-md text-muted-foreground">
+                        <Package className="mx-auto mb-4 size-16 text-gray-400" />
+                        <h3 className="mb-2 text-xl font-bold text-gray-700">No Listings Yet</h3>
+                        <p className="mx-auto max-w-md text-gray-500">
                             You haven't posted any listings yet. Start selling today!
                         </p>
-                        <Button className="mt-4" asChild>
+                        <Button className="mt-4 bg-indigo-600 hover:bg-indigo-700" asChild>
                             <Link href={route("daynews.classifieds.create") as any}>
                                 <Plus className="mr-2 size-4" />
                                 Post Your First Listing
@@ -237,7 +237,7 @@ export default function MyClassifieds({ auth, classifieds }: Props) {
                             <Link href={classifieds.prev_page_url}>Previous</Link>
                         </Button>
                     )}
-                    <span className="px-4 text-sm text-muted-foreground">
+                    <span className="px-4 text-sm text-gray-500">
                         Page {classifieds.current_page} of {classifieds.last_page}
                     </span>
                     {classifieds.next_page_url && (

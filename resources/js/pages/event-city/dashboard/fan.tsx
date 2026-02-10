@@ -165,11 +165,12 @@ export default function FanDashboard() {
             <Header auth={auth} />
 
             {/* Dashboard Header */}
-            <div className="bg-primary text-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="relative bg-primary text-white overflow-hidden">
+                <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                         <div>
-                            <h1 className="text-3xl font-bold">My Fan Dashboard</h1>
+                            <h1 className="font-display text-3xl font-black tracking-tight">My Fan Dashboard</h1>
                             <p className="mt-1 text-indigo-200">Keep track of your favorite artists, upcoming shows, and exclusive content</p>
                         </div>
                         <div className="mt-4 md:mt-0 flex space-x-3">
@@ -225,13 +226,13 @@ export default function FanDashboard() {
                                             <input
                                                 type="text"
                                                 placeholder="Search artists"
-                                                className="block w-full pl-10 pr-3 py-2 border border rounded-md bg-card placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                                className="block w-full pl-10 pr-3 py-2 border border-border rounded-md bg-card placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                             />
                                         </div>
                                         <select
                                             value={artistSort}
                                             onChange={(e) => setArtistSort(e.target.value)}
-                                            className="block w-full pl-3 pr-10 py-2 text-base border border focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                            className="block w-full pl-3 pr-10 py-2 text-base border border-border focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                                         >
                                             <option value="recently-active">Recently Active</option>
                                             <option value="a-z">A-Z</option>
@@ -305,7 +306,7 @@ export default function FanDashboard() {
                                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
                                     <h2 className="text-2xl font-bold text-foreground">Upcoming Shows</h2>
                                     <div className="mt-3 md:mt-0 flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
-                                        <div className="flex border border rounded-md overflow-hidden">
+                                        <div className="flex border border-border rounded-md overflow-hidden">
                                             <Button variant={showView === "list" ? "default" : "ghost"} size="sm" onClick={() => setShowView("list")}>
                                                 List
                                             </Button>
@@ -321,7 +322,7 @@ export default function FanDashboard() {
                                         <select
                                             value={distanceFilter}
                                             onChange={(e) => setDistanceFilter(e.target.value)}
-                                            className="block w-full pl-3 pr-10 py-2 text-base border border focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                            className="block w-full pl-3 pr-10 py-2 text-base border border-border focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                                         >
                                             <option value="all">All Locations</option>
                                             <option value="local">Local (≤ 50 miles)</option>
@@ -427,7 +428,7 @@ export default function FanDashboard() {
                                     <select
                                         value={contentFilter}
                                         onChange={(e) => setContentFilter(e.target.value)}
-                                        className="block w-full md:w-auto pl-3 pr-10 py-2 text-base border border focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                        className="block w-full md:w-auto pl-3 pr-10 py-2 text-base border border-border focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                                     >
                                         <option value="all">All Content</option>
                                         <option value="release">New Releases</option>

@@ -4,7 +4,7 @@ export function useFingerprint() {
     const [fingerprint, setFingerprint] = useState<string>('');
 
     useEffect(() => {
-        // Simple canvas fingerprinting or similar 
+        // Simple canvas fingerprinting or similar
         // For MVP, we can just generate a random ID and store in localStorage
         const stored = localStorage.getItem('voter_device_id');
         if (stored) {

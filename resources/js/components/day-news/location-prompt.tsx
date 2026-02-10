@@ -32,10 +32,10 @@ export default function LocationPrompt({ onDismiss }: LocationPromptProps) {
 
     return (
         <div className={cn("border-b bg-accent/50")}>
-            <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+            <div className="container mx-auto px-4 py-3 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                        <MapPin className="size-5 flex-shrink-0 text-primary" />
+                        <MapPin className="size-5 shrink-0 text-primary" />
                         <p className="text-sm text-foreground">
                             Are you in <span className="font-semibold">{currentRegion.full_name}</span>?
                         </p>

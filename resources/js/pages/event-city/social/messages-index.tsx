@@ -158,11 +158,11 @@ export default function MessagesIndex({ conversations, selected_conversation, me
             <Head title="Messages" />
             <div className="min-h-screen bg-muted/50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <div className="flex flex-col md:flex-row bg-card rounded-lg shadow overflow-hidden h-[calc(100vh-12rem)]">
+                    <div className="flex flex-col md:flex-row bg-card rounded-lg shadow-sm overflow-hidden h-[calc(100vh-12rem)]">
                         {/* Conversation list */}
-                        <div className="md:w-1/3 border-r border flex flex-col">
-                            <div className="p-4 border-b border">
-                                <h1 className="text-xl font-bold">Messages</h1>
+                        <div className="md:w-1/3 border-r flex flex-col">
+                            <div className="p-4 border-b">
+                                <h1 className="text-xl font-display font-black tracking-tight">Messages</h1>
                                 <div className="mt-2 relative">
                                     <Input
                                         type="text"
@@ -188,7 +188,7 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                     <Link
                                         key={conversation.id}
                                         href={`/social/messages/${conversation.id}`}
-                                        className={`block p-3 border-b border-gray-100 cursor-pointer ${
+                                        className={`block p-3 border-b cursor-pointer transition-colors ${
                                             selected_conversation === conversation.id ? "bg-primary/10" : "hover:bg-muted/50"
                                         }`}
                                     >
@@ -203,16 +203,16 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                                     />
                                                 ) : (
                                                     <img
-                                                        src={conversation.participants[0].avatar}
-                                                        alt={conversation.participants[0].name}
+                                                        src={conversation.participants[0]?.avatar}
+                                                        alt={conversation.participants[0]?.name}
                                                         className="h-12 w-12 rounded-full object-cover"
                                                     />
                                                 )}
-                                                {!conversation.group && conversation.participants[0].online && (
-                                                    <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-400 ring-2 ring-white"></span>
+                                                {!conversation.group && conversation.participants[0]?.online && (
+                                                    <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-400 ring-2 ring-background"></span>
                                                 )}
-                                                {conversation.participants[0].type === "venue" && (
-                                                    <span className="absolute bottom-0 right-0 block h-5 w-5 rounded-full bg-accent ring-2 ring-white text-primary flex items-center justify-center text-xs">
+                                                {conversation.participants[0]?.type === "venue" && (
+                                                    <span className="absolute bottom-0 right-0 block h-5 w-5 rounded-full bg-accent ring-2 ring-background text-primary flex items-center justify-center text-xs">
                                                         V
                                                     </span>
                                                 )}
@@ -222,7 +222,7 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                             <div className="ml-3 flex-1 overflow-hidden">
                                                 <div className="flex items-center justify-between">
                                                     <h3 className="text-sm font-medium text-foreground truncate">
-                                                        {conversation.group ? conversation.name : conversation.participants[0].name}
+                                                        {conversation.group ? conversation.name : conversation.participants[0]?.name}
                                                     </h3>
                                                     <span className="text-xs text-muted-foreground">
                                                         {formatMessageTime(conversation.last_message.timestamp)}
@@ -254,7 +254,7 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                         {selected_conversation && currentConversation ? (
                             <div className="md:w-2/3 flex flex-col">
                                 {/* Conversation header */}
-                                <div className="p-4 border-b border flex justify-between items-center">
+                                <div className="p-4 border-b flex justify-between items-center">
                                     <div className="flex items-center">
                                         {currentConversation.group ? (
                                             <>
@@ -271,22 +271,22 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                         ) : (
                                             <>
                                                 <img
-                                                    src={currentConversation.participants[0].avatar}
-                                                    alt={currentConversation.participants[0].name}
+                                                    src={currentConversation.participants[0]?.avatar}
+                                                    alt={currentConversation.participants[0]?.name}
                                                     className="h-10 w-10 rounded-full object-cover"
                                                 />
                                                 <div className="ml-3">
                                                     <h2 className="text-lg font-medium text-foreground">
-                                                        {currentConversation.participants[0].name}
+                                                        {currentConversation.participants[0]?.name}
                                                     </h2>
                                                     <p className="text-xs text-muted-foreground">
-                                                        {currentConversation.participants[0].online ? "Online now" : "Offline"}
+                                                        {currentConversation.participants[0]?.online ? "Online now" : "Offline"}
                                                     </p>
                                                 </div>
                                             </>
                                         )}
                                     </div>
-                                    <div className="flex space-x-2">
+                                    <div className="flex gap-2">
                                         <Button variant="ghost" size="sm">
                                             <PhoneIcon className="h-5 w-5" />
                                         </Button>
@@ -329,7 +329,7 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                                         <div className={`max-w-xs lg:max-w-md ${isSelf ? "order-1" : "order-2"}`}>
                                                             <div
                                                                 className={`px-4 py-2 rounded-lg ${
-                                                                    isSelf ? "bg-primary text-white" : "bg-card text-gray-800 border border"
+                                                                    isSelf ? "bg-primary text-white" : "bg-card text-foreground border"
                                                                 }`}
                                                             >
                                                                 <p className="text-sm">{message.text}</p>
@@ -358,9 +358,9 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                 </div>
 
                                 {/* Message input */}
-                                <div className="p-4 border-t border">
+                                <div className="p-4 border-t">
                                     <form onSubmit={handleSendMessage} className="flex items-end">
-                                        <div className="flex space-x-2 mr-2">
+                                        <div className="flex gap-2 mr-2">
                                             <Button type="button" variant="ghost" size="sm">
                                                 <PaperclipIcon className="h-5 w-5" />
                                             </Button>
@@ -373,7 +373,7 @@ export default function MessagesIndex({ conversations, selected_conversation, me
                                         <div className="flex-1 relative">
                                             <textarea
                                                 placeholder="Type a message..."
-                                                className="w-full pl-4 pr-10 py-3 border border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary resize-none"
+                                                className="w-full pl-4 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary resize-none bg-background"
                                                 rows={1}
                                                 value={messageText}
                                                 onChange={(e) => setMessageText(e.target.value)}

@@ -42,26 +42,26 @@ export default function Gear() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-gradient-to-r from-purple-700 to-indigo-700 text-white py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <ShoppingBag className="h-16 w-16 mx-auto mb-4" />
-                    <h1 className="text-5xl font-bold mb-4">GoEventCity Gear</h1>
+            <div className="bg-gradient-to-r from-purple-700 to-indigo-700 text-white py-20">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <ShoppingBag className="h-16 w-16 mx-auto mb-6" />
+                    <h1 className="text-5xl font-display font-black tracking-tight mb-4">GoEventCity Gear</h1>
                     <p className="text-xl text-purple-100 max-w-3xl mx-auto">Show your support with official GoEventCity merchandise</p>
                 </div>
             </div>
 
             {/* Featured Products */}
             {featuredProducts.length > 0 && (
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <h2 className="text-3xl font-bold text-foreground mb-8">Featured Products</h2>
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <h2 className="text-3xl font-display font-black tracking-tight text-foreground mb-8">Featured Products</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {featuredProducts.map((product) => (
-                            <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                            <Card key={product.id} className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                                 <div className="h-64 overflow-hidden bg-muted">
                                     <img
                                         src={product.image || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop"}
                                         alt={product.name}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                     />
                                 </div>
                                 <CardContent className="p-6">
@@ -90,9 +90,9 @@ export default function Gear() {
 
             {/* All Products */}
             <div className="bg-muted/50 py-12">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between mb-8">
-                        <h2 className="text-3xl font-bold text-foreground">All Products</h2>
+                        <h2 className="text-3xl font-display font-black tracking-tight text-foreground">All Products</h2>
                         <div className="flex gap-2">
                             {categories.map((category) => (
                                 <Button key={category} variant="outline" size="sm">
@@ -103,12 +103,12 @@ export default function Gear() {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {regularProducts.map((product) => (
-                            <Card key={product.id} className="hover:shadow-lg transition-shadow">
+                            <Card key={product.id} className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                                 <div className="h-48 overflow-hidden bg-muted">
                                     <img
                                         src={product.image || "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300&h=300&fit=crop"}
                                         alt={product.name}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                     />
                                 </div>
                                 <CardContent className="p-4">
@@ -131,10 +131,10 @@ export default function Gear() {
             </div>
 
             {/* CTA */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <Card className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <Card className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-none shadow-sm">
                     <CardContent className="p-8 text-center">
-                        <h2 className="text-3xl font-bold mb-4">Custom Gear Available</h2>
+                        <h2 className="text-3xl font-display font-black tracking-tight mb-4">Custom Gear Available</h2>
                         <p className="text-xl text-purple-100 mb-8">Need custom merchandise for your event or organization? We can help!</p>
                         <Button size="lg" variant="outline" className="bg-card text-primary hover:bg-accent/50">
                             Contact Sales

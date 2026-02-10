@@ -46,9 +46,10 @@ export default function SuccessStories() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-gradient-to-r from-purple-700 to-indigo-700 text-white py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className="text-5xl font-bold mb-4">Success Stories</h1>
+            <div className="bg-gradient-to-r from-purple-700 to-indigo-700 text-white py-20">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <Star className="h-16 w-16 mx-auto mb-6" />
+                    <h1 className="text-5xl font-display font-black tracking-tight mb-4">Success Stories</h1>
                     <p className="text-xl text-purple-100 max-w-3xl mx-auto">
                         Discover how performers, venues, and event organizers are thriving with GoEventCity
                     </p>
@@ -57,18 +58,18 @@ export default function SuccessStories() {
 
             {/* Featured Stories */}
             {featuredStories.length > 0 && (
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <h2 className="text-3xl font-bold text-foreground mb-8">Featured Stories</h2>
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <h2 className="text-3xl font-display font-black tracking-tight text-foreground mb-8">Featured Stories</h2>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {featuredStories.map((story) => (
-                            <Card key={story.id} className="overflow-hidden">
+                            <Card key={story.id} className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                                 <div className="h-64 overflow-hidden">
                                     <img
                                         src={
                                             story.author_image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&h=400&fit=crop"
                                         }
                                         alt={story.title}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                     />
                                 </div>
                                 <CardContent className="p-6">
@@ -97,7 +98,7 @@ export default function SuccessStories() {
                                         <div className="grid grid-cols-3 gap-4 pt-4 border-t border">
                                             {story.metrics.events_booked && (
                                                 <div>
-                                                    <p className="text-2xl font-bold text-primary">{story.metrics.events_booked}</p>
+                                                    <p className="text-2xl font-bold text-indigo-600">{story.metrics.events_booked}</p>
                                                     <p className="text-sm text-muted-foreground">Events Booked</p>
                                                 </div>
                                             )}
@@ -109,7 +110,7 @@ export default function SuccessStories() {
                                             )}
                                             {story.metrics.audience_growth && (
                                                 <div>
-                                                    <p className="text-2xl font-bold text-primary">{story.metrics.audience_growth}</p>
+                                                    <p className="text-2xl font-bold text-indigo-600">{story.metrics.audience_growth}</p>
                                                     <p className="text-sm text-muted-foreground">Audience Growth</p>
                                                 </div>
                                             )}
@@ -124,18 +125,18 @@ export default function SuccessStories() {
 
             {/* All Stories */}
             <div className="bg-muted/50 py-12">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-bold text-foreground mb-8">All Stories</h2>
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 className="text-3xl font-display font-black tracking-tight text-foreground mb-8">All Stories</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {regularStories.map((story) => (
-                            <Card key={story.id} className="hover:shadow-lg transition-shadow">
+                            <Card key={story.id} className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                                 <div className="h-48 overflow-hidden">
                                     <img
                                         src={
                                             story.author_image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=300&fit=crop"
                                         }
                                         alt={story.title}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                     />
                                 </div>
                                 <CardContent className="p-6">
@@ -166,9 +167,9 @@ export default function SuccessStories() {
             </div>
 
             {/* CTA Section */}
-            <div className="bg-primary text-white py-16">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-3xl font-bold mb-4">Share Your Success Story</h2>
+            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-16">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-4xl">
+                    <h2 className="text-3xl font-display font-black tracking-tight mb-4">Share Your Success Story</h2>
                     <p className="text-xl text-purple-100 mb-8">Have a success story to share? We'd love to hear from you!</p>
                     <Button size="lg" variant="outline" className="bg-card text-primary hover:bg-accent/50">
                         Submit Your Story

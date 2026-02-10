@@ -101,7 +101,6 @@ export default function AnnouncementsIndex() {
         >
             <AnnouncementHero
                 location={currentRegion?.name}
-            // readerCount={247 + (announcements.data.length * 3)}
             />
 
             <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
@@ -117,7 +116,7 @@ export default function AnnouncementsIndex() {
                                     value={searchForm.data.search}
                                     onChange={(e) => searchForm.setData("search", e.target.value)}
                                     placeholder="Search celebrations & notices..."
-                                    className="h-12 pl-12 pr-4 shadow-sm border-none bg-white ring-1 ring-muted focus-visible:ring-2 focus-visible:ring-primary"
+                                    className="h-12 pl-12 pr-4 shadow-sm border-none bg-white ring-1 ring-muted focus-visible:ring-2 focus-visible:ring-primary rounded-xl"
                                 />
                             </form>
                         </div>
@@ -126,7 +125,7 @@ export default function AnnouncementsIndex() {
                             {auth && (
                                 <Button
                                     onClick={() => router.visit(route("daynews.announcements.create") as any)}
-                                    className="h-12 gap-2 px-6 font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20"
+                                    className="h-12 gap-2 px-6 font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20 rounded-xl"
                                 >
                                     <Plus className="size-4" />
                                     Post News
@@ -157,29 +156,35 @@ export default function AnnouncementsIndex() {
                                 <h2 className="font-display text-2xl font-black tracking-tight uppercase">
                                     {searchForm.data.search ? `Search Results for "${searchForm.data.search}"` : "Recent Community News"}
                                 </h2>
-                                <div className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
-                                    {announcements.meta?.total || 0} Announcements
+                                <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                                    {announcements.meta?.total ?? 0} Announcements
                                 </div>
                             </div>
 
                             {announcements.data.length === 0 ? (
-                                <div className="rounded-3xl border-2 border-dashed p-20 text-center">
-                                    <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-muted">
-                                        <Search className="size-10 text-muted-foreground" />
+                                <div className="relative rounded-3xl border-2 border-dashed p-20 text-center overflow-hidden">
+                                    {/* Decorative blobs */}
+                                    <div className="absolute -top-24 -right-24 size-64 rounded-full bg-primary/5 blur-3xl" />
+                                    <div className="absolute -bottom-24 -left-24 size-64 rounded-full bg-indigo-500/5 blur-3xl" />
+
+                                    <div className="relative z-10">
+                                        <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-muted">
+                                            <Search className="size-10 text-muted-foreground" />
+                                        </div>
+                                        <h3 className="mt-6 font-display text-xl font-black tracking-tight">No announcements found</h3>
+                                        <p className="mt-2 text-sm font-medium text-muted-foreground">Try adjusting your filters or search query.</p>
+                                        <Button
+                                            variant="outline"
+                                            className="mt-8 font-bold rounded-xl"
+                                            onClick={() => {
+                                                setActiveType("all");
+                                                searchForm.setData({ search: "", type: "all" });
+                                                router.get(route("daynews.announcements.index") as any);
+                                            }}
+                                        >
+                                            Clear All Filters
+                                        </Button>
                                     </div>
-                                    <h3 className="mt-6 text-xl font-bold">No announcements found</h3>
-                                    <p className="mt-2 text-muted-foreground">Try adjusting your filters or search query.</p>
-                                    <Button
-                                        variant="outline"
-                                        className="mt-8"
-                                        onClick={() => {
-                                            setActiveType("all");
-                                            searchForm.setData({ search: "", type: "all" });
-                                            router.get(route("daynews.announcements.index") as any);
-                                        }}
-                                    >
-                                        Clear All Filters
-                                    </Button>
                                 </div>
                             ) : (
                                 <div className="grid gap-8 md:grid-cols-2">
@@ -199,7 +204,7 @@ export default function AnnouncementsIndex() {
                                             disabled={!link.url}
                                             onClick={() => link.url && router.visit(link.url)}
                                             className={cn(
-                                                "h-10 min-w-[40px] px-4 font-bold transition-all",
+                                                "h-10 min-w-[40px] px-4 font-bold transition-all rounded-xl",
                                                 link.active && "shadow-lg shadow-primary/20 scale-110"
                                             )}
                                             dangerouslySetInnerHTML={{ __html: link.label }}

@@ -155,8 +155,8 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
         if (!hasTickets && event.is_free) {
             return {
                 text: "Free Entry",
-                bgColor: "bg-green-100",
-                textColor: "text-green-800",
+                bgColor: "bg-green-100 dark:bg-green-900/20",
+                textColor: "text-green-800 dark:text-green-300",
             };
         }
 
@@ -164,7 +164,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
             return {
                 text: "No Tickets Required",
                 bgColor: "bg-muted",
-                textColor: "text-gray-800",
+                textColor: "text-gray-800 dark:text-gray-200",
             };
         }
 
@@ -173,8 +173,8 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
         if (totalAvailable === 0) {
             return {
                 text: "Sold Out",
-                bgColor: "bg-destructive/10",
-                textColor: "text-destructive",
+                bgColor: "bg-red-100 dark:bg-red-900/20",
+                textColor: "text-red-800 dark:text-red-300",
             };
         }
 
@@ -184,23 +184,23 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
         if (percentSold > 90) {
             return {
                 text: "Almost Sold Out",
-                bgColor: "bg-destructive/10",
-                textColor: "text-destructive",
+                bgColor: "bg-red-100 dark:bg-red-900/20",
+                textColor: "text-red-800 dark:text-red-300",
             };
         }
 
         if (percentSold > 70) {
             return {
                 text: "Selling Fast",
-                bgColor: "bg-orange-100",
-                textColor: "text-orange-800",
+                bgColor: "bg-orange-100 dark:bg-orange-900/20",
+                textColor: "text-orange-800 dark:text-orange-300",
             };
         }
 
         return {
             text: "Tickets Available",
-            bgColor: "bg-accent",
-            textColor: "text-primary/80",
+            bgColor: "bg-indigo-100 dark:bg-indigo-900/20",
+            textColor: "text-indigo-800 dark:text-indigo-300",
         };
     };
 
@@ -224,7 +224,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
     };
 
     return (
-        <div className="min-h-screen bg-card">
+        <div className="min-h-screen bg-background text-foreground">
             <SEO
                 type="event"
                 site="event-city"
@@ -259,7 +259,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                     alt={event.title}
                     className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-40" />
+                <div className="absolute inset-0 bg-black/40" />
                 <div className="absolute bottom-0 left-0 right-0 p-8">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-white">
@@ -284,12 +284,12 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
             </div>
 
             {/* Context Bar */}
-            <div className="bg-accent/50 py-3">
+            <div className="bg-indigo-50 dark:bg-indigo-950/30 py-3">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-wrap items-center justify-between gap-4">
                         <div className="flex items-center text-sm">
                             <Flame className="h-4 w-4 text-orange-500 mr-1" />
-                            <span className="font-medium text-gray-800">Popular in {event.category}</span>
+                            <span className="font-medium text-gray-800 dark:text-gray-200">Popular in {event.category}</span>
                         </div>
                         {event.venue && (
                             <div className="flex items-center text-sm text-foreground">
@@ -335,7 +335,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                         <h3 className="text-sm font-medium text-muted-foreground mb-1">Price</h3>
                                         <div className="flex flex-wrap gap-2">
                                             {event.is_free ? (
-                                                <span className="text-lg font-semibold text-green-600">Free</span>
+                                                <span className="text-lg font-semibold text-green-600 dark:text-green-400">Free</span>
                                             ) : (
                                                 <span className="text-base font-medium">
                                                     ${event.price_min} - ${event.price_max}
@@ -371,7 +371,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                 {event.performer && (
                                     <Link
                                         href={route('performers.show', event.performer.id) as any}
-                                        className="flex items-center justify-between border-t border pt-6 hover:bg-muted/50 -mx-6 -mb-6 px-6 pb-6 transition-colors"
+                                        className="flex items-center justify-between border-t border-border pt-6 hover:bg-muted/50 -mx-6 -mb-6 px-6 pb-6 transition-colors"
                                     >
                                         <div className="flex items-center">
                                             <div className="h-10 w-10 rounded-full overflow-hidden mr-3">
@@ -387,7 +387,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                             <div>
                                                 <p className="text-sm font-medium text-foreground">Performer</p>
                                                 <div className="flex items-center">
-                                                    <span className="text-primary hover:text-primary/80 font-medium">{event.performer.name}</span>
+                                                    <span className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 font-medium">{event.performer.name}</span>
                                                     {event.performer.verified && <CheckCircle className="h-4 w-4 text-blue-500 ml-1" />}
                                                 </div>
                                             </div>
@@ -608,7 +608,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                                         </p>
                                                         <Link
                                                             href={`/performers/${event.performer.id}`}
-                                                            className="text-primary hover:text-primary/80 text-sm mt-2 inline-flex items-center"
+                                                            className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 text-sm mt-2 inline-flex items-center"
                                                         >
                                                             View Performer Profile
                                                             <ArrowRight className="h-4 w-4 ml-1" />
@@ -666,7 +666,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                             <Card className="mb-6">
                                 <CardHeader>
                                     <CardTitle className="flex items-center">
-                                        <Ticket className="h-5 w-5 text-indigo-500 mr-2" />
+                                        <Ticket className="h-5 w-5 text-indigo-500 dark:text-indigo-400 mr-2" />
                                         Ticket Information
                                     </CardTitle>
                                 </CardHeader>
@@ -731,7 +731,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                         <CardTitle>Similar Events</CardTitle>
                                         <Link
                                             href={route('events', { category: event.category }) as any}
-                                            className="text-sm text-primary hover:text-primary/80 flex items-center"
+                                            className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 flex items-center"
                                         >
                                             View all
                                             <ArrowRight className="h-4 w-4 ml-1" />

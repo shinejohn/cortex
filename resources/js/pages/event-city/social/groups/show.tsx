@@ -122,17 +122,17 @@ export default function ShowGroup({ group }: Props) {
                         {/* Main content */}
                         <div className="lg:w-2/3">
                             {/* Group header */}
-                            <Card className="mb-6">
+                            <Card className="mb-6 border-none shadow-sm overflow-hidden">
                                 <div className="relative">
                                     {group.cover_image && (
                                         <div className="h-48 sm:h-64">
-                                            <img src={group.cover_image} alt={group.name} className="w-full h-full object-cover rounded-t-lg" />
+                                            <img src={group.cover_image} alt={group.name} className="w-full h-full object-cover" />
                                         </div>
                                     )}
                                     <CardContent className={`p-6 ${!group.cover_image ? "pt-8" : ""}`}>
                                         <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                                             <div className="flex-grow">
-                                                <h1 className="text-3xl font-bold text-foreground mb-2">{group.name}</h1>
+                                                <h1 className="text-3xl font-display font-black tracking-tight text-foreground mb-2">{group.name}</h1>
                                                 <div className="flex items-center gap-4 mb-4">
                                                     <Badge variant="secondary" className="flex items-center gap-1">
                                                         {getPrivacyIcon()}
@@ -187,7 +187,7 @@ export default function ShowGroup({ group }: Props) {
 
                             {/* Quick post section for members */}
                             {isMember && (
-                                <Card className="mb-6">
+                                <Card className="mb-6 border-none shadow-sm">
                                     <CardHeader>
                                         <CardTitle className="text-lg">Share with the group</CardTitle>
                                     </CardHeader>
@@ -203,7 +203,7 @@ export default function ShowGroup({ group }: Props) {
                             )}
 
                             {/* Recent activity */}
-                            <Card>
+                            <Card className="border-none shadow-sm">
                                 <CardHeader>
                                     <CardTitle>Recent Activity</CardTitle>
                                 </CardHeader>
@@ -216,7 +216,7 @@ export default function ShowGroup({ group }: Props) {
                         {/* Sidebar */}
                         <div className="lg:w-1/3">
                             {/* Group info */}
-                            <Card className="mb-6">
+                            <Card className="mb-6 border-none shadow-sm">
                                 <CardHeader>
                                     <CardTitle className="text-lg">About</CardTitle>
                                 </CardHeader>
@@ -246,7 +246,7 @@ export default function ShowGroup({ group }: Props) {
                             </Card>
 
                             {/* Members */}
-                            <Card>
+                            <Card className="border-none shadow-sm">
                                 <CardHeader className="flex flex-row items-center justify-between">
                                     <CardTitle className="text-lg">Members</CardTitle>
                                     <span className="text-sm text-muted-foreground">{group.members_count}</span>

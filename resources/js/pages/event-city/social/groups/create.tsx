@@ -59,11 +59,11 @@ export default function CreateGroup() {
                                 Back to Groups
                             </Button>
                         </Link>
-                        <h1 className="text-3xl font-bold text-foreground">Create New Group</h1>
+                        <h1 className="text-3xl font-display font-black tracking-tight text-foreground">Create New Group</h1>
                         <p className="text-muted-foreground mt-1">Start a community around your interests</p>
                     </div>
 
-                    <Card>
+                    <Card className="border-none shadow-sm">
                         <CardHeader>
                             <CardTitle>Group Details</CardTitle>
                         </CardHeader>
@@ -196,7 +196,7 @@ export default function CreateGroup() {
                                     </div>
                                 </div>
 
-                                <div className="flex justify-end space-x-4 pt-4">
+                                <div className="flex justify-end gap-4 pt-4">
                                     <Link href="/social/groups">
                                         <Button type="button" variant="outline">
                                             Cancel

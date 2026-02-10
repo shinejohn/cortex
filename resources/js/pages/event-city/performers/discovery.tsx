@@ -68,9 +68,11 @@ export default function PerformerDiscovery() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-primary text-white py-12">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h1 className="text-4xl font-bold mb-4">Discover Performers</h1>
+            <div className="relative bg-primary text-white py-12 overflow-hidden">
+                <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <h1 className="font-display text-4xl font-black tracking-tight mb-4">Discover Performers</h1>
                     <p className="text-xl text-purple-100">Find the perfect talent for your event</p>
                 </div>
             </div>
@@ -188,7 +190,7 @@ export default function PerformerDiscovery() {
                 {viewMode === "grid" ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {performers.data.map((performer: Performer) => (
-                            <Card key={performer.id} className="hover:shadow-lg transition-shadow">
+                            <Card key={performer.id} className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                                 <div className="h-48 overflow-hidden">
                                     <img
                                         src={performer.image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=300&fit=crop"}
@@ -238,7 +240,7 @@ export default function PerformerDiscovery() {
                             <Card key={performer.id} className="hover:shadow-md transition-shadow">
                                 <CardContent className="p-6">
                                     <div className="flex items-start gap-6">
-                                        <div className="h-24 w-24 rounded-lg overflow-hidden flex-shrink-0">
+                                        <div className="h-24 w-24 rounded-lg overflow-hidden shrink-0">
                                             <img
                                                 src={
                                                     performer.image ||

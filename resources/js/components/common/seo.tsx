@@ -18,6 +18,7 @@ import type { SEOProps } from "@/types/seo";
  * - venue: Venues (Go Event City)
  * - performer: Performers (Go Event City)
  * - business: Local businesses (Downtown Guide)
+ * - image: Photo/image pages
  * - website: Homepages (All sites)
  *
  * @example
@@ -74,6 +75,8 @@ export function SEO(props: SEOProps) {
                 return "place";
             case "performer":
                 return "profile";
+            case "image":
+                return "image";
             case "website":
             default:
                 return "website";
@@ -85,6 +88,9 @@ export function SEO(props: SEOProps) {
 
     // Get event data for meta tags
     const eventData = type === "event" ? (data as { startDate: string; endDate?: string }) : null;
+
+    // Get image data for meta tags
+    const imageData = type === "image" ? (data as { contentUrl: string; width?: number; height?: number }) : null;
 
     return (
         <>
@@ -108,6 +114,8 @@ export function SEO(props: SEOProps) {
                 {articleData?.section && <meta property="article:section" content={articleData.section} />}
                 {eventData && <meta property="event:start_date" content={eventData.startDate} />}
                 {eventData?.endDate && <meta property="event:end_date" content={eventData.endDate} />}
+                {imageData?.width && <meta property="og:image:width" content={String(imageData.width)} />}
+                {imageData?.height && <meta property="og:image:height" content={String(imageData.height)} />}
             </Head>
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString }} />
         </>

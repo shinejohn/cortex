@@ -1,95 +1,115 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import type { Business } from "@/types/coupon";
-import { ExternalLink, Globe, Mail, Map, MapPin, Phone, Star } from "lucide-react";
+import { Clock, ExternalLink, Globe, Map, MapPin, Phone, Star, Store } from "lucide-react";
 
 interface Props {
     business: Business;
 }
 
 export function CouponBusinessSidebar({ business }: Props) {
+    const hasContactInfo = business.phone || business.website;
+    const hasLocation = business.address;
+    const businessImage = business.logo ?? business.images?.[0] ?? null;
+
     return (
         <Card>
-            <CardHeader>
-                <CardTitle className="text-lg">About the Business</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                {/* Logo and Name */}
-                <div className="flex flex-col items-center gap-2 text-center">
-                    <div className="size-20 overflow-hidden rounded-full border bg-muted">
-                        {business.logo ? (
-                            <img
-                                src={business.logo}
-                                alt={business.name}
-                                className="size-full object-cover"
-                            />
+            <CardHeader className="pb-3">
+                <div className="flex items-start gap-4">
+                    <div className="size-16 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
+                        {businessImage ? (
+                            <img src={businessImage} alt={business.name} className="size-full object-cover" />
                         ) : (
-                            <div className="flex size-full items-center justify-center bg-secondary text-secondary-foreground">
-                                <span className="text-2xl font-bold">{business.name.charAt(0)}</span>
+                            <div className="flex size-full items-center justify-center">
+                                <Store className="size-8 text-muted-foreground" />
                             </div>
                         )}
                     </div>
-                    <div>
-                        <h3 className="font-bold text-lg">{business.name}</h3>
-                        {business.rating && (
-                            <div className="flex items-center justify-center gap-1 text-yellow-500">
-                                <Star className="size-4 fill-current" />
-                                <span className="text-sm font-medium text-foreground">
-                                    {business.rating} ({business.review_count || 0})
+                    <div className="flex-1 min-w-0">
+                        <CardTitle className="font-display font-black tracking-tight text-lg line-clamp-2">{business.name}</CardTitle>
+                        {business.rating != null && (
+                            <div className="mt-1 flex items-center gap-1">
+                                <Star className="size-4 fill-yellow-400 text-yellow-400" />
+                                <span className="text-sm font-medium">
+                                    {Number(business.rating).toFixed(1)}
+                                    {business.review_count != null && (
+                                        <span className="text-muted-foreground"> ({business.review_count})</span>
+                                    )}
                                 </span>
                             </div>
                         )}
                     </div>
                 </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                {business.categories && business.categories.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                        {business.categories.map((category, index) => (
+                            <Badge key={index} variant="secondary" className="text-xs capitalize">
+                                {category}
+                            </Badge>
+                        ))}
+                    </div>
+                )}
 
-                <Separator />
+                {hasLocation && (
+                    <div className="flex items-start gap-2 text-sm">
+                        <MapPin className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                        <span>{business.address}</span>
+                    </div>
+                )}
 
-                {/* Contact Info */}
-                <div className="space-y-3 text-sm">
-                    {business.address && (
-                        <div className="flex gap-2">
-                            <MapPin className="size-4 flex-shrink-0 text-muted-foreground" />
-                            <span>{business.address}</span>
+                {business.phone && (
+                    <div className="flex items-center gap-2 text-sm">
+                        <Phone className="size-4 shrink-0 text-muted-foreground" />
+                        <a href={`tel:${business.phone}`} className="text-primary hover:underline">
+                            {business.phone}
+                        </a>
+                    </div>
+                )}
+
+                {business.website && (
+                    <div className="flex items-center gap-2 text-sm">
+                        <Globe className="size-4 shrink-0 text-muted-foreground" />
+                        <a href={business.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate">
+                            Visit Website
+                        </a>
+                    </div>
+                )}
+
+                {business.email && (
+                    <div className="flex items-center gap-2 text-sm">
+                        <Globe className="size-4 shrink-0 text-muted-foreground" />
+                        <a href={`mailto:${business.email}`} className="text-primary hover:underline">
+                            Email Us
+                        </a>
+                    </div>
+                )}
+
+                {business.opening_hours && Object.keys(business.opening_hours).length > 0 && (
+                    <div className="space-y-1.5 border-t pt-3">
+                        <div className="flex items-center gap-2 text-sm font-medium">
+                            <Clock className="size-4 shrink-0 text-muted-foreground" />
+                            <span>Hours</span>
                         </div>
-                    )}
-                    {business.website && (
-                        <div className="flex gap-2">
-                            <Globe className="size-4 flex-shrink-0 text-muted-foreground" />
-                            <a
-                                href={business.website}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-primary hover:underline"
-                            >
-                                Visit Website
-                            </a>
+                        <div className="ml-6 space-y-1 text-sm text-muted-foreground">
+                            {Object.entries(business.opening_hours).map(([day, hours]) => (
+                                <div key={day} className="flex justify-between gap-4">
+                                    <span className="capitalize">{day}</span>
+                                    <span className={hours ? "" : "text-destructive"}>{hours || "Closed"}</span>
+                                </div>
+                            ))}
                         </div>
-                    )}
-                    {business.phone && (
-                        <div className="flex gap-2">
-                            <Phone className="size-4 flex-shrink-0 text-muted-foreground" />
-                            <a href={`tel:${business.phone}`} className="hover:underline">
-                                {business.phone}
-                            </a>
-                        </div>
-                    )}
-                    {business.email && (
-                        <div className="flex gap-2">
-                            <Mail className="size-4 flex-shrink-0 text-muted-foreground" />
-                            <a href={`mailto:${business.email}`} className="hover:underline">
-                                Email Us
-                            </a>
-                        </div>
-                    )}
-                </div>
+                    </div>
+                )}
 
                 <div className="grid gap-2 pt-2">
                     {business.website && (
                         <Button variant="outline" className="w-full" asChild>
                             <a href={business.website} target="_blank" rel="noopener noreferrer">
                                 <ExternalLink className="mr-2 size-4" />
-                                Website
+                                Visit Website
                             </a>
                         </Button>
                     )}

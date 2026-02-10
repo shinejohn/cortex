@@ -23,10 +23,6 @@ export function ReviewForm({ onSubmit, theme = "downtownsguide", className, init
         rating: initialRating,
     });
 
-    // Use semantic tokens for star colors - consistent across themes
-    const starFilled = "fill-yellow-400 text-yellow-400";
-    const starEmpty = "text-muted";
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSubmit({
@@ -38,62 +34,86 @@ export function ReviewForm({ onSubmit, theme = "downtownsguide", className, init
         setRating(0);
     };
 
-    const renderStars = () => {
-        return Array.from({ length: 5 }).map((_, index) => {
-            const starValue = index + 1;
-            const isFilled = starValue <= (hoveredRating || rating);
-
-            return (
-                <button
-                    key={index}
-                    type="button"
-                    onClick={() => {
-                        setRating(starValue);
-                        setData("rating", starValue);
-                    }}
-                    onMouseEnter={() => setHoveredRating(starValue)}
-                    onMouseLeave={() => setHoveredRating(0)}
-                    className="focus:outline-none"
-                >
-                    <StarIcon className={cn("h-6 w-6 transition-colors", isFilled ? starFilled : starEmpty)} />
-                </button>
-            );
-        });
-    };
-
     return (
-        <form onSubmit={handleSubmit} className={cn("space-y-4", className)}>
-            <div className="space-y-2">
-                <Label htmlFor="rating">Rating *</Label>
-                <div className="flex items-center gap-2">
-                    {renderStars()}
-                    {rating > 0 && <span className="text-sm text-muted-foreground">{rating} out of 5</span>}
+        <div className={cn("overflow-hidden rounded-xl border-none bg-card p-6 shadow-sm", className)}>
+            <h3 className="mb-6 font-display text-xl font-black tracking-tight text-foreground">Write a Review</h3>
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Rating */}
+                <div className="space-y-2">
+                    <Label className="text-[10px] uppercase tracking-widest font-black text-muted-foreground">Your Rating</Label>
+                    <div className="flex items-center gap-1">
+                        {Array.from({ length: 5 }).map((_, index) => {
+                            const starValue = index + 1;
+                            const isFilled = starValue <= (hoveredRating || rating);
+
+                            return (
+                                <button
+                                    key={index}
+                                    type="button"
+                                    onClick={() => {
+                                        setRating(starValue);
+                                        setData("rating", starValue);
+                                    }}
+                                    onMouseEnter={() => setHoveredRating(starValue)}
+                                    onMouseLeave={() => setHoveredRating(0)}
+                                    className="p-0.5 transition-transform hover:scale-110 focus:outline-none"
+                                >
+                                    <StarIcon
+                                        className={cn(
+                                            "size-8 transition-colors",
+                                            isFilled ? "fill-yellow-400 text-yellow-400" : "fill-muted text-muted-foreground",
+                                        )}
+                                    />
+                                </button>
+                            );
+                        })}
+                        {rating > 0 && (
+                            <span className="ml-2 text-sm text-muted-foreground">
+                                {rating} star{rating !== 1 ? "s" : ""}
+                            </span>
+                        )}
+                    </div>
+                    {errors.rating && <p className="text-sm text-destructive">{errors.rating}</p>}
                 </div>
-                {errors.rating && <p className="text-sm text-destructive">{errors.rating}</p>}
-            </div>
 
-            <div className="space-y-2">
-                <Label htmlFor="title">Title (Optional)</Label>
-                <Input id="title" value={data.title} onChange={(e) => setData("title", e.target.value)} placeholder="Give your review a title" />
-                {errors.title && <p className="text-sm text-destructive">{errors.title}</p>}
-            </div>
+                {/* Title */}
+                <div className="space-y-2">
+                    <Label htmlFor="title" className="text-[10px] uppercase tracking-widest font-black text-muted-foreground">
+                        Title (Optional)
+                    </Label>
+                    <Input
+                        id="title"
+                        value={data.title}
+                        onChange={(e) => setData("title", e.target.value)}
+                        placeholder="Summarize your experience"
+                        className="rounded-lg"
+                    />
+                    {errors.title && <p className="text-sm text-destructive">{errors.title}</p>}
+                </div>
 
-            <div className="space-y-2">
-                <Label htmlFor="content">Review *</Label>
-                <Textarea
-                    id="content"
-                    value={data.content}
-                    onChange={(e) => setData("content", e.target.value)}
-                    placeholder="Share your experience..."
-                    rows={5}
-                    required
-                />
-                {errors.content && <p className="text-sm text-destructive">{errors.content}</p>}
-            </div>
+                {/* Content */}
+                <div className="space-y-2">
+                    <Label htmlFor="content" className="text-[10px] uppercase tracking-widest font-black text-muted-foreground">
+                        Your Review
+                    </Label>
+                    <Textarea
+                        id="content"
+                        value={data.content}
+                        onChange={(e) => setData("content", e.target.value)}
+                        placeholder="Share your experience..."
+                        rows={5}
+                        required
+                        className="rounded-lg"
+                    />
+                    {errors.content && <p className="text-sm text-destructive">{errors.content}</p>}
+                    <p className="text-xs text-muted-foreground">Minimum 10 characters</p>
+                </div>
 
-            <Button type="submit" disabled={processing || !rating || !data.content}>
-                {processing ? "Submitting..." : "Submit Review"}
-            </Button>
-        </form>
+                <Button type="submit" disabled={processing || !rating || !data.content} className="rounded-lg">
+                    {processing ? "Submitting..." : "Submit Review"}
+                </Button>
+            </form>
+        </div>
     );
 }

@@ -136,8 +136,8 @@ export default function HubAnalytics() {
                     <Card>
                         <CardContent className="p-6">
                             <div className="flex items-center">
-                                <div className="flex-shrink-0 h-10 w-10 rounded-md bg-green-100 flex items-center justify-center">
-                                    <Users className="h-6 w-6 text-green-600" />
+                                <div className="flex-shrink-0 h-10 w-10 rounded-md bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                                    <Users className="h-6 w-6 text-green-600 dark:text-green-400" />
                                 </div>
                                 <div className="ml-4">
                                     <h2 className="text-sm font-medium text-muted-foreground">Unique Visitors</h2>

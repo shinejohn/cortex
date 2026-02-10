@@ -26,10 +26,10 @@ export default function Partner() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-gradient-to-r from-indigo-700 to-purple-700 text-white py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <Handshake className="h-16 w-16 mx-auto mb-4" />
-                    <h1 className="text-5xl font-bold mb-4">Partner With GoEventCity</h1>
+            <div className="bg-gradient-to-r from-indigo-700 to-purple-700 text-white py-20">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <Handshake className="h-16 w-16 mx-auto mb-6" />
+                    <h1 className="text-5xl font-display font-black tracking-tight mb-4">Partner With GoEventCity</h1>
                     <p className="text-xl text-indigo-100 max-w-3xl mx-auto">
                         Join our network of partners and help shape the future of local events
                     </p>
@@ -37,13 +37,13 @@ export default function Partner() {
             </div>
 
             {/* Partnership Types */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <h2 className="text-3xl font-bold text-foreground text-center mb-12">Partnership Opportunities</h2>
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <h2 className="text-3xl font-display font-black tracking-tight text-foreground text-center mb-12">Partnership Opportunities</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                    <Card>
+                    <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                         <CardHeader>
-                            <div className="h-16 w-16 rounded-full bg-accent flex items-center justify-center mb-4">
-                                <Users className="h-8 w-8 text-primary" />
+                            <div className="h-16 w-16 rounded-full bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center mb-4">
+                                <Users className="h-8 w-8 text-indigo-600" />
                             </div>
                             <CardTitle>Venue Partners</CardTitle>
                         </CardHeader>
@@ -66,10 +66,10 @@ export default function Partner() {
                             <Button className="w-full">Learn More</Button>
                         </CardContent>
                     </Card>
-                    <Card>
+                    <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                         <CardHeader>
-                            <div className="h-16 w-16 rounded-full bg-accent flex items-center justify-center mb-4">
-                                <TrendingUp className="h-8 w-8 text-primary" />
+                            <div className="h-16 w-16 rounded-full bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center mb-4">
+                                <TrendingUp className="h-8 w-8 text-indigo-600" />
                             </div>
                             <CardTitle>Technology Partners</CardTitle>
                         </CardHeader>
@@ -92,9 +92,9 @@ export default function Partner() {
                             <Button className="w-full">Learn More</Button>
                         </CardContent>
                     </Card>
-                    <Card>
+                    <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                         <CardHeader>
-                            <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
+                            <div className="h-16 w-16 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center mb-4">
                                 <Award className="h-8 w-8 text-green-600" />
                             </div>
                             <CardTitle>Media Partners</CardTitle>
@@ -122,7 +122,7 @@ export default function Partner() {
 
                 {/* Benefits */}
                 <div className="bg-muted/50 rounded-lg p-8 mb-16">
-                    <h2 className="text-3xl font-bold text-foreground text-center mb-8">Partnership Benefits</h2>
+                    <h2 className="text-3xl font-display font-black tracking-tight text-foreground text-center mb-8">Partnership Benefits</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="flex items-start">
                             <CheckCircle className="h-6 w-6 text-green-500 mr-3 mt-0.5" />
@@ -157,7 +157,7 @@ export default function Partner() {
 
                 {/* CTA */}
                 <div className="text-center">
-                    <h2 className="text-3xl font-bold text-foreground mb-4">Ready to Partner With Us?</h2>
+                    <h2 className="text-3xl font-display font-black tracking-tight text-foreground mb-4">Ready to Partner With Us?</h2>
                     <p className="text-xl text-muted-foreground mb-8">Let's work together to create amazing experiences for your community</p>
                     <Button size="lg">
                         Contact Partnership Team

@@ -76,12 +76,12 @@ export default function HubsIndex() {
                                     placeholder="Search communities..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full border-none focus:ring-0 text-gray-800"
+                                    className="w-full border-none focus:ring-0 text-gray-800 dark:text-gray-200"
                                 />
                             </div>
                             <div className="border-l border pl-4 flex items-center">
                                 <MapPin className="h-5 w-5 text-muted-foreground mr-2" />
-                                <span className="text-gray-800">Clearwater, FL</span>
+                                <span className="text-gray-800 dark:text-gray-200">Clearwater, FL</span>
                             </div>
                             <button type="submit" className="ml-4 bg-primary text-white px-4 py-2 rounded-md hover:bg-primary transition-colors">
                                 Search
@@ -130,7 +130,7 @@ export default function HubsIndex() {
                                         <span>{hub.location}</span>
                                     </div>
                                 )}
-                                <div className="flex justify-between items-center pt-3 border-t border-gray-100">
+                                <div className="flex justify-between items-center pt-3 border-t border-border">
                                     <div className="flex items-center text-sm">
                                         <Users className="h-4 w-4 text-indigo-500 mr-1" />
                                         <span>{hub.members_count.toLocaleString()} members</span>

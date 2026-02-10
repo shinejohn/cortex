@@ -167,7 +167,7 @@ export default function CreateVenue({ workspace }: Props) {
                                 Back to Venues
                             </Button>
                         </Link>
-                        <h1 className="text-3xl font-bold text-foreground">Create New Venue</h1>
+                        <h1 className="font-display text-3xl font-black tracking-tight text-foreground">Create New Venue</h1>
                         <p className="text-muted-foreground mt-1">Add a new venue to your workspace</p>
                     </div>
 

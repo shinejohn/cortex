@@ -88,7 +88,7 @@ export default function EventsIndex() {
             <div className="mb-12 text-center">
                 <div className="mb-2 flex items-center justify-center gap-2 text-primary">
                     <Calendar className="size-4 fill-current" />
-                    <span className="text-xs font-black uppercase tracking-[0.2em]">Community Calendar</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">Community Calendar</span>
                 </div>
                 <h1 className="font-display text-4xl font-black tracking-tight md:text-5xl lg:text-6xl">
                     Upcoming <span className="text-primary italic">Events</span>
@@ -124,11 +124,11 @@ export default function EventsIndex() {
                                 <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-muted">
                                     <Calendar className="size-10 text-muted-foreground" />
                                 </div>
-                                <h3 className="mt-6 text-xl font-bold">No events found</h3>
+                                <h3 className="mt-6 font-display text-xl font-bold">No events found</h3>
                                 <p className="mt-2 text-muted-foreground">Try adjusting your filters or search query.</p>
                                 <Button
                                     variant="outline"
-                                    className="mt-8"
+                                    className="mt-8 rounded-xl font-bold"
                                     onClick={() => {
                                         searchForm.setData({ search: "", category: "", date: "" });
                                         router.get(route("daynews.events.index") as any);

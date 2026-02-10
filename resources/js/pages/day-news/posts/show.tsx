@@ -1,6 +1,6 @@
 import { Head, usePage } from "@inertiajs/react";
 import DOMPurify from "dompurify";
-import { Calendar, ChevronLeft, ChevronRight, Eye, MapPin, User, Share2, Bookmark, MessageSquare, ThumbsUp, Heart, AlertCircle, Clock } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Eye, MapPin, User, Share2, Bookmark, MessageSquare, ThumbsUp, Heart, AlertCircle, Clock, Zap, Shield } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import Advertisement from "@/components/day-news/advertisement";
 import { ArticleComments } from "@/components/day-news/article-comments";
@@ -152,7 +152,7 @@ export default function ArticleShow() {
             <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
                 {/* Left sidebar - Navigation (Hidden on mobile) */}
                 <div className="hidden lg:col-span-2 lg:block">
-                    <ArticleNavigation commentCount={commentsCount} />
+                    <ArticleNavigation commentCount={commentsCount} relatedStories={relatedPosts} />
                 </div>
 
                 {/* Middle - Content */}
@@ -162,33 +162,34 @@ export default function ArticleShow() {
                         <header className="mb-8">
                             <div className="mb-4 flex flex-wrap items-center gap-3">
                                 {post.category && (
-                                    <Badge variant="default" className="uppercase tracking-widest text-[10px] px-2.5 py-0.5">
+                                    <Badge variant="default" className="uppercase tracking-[0.2em] text-[10px] font-black px-2.5 py-0.5">
                                         {post.category}
                                     </Badge>
                                 )}
-                                <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
-                                    <Clock className="size-3.5" />
+                                <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-bold uppercase tracking-widest">
+                                    <Clock className="size-3.5 text-primary" />
                                     <span>5 min read</span>
                                 </div>
                             </div>
 
-                            <h1 className="mb-6 font-display text-3xl font-black leading-tight tracking-tight md:text-5xl">
+                            <h1 className="mb-6 font-display text-3xl font-black leading-[1.1] tracking-tight md:text-5xl text-zinc-900">
                                 {post.title}
                             </h1>
 
-                            <div className="flex items-center justify-between border-y py-4">
-                                <div className="flex items-center gap-3">
-                                    <Avatar className="size-10 border">
+                            {/* Author bar - inspired by spec-ui ArticleDetailPage enhanced author section */}
+                            <div className="flex items-center justify-between rounded-xl border bg-card p-5 shadow-sm">
+                                <div className="flex items-center gap-4">
+                                    <Avatar className="size-12 border-2 border-white shadow-sm">
                                         <AvatarImage src={post.writer_agent?.avatar || post.author?.avatar || undefined} />
-                                        <AvatarFallback>
+                                        <AvatarFallback className="bg-zinc-100 font-bold text-zinc-400">
                                             <User className="size-5" />
                                         </AvatarFallback>
                                     </Avatar>
                                     <div>
-                                        <div className="text-sm font-bold leading-none">
+                                        <div className="text-sm font-black text-zinc-900 leading-none mb-1">
                                             {post.writer_agent?.name || post.author?.name || "Staff Writer"}
                                         </div>
-                                        <div className="mt-1 text-xs text-muted-foreground">
+                                        <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                                             {post.published_at ? new Date(post.published_at).toLocaleDateString(undefined, {
                                                 year: 'numeric',
                                                 month: 'long',
@@ -199,10 +200,10 @@ export default function ArticleShow() {
                                 </div>
 
                                 <div className="flex items-center gap-2">
-                                    <Button variant="ghost" size="icon" className="size-9 rounded-full">
+                                    <Button variant="ghost" size="icon" className="size-9 rounded-full hover:bg-primary/5 hover:text-primary transition-colors">
                                         <Share2 className="size-4" />
                                     </Button>
-                                    <Button variant="ghost" size="icon" className="size-9 rounded-full">
+                                    <Button variant="ghost" size="icon" className="size-9 rounded-full hover:bg-primary/5 hover:text-primary transition-colors">
                                         <Bookmark className="size-4" />
                                     </Button>
                                 </div>
@@ -211,7 +212,7 @@ export default function ArticleShow() {
 
                         {/* Featured image */}
                         {post.featured_image && (
-                            <div className="mb-8 overflow-hidden rounded-xl border bg-muted shadow-sm">
+                            <div className="mb-8 overflow-hidden rounded-2xl border shadow-lg shadow-zinc-200/50">
                                 <img
                                     src={post.featured_image}
                                     alt={post.title}
@@ -222,13 +223,14 @@ export default function ArticleShow() {
 
                         {/* Content section */}
                         <div
-                            className="prose prose-slate dark:prose-invert max-w-none
+                            className="prose prose-zinc prose-lg dark:prose-invert max-w-none
                             prose-headings:font-display prose-headings:font-black prose-headings:tracking-tight
-                            prose-p:leading-relaxed prose-p:text-lg prose-a:text-primary prose-strong:text-foreground"
+                            prose-p:leading-[1.8] prose-a:text-primary prose-strong:text-foreground
+                            prose-blockquote:border-l-4 prose-blockquote:border-primary/20 prose-blockquote:italic prose-blockquote:text-zinc-600"
                             dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
                         />
 
-                        {/* AI Trust Metrics */}
+                        {/* AI Trust Metrics - inspired by spec-ui AI Quality Assessment panel */}
                         {trustMetrics && (
                             <div className="mt-12">
                                 <TrustMetrics metrics={trustMetrics} />
@@ -237,23 +239,26 @@ export default function ArticleShow() {
 
                         <Separator className="my-12" />
 
-                        {/* Reactions Section */}
-                        <div className="mb-12 rounded-xl border bg-card p-6 shadow-sm">
-                            <h3 className="mb-6 text-center font-bold uppercase tracking-widest text-sm text-muted-foreground">
+                        {/* Reactions Section - enhanced with spec-ui styling */}
+                        <div className="mb-12 rounded-2xl border bg-card p-8 shadow-sm">
+                            <h3 className="mb-8 text-center text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
                                 How do you feel about this story?
                             </h3>
-                            <div className="flex flex-wrap justify-center gap-8">
+                            <div className="flex flex-wrap justify-center gap-10">
                                 {[
-                                    { icon: ThumbsUp, label: "Helpful", count: 124, color: "text-blue-500" },
-                                    { icon: Heart, label: "Love", count: 45, color: "text-red-500" },
-                                    { icon: AlertCircle, label: "Surprising", count: 23, color: "text-yellow-500" }
+                                    { icon: ThumbsUp, label: "Helpful", count: 124, hoverColor: "group-hover:bg-blue-50 group-hover:border-blue-100", iconHover: "group-hover:text-blue-500" },
+                                    { icon: Heart, label: "Love", count: 45, hoverColor: "group-hover:bg-red-50 group-hover:border-red-100", iconHover: "group-hover:text-red-500" },
+                                    { icon: AlertCircle, label: "Surprising", count: 23, hoverColor: "group-hover:bg-yellow-50 group-hover:border-yellow-100", iconHover: "group-hover:text-yellow-500" }
                                 ].map((reaction, i) => (
                                     <button key={i} className="group flex flex-col items-center gap-2">
-                                        <div className={cn("flex size-14 items-center justify-center rounded-full border bg-background transition-all group-hover:scale-110 group-hover:shadow-md", reaction.color)}>
-                                            <reaction.icon className="size-6" />
+                                        <div className={cn(
+                                            "flex size-16 items-center justify-center rounded-full border bg-background shadow-sm transition-all group-hover:scale-110 group-hover:shadow-md",
+                                            reaction.hoverColor
+                                        )}>
+                                            <reaction.icon className={cn("size-7 text-zinc-400 transition-colors", reaction.iconHover)} />
                                         </div>
-                                        <span className="text-xs font-bold uppercase tracking-wider">{reaction.label}</span>
-                                        <span className="text-sm font-medium text-muted-foreground">{reaction.count}</span>
+                                        <span className="text-[10px] font-black uppercase tracking-widest">{reaction.label}</span>
+                                        <span className="text-sm font-black text-muted-foreground">{reaction.count}</span>
                                     </button>
                                 ))}
                             </div>
@@ -271,20 +276,27 @@ export default function ArticleShow() {
 
                 {/* Right sidebar - Discovery */}
                 <div className="lg:col-span-3">
-                    <ArticleSidebar trendingPosts={trendingPosts} upcomingEvents={upcomingEvents} />
+                    <ArticleSidebar trendingPosts={trendingPosts} upcomingEvents={upcomingEvents} commentCount={commentsCount} />
                 </div>
             </div>
 
             {/* Related Articles Footer */}
             {relatedPosts.length > 0 && (
-                <div className="mt-16 border-t pt-16">
-                    <h2 className="mb-8 font-display text-3xl font-black tracking-tight">Related Stories</h2>
+                <div className="mt-20 border-t pt-16">
+                    <div className="mb-8 flex items-end justify-between">
+                        <div>
+                            <Badge variant="outline" className="mb-2 border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest px-2">
+                                Keep Reading
+                            </Badge>
+                            <h2 className="font-display text-3xl font-black tracking-tight text-zinc-900">Related Stories</h2>
+                        </div>
+                    </div>
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                         {relatedPosts.slice(0, 3).map((rp) => (
-                            <div key={rp.id} className="relative aspect-square overflow-hidden rounded-lg border">
-                                <img src={rp.featured_image || ""} className="h-full w-full object-cover" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-4 flex flex-col justify-end">
-                                    <h4 className="text-sm font-bold text-white line-clamp-2">{rp.title}</h4>
+                            <div key={rp.id} className="group relative aspect-[16/10] overflow-hidden rounded-2xl border shadow-sm hover:shadow-md transition-all">
+                                <img src={rp.featured_image || ""} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-6 flex flex-col justify-end">
+                                    <h4 className="text-sm font-black text-white line-clamp-2">{rp.title}</h4>
                                 </div>
                             </div>
                         ))}

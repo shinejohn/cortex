@@ -29,13 +29,15 @@ export default function LocationPrompt({ onDismiss }: LocationPromptProps) {
     };
 
     return (
-        <div className="border-b border-primary/20 bg-primary/5">
-            <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+        <div className="border-b border-indigo-200/50 bg-gradient-to-r from-indigo-50/80 to-blue-50/80 dark:from-indigo-950/20 dark:to-blue-950/20 dark:border-indigo-800/30">
+            <div className="container mx-auto px-4 py-3 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                        <MapPin className="size-5 flex-shrink-0 text-primary" />
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900/50">
+                            <MapPin className="size-4 text-indigo-600 dark:text-indigo-400" />
+                        </div>
                         <p className="text-sm text-foreground">
-                            Are you in <span className="font-semibold">{currentRegion.full_name}</span>?
+                            Are you in <span className="font-semibold text-indigo-700 dark:text-indigo-300">{currentRegion.full_name}</span>?
                         </p>
                     </div>
 
@@ -44,7 +46,7 @@ export default function LocationPrompt({ onDismiss }: LocationPromptProps) {
                             type="button"
                             onClick={handleConfirm}
                             disabled={isLoading}
-                            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <Check className="size-4" />
                             <span>Yes, that's correct</span>
@@ -54,7 +56,7 @@ export default function LocationPrompt({ onDismiss }: LocationPromptProps) {
                             type="button"
                             onClick={handleDismiss}
                             disabled={isLoading}
-                            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3.5 py-1.5 text-sm font-medium text-foreground shadow-sm hover:bg-accent transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                             aria-label="Dismiss location prompt"
                         >
                             <X className="size-4" />

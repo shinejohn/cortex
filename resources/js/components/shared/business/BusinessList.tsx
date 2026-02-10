@@ -1,3 +1,4 @@
+import { MapPinIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BusinessCard } from "./BusinessCard";
 
@@ -37,14 +38,18 @@ export function BusinessList({
 }: BusinessListProps) {
     if (businesses.length === 0) {
         return (
-            <div className="rounded-lg border border-dashed p-8 text-center">
-                <p className="text-muted-foreground">No businesses found</p>
+            <div className="rounded-xl border border-dashed p-12 text-center">
+                <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-muted">
+                    <MapPinIcon className="size-6 text-muted-foreground" />
+                </div>
+                <p className="font-display font-black tracking-tight text-foreground">No businesses found</p>
+                <p className="mt-1 text-sm text-muted-foreground">Try adjusting your search or filters</p>
             </div>
         );
     }
 
     return (
-        <div className={cn("space-y-4", className)}>
+        <div className={cn("grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3", className)}>
             {businesses.map((business) => (
                 <BusinessCard
                     key={business.id}

@@ -26,7 +26,7 @@ export default function CheckoutCancel({ auth, order }: CheckoutCancelProps) {
 
             {/* Cancel Message */}
             <div className="py-16">
-                <div className="max-w-3xl mx-auto px-3 sm:px-4">
+                <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center space-y-6">
                         {/* Cancel Icon */}
                         <div className="mx-auto w-20 h-20 rounded-full bg-amber-100 dark:bg-amber-900/20 flex items-center justify-center">
@@ -35,12 +35,12 @@ export default function CheckoutCancel({ auth, order }: CheckoutCancelProps) {
 
                         {/* Cancel Title */}
                         <div>
-                            <h1 className="text-3xl font-bold text-foreground mb-2">Checkout Cancelled</h1>
+                            <h1 className="text-3xl font-display font-black tracking-tight text-foreground mb-2">Checkout Cancelled</h1>
                             <p className="text-lg text-muted-foreground">Your order has not been placed</p>
                         </div>
 
                         {/* Info Card */}
-                        <Card className="text-left">
+                        <Card className="text-left group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <AlertCircle className="h-5 w-5 text-amber-600" />
@@ -66,12 +66,12 @@ export default function CheckoutCancel({ auth, order }: CheckoutCancelProps) {
                         </Card>
 
                         {/* Info Box */}
-                        <div className="p-4 bg-accent/50 border border-primary/20 rounded-lg text-left">
+                        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-left">
                             <div className="flex gap-3">
-                                <AlertCircle className="h-5 w-5 text-primary dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                                <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
                                 <div className="space-y-1">
                                     <p className="font-semibold text-blue-900 dark:text-blue-100">Want to complete your purchase?</p>
-                                    <p className="text-sm text-primary dark:text-blue-200">
+                                    <p className="text-sm text-blue-800 dark:text-blue-200">
                                         You can retry the checkout process or continue shopping to add more items to your cart.
                                     </p>
                                 </div>

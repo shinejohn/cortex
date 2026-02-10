@@ -75,7 +75,7 @@ export default function FriendsIndex({ friends, sentRequests }: Props) {
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     {/* Page header */}
                     <div className="mb-6">
-                        <h1 className="text-2xl font-bold text-foreground">Friends</h1>
+                        <h1 className="text-2xl font-display font-black tracking-tight text-foreground">Friends</h1>
                         <p className="text-muted-foreground">
                             Your friends on the platform ({friends.length} friends{requests.length > 0 ? `, ${requests.length} pending requests` : ""}
                             )
@@ -83,7 +83,7 @@ export default function FriendsIndex({ friends, sentRequests }: Props) {
                     </div>
 
                     {/* Search and filter */}
-                    <div className="bg-card rounded-lg shadow mb-6 p-4">
+                    <div className="bg-card rounded-lg shadow-sm mb-6 p-4">
                         <div className="flex flex-col sm:flex-row gap-4">
                             <div className="relative flex-grow">
                                 <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -106,8 +106,8 @@ export default function FriendsIndex({ friends, sentRequests }: Props) {
 
                     {/* Sent requests section */}
                     {filteredRequests.length > 0 && (
-                        <div className="bg-card rounded-lg shadow mb-6">
-                            <div className="p-4 border-b border">
+                        <div className="bg-card rounded-lg shadow-sm mb-6">
+                            <div className="p-4 border-b">
                                 <div className="flex items-center gap-2">
                                     <ClockIcon className="h-5 w-5 text-amber-500" />
                                     <h2 className="text-lg font-medium text-foreground">Pending Friend Requests ({filteredRequests.length})</h2>
@@ -116,7 +116,7 @@ export default function FriendsIndex({ friends, sentRequests }: Props) {
                             </div>
                             <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {filteredRequests.map((request) => (
-                                    <div key={request.id} className="border border-amber-200 rounded-lg p-4 bg-amber-50">
+                                    <div key={request.id} className="border border-amber-200 rounded-lg p-4 bg-amber-50/50 dark:bg-amber-950/20">
                                         <div className="flex items-center">
                                             <img src={request.avatar} alt={request.name} className="h-16 w-16 rounded-full object-cover" />
                                             <div className="ml-4 flex-1 min-w-0">
@@ -130,7 +130,7 @@ export default function FriendsIndex({ friends, sentRequests }: Props) {
                                             </div>
                                         </div>
 
-                                        <div className="mt-3 flex space-x-2">
+                                        <div className="mt-3 flex gap-2">
                                             <Link href={`/social/profile/${request.id}`} className="flex-1">
                                                 <Button variant="outline" size="sm" className="w-full">
                                                     View Profile
@@ -154,15 +154,15 @@ export default function FriendsIndex({ friends, sentRequests }: Props) {
                     )}
 
                     {/* Friends grid */}
-                    <div className="bg-card rounded-lg shadow">
-                        <div className="p-4 border-b border">
+                    <div className="bg-card rounded-lg shadow-sm">
+                        <div className="p-4 border-b">
                             <h2 className="text-lg font-medium text-foreground">All Friends ({filteredFriends.length})</h2>
                         </div>
 
                         {filteredFriends.length > 0 ? (
                             <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {filteredFriends.map((friend) => (
-                                    <div key={friend.id} className="border border rounded-lg p-4">
+                                    <div key={friend.id} className="group border overflow-hidden rounded-lg p-4 hover:shadow-md transition-shadow">
                                         <div className="flex items-center">
                                             <img src={friend.avatar} alt={friend.name} className="h-16 w-16 rounded-full object-cover" />
                                             <div className="ml-4 flex-1 min-w-0">
@@ -172,7 +172,7 @@ export default function FriendsIndex({ friends, sentRequests }: Props) {
                                             </div>
                                         </div>
 
-                                        <div className="mt-3 flex space-x-2">
+                                        <div className="mt-3 flex gap-2">
                                             <Link href={`/social/profile/${friend.id}`} className="flex-1">
                                                 <Button variant="outline" size="sm" className="w-full">
                                                     View Profile

@@ -44,25 +44,25 @@ export default function Press() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-gradient-to-r from-indigo-700 to-purple-700 text-white py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <FileText className="h-16 w-16 mx-auto mb-4" />
-                    <h1 className="text-5xl font-bold mb-4">Press & Media</h1>
+            <div className="bg-gradient-to-r from-indigo-700 to-purple-700 text-white py-20">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <FileText className="h-16 w-16 mx-auto mb-6" />
+                    <h1 className="text-5xl font-display font-black tracking-tight mb-4">Press & Media</h1>
                     <p className="text-xl text-indigo-100 max-w-3xl mx-auto">Latest news, press releases, and media resources</p>
                 </div>
             </div>
 
             {/* Press Releases */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <h2 className="text-3xl font-bold text-foreground mb-8">Press Releases</h2>
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <h2 className="text-3xl font-display font-black tracking-tight text-foreground mb-8">Press Releases</h2>
                 <div className="space-y-6">
                     {pressReleases.map((release) => (
-                        <Card key={release.id} className="hover:shadow-lg transition-shadow">
+                        <Card key={release.id} className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                             <CardContent className="p-6">
                                 <div className="flex items-start justify-between">
                                     <div className="flex-1">
                                         <div className="flex items-center gap-3 mb-2">
-                                            <span className="text-sm font-medium text-primary">{release.category}</span>
+                                            <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400">{release.category}</span>
                                             <span className="text-sm text-muted-foreground">
                                                 <Calendar className="h-4 w-4 inline mr-1" />
                                                 {new Date(release.date).toLocaleDateString()}
@@ -86,15 +86,15 @@ export default function Press() {
 
             {/* Media Contacts */}
             <div className="bg-muted/50 py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-bold text-foreground mb-8">Media Contacts</h2>
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 className="text-3xl font-display font-black tracking-tight text-foreground mb-8">Media Contacts</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {mediaContacts.map((contact, index) => (
-                            <Card key={index}>
+                            <Card key={index} className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                                 <CardContent className="p-6">
                                     <div className="flex items-center mb-4">
-                                        <div className="h-12 w-12 rounded-full bg-accent flex items-center justify-center mr-4">
-                                            <User className="h-6 w-6 text-primary" />
+                                        <div className="h-12 w-12 rounded-full bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center mr-4">
+                                            <User className="h-6 w-6 text-indigo-600" />
                                         </div>
                                         <div>
                                             <h3 className="font-semibold text-foreground">{contact.name}</h3>
@@ -117,10 +117,10 @@ export default function Press() {
             </div>
 
             {/* Media Kit */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <Card>
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                     <CardContent className="p-8 text-center">
-                        <h2 className="text-3xl font-bold text-foreground mb-4">Media Kit</h2>
+                        <h2 className="text-3xl font-display font-black tracking-tight text-foreground mb-4">Media Kit</h2>
                         <p className="text-xl text-muted-foreground mb-8">
                             Download our media kit with logos, brand guidelines, and high-resolution images
                         </p>

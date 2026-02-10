@@ -1,7 +1,12 @@
 import { Head, Link, router, useForm } from "@inertiajs/react";
-import { ArrowLeftIcon, StarIcon } from "lucide-react";
-import { ReviewForm } from "@/components/shared/reviews/ReviewForm";
+import { ArrowLeft, Star } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 interface DowntownGuideReviewsCreateProps {
     business: {
@@ -12,6 +17,7 @@ interface DowntownGuideReviewsCreateProps {
 }
 
 export default function DowntownGuideReviewsCreate({ business }: DowntownGuideReviewsCreateProps) {
+    const [hoveredStar, setHoveredStar] = useState(0);
     const { data, setData, post, processing, errors } = useForm({
         title: "",
         content: "",
@@ -32,93 +38,104 @@ export default function DowntownGuideReviewsCreate({ business }: DowntownGuideRe
         <>
             <Head title={`Write a Review for ${business.name} - DowntownsGuide`} />
 
-            <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
-                {/* Header */}
-                <div className="border-b-4 border-purple-600 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        <Link
-                            href={route("downtown-guide.businesses.show", business.slug)}
-                            className="mb-4 inline-flex items-center gap-2 text-purple-100 hover:text-white"
-                        >
-                            <ArrowLeftIcon className="h-4 w-4" />
-                            <span>Back to Business</span>
-                        </Link>
-                        <h1 className="text-2xl font-bold text-white">Write a Review for {business.name}</h1>
+            <div className="min-h-screen bg-background">
+                <main className="container mx-auto px-4 py-8">
+                    {/* Back link */}
+                    <Link
+                        href={route("downtown-guide.businesses.show", business.slug)}
+                        className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                        <ArrowLeft className="size-4" />
+                        Back to {business.name}
+                    </Link>
+
+                    <div className="mx-auto max-w-2xl">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="font-display text-2xl font-black tracking-tight">
+                                    Write a Review for {business.name}
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <form onSubmit={handleSubmit} className="space-y-6">
+                                    {/* Star Rating */}
+                                    <div>
+                                        <Label className="mb-2 block">Your Rating *</Label>
+                                        <div className="flex items-center gap-1">
+                                            {[1, 2, 3, 4, 5].map((rating) => (
+                                                <button
+                                                    key={rating}
+                                                    type="button"
+                                                    onClick={() => setData("rating", rating)}
+                                                    onMouseEnter={() => setHoveredStar(rating)}
+                                                    onMouseLeave={() => setHoveredStar(0)}
+                                                    className="p-0.5 transition-transform hover:scale-110 focus:outline-none"
+                                                >
+                                                    <Star
+                                                        className={cn(
+                                                            "size-8 transition-colors",
+                                                            rating <= (hoveredStar || data.rating)
+                                                                ? "fill-accent text-accent"
+                                                                : "fill-muted text-muted-foreground",
+                                                        )}
+                                                    />
+                                                </button>
+                                            ))}
+                                            {data.rating > 0 && (
+                                                <span className="ml-2 text-sm text-muted-foreground">
+                                                    {data.rating} {data.rating === 1 ? "star" : "stars"}
+                                                </span>
+                                            )}
+                                        </div>
+                                        {errors.rating && <p className="mt-1 text-sm text-destructive">{errors.rating}</p>}
+                                    </div>
+
+                                    {/* Title */}
+                                    <div>
+                                        <Label htmlFor="title">Title (optional)</Label>
+                                        <Input
+                                            id="title"
+                                            value={data.title}
+                                            onChange={(e) => setData("title", e.target.value)}
+                                            placeholder="Summarize your experience"
+                                            className="mt-1"
+                                        />
+                                        {errors.title && <p className="mt-1 text-sm text-destructive">{errors.title}</p>}
+                                    </div>
+
+                                    {/* Content */}
+                                    <div>
+                                        <Label htmlFor="content">Your Review *</Label>
+                                        <Textarea
+                                            id="content"
+                                            value={data.content}
+                                            onChange={(e) => setData("content", e.target.value)}
+                                            placeholder="Share your experience with this place..."
+                                            rows={6}
+                                            className="mt-1"
+                                            required
+                                        />
+                                        {errors.content && <p className="mt-1 text-sm text-destructive">{errors.content}</p>}
+                                        <p className="mt-1 text-xs text-muted-foreground">Minimum 10 characters</p>
+                                    </div>
+
+                                    {/* Submit */}
+                                    <div className="flex items-center justify-end gap-4">
+                                        <Link
+                                            href={route("downtown-guide.businesses.show", business.slug)}
+                                            className="text-muted-foreground hover:text-foreground"
+                                        >
+                                            Cancel
+                                        </Link>
+                                        <Button type="submit" disabled={processing || data.rating === 0}>
+                                            {processing ? "Submitting..." : "Submit Review"}
+                                        </Button>
+                                    </div>
+                                </form>
+                            </CardContent>
+                        </Card>
                     </div>
-                </div>
-
-                <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
-                    <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            {/* Rating */}
-                            <div>
-                                <label className="mb-2 block text-sm font-medium text-foreground">Your Rating *</label>
-                                <div className="flex items-center gap-2">
-                                    {[1, 2, 3, 4, 5].map((rating) => (
-                                        <button key={rating} type="button" onClick={() => setData("rating", rating)} className="focus:outline-none">
-                                            <StarIcon
-                                                className={`h-8 w-8 transition-colors ${
-                                                    rating <= data.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300 hover:text-yellow-300"
-                                                }`}
-                                            />
-                                        </button>
-                                    ))}
-                                    <span className="ml-2 text-sm text-muted-foreground">
-                                        {data.rating} {data.rating === 1 ? "star" : "stars"}
-                                    </span>
-                                </div>
-                                {errors.rating && <p className="mt-1 text-sm text-destructive">{errors.rating}</p>}
-                            </div>
-
-                            {/* Title */}
-                            <div>
-                                <label htmlFor="title" className="mb-2 block text-sm font-medium text-foreground">
-                                    Review Title (Optional)
-                                </label>
-                                <input
-                                    type="text"
-                                    id="title"
-                                    value={data.title}
-                                    onChange={(e) => setData("title", e.target.value)}
-                                    className="w-full rounded-lg border border px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
-                                    placeholder="Summarize your experience"
-                                />
-                                {errors.title && <p className="mt-1 text-sm text-destructive">{errors.title}</p>}
-                            </div>
-
-                            {/* Content */}
-                            <div>
-                                <label htmlFor="content" className="mb-2 block text-sm font-medium text-foreground">
-                                    Your Review *
-                                </label>
-                                <textarea
-                                    id="content"
-                                    value={data.content}
-                                    onChange={(e) => setData("content", e.target.value)}
-                                    rows={6}
-                                    className="w-full rounded-lg border border px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200"
-                                    placeholder="Share your experience with this business..."
-                                    required
-                                />
-                                {errors.content && <p className="mt-1 text-sm text-destructive">{errors.content}</p>}
-                                <p className="mt-1 text-xs text-muted-foreground">Minimum 10 characters required</p>
-                            </div>
-
-                            {/* Submit */}
-                            <div className="flex items-center justify-end gap-4">
-                                <Link
-                                    href={route("downtown-guide.businesses.show", business.slug)}
-                                    className="text-muted-foreground hover:text-foreground"
-                                >
-                                    Cancel
-                                </Link>
-                                <Button type="submit" disabled={processing} className="bg-primary hover:bg-primary">
-                                    {processing ? "Submitting..." : "Submit Review"}
-                                </Button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                </main>
             </div>
         </>
     );

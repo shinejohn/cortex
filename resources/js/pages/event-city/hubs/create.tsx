@@ -1,4 +1,4 @@
-import { router, useForm } from "@inertiajs/react";
+import { router, useForm, usePage } from "@inertiajs/react";
 import { AlertCircle, Check, ChevronLeft, Eye, Save } from "lucide-react";
 import { useState } from "react";
 import { Footer } from "@/components/common/footer";
@@ -101,7 +101,7 @@ export default function HubCreate() {
                             <div>
                                 <Label htmlFor="slug">URL Slug *</Label>
                                 <div className="flex">
-                                    <span className="inline-flex items-center px-3 py-2 rounded-l-md border border-r-0 border bg-muted/50 text-muted-foreground text-sm">
+                                    <span className="inline-flex items-center px-3 py-2 rounded-l-md border border-r-0 border-border bg-muted/50 text-muted-foreground text-sm">
                                         hub/
                                     </span>
                                     <Input
@@ -111,7 +111,7 @@ export default function HubCreate() {
                                         placeholder="jazz-lovers-community"
                                         className={`rounded-none ${errors.slug ? "border-red-500" : ""}`}
                                     />
-                                    <span className="inline-flex items-center px-3 py-2 rounded-r-md border border-l-0 border bg-muted/50 text-muted-foreground text-sm">
+                                    <span className="inline-flex items-center px-3 py-2 rounded-r-md border border-l-0 border-border bg-muted/50 text-muted-foreground text-sm">
                                         .com
                                     </span>
                                 </div>
@@ -183,7 +183,7 @@ export default function HubCreate() {
                             <p className="text-muted-foreground mb-6">
                                 Review your hub before publishing. You can go back to any section to make changes.
                             </p>
-                            <div className="aspect-video bg-muted rounded-lg overflow-hidden border border p-8">
+                            <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border p-8">
                                 <div className="text-center">
                                     <h3 className="text-2xl font-bold mb-2">{data.name || "Hub Name"}</h3>
                                     <p className="text-muted-foreground">{data.description || "Hub description"}</p>
@@ -224,7 +224,7 @@ export default function HubCreate() {
             <Header auth={auth} />
 
             {/* Header */}
-            <div className="bg-card border-b border">
+            <div className="bg-card border-b border-border">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center">
@@ -309,7 +309,7 @@ export default function HubCreate() {
                                     <CardTitle>Preview</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="aspect-video bg-muted rounded-lg overflow-hidden border border p-4">
+                                    <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border p-4">
                                         <div className="text-center">
                                             <h3 className="text-lg font-bold mb-2">{data.name || "Hub Name"}</h3>
                                             <p className="text-sm text-muted-foreground">{data.description || "Hub description"}</p>

@@ -44,22 +44,24 @@ export function EventCityBusinessCard({ business, upcomingEventsCount = 0, nextE
     return (
         <Card
             className={cn(
-                "group relative overflow-hidden bg-gradient-to-br from-background to-accent/30 p-5 transition-all hover:shadow-xl",
+                "group relative overflow-hidden border-none bg-gradient-to-br from-background to-indigo-50/30 dark:to-indigo-950/10 p-5 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5",
                 className,
             )}
         >
             {/* Decorative gradient overlay */}
-            <div className="absolute right-0 top-0 h-32 w-32 rounded-bl-full bg-gradient-to-br from-accent/50 to-transparent" />
+            <div className="absolute right-0 top-0 h-32 w-32 rounded-bl-full bg-gradient-to-br from-indigo-100/50 to-transparent dark:from-indigo-900/20" />
 
             <div className="relative space-y-3">
                 {/* Header */}
                 <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
                         <Link href={href} className="group/link">
-                            <h3 className="text-xl font-bold text-foreground group-hover/link:text-primary transition-colors">{business.name}</h3>
+                            <h3 className="font-display text-xl font-black tracking-tight text-foreground group-hover/link:text-indigo-600 transition-colors">
+                                {business.name}
+                            </h3>
                         </Link>
                         {business.is_verified && (
-                            <Badge variant="secondary" className="ml-2">
+                            <Badge variant="secondary" className="mt-1 bg-indigo-100 text-indigo-700 dark:bg-indigo-950/30 dark:text-indigo-300 border-none">
                                 ✓ Verified Venue
                             </Badge>
                         )}
@@ -67,11 +69,11 @@ export function EventCityBusinessCard({ business, upcomingEventsCount = 0, nextE
 
                     {/* Business Image */}
                     {business.image && (
-                        <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 shadow-md">
+                        <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 border-background shadow-md">
                             <img
                                 src={business.image}
                                 alt={business.name}
-                                className="h-full w-full object-cover transition-transform group-hover:scale-110"
+                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                             />
                         </div>
                     )}
@@ -82,13 +84,11 @@ export function EventCityBusinessCard({ business, upcomingEventsCount = 0, nextE
 
                 {/* Upcoming Events Badge */}
                 {upcomingEventsCount > 0 && (
-                    <div className="flex items-center gap-2 rounded-lg bg-accent px-3 py-2">
-                        <CalendarIcon className="h-5 w-5 text-primary" />
-                        <div className="flex-1">
-                            <span className="text-sm font-semibold">
-                                {upcomingEventsCount} upcoming {upcomingEventsCount === 1 ? "event" : "events"}
-                            </span>
-                        </div>
+                    <div className="flex items-center gap-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/30 px-3 py-2.5">
+                        <CalendarIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                        <span className="text-sm font-semibold text-indigo-900 dark:text-indigo-200">
+                            {upcomingEventsCount} upcoming {upcomingEventsCount === 1 ? "event" : "events"}
+                        </span>
                     </div>
                 )}
 
@@ -96,16 +96,16 @@ export function EventCityBusinessCard({ business, upcomingEventsCount = 0, nextE
                 {nextEvent && (
                     <Link
                         href={`/events/${nextEvent.slug || nextEvent.id}`}
-                        className="block rounded-lg border-2 bg-card p-3 shadow-sm transition-all hover:shadow-md"
+                        className="block rounded-lg border border-border/50 bg-card p-3 shadow-sm transition-all hover:shadow-md hover:border-indigo-200 dark:hover:border-indigo-800"
                     >
                         <div className="flex items-start justify-between gap-2">
-                            <div className="flex-1">
+                            <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2">
-                                    <TicketIcon className="h-4 w-4 text-primary" />
-                                    <span className="text-sm font-semibold">{nextEvent.title}</span>
+                                    <TicketIcon className="h-4 w-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                                    <span className="text-sm font-semibold truncate">{nextEvent.title}</span>
                                 </div>
                                 {nextEvent.event_date && (
-                                    <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                                    <div className="mt-1.5 flex items-center gap-2 text-xs text-muted-foreground">
                                         <ClockIcon className="h-3 w-3" />
                                         <span>
                                             {new Date(nextEvent.event_date).toLocaleDateString("en-US", {
@@ -117,7 +117,15 @@ export function EventCityBusinessCard({ business, upcomingEventsCount = 0, nextE
                                     </div>
                                 )}
                             </div>
-                            <Badge variant="secondary" className="text-xs font-semibold">
+                            <Badge
+                                variant="secondary"
+                                className={cn(
+                                    "shrink-0 text-xs font-semibold",
+                                    nextEvent.is_free
+                                        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300"
+                                        : "bg-indigo-100 text-indigo-700 dark:bg-indigo-950/30 dark:text-indigo-300",
+                                )}
+                            >
                                 {nextEvent.is_free ? "FREE" : nextEvent.price_min ? `$${nextEvent.price_min}+` : "TBA"}
                             </Badge>
                         </div>
@@ -125,11 +133,11 @@ export function EventCityBusinessCard({ business, upcomingEventsCount = 0, nextE
                 )}
 
                 {/* Footer */}
-                <div className="flex items-center justify-between border-t pt-3">
+                <div className="flex items-center justify-between border-t border-border/50 pt-3">
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
                         {business.address && business.city && (
                             <div className="flex items-center gap-1">
-                                <MapPinIcon className="h-3 w-3" />
+                                <MapPinIcon className="h-3.5 w-3.5" />
                                 <span>
                                     {business.city}, {business.state}
                                 </span>
@@ -138,16 +146,16 @@ export function EventCityBusinessCard({ business, upcomingEventsCount = 0, nextE
 
                         {business.rating !== undefined && (
                             <div className="flex items-center gap-1">
-                                <StarIcon className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                                <span className="font-semibold">{business.rating.toFixed(1)}</span>
+                                <StarIcon className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                                <span className="font-semibold text-foreground">{business.rating.toFixed(1)}</span>
                                 {business.reviews_count !== undefined && (
-                                    <span className="text-muted-foreground">({business.reviews_count.toLocaleString()})</span>
+                                    <span>({business.reviews_count.toLocaleString()})</span>
                                 )}
                             </div>
                         )}
                     </div>
 
-                    <Button asChild size="sm">
+                    <Button asChild size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm">
                         <Link href={href}>View Venue</Link>
                     </Button>
                 </div>

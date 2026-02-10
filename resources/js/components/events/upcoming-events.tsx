@@ -49,27 +49,53 @@ const UpcomingEvents = ({ events: propEvents }: { events?: any[] }) => {
         setTimeout(() => setCalendarSuccess(null), 2000);
     };
 
-    const getNext7Days = (): any[] => {
-        const days = [];
+    const getNext7Days = (): DayEvents[] => {
+        const days: DayEvents[] = [];
         const today = new Date();
 
         for (let i = 0; i < 7; i++) {
             const date = new Date(today);
             date.setDate(today.getDate() + i);
-            const dateString = date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-            const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
 
-            let displayName = dayName;
-            if (i === 0) displayName = "Today";
-            if (i === 1) displayName = "Tomorrow";
-
-            const dayEvents = upcomingEvents.filter(e => {
-                const ed = new Date(e.date);
-                return ed.getDate() === date.getDate() && ed.getMonth() === date.getMonth() && ed.getFullYear() === date.getFullYear();
+            const dayName = date.toLocaleDateString("en-US", {
+                weekday: "long",
+            });
+            const dateString = date.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
             });
 
-            days.push({ date: dateString, dayName, displayName, events: dayEvents });
+            // Generate display name with Today/Tomorrow
+            let displayName: string;
+            if (i === 0) {
+                displayName = `Today - ${dateString}`;
+            } else if (i === 1) {
+                displayName = `Tomorrow - ${dateString}`;
+            } else {
+                displayName = `${dayName} - ${dateString}`;
+            }
+
+            // Filter events for this day
+            const dayEvents = upcomingEvents.filter((event) => {
+                try {
+                    const eventDate = new Date(event.date);
+                    const currentDate = new Date(date);
+                    return eventDate.toDateString() === currentDate.toDateString();
+                } catch {
+                    // Fallback: distribute events across the 7 days if date parsing fails
+                    return parseInt(event.id) % 7 === i;
+                }
+            });
+
+            days.push({
+                date: dateString,
+                dayName,
+                displayName,
+                events: dayEvents,
+            });
         }
+
         return days;
     };
 
@@ -79,7 +105,11 @@ const UpcomingEvents = ({ events: propEvents }: { events?: any[] }) => {
         <>
             <div className="flex items-center text-sm text-muted-foreground mb-1">
                 <CalendarIcon className="h-4 w-4 mr-1" />
-                {new Date(event.date).toLocaleDateString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })}
+                {new Date(event.date).toLocaleDateString("en-US", {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                })}
             </div>
             <div className="flex items-center justify-between">
                 <div className="flex items-center text-sm text-muted-foreground">
@@ -92,14 +122,26 @@ const UpcomingEvents = ({ events: propEvents }: { events?: any[] }) => {
     );
 
     const renderEventActions = (event: any) => (
-        <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => handleShareEvent(e, event)}>
+        <>
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => handleShareEvent(e, event)}
+                className="text-muted-foreground hover:text-primary p-1 h-8 w-8"
+                title="Share Event"
+            >
                 {shareSuccess === event.id ? <CheckIcon className="h-4 w-4 text-green-500" /> : <ShareIcon className="h-4 w-4" />}
             </Button>
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => handleAddToCalendar(e, event)}>
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => handleAddToCalendar(e, event)}
+                className="text-muted-foreground hover:text-primary p-1 h-8 w-8"
+                title="Add to Calendar"
+            >
                 {calendarSuccess === event.id ? <CheckIcon className="h-4 w-4 text-green-500" /> : <CalendarIcon className="h-4 w-4" />}
             </Button>
-        </div>
+        </>
     );
 
     if (upcomingEvents.length === 0) return null;
@@ -107,6 +149,7 @@ const UpcomingEvents = ({ events: propEvents }: { events?: any[] }) => {
     return (
         <div className="py-4">
             <div className="mx-auto px-3 sm:px-4">
+                {/* Main Section Header */}
                 <div className="max-w-7xl px-3 sm:px-4 mx-auto flex justify-between items-center mb-6">
                     <div>
                         <h2 className="text-xl font-bold text-foreground">Upcoming Events</h2>
@@ -119,42 +162,54 @@ const UpcomingEvents = ({ events: propEvents }: { events?: any[] }) => {
                     </Button>
                 </div>
 
+                {/* Day Grids */}
                 <div className="space-y-4">
-                    {next7Days.filter(d => d.events.length > 0).map((day, index) => (
+                    {next7Days.map((day, index) => (
                         <div key={index} className={`py-4 ${index % 2 === 1 ? "bg-muted/30" : ""}`}>
                             <div className="max-w-7xl px-3 sm:px-4 mx-auto">
                                 <div className="flex justify-between items-center mb-3">
-                                    <div className="flex items-center gap-2">
-                                        <CalendarIcon className="h-5 w-5 text-primary" />
-                                        <h3 className="text-lg font-bold text-foreground">{day.displayName} - {day.date}</h3>
-                                        <Badge variant="outline" className="ml-2">{day.events.length} events</Badge>
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <CalendarIcon className="h-5 w-5 text-primary" />
+                                            <h3 className="text-lg font-bold text-foreground">{day.displayName}</h3>
+                                        </div>
+                                        <p className="text-xs text-muted-foreground mt-0.5 flex items-center">
+                                            {day.events.length === 0
+                                                ? "No events scheduled"
+                                                : `${day.events.length} event${day.events.length > 1 ? "s" : ""} scheduled`}
+                                        </p>
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                                    {day.events.map((event: any) => (
-                                        <GridCard
-                                            key={event.id}
-                                            id={event.id}
-                                            href={`/events/${event.id}`}
-                                            image={event.image || '/images/event-placeholder.jpg'}
-                                            imageAlt={event.title}
-                                            badge={event.category}
-                                            title={event.title}
-                                            actions={renderEventActions(event)}
-                                        >
-                                            {renderEventContent(event)}
-                                        </GridCard>
-                                    ))}
+                                    {day.events.length === 0 ? (
+                                        <div className="col-span-full text-center py-8">
+                                            <p className="text-muted-foreground">No events scheduled for this day</p>
+                                        </div>
+                                    ) : (
+                                        day.events.map((event: any) => (
+                                            <GridCard
+                                                key={event.id}
+                                                id={event.id}
+                                                href={`/events/${event.id}`}
+                                                image={event.image || '/images/event-placeholder.jpg'}
+                                                imageAlt={event.title}
+                                                badge={event.category}
+                                                title={event.title}
+                                                actions={renderEventActions(event)}
+                                            >
+                                                {renderEventContent(event)}
+                                            </GridCard>
+                                        ))
+                                    )}
+                                </div>
+
+                                <div className="mt-4 text-center">
+                                    <span className="text-primary text-sm font-medium">Promote your event here</span>
                                 </div>
                             </div>
                         </div>
                     ))}
-                    {next7Days.every(d => d.events.length === 0) && (
-                        <div className="text-center py-12 bg-muted/30 rounded-lg">
-                            <p className="text-muted-foreground">No upcoming events scheduled for the next 7 days.</p>
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

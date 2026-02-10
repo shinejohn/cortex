@@ -1,5 +1,5 @@
 import { Head, router, useForm, usePage } from "@inertiajs/react";
-import { Mic, Upload, X } from "lucide-react";
+import { ArrowLeft, ImagePlus, Mic, Upload, X } from "lucide-react";
 import { useRef, useState } from "react";
 import { SEO } from "@/components/common/seo";
 import DayNewsHeader from "@/components/day-news/day-news-header";
@@ -71,20 +71,31 @@ export default function CreatorRegister() {
         });
     };
 
+    // Existing profile early return
     if (existingProfile) {
         return (
             <LocationProvider>
-                <div className="min-h-screen bg-background">
+                <div className="min-h-screen bg-[#F8F9FB]">
                     <Head title="Creator Profile - Local Voices" />
                     <DayNewsHeader auth={auth} />
-                    <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
-                        <div className="rounded-lg border bg-card p-8 text-center">
-                            <Mic className="mx-auto mb-4 size-12 text-muted-foreground" />
-                            <h2 className="mb-2 text-2xl font-bold">Creator Profile Already Exists</h2>
-                            <p className="mb-4 text-muted-foreground">
-                                Your creator profile "{existingProfile.display_name}" is {existingProfile.status}.
+                    <div className="container mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
+                        <div className="overflow-hidden rounded-2xl border-none bg-white p-12 text-center shadow-sm">
+                            <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-100 to-blue-50">
+                                <Mic className="size-8 text-indigo-400" />
+                            </div>
+                            <h2 className="mb-3 font-display text-2xl font-black tracking-tight text-zinc-900">
+                                Creator Profile Already Exists
+                            </h2>
+                            <p className="mx-auto mb-6 max-w-md text-zinc-500">
+                                Your creator profile "{existingProfile.display_name}" is currently{" "}
+                                <span className="font-bold">{existingProfile.status}</span>.
                             </p>
-                            <Button onClick={() => router.visit(route("daynews.local-voices.dashboard") as any)}>Go to Dashboard</Button>
+                            <Button
+                                onClick={() => router.visit(route("daynews.local-voices.dashboard") as any)}
+                                className="rounded-xl font-bold shadow-lg shadow-primary/20"
+                            >
+                                Go to Dashboard
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -94,7 +105,7 @@ export default function CreatorRegister() {
 
     return (
         <LocationProvider>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen bg-[#F8F9FB]">
                 <Head title="Become a Creator - Local Voices" />
                 <SEO
                     type="website"
@@ -107,22 +118,41 @@ export default function CreatorRegister() {
                 />
                 <DayNewsHeader auth={auth} />
 
-                <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
-                    <h1 className="mb-8 text-4xl font-bold">Become a Creator</h1>
+                <div className="container mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+                    {/* Back navigation */}
+                    <div className="mb-6">
+                        <button
+                            onClick={() => router.visit(route("daynews.local-voices.index") as any)}
+                            className="group inline-flex items-center gap-2 text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900"
+                        >
+                            <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
+                            Back to Local Voices
+                        </button>
+                    </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Page heading */}
+                    <div className="mb-8">
+                        <p className="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-primary">Creator Registration</p>
+                        <h1 className="font-display text-4xl font-black tracking-tight text-zinc-900">Become a Creator</h1>
+                        <p className="mt-3 max-w-xl text-zinc-500">
+                            Share your voice with the community. Fill out the form below to apply as a podcast creator.
+                        </p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-8">
                         {/* Cover Image */}
-                        <div>
-                            <Label>Cover Image (Optional)</Label>
-                            <div className="mt-2">
+                        <div className="overflow-hidden rounded-2xl border-none bg-white p-6 shadow-sm sm:p-8">
+                            <h2 className="mb-4 font-display text-lg font-black tracking-tight text-zinc-900">Cover Image</h2>
+                            <p className="mb-4 text-sm text-zinc-400">This banner will appear at the top of your creator profile.</p>
+                            <div>
                                 {coverPreview ? (
-                                    <div className="relative">
-                                        <img src={coverPreview} alt="Cover preview" className="h-48 w-full rounded-lg border object-cover" />
+                                    <div className="relative overflow-hidden rounded-2xl">
+                                        <img src={coverPreview} alt="Cover preview" className="h-48 w-full object-cover" />
                                         <Button
                                             type="button"
                                             variant="destructive"
                                             size="sm"
-                                            className="absolute right-2 top-2"
+                                            className="absolute right-3 top-3 rounded-full shadow-md"
                                             onClick={() => {
                                                 setCoverPreview(null);
                                                 form.setData("cover_image", null);
@@ -137,84 +167,106 @@ export default function CreatorRegister() {
                                 ) : (
                                     <div
                                         onClick={() => coverInputRef.current?.click()}
-                                        className="flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 transition-colors hover:border-muted-foreground/50"
+                                        className="flex h-40 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-200 bg-zinc-50 transition-all hover:border-primary/40 hover:bg-primary/5"
                                     >
-                                        <Upload className="mb-2 size-8 text-muted-foreground" />
-                                        <p className="text-sm text-muted-foreground">Upload cover image</p>
+                                        <div className="mb-3 flex size-12 items-center justify-center rounded-2xl bg-primary/10">
+                                            <ImagePlus className="size-5 text-primary" />
+                                        </div>
+                                        <p className="font-medium text-zinc-700">Upload cover image</p>
+                                        <p className="mt-1 text-sm text-zinc-400">Recommended: 1200 x 400px</p>
                                     </div>
                                 )}
                                 <input ref={coverInputRef} type="file" accept="image/*" onChange={handleCoverChange} className="hidden" />
                             </div>
                         </div>
 
-                        {/* Avatar */}
-                        <div>
-                            <Label>Profile Picture (Optional)</Label>
-                            <div className="mt-2">
-                                {avatarPreview ? (
-                                    <div className="relative inline-block">
-                                        <img src={avatarPreview} alt="Avatar preview" className="size-32 rounded-full border object-cover" />
-                                        <Button
-                                            type="button"
-                                            variant="destructive"
-                                            size="sm"
-                                            className="absolute right-0 top-0"
-                                            onClick={() => {
-                                                setAvatarPreview(null);
-                                                form.setData("avatar", null);
-                                                if (avatarInputRef.current) {
-                                                    avatarInputRef.current.value = "";
-                                                }
-                                            }}
+                        {/* Avatar + Display Name */}
+                        <div className="overflow-hidden rounded-2xl border-none bg-white p-6 shadow-sm sm:p-8">
+                            <h2 className="mb-6 font-display text-lg font-black tracking-tight text-zinc-900">Profile</h2>
+
+                            <div className="mb-6 flex flex-col items-start gap-6 sm:flex-row">
+                                {/* Avatar upload */}
+                                <div className="shrink-0">
+                                    <Label className="mb-2 block text-sm font-bold text-zinc-700">Profile Picture</Label>
+                                    {avatarPreview ? (
+                                        <div className="relative inline-block">
+                                            <img src={avatarPreview} alt="Avatar preview" className="size-32 rounded-full object-cover ring-4 ring-zinc-100" />
+                                            <Button
+                                                type="button"
+                                                variant="destructive"
+                                                size="sm"
+                                                className="absolute right-0 top-0 rounded-full shadow-md"
+                                                onClick={() => {
+                                                    setAvatarPreview(null);
+                                                    form.setData("avatar", null);
+                                                    if (avatarInputRef.current) {
+                                                        avatarInputRef.current.value = "";
+                                                    }
+                                                }}
+                                            >
+                                                <X className="size-3" />
+                                            </Button>
+                                        </div>
+                                    ) : (
+                                        <div
+                                            onClick={() => avatarInputRef.current?.click()}
+                                            className="flex size-32 cursor-pointer flex-col items-center justify-center rounded-full border-2 border-dashed border-zinc-200 bg-zinc-50 transition-all hover:border-primary/40 hover:bg-primary/5"
                                         >
-                                            <X className="size-4" />
-                                        </Button>
+                                            <Upload className="size-6 text-zinc-400" />
+                                        </div>
+                                    )}
+                                    <input ref={avatarInputRef} type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
+                                </div>
+
+                                {/* Display Name + Bio */}
+                                <div className="flex-1 space-y-6">
+                                    <div>
+                                        <Label htmlFor="display_name" className="text-sm font-bold text-zinc-700">
+                                            Display Name <span className="text-destructive">*</span>
+                                        </Label>
+                                        <Input
+                                            id="display_name"
+                                            value={form.data.display_name}
+                                            onChange={(e) => form.setData("display_name", e.target.value)}
+                                            className="mt-2 h-12 border-none bg-zinc-50 ring-1 ring-zinc-200 focus:ring-2 focus:ring-primary"
+                                            placeholder="Your creator name"
+                                            required
+                                        />
+                                        {form.errors.display_name && (
+                                            <p className="mt-1.5 text-sm font-medium text-destructive">{form.errors.display_name}</p>
+                                        )}
                                     </div>
-                                ) : (
-                                    <div
-                                        onClick={() => avatarInputRef.current?.click()}
-                                        className="flex h-32 w-32 cursor-pointer flex-col items-center justify-center rounded-full border-2 border-dashed border-muted-foreground/25 transition-colors hover:border-muted-foreground/50"
-                                    >
-                                        <Upload className="size-8 text-muted-foreground" />
+
+                                    <div>
+                                        <Label htmlFor="bio" className="text-sm font-bold text-zinc-700">
+                                            Bio
+                                        </Label>
+                                        <Textarea
+                                            id="bio"
+                                            value={form.data.bio}
+                                            onChange={(e) => form.setData("bio", e.target.value)}
+                                            className="mt-2 min-h-[120px] border-none bg-zinc-50 ring-1 ring-zinc-200 focus:ring-2 focus:ring-primary"
+                                            rows={6}
+                                            placeholder="Tell listeners about yourself and your podcast..."
+                                        />
+                                        {form.errors.bio && (
+                                            <p className="mt-1.5 text-sm font-medium text-destructive">{form.errors.bio}</p>
+                                        )}
                                     </div>
-                                )}
-                                <input ref={avatarInputRef} type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
+                                </div>
                             </div>
                         </div>
 
-                        {/* Display Name */}
-                        <div>
-                            <Label htmlFor="display_name">Display Name *</Label>
-                            <Input
-                                id="display_name"
-                                value={form.data.display_name}
-                                onChange={(e) => form.setData("display_name", e.target.value)}
-                                className="mt-2"
-                                required
-                            />
-                            {form.errors.display_name && <p className="mt-1 text-sm text-destructive">{form.errors.display_name}</p>}
-                        </div>
-
-                        {/* Bio */}
-                        <div>
-                            <Label htmlFor="bio">Bio</Label>
-                            <Textarea
-                                id="bio"
-                                value={form.data.bio}
-                                onChange={(e) => form.setData("bio", e.target.value)}
-                                className="mt-2"
-                                rows={6}
-                                placeholder="Tell listeners about yourself and your podcast..."
-                            />
-                            {form.errors.bio && <p className="mt-1 text-sm text-destructive">{form.errors.bio}</p>}
-                        </div>
-
                         {/* Social Links */}
-                        <div className="rounded-lg border bg-muted p-4">
-                            <h3 className="mb-4 font-semibold">Social Media Links (Optional)</h3>
-                            <div className="space-y-4">
+                        <div className="overflow-hidden rounded-2xl border-none bg-white p-6 shadow-sm sm:p-8">
+                            <h2 className="mb-2 font-display text-lg font-black tracking-tight text-zinc-900">Social Media Links</h2>
+                            <p className="mb-6 text-sm text-zinc-400">Optional - help listeners find you elsewhere on the web.</p>
+
+                            <div className="grid gap-6 sm:grid-cols-2">
                                 <div>
-                                    <Label htmlFor="twitter">Twitter/X</Label>
+                                    <Label htmlFor="twitter" className="text-sm font-bold text-zinc-700">
+                                        Twitter/X
+                                    </Label>
                                     <Input
                                         id="twitter"
                                         type="url"
@@ -225,12 +277,14 @@ export default function CreatorRegister() {
                                                 twitter: e.target.value,
                                             })
                                         }
-                                        className="mt-2"
+                                        className="mt-2 h-12 border-none bg-zinc-50 ring-1 ring-zinc-200 focus:ring-2 focus:ring-primary"
                                         placeholder="https://twitter.com/yourhandle"
                                     />
                                 </div>
                                 <div>
-                                    <Label htmlFor="instagram">Instagram</Label>
+                                    <Label htmlFor="instagram" className="text-sm font-bold text-zinc-700">
+                                        Instagram
+                                    </Label>
                                     <Input
                                         id="instagram"
                                         type="url"
@@ -241,12 +295,14 @@ export default function CreatorRegister() {
                                                 instagram: e.target.value,
                                             })
                                         }
-                                        className="mt-2"
+                                        className="mt-2 h-12 border-none bg-zinc-50 ring-1 ring-zinc-200 focus:ring-2 focus:ring-primary"
                                         placeholder="https://instagram.com/yourhandle"
                                     />
                                 </div>
                                 <div>
-                                    <Label htmlFor="facebook">Facebook</Label>
+                                    <Label htmlFor="facebook" className="text-sm font-bold text-zinc-700">
+                                        Facebook
+                                    </Label>
                                     <Input
                                         id="facebook"
                                         type="url"
@@ -257,12 +313,14 @@ export default function CreatorRegister() {
                                                 facebook: e.target.value,
                                             })
                                         }
-                                        className="mt-2"
+                                        className="mt-2 h-12 border-none bg-zinc-50 ring-1 ring-zinc-200 focus:ring-2 focus:ring-primary"
                                         placeholder="https://facebook.com/yourpage"
                                     />
                                 </div>
                                 <div>
-                                    <Label htmlFor="youtube">YouTube</Label>
+                                    <Label htmlFor="youtube" className="text-sm font-bold text-zinc-700">
+                                        YouTube
+                                    </Label>
                                     <Input
                                         id="youtube"
                                         type="url"
@@ -273,7 +331,7 @@ export default function CreatorRegister() {
                                                 youtube: e.target.value,
                                             })
                                         }
-                                        className="mt-2"
+                                        className="mt-2 h-12 border-none bg-zinc-50 ring-1 ring-zinc-200 focus:ring-2 focus:ring-primary"
                                         placeholder="https://youtube.com/@yourchannel"
                                     />
                                 </div>
@@ -282,9 +340,9 @@ export default function CreatorRegister() {
 
                         {/* Error Display */}
                         {Object.keys(form.errors).length > 0 && (
-                            <div className="rounded-lg border border-destructive bg-destructive/10 p-4">
-                                <p className="mb-2 font-semibold text-destructive">Please fix the following errors:</p>
-                                <ul className="list-disc list-inside space-y-1 text-sm text-destructive">
+                            <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-5">
+                                <p className="mb-2 font-bold text-destructive">Please fix the following errors:</p>
+                                <ul className="list-inside list-disc space-y-1 text-sm text-destructive">
                                     {Object.entries(form.errors).map(([field, error]) => (
                                         <li key={field}>
                                             <strong>{field}:</strong> {error as string}
@@ -295,16 +353,26 @@ export default function CreatorRegister() {
                         )}
 
                         {/* Submit */}
-                        <div className="flex gap-4">
-                            <Button type="submit" disabled={form.processing}>
+                        <div className="flex items-center gap-4">
+                            <Button
+                                type="submit"
+                                disabled={form.processing}
+                                className="rounded-xl px-8 py-3 font-bold shadow-lg shadow-primary/20"
+                            >
                                 <Mic className={`mr-2 size-4 ${form.processing ? "animate-spin" : ""}`} />
                                 {form.processing ? "Submitting..." : "Submit Application"}
                             </Button>
-                            <Button type="button" variant="outline" onClick={() => router.visit(route("daynews.local-voices.index") as any)} disabled={form.processing}>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => router.visit(route("daynews.local-voices.index") as any)}
+                                disabled={form.processing}
+                                className="rounded-xl"
+                            >
                                 Cancel
                             </Button>
                         </div>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-zinc-400">
                             Your application will be reviewed before approval. You'll be notified once your creator profile is approved.
                         </p>
                     </form>

@@ -1,5 +1,6 @@
 import { Head, router } from "@inertiajs/react";
-import { FilterIcon, StarIcon, TrophyIcon } from "lucide-react";
+import { Filter, Star, TrophyIcon } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface DowntownGuideAchievementsIndexProps {
@@ -30,40 +31,31 @@ export default function DowntownGuideAchievementsIndex({ achievements, userAchie
         router.get(route("downtown-guide.achievements.index"), { ...filters, [key]: value || undefined }, { preserveState: true });
     };
 
-    const rarityColors = {
-        common: "border bg-muted/50",
-        rare: "border-primary/20 bg-accent/50",
-        epic: "border bg-accent/50",
-        legendary: "border-yellow-200 bg-yellow-50",
-    };
-
     return (
         <>
             <Head title="Achievements - DowntownsGuide" />
 
-            <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
-                {/* Header */}
-                <div className="border-b-4 border-purple-600 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600">
-                    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-                        <div className="flex items-center gap-4">
-                            <div className="rounded-xl bg-card/20 p-3 backdrop-blur-sm">
-                                <TrophyIcon className="h-10 w-10 text-white" />
+            <div className="min-h-screen bg-background">
+                <main className="container mx-auto px-4 py-8">
+                    {/* Header */}
+                    <div className="mb-8">
+                        <div className="flex items-center gap-3">
+                            <div className="flex size-12 items-center justify-center rounded-xl bg-primary/10">
+                                <TrophyIcon className="size-6 text-primary" />
                             </div>
                             <div>
-                                <h1 className="text-4xl font-bold text-white">Achievements</h1>
-                                <p className="mt-2 text-xl text-purple-100">Unlock achievements and earn rewards</p>
+                                <h1 className="font-display text-3xl font-black tracking-tight">Achievements</h1>
+                                <p className="text-muted-foreground">Unlock achievements and earn rewards</p>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                     {/* Filters */}
-                    <div className="mb-6 rounded-xl border-2 border bg-card p-6 shadow-lg">
+                    <div className="mb-6 rounded-lg border bg-card p-4">
                         <div className="flex flex-wrap items-center gap-4">
                             <div className="flex items-center gap-2">
-                                <FilterIcon className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-sm font-medium text-foreground">Filter:</span>
+                                <Filter className="h-4 w-4 text-muted-foreground" />
+                                <span className="text-sm font-medium">Filter:</span>
                             </div>
                             <Select value={filters.category || "all"} onValueChange={(value) => handleFilterChange("category", value)}>
                                 <SelectTrigger className="w-40">
@@ -100,64 +92,66 @@ export default function DowntownGuideAchievementsIndex({ achievements, userAchie
                                 const userAchievement = userAchievements.find((ua) => ua.achievement_id === achievement.id);
 
                                 return (
-                                    <div
+                                    <Card
                                         key={achievement.id}
-                                        className={`rounded-xl border-2 p-6 shadow-lg transition-all ${
-                                            isUnlocked
-                                                ? rarityColors[achievement.rarity as keyof typeof rarityColors] || "border bg-accent/50"
-                                                : "border bg-card opacity-60"
+                                        className={`overflow-hidden border-none shadow-sm transition-all hover:shadow-md ${
+                                            isUnlocked ? "" : "opacity-60"
                                         }`}
                                     >
-                                        <div className="mb-4 flex items-start justify-between">
-                                            <div className="flex-1">
-                                                {achievement.icon ? (
-                                                    <div className="mb-2 text-4xl">{achievement.icon}</div>
-                                                ) : (
-                                                    <TrophyIcon className="mb-2 h-8 w-8 text-primary" />
-                                                )}
-                                                <h3 className="text-lg font-bold text-foreground">{achievement.name}</h3>
-                                                {achievement.description && (
-                                                    <p className="mt-2 text-sm text-muted-foreground">{achievement.description}</p>
+                                        <CardContent className="p-6">
+                                            <div className="mb-4 flex items-start justify-between">
+                                                <div className="flex-1">
+                                                    {achievement.icon ? (
+                                                        <div className="mb-2 text-4xl">{achievement.icon}</div>
+                                                    ) : (
+                                                        <TrophyIcon className="mb-2 h-8 w-8 text-primary" />
+                                                    )}
+                                                    <h3 className="text-lg font-bold">{achievement.name}</h3>
+                                                    {achievement.description && (
+                                                        <p className="mt-2 text-sm text-muted-foreground">{achievement.description}</p>
+                                                    )}
+                                                </div>
+                                                {isUnlocked && (
+                                                    <div className="flex size-8 items-center justify-center rounded-full bg-green-100">
+                                                        <Star className="size-4 fill-green-500 text-green-500" />
+                                                    </div>
                                                 )}
                                             </div>
-                                            {isUnlocked && (
-                                                <div className="rounded-full bg-green-100 p-2">
-                                                    <StarIcon className="h-5 w-5 fill-green-500 text-green-500" />
-                                                </div>
-                                            )}
-                                        </div>
 
-                                        <div className="mt-4 flex items-center justify-between border-t border pt-4">
-                                            {achievement.points !== undefined && (
-                                                <div className="flex items-center gap-1">
-                                                    <StarIcon className="h-4 w-4 text-yellow-400" />
-                                                    <span className="text-sm font-medium text-foreground">{achievement.points} points</span>
-                                                </div>
-                                            )}
-                                            {achievement.rarity && (
-                                                <span className="rounded-full bg-accent px-2 py-1 text-xs font-medium capitalize text-primary">
-                                                    {achievement.rarity}
-                                                </span>
-                                            )}
-                                        </div>
+                                            <div className="mt-4 flex items-center justify-between border-t pt-4">
+                                                {achievement.points !== undefined && (
+                                                    <div className="flex items-center gap-1">
+                                                        <Star className="h-4 w-4 text-yellow-400" />
+                                                        <span className="text-sm font-medium">{achievement.points} points</span>
+                                                    </div>
+                                                )}
+                                                {achievement.rarity && (
+                                                    <span className="rounded-full bg-muted px-2 py-1 text-xs font-medium capitalize text-primary">
+                                                        {achievement.rarity}
+                                                    </span>
+                                                )}
+                                            </div>
 
-                                        {isUnlocked && userAchievement?.unlocked_at && (
-                                            <p className="mt-2 text-xs text-muted-foreground">
-                                                Unlocked {new Date(userAchievement.unlocked_at).toLocaleDateString()}
-                                            </p>
-                                        )}
-                                    </div>
+                                            {isUnlocked && userAchievement?.unlocked_at && (
+                                                <p className="mt-2 text-xs text-muted-foreground">
+                                                    Unlocked {new Date(userAchievement.unlocked_at).toLocaleDateString()}
+                                                </p>
+                                            )}
+                                        </CardContent>
+                                    </Card>
                                 );
                             })}
                         </div>
                     ) : (
-                        <div className="rounded-xl border-2 border-dashed border bg-gradient-to-br from-purple-50 to-pink-50 p-12 text-center">
-                            <TrophyIcon className="mx-auto h-12 w-12 text-purple-400" />
-                            <p className="mt-4 text-lg font-bold text-foreground">No achievements found</p>
-                            <p className="mt-2 text-sm text-muted-foreground">Try adjusting your filters</p>
+                        <div className="flex min-h-[40vh] items-center justify-center">
+                            <div className="text-center">
+                                <TrophyIcon className="mx-auto mb-4 size-16 text-muted-foreground" />
+                                <h3 className="mb-2 text-xl font-bold">No achievements found</h3>
+                                <p className="text-muted-foreground">Try adjusting your filters</p>
+                            </div>
                         </div>
                     )}
-                </div>
+                </main>
             </div>
         </>
     );

@@ -227,10 +227,10 @@ function LocationSelector() {
             </Button>
 
             {isOpen && (
-                <div className="absolute left-0 top-full z-50 mt-2 w-72 rounded-lg border bg-popover shadow-lg">
+                <div className="absolute left-0 top-full z-50 mt-2 w-72 rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
                     <div className="p-3">
                         <div className="relative">
-                            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
                             <Input
                                 type="text"
                                 value={query}
@@ -242,7 +242,7 @@ function LocationSelector() {
                         </div>
                     </div>
 
-                    <div className="border-t">
+                    <div className="border-t border-gray-200 dark:border-gray-700">
                         <Button
                             type="button"
                             variant="ghost"
@@ -256,7 +256,7 @@ function LocationSelector() {
                     </div>
 
                     {results.length > 0 && (
-                        <div className="max-h-60 overflow-y-auto border-t">
+                        <div className="max-h-60 overflow-y-auto border-t border-gray-200 dark:border-gray-700">
                             {results.map((region) => (
                                 <Button
                                     key={region.id}
@@ -274,7 +274,9 @@ function LocationSelector() {
                     )}
 
                     {query.length >= 2 && results.length === 0 && (
-                        <div className="border-t p-4 text-center text-sm text-muted-foreground">No locations found for "{query}"</div>
+                        <div className="border-t border-gray-200 p-4 text-center text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400">
+                            No locations found for "{query}"
+                        </div>
                     )}
                 </div>
             )}
@@ -488,7 +490,7 @@ function HeaderContent({ auth }: HeaderProps) {
             {/* Desktop Header */}
             <div className="hidden lg:block">
                 {/* Top Row - Logo, Location, and User Actions */}
-                <div className="container mx-auto px-4">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         {/* Left Section */}
                         <div className="flex items-center gap-6">
@@ -590,7 +592,7 @@ function HeaderContent({ auth }: HeaderProps) {
                                         <Button variant="ghost" className="size-10 rounded-full p-1">
                                             <Avatar className="size-8 overflow-hidden rounded-full">
                                                 <AvatarImage src={auth.user?.avatar} alt={auth.user?.name || 'User'} />
-                                                <AvatarFallback className="rounded-lg bg-muted text-foreground">
+                                                <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
                                                     {auth.user?.name ? getUserInitials(auth.user.name) : 'U'}
                                                 </AvatarFallback>
                                             </Avatar>

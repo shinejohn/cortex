@@ -61,7 +61,7 @@ export default function HubBuilder() {
             <Header auth={auth} />
 
             {/* Header */}
-            <div className="bg-card border-b border">
+            <div className="bg-card border-b border-border">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center">
@@ -119,7 +119,7 @@ export default function HubBuilder() {
                                 <p className="text-muted-foreground mb-4">Configure which sections appear on your hub.</p>
                                 <div className="space-y-4">
                                     {hub.sections.map((section) => (
-                                        <div key={section.id} className="flex items-center justify-between p-4 border rounded-lg">
+                                        <div key={section.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
                                             <div>
                                                 <div className="font-medium">{section.title}</div>
                                                 <div className="text-sm text-muted-foreground">{section.type}</div>

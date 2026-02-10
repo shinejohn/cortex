@@ -84,32 +84,28 @@ interface TagPageProps {
 }
 
 export default function TagPage() {
-    const { tag, content, isFollowing: initialFollowing } = usePage<TagPageProps>().props;
+    const { auth, tag, content, isFollowing: initialFollowing } = usePage<TagPageProps>().props;
     const [isFollowing, setIsFollowing] = useState(initialFollowing);
 
-    const handleFollow = async () => {
-        try {
-            const response = await fetch(`/api/follow/toggle`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "",
+    const handleFollow = () => {
+        router.post(
+            `/api/follow/toggle`,
+            {
+                followable_type: "tag",
+                followable_id: tag.id,
+            },
+            {
+                preserveScroll: true,
+                onSuccess: (page: any) => {
+                    setIsFollowing(!isFollowing);
                 },
-                body: JSON.stringify({
-                    followable_type: "tag",
-                    followable_id: tag.id,
-                }),
-            });
-            const data = await response.json();
-            setIsFollowing(data.following);
-        } catch (error) {
-            console.error("Error toggling follow:", error);
-        }
+            },
+        );
     };
 
     return (
         <LocationProvider>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen bg-gray-50">
                 <Head title={`${tag.name} - Day News`} />
                 <SEO
                     type="website"
@@ -122,53 +118,74 @@ export default function TagPage() {
                 />
                 <DayNewsHeader auth={auth} />
 
-                <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                     {/* Tag Header */}
-                    <div className="mb-8">
+                    <div className="mb-8 overflow-hidden rounded-lg border-none bg-white p-6 shadow-sm">
                         <div className="flex items-start justify-between">
                             <div className="flex-1">
                                 <div className="mb-4 flex items-center gap-3">
-                                    <Hash className="size-8 text-primary" />
-                                    <h1 className="text-4xl font-bold">{tag.name}</h1>
+                                    <Hash className="size-8 text-indigo-600" />
+                                    <h1 className="font-display text-3xl font-black tracking-tight text-gray-900">
+                                        {tag.name}
+                                    </h1>
                                     {tag.is_trending && (
-                                        <Badge variant="destructive" className="flex items-center gap-1">
+                                        <Badge className="flex items-center gap-1 bg-red-100 text-red-700">
                                             <TrendingUp className="size-3" />
                                             Trending
                                         </Badge>
                                     )}
                                 </div>
-                                <p className="mb-4 text-lg text-muted-foreground">{tag.description}</p>
-                                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                                    <div className="flex items-center gap-1">
-                                        <Users className="size-4" />
-                                        {tag.followers} followers
+                                <p className="mb-4 text-lg text-gray-600">{tag.description}</p>
+                                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                                    <div className="flex items-center gap-1.5">
+                                        <Users className="size-4 text-indigo-600" />
+                                        <span className="font-medium text-gray-900">
+                                            {tag.followers?.toLocaleString() ?? 0}
+                                        </span>{" "}
+                                        followers
                                     </div>
-                                    <div className="flex items-center gap-1">
-                                        <FileText className="size-4" />
-                                        {tag.article_count} articles
+                                    <div className="flex items-center gap-1.5">
+                                        <FileText className="size-4 text-indigo-600" />
+                                        <span className="font-medium text-gray-900">
+                                            {tag.article_count?.toLocaleString() ?? 0}
+                                        </span>{" "}
+                                        articles
                                     </div>
                                     {tag.is_trending && (
-                                        <div className="flex items-center gap-1">
-                                            <TrendingUp className="size-4" />
-                                            Score: {tag.trending_score}
+                                        <div className="flex items-center gap-1.5">
+                                            <TrendingUp className="size-4 text-indigo-600" />
+                                            Score:{" "}
+                                            <span className="font-medium text-gray-900">
+                                                {tag.trending_score}
+                                            </span>
                                         </div>
                                     )}
                                 </div>
                             </div>
-                            <Button onClick={handleFollow} variant={isFollowing ? "outline" : "default"}>
+                            <Button
+                                onClick={handleFollow}
+                                className={
+                                    isFollowing
+                                        ? "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+                                        : "bg-indigo-600 text-white hover:bg-indigo-700"
+                                }
+                            >
                                 {isFollowing ? "Following" : "Follow"}
                             </Button>
                         </div>
                     </div>
 
                     <div className="grid gap-8 lg:grid-cols-3">
-                        {/* Main Content */}
+                        {/* Main Content Stream - 2 columns */}
                         <div className="lg:col-span-2">
-                            <h2 className="mb-4 border-b-2 border-border pb-2 font-serif text-2xl font-bold">Content</h2>
+                            <h2 className="mb-4 border-b-2 border-gray-200 pb-2 font-display text-xl font-black tracking-tight text-gray-900">
+                                Content
+                            </h2>
                             <div className="space-y-6">
                                 {content.length === 0 ? (
-                                    <div className="py-12 text-center text-muted-foreground">
-                                        <p>No content found for this tag.</p>
+                                    <div className="overflow-hidden rounded-lg border-none bg-white py-12 text-center shadow-sm">
+                                        <FileText className="mx-auto mb-3 size-10 text-gray-400" />
+                                        <p className="text-gray-500">No content found for this tag.</p>
                                     </div>
                                 ) : (
                                     content.map((item) => (
@@ -200,14 +217,16 @@ export default function TagPage() {
                         <aside className="space-y-6">
                             {/* Related Tags */}
                             {tag.related_tags.length > 0 && (
-                                <div>
-                                    <h3 className="mb-4 border-b border-border pb-2 font-serif text-xl font-bold">Related Tags</h3>
+                                <div className="overflow-hidden rounded-lg border-none bg-white p-6 shadow-sm">
+                                    <h3 className="mb-4 border-b border-gray-200 pb-2 font-display text-lg font-black tracking-tight text-gray-900">
+                                        Related Tags
+                                    </h3>
                                     <div className="flex flex-wrap gap-2">
                                         {tag.related_tags.map((relatedTag) => (
                                             <Badge
                                                 key={relatedTag.id}
                                                 variant="outline"
-                                                className="cursor-pointer hover:bg-primary/10"
+                                                className="cursor-pointer border-gray-200 text-gray-700 transition-colors hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600"
                                                 onClick={() => router.visit(`/tag/${relatedTag.slug}`)}
                                             >
                                                 {relatedTag.name}
@@ -219,19 +238,32 @@ export default function TagPage() {
 
                             {/* Top Contributors */}
                             {tag.top_contributors.length > 0 && (
-                                <div>
-                                    <h3 className="mb-4 border-b border-border pb-2 font-serif text-xl font-bold">Top Contributors</h3>
+                                <div className="overflow-hidden rounded-lg border-none bg-white p-6 shadow-sm">
+                                    <h3 className="mb-4 border-b border-gray-200 pb-2 font-display text-lg font-black tracking-tight text-gray-900">
+                                        Top Contributors
+                                    </h3>
                                     <div className="space-y-3">
                                         {tag.top_contributors.map((contributor) => (
-                                            <div key={contributor.id} className="flex items-center gap-3">
+                                            <div
+                                                key={contributor.id}
+                                                className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-indigo-50/50"
+                                            >
                                                 <Avatar className="size-10">
-                                                    <AvatarImage src={contributor.avatar || undefined} alt={contributor.name} />
-                                                    <AvatarFallback>{contributor.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                                                    <AvatarImage
+                                                        src={contributor.avatar || undefined}
+                                                        alt={contributor.name}
+                                                    />
+                                                    <AvatarFallback className="bg-indigo-100 text-indigo-700">
+                                                        {contributor.name.slice(0, 2).toUpperCase()}
+                                                    </AvatarFallback>
                                                 </Avatar>
                                                 <div className="flex-1">
-                                                    <div className="font-semibold">{contributor.name}</div>
-                                                    <div className="text-sm text-muted-foreground">
-                                                        {contributor.articles} articles • {contributor.followers} followers
+                                                    <div className="font-semibold text-gray-900">
+                                                        {contributor.name}
+                                                    </div>
+                                                    <div className="text-sm text-gray-500">
+                                                        {contributor.articles} articles *{" "}
+                                                        {contributor.followers} followers
                                                     </div>
                                                 </div>
                                             </div>
@@ -240,18 +272,49 @@ export default function TagPage() {
                                 </div>
                             )}
 
-                            {/* Analytics */}
-                            {tag.analytics.peak_times.length > 0 && (
-                                <div>
-                                    <h3 className="mb-4 border-b border-border pb-2 font-serif text-xl font-bold">Peak Times</h3>
+                            {/* Peak Times / Analytics */}
+                            {tag.analytics?.peak_times?.length > 0 && (
+                                <div className="overflow-hidden rounded-lg border-none bg-white p-6 shadow-sm">
+                                    <h3 className="mb-4 border-b border-gray-200 pb-2 font-display text-lg font-black tracking-tight text-gray-900">
+                                        Peak Times
+                                    </h3>
                                     <div className="space-y-2">
                                         {tag.analytics.peak_times.map((peak, index) => (
-                                            <div key={index} className="flex items-center justify-between text-sm">
+                                            <div
+                                                key={index}
+                                                className="flex items-center justify-between rounded-lg p-2 text-sm hover:bg-gray-50"
+                                            >
                                                 <div>
-                                                    <div className="font-medium">{peak.day}</div>
-                                                    <div className="text-muted-foreground">{peak.time}</div>
+                                                    <div className="font-medium text-gray-900">{peak.day}</div>
+                                                    <div className="text-gray-500">{peak.time}</div>
                                                 </div>
-                                                <Badge variant="secondary">{peak.score}</Badge>
+                                                <Badge className="bg-indigo-100 text-indigo-700">
+                                                    {peak.score}
+                                                </Badge>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Related Events */}
+                            {tag.analytics?.related_events?.length > 0 && (
+                                <div className="overflow-hidden rounded-lg border-none bg-white p-6 shadow-sm">
+                                    <h3 className="mb-4 border-b border-gray-200 pb-2 font-display text-lg font-black tracking-tight text-gray-900">
+                                        Related Events
+                                    </h3>
+                                    <div className="space-y-3">
+                                        {tag.analytics.related_events.map((event) => (
+                                            <div
+                                                key={event.id}
+                                                className="rounded-lg border border-gray-100 p-3 transition-colors hover:border-indigo-200 hover:bg-indigo-50/30"
+                                            >
+                                                <div className="font-medium text-gray-900">{event.name}</div>
+                                                <div className="mt-1 flex items-center gap-2 text-xs text-gray-500">
+                                                    <Calendar className="size-3" />
+                                                    {new Date(event.date).toLocaleDateString()}
+                                                    {event.location && <span>* {event.location}</span>}
+                                                </div>
                                             </div>
                                         ))}
                                     </div>

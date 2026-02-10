@@ -147,7 +147,7 @@ export default function VenuesPage() {
             {/* Page Title */}
             <div className="py-6 sm:py-8 bg-background">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Venues</h1>
+                    <h1 className="font-display text-2xl sm:text-3xl font-black tracking-tight text-foreground">Venues</h1>
                 </div>
             </div>
 
@@ -155,7 +155,7 @@ export default function VenuesPage() {
             <div className="max-w-7xl mx-auto px-3 sm:px-4 pb-8">
                 <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
                     {/* Filters Section */}
-                    <aside className={cn("w-full lg:w-80 lg:flex-shrink-0 transition-all duration-200", showFilters ? "block" : "hidden lg:block")}>
+                    <aside className={cn("w-full lg:w-80 lg:shrink-0 transition-all duration-200", showFilters ? "block" : "hidden lg:block")}>
                         <div className="lg:sticky lg:top-4">
                             <FilterSidebar filters={currentFilters} onFilterChange={handleFilterChange} onClearFilters={clearAllFilters} />
                         </div>

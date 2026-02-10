@@ -26,9 +26,9 @@ export default function WorkspaceInvitation({ invitation, userExists, loginUrl, 
             case "owner":
                 return <Crown className="h-3 w-3 text-yellow-600" />;
             case "admin":
-                return <Shield className="h-3 w-3 text-primary" />;
+                return <Shield className="h-3 w-3 text-blue-600" />;
             default:
-                return <User className="h-3 w-3 text-muted-foreground" />;
+                return <User className="h-3 w-3 text-gray-600" />;
         }
     };
 
@@ -53,10 +53,10 @@ export default function WorkspaceInvitation({ invitation, userExists, loginUrl, 
             <div className="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a] dark:text-[#EDEDEC]">
                 <div className="flex w-full items-center justify-center opacity-100 transition-opacity duration-750">
                     <main className="flex w-full max-w-md flex-col">
-                        <div className="rounded-lg bg-card p-6 text-[13px] leading-[20px] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:bg-[#161615] dark:text-[#EDEDEC] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]">
+                        <div className="rounded-lg bg-white p-6 text-[13px] leading-[20px] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:bg-[#161615] dark:text-[#EDEDEC] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]">
                             {/* Invitation Header */}
                             <div className="text-center mb-6">
-                                <div className="mx-auto h-12 w-12 bg-[#f53003] bg-opacity-10 rounded-full flex items-center justify-center mb-4 dark:bg-[#FF4433] dark:bg-opacity-10">
+                                <div className="mx-auto h-12 w-12 bg-[#f53003]/10 rounded-full flex items-center justify-center mb-4 dark:bg-[#FF4433]/10">
                                     <Users className="h-6 w-6 text-[#f53003] dark:text-[#FF4433]" />
                                 </div>
                                 <h1 className="text-xl font-medium text-[#1b1b18] dark:text-[#EDEDEC] mb-1">You're Invited!</h1>
@@ -106,7 +106,7 @@ export default function WorkspaceInvitation({ invitation, userExists, loginUrl, 
                                 <div className="space-y-3">
                                     <Button
                                         asChild
-                                        className="w-full bg-[#1b1b18] text-white hover:bg-black dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-card"
+                                        className="w-full bg-[#1b1b18] text-white hover:bg-black dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white"
                                     >
                                         <Link href={loginUrl}>{userExists ? "Sign In & Join Workspace" : "I have an account"}</Link>
                                     </Button>
@@ -115,7 +115,7 @@ export default function WorkspaceInvitation({ invitation, userExists, loginUrl, 
                                         <Button
                                             asChild
                                             variant="outline"
-                                            className="w-full border-[#e3e3e0] bg-card text-[#1b1b18] hover:bg-[#f8f8f7] dark:border-[#3E3E3A] dark:bg-[#161615] dark:text-[#EDEDEC] dark:hover:bg-[#1C1C1A]"
+                                            className="w-full border-[#e3e3e0] bg-white text-[#1b1b18] hover:bg-[#f8f8f7] dark:border-[#3E3E3A] dark:bg-[#161615] dark:text-[#EDEDEC] dark:hover:bg-[#1C1C1A]"
                                         >
                                             <Link href={registerUrl}>Create Account & Join Workspace</Link>
                                         </Button>

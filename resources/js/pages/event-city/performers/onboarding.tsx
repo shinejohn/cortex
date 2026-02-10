@@ -60,10 +60,12 @@ export default function PerformerOnboarding() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-primary text-white py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="relative bg-primary text-white py-16 overflow-hidden">
+                <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center">
-                        <h1 className="text-4xl font-extrabold sm:text-5xl">Grow Your Performance Career</h1>
+                        <h1 className="font-display text-4xl font-black tracking-tight sm:text-5xl">Grow Your Performance Career</h1>
                         <p className="mt-6 text-xl max-w-3xl mx-auto">
                             GoEventCity connects performers with venues, events, and fans to help you book more gigs, grow your audience, and increase
                             your income.
@@ -122,7 +124,7 @@ export default function PerformerOnboarding() {
                         <CardContent>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                                 <div className="flex">
-                                    <div className="flex-shrink-0">
+                                    <div className="shrink-0">
                                         <div className="flex items-center justify-center h-12 w-12 rounded-md bg-accent text-primary">
                                             <Calendar className="h-6 w-6" />
                                         </div>
@@ -135,7 +137,7 @@ export default function PerformerOnboarding() {
                                     </div>
                                 </div>
                                 <div className="flex">
-                                    <div className="flex-shrink-0">
+                                    <div className="shrink-0">
                                         <div className="flex items-center justify-center h-12 w-12 rounded-md bg-accent text-primary">
                                             <Users className="h-6 w-6" />
                                         </div>
@@ -148,7 +150,7 @@ export default function PerformerOnboarding() {
                                     </div>
                                 </div>
                                 <div className="flex">
-                                    <div className="flex-shrink-0">
+                                    <div className="shrink-0">
                                         <div className="flex items-center justify-center h-12 w-12 rounded-md bg-accent text-primary">
                                             <DollarSign className="h-6 w-6" />
                                         </div>

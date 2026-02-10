@@ -59,10 +59,12 @@ export default function SubmitVenue() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-primary text-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="relative bg-primary text-white overflow-hidden">
+                <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
                     <div className="text-center">
-                        <h1 className="text-4xl font-extrabold sm:text-5xl">List Your Venue</h1>
+                        <h1 className="font-display text-4xl font-black tracking-tight sm:text-5xl">List Your Venue</h1>
                         <p className="mt-4 text-xl text-indigo-100 max-w-3xl mx-auto">
                             Reach thousands of event organizers and performers looking for the perfect space.
                         </p>

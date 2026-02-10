@@ -151,13 +151,13 @@ export default function GroupPosts({ group, posts }: Props) {
                                 Back to {group.name}
                             </Button>
                         </Link>
-                        <h1 className="text-3xl font-bold text-foreground">{group.name}</h1>
+                        <h1 className="text-3xl font-display font-black tracking-tight text-foreground">{group.name}</h1>
                         <p className="text-muted-foreground mt-1">Group Posts</p>
                     </div>
 
                     {/* Create post form */}
                     {isMember && (
-                        <Card className="mb-6">
+                        <Card className="mb-6 border-none shadow-sm">
                             <CardContent className="p-6">
                                 {!showCreateForm ? (
                                     <Button variant="outline" className="w-full justify-start" onClick={() => setShowCreateForm(true)}>
@@ -201,7 +201,7 @@ export default function GroupPosts({ group, posts }: Props) {
                     <div className="space-y-6">
                         {posts.data.length > 0 ? (
                             posts.data.map((post) => (
-                                <Card key={post.id}>
+                                <Card key={post.id} className="border-none shadow-sm hover:shadow-md transition-shadow">
                                     <CardHeader className="pb-4">
                                         <div className="flex items-start justify-between">
                                             <div className="flex items-center gap-3">
@@ -276,7 +276,7 @@ export default function GroupPosts({ group, posts }: Props) {
                                 </Card>
                             ))
                         ) : (
-                            <Card>
+                            <Card className="border-none shadow-sm">
                                 <CardContent className="p-8 text-center">
                                     <MessageSquareIcon className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                                     <h3 className="text-lg font-medium mb-2">No posts yet</h3>

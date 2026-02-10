@@ -28,10 +28,12 @@ export default function AboutPage() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-primary text-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div className="relative bg-primary text-white overflow-hidden">
+                <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
                     <div className="text-center">
-                        <h1 className="text-4xl font-extrabold sm:text-5xl">About GoEventCity</h1>
+                        <h1 className="font-display text-4xl font-black tracking-tight sm:text-5xl">About GoEventCity</h1>
                         <p className="mt-4 text-xl text-indigo-100 max-w-3xl mx-auto">
                             Connecting communities, supporting local businesses, and celebrating the vibrant culture of our cities.
                         </p>
@@ -42,7 +44,7 @@ export default function AboutPage() {
             {/* Mission Section */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl font-bold text-foreground mb-4">Our Mission</h2>
+                    <h2 className="font-display text-3xl font-black tracking-tight text-foreground mb-4">Our Mission</h2>
                     <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
                         GoEventCity is dedicated to making it easier for people to discover, share, and attend local events. We believe that vibrant
                         communities are built on connection, and events are the perfect way to bring people together.
@@ -50,8 +52,8 @@ export default function AboutPage() {
                 </div>
 
                 {/* Values Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                    <Card>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+                    <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                         <CardContent className="p-6 text-center">
                             <Users className="h-12 w-12 text-primary mx-auto mb-4" />
                             <h3 className="text-xl font-semibold text-foreground mb-2">Community First</h3>
@@ -61,7 +63,7 @@ export default function AboutPage() {
                         </CardContent>
                     </Card>
 
-                    <Card>
+                    <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                         <CardContent className="p-6 text-center">
                             <Calendar className="h-12 w-12 text-primary mx-auto mb-4" />
                             <h3 className="text-xl font-semibold text-foreground mb-2">Event Discovery</h3>
@@ -71,7 +73,7 @@ export default function AboutPage() {
                         </CardContent>
                     </Card>
 
-                    <Card>
+                    <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                         <CardContent className="p-6 text-center">
                             <Heart className="h-12 w-12 text-primary mx-auto mb-4" />
                             <h3 className="text-xl font-semibold text-foreground mb-2">Support Local</h3>
@@ -85,7 +87,7 @@ export default function AboutPage() {
 
                 {/* What We Do */}
                 <div className="bg-card rounded-lg shadow-sm p-8 mb-16">
-                    <h2 className="text-3xl font-bold text-foreground mb-6 text-center">What We Do</h2>
+                    <h2 className="font-display text-3xl font-black tracking-tight text-foreground mb-6 text-center">What We Do</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <h3 className="text-xl font-semibold text-foreground mb-3">For Event Goers</h3>
@@ -134,7 +136,7 @@ export default function AboutPage() {
 
                 {/* Stats Section */}
                 <div className="bg-accent/50 rounded-lg p-8 mb-16">
-                    <h2 className="text-3xl font-bold text-foreground mb-8 text-center">By The Numbers</h2>
+                    <h2 className="font-display text-3xl font-black tracking-tight text-foreground mb-8 text-center">By The Numbers</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                         <div className="text-center">
                             <div className="text-4xl font-bold text-primary mb-2">10K+</div>
@@ -157,12 +159,12 @@ export default function AboutPage() {
 
                 {/* CTA Section */}
                 <div className="text-center">
-                    <h2 className="text-3xl font-bold text-foreground mb-4">Join Us</h2>
+                    <h2 className="font-display text-3xl font-black tracking-tight text-foreground mb-4">Join Us</h2>
                     <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
                         Whether you're looking to discover amazing events or share your own, we'd love to have you as part of the GoEventCity
                         community.
                     </p>
-                    <div className="flex justify-center space-x-4">
+                    <div className="flex justify-center gap-4">
                         {auth.user ? (
                             <Button size="lg" onClick={() => router.visit("/events/create")}>
                                 Create Your First Event

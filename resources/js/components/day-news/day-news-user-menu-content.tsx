@@ -1,5 +1,18 @@
 import { Link } from "@inertiajs/react";
-import { Bell, BookOpen, Building2, FileText, HelpCircle, LogOut, Megaphone, Newspaper, Settings, User as UserIcon } from "lucide-react";
+import {
+    Bell,
+    Bookmark,
+    BookOpen,
+    Building2,
+    FileText,
+    HelpCircle,
+    LogOut,
+    Megaphone,
+    Newspaper,
+    Settings,
+    Ticket,
+    User as UserIcon,
+} from "lucide-react";
 import { route } from "ziggy-js";
 import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { UserInfo } from "@/components/user-info";
@@ -49,6 +62,12 @@ export function DayNewsUserMenuContent({ user }: DayNewsUserMenuContentProps) {
                         My Ads & Notices
                     </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Link className="block w-full" href={route("daynews.coupons.my") as any} as="button">
+                        <Ticket className="mr-2 size-4" />
+                        My Coupons
+                    </Link>
+                </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
@@ -56,6 +75,12 @@ export function DayNewsUserMenuContent({ user }: DayNewsUserMenuContentProps) {
                     <Link className="block w-full" href={route("daynews.classifieds.saved") as any} as="button">
                         <BookOpen className="mr-2 size-4" />
                         Saved Articles
+                    </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Link className="block w-full" href={route("daynews.coupons.saved") as any} as="button">
+                        <Bookmark className="mr-2 size-4" />
+                        Saved Coupons
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>

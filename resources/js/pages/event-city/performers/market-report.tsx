@@ -47,11 +47,13 @@ export default function MarketReport() {
             <Header auth={auth} />
 
             {/* Header */}
-            <div className="bg-primary text-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="relative bg-primary text-white overflow-hidden">
+                <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-4xl font-bold mb-2">Market Report</h1>
+                            <h1 className="font-display text-4xl font-black tracking-tight mb-2">Market Report</h1>
                             <p className="text-xl text-purple-100">Data-driven insights for performers</p>
                         </div>
                         <Button variant="outline" className="bg-card text-primary hover:bg-accent/50">

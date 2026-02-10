@@ -64,9 +64,9 @@ const getRoleIcon = (role: string) => {
         case "owner":
             return <Crown className="h-4 w-4 text-yellow-600" />;
         case "admin":
-            return <Shield className="h-4 w-4 text-primary" />;
+            return <Shield className="h-4 w-4 text-blue-600" />;
         default:
-            return <User className="h-4 w-4 text-muted-foreground" />;
+            return <User className="h-4 w-4 text-gray-600" />;
     }
 };
 
@@ -295,7 +295,7 @@ export default function WorkspaceMembers({ members, pendingInvitations, canManag
                                                                 <Separator />
                                                                 <DropdownMenuItem
                                                                     onClick={() => handleRemoveMember(member.id, member.name)}
-                                                                    className="text-destructive"
+                                                                    className="text-red-600"
                                                                 >
                                                                     <Trash2 className="h-4 w-4 mr-2" />
                                                                     Remove

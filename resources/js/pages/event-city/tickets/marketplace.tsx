@@ -195,7 +195,7 @@ export default function TicketMarketplace() {
                         <div className="bg-card p-4 rounded-lg shadow-sm mb-6 flex flex-wrap items-center justify-between gap-4">
                             <div className="flex items-center">
                                 <span className="text-sm text-muted-foreground mr-2">Sort by:</span>
-                                <select className="appearance-none bg-card border border rounded-md pl-3 pr-8 py-1.5 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                                <select className="appearance-none bg-card border border-border rounded-md pl-3 pr-8 py-1.5 text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                                     <option value="recommended">Recommended</option>
                                     <option value="price_low">Price: Low to High</option>
                                     <option value="price_high">Price: High to Low</option>
@@ -208,7 +208,7 @@ export default function TicketMarketplace() {
                                         Showing {listings.data.length} of {listings.meta.total} events
                                     </span>
                                 </div>
-                                <div className="flex border border rounded-md overflow-hidden">
+                                <div className="flex border border-border rounded-md overflow-hidden">
                                     <Button variant={viewMode === "grid" ? "default" : "ghost"} size="sm" onClick={() => setViewMode("grid")}>
                                         <Grid className="h-5 w-5" />
                                     </Button>
@@ -299,7 +299,7 @@ export default function TicketMarketplace() {
                                                             <div className="text-sm text-muted-foreground">{listing.quantity} tickets available</div>
                                                         </div>
                                                     </div>
-                                                    <div className="border-t border-gray-100 pt-4 mt-2">
+                                                    <div className="border-t border-border pt-4 mt-2">
                                                         <div className="flex flex-wrap justify-between items-center">
                                                             <div className="text-sm">
                                                                 <span className="text-muted-foreground">Price:</span>

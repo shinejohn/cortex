@@ -47,7 +47,7 @@ export function OrganizationContentDisplay({
         },
         "App\\Models\\Coupon": {
             label: "Coupons",
-            component: () => <div>Coupons List</div>, // Placeholder
+            component: () => <div>Coupons List</div>,
         },
         "App\\Models\\Business": {
             label: "Businesses",
@@ -63,29 +63,32 @@ export function OrganizationContentDisplay({
 
     if (availableContent.length === 0) {
         return (
-            <div className="rounded-lg border border-dashed p-8 text-center">
-                <p className="text-muted-foreground">No content found for this organization</p>
+            <div className="rounded-xl border border-dashed p-12 text-center">
+                <p className="font-display font-black tracking-tight text-foreground">No content found</p>
+                <p className="mt-1 text-sm text-muted-foreground">No content found for this organization</p>
             </div>
         );
     }
 
     return (
-        <div className={cn("space-y-4", className)}>
+        <div className={cn("space-y-6", className)}>
             <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-foreground">Content from {organization.name}</h2>
+                <h2 className="font-display text-2xl font-black tracking-tight text-foreground">Content from {organization.name}</h2>
                 {organization.organization_type && (
-                    <span className="rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground">{organization.organization_type}</span>
+                    <span className="rounded-full bg-muted px-3 py-1 text-[10px] uppercase tracking-widest font-black text-muted-foreground">
+                        {organization.organization_type}
+                    </span>
                 )}
             </div>
 
             <Tabs defaultValue={availableContent[0]} className="w-full">
-                <TabsList>
+                <TabsList className="rounded-lg">
                     {availableContent.map((contentKey) => {
                         const config = contentMap[contentKey];
                         return (
-                            <TabsTrigger key={contentKey} value={contentKey}>
+                            <TabsTrigger key={contentKey} value={contentKey} className="rounded-md">
                                 {config?.label || contentKey}
-                                <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-xs">{content[contentKey].length}</span>
+                                <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-[10px] font-black">{content[contentKey].length}</span>
                             </TabsTrigger>
                         );
                     })}
@@ -96,7 +99,7 @@ export function OrganizationContentDisplay({
                     const Component = config?.component || (() => <div>Content</div>);
 
                     return (
-                        <TabsContent key={contentKey} value={contentKey} className="mt-4">
+                        <TabsContent key={contentKey} value={contentKey} className="mt-6">
                             <Component items={content[contentKey]} theme={theme} />
                         </TabsContent>
                     );

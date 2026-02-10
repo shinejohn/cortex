@@ -1,5 +1,5 @@
 import { Head, Link } from "@inertiajs/react";
-import { ArrowLeftIcon } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import AppLayout from "./app-layout";
@@ -21,23 +21,33 @@ export default function FormLayout({
     backHref,
     backLabel,
     maxWidth = "max-w-4xl",
-    breadcrumbs
+    breadcrumbs,
 }: FormLayoutProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={title} />
             <div className="min-h-screen bg-background">
-                <div className={`${maxWidth} mx-auto px-4 sm:px-6 lg:px-8 py-8`}>
+                <div className={`${maxWidth} mx-auto px-4 py-8 sm:px-6 lg:px-8`}>
+                    {/* Back navigation */}
                     <div className="mb-6">
-                        <Link href={backHref}>
-                            <Button variant="ghost" size="sm" className="mb-4">
-                                <ArrowLeftIcon className="h-4 w-4 mr-2" />
+                        <Button variant="ghost" size="sm" asChild className="mb-4">
+                            <Link href={backHref}>
+                                <ArrowLeft className="mr-2 size-4" />
                                 {backLabel}
-                            </Button>
-                        </Link>
-                        <h1 className="text-3xl font-bold text-foreground">{title}</h1>
-                        {description && <p className="text-muted-foreground mt-1">{description}</p>}
+                            </Link>
+                        </Button>
                     </div>
+
+                    {/* Page header */}
+                    <div className="mb-8">
+                        <h1 className="font-display text-3xl font-black tracking-tight text-foreground">
+                            {title}
+                        </h1>
+                        {description && (
+                            <p className="mt-2 text-muted-foreground">{description}</p>
+                        )}
+                    </div>
+
                     {children}
                 </div>
             </div>

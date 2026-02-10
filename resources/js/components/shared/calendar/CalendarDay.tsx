@@ -27,21 +27,6 @@ interface CalendarDayProps {
 export function CalendarDay({ events, theme = "eventcity", className, initialDate, onDateChange }: CalendarDayProps) {
     const [currentDate, setCurrentDate] = useState(initialDate || new Date());
 
-    const _themeColors = {
-        daynews: {
-            header: "bg-muted",
-            today: "bg-primary text-primary-foreground",
-        },
-        downtownsguide: {
-            header: "bg-muted",
-            today: "bg-primary text-primary-foreground",
-        },
-        eventcity: {
-            header: "bg-muted",
-            today: "bg-primary text-primary-foreground",
-        },
-    };
-
     const getEventsForDate = (date: Date) => {
         const dateStr = date.toISOString().split("T")[0];
         return events
@@ -77,17 +62,19 @@ export function CalendarDay({ events, theme = "eventcity", className, initialDat
     const today = isToday(currentDate);
 
     return (
-        <div className={cn("space-y-4", className)}>
+        <div className={cn("space-y-6", className)}>
             {/* Day Header */}
-            <div className="flex items-center justify-between rounded-lg border bg-card p-4">
-                <Button variant="ghost" size="icon" onClick={() => navigateDay("prev")} aria-label="Previous day">
-                    <ChevronLeftIcon className="h-5 w-5" />
+            <div className="flex items-center justify-between overflow-hidden rounded-xl border-none bg-card p-4 shadow-sm">
+                <Button variant="ghost" size="icon" onClick={() => navigateDay("prev")} aria-label="Previous day" className="rounded-lg">
+                    <ChevronLeftIcon className="size-5" />
                 </Button>
 
-                <div className="flex items-center gap-2">
-                    <CalendarIcon className="h-5 w-5 text-muted-foreground" />
+                <div className="flex items-center gap-3">
+                    <div className="flex size-10 items-center justify-center rounded-lg bg-indigo-50">
+                        <CalendarIcon className="size-5 text-primary" />
+                    </div>
                     <div className="text-center">
-                        <h2 className="text-xl font-semibold text-foreground">
+                        <h2 className="font-display text-xl font-black tracking-tight text-foreground">
                             {currentDate.toLocaleDateString("en-US", {
                                 weekday: "long",
                                 month: "long",
@@ -95,26 +82,32 @@ export function CalendarDay({ events, theme = "eventcity", className, initialDat
                                 year: "numeric",
                             })}
                         </h2>
-                        {today && <span className="text-sm text-muted-foreground">Today</span>}
+                        {today && (
+                            <span className="text-[10px] uppercase tracking-widest font-black text-primary">Today</span>
+                        )}
                     </div>
                 </div>
 
-                <Button variant="ghost" size="icon" onClick={() => navigateDay("next")} aria-label="Next day">
-                    <ChevronRightIcon className="h-5 w-5" />
+                <Button variant="ghost" size="icon" onClick={() => navigateDay("next")} aria-label="Next day" className="rounded-lg">
+                    <ChevronRightIcon className="size-5" />
                 </Button>
             </div>
 
             {/* Events List */}
             {dayEvents.length > 0 ? (
-                <div className="space-y-2">
-                    <h3 className="font-semibold text-foreground">
+                <div className="space-y-3">
+                    <h3 className="font-display font-black tracking-tight text-foreground">
                         {dayEvents.length} {dayEvents.length === 1 ? "Event" : "Events"}
                     </h3>
                     <EventList events={dayEvents} theme={theme} gridCols={1} />
                 </div>
             ) : (
-                <div className="rounded-lg border border-dashed p-8 text-center">
-                    <p className="text-muted-foreground">No events scheduled for this day</p>
+                <div className="rounded-xl border border-dashed p-12 text-center">
+                    <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-muted">
+                        <CalendarIcon className="size-6 text-muted-foreground" />
+                    </div>
+                    <p className="font-display font-black tracking-tight text-foreground">No events scheduled</p>
+                    <p className="mt-1 text-sm text-muted-foreground">No events scheduled for this day</p>
                 </div>
             )}
         </div>

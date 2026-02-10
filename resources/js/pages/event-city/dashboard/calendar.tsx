@@ -75,11 +75,12 @@ export default function CalendarDashboard() {
             <Header auth={auth} />
 
             {/* Header */}
-            <div className="bg-primary text-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="relative bg-primary text-white overflow-hidden">
+                <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                         <div>
-                            <h1 className="text-3xl font-bold">Calendar Dashboard</h1>
+                            <h1 className="font-display text-3xl font-black tracking-tight">Calendar Dashboard</h1>
                             <p className="text-indigo-200 mt-1">View and manage all your events in one place</p>
                         </div>
                         <div className="mt-4 md:mt-0">
@@ -98,7 +99,7 @@ export default function CalendarDashboard() {
 
             {/* Main Content */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <Card>
+                <Card className="overflow-hidden border-none shadow-sm">
                     <CardHeader>
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
@@ -141,7 +142,7 @@ export default function CalendarDashboard() {
                                         return (
                                             <div
                                                 key={day}
-                                                className={`aspect-square border border rounded p-1 ${
+                                                className={`aspect-square border rounded p-1 ${
                                                     isToday ? "bg-accent/50 border-primary/30" : "bg-card"
                                                 }`}
                                             >
@@ -184,7 +185,7 @@ export default function CalendarDashboard() {
                 </Card>
 
                 {/* Upcoming Events List */}
-                <Card className="mt-8">
+                <Card className="mt-8 overflow-hidden border-none shadow-sm">
                     <CardHeader>
                         <CardTitle>Upcoming Events</CardTitle>
                     </CardHeader>
@@ -193,10 +194,10 @@ export default function CalendarDashboard() {
                             {events.slice(0, 10).map((event) => (
                                 <div
                                     key={event.id}
-                                    className="flex items-start gap-4 p-4 border border rounded-lg hover:bg-muted/50 cursor-pointer"
+                                    className="flex items-start gap-4 p-4 border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
                                     onClick={() => router.visit(`/events/${event.id}`)}
                                 >
-                                    <div className="flex-shrink-0">
+                                    <div className="shrink-0">
                                         <div className="h-12 w-12 rounded-lg bg-accent flex items-center justify-center">
                                             <CalendarIcon className="h-6 w-6 text-primary" />
                                         </div>

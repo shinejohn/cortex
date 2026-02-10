@@ -1,5 +1,5 @@
 import { Head, Link, router } from "@inertiajs/react";
-import { FileText, Plus } from "lucide-react";
+import { FileText, Plus, SlidersHorizontal } from "lucide-react";
 import React from "react";
 import DayNewsHeader from "@/components/day-news/day-news-header";
 import PostCard from "@/components/day-news/post-card";
@@ -85,27 +85,33 @@ export default function PostsIndex({ auth, posts, filters }: PostsIndexProps) {
                 </Head>
                 <DayNewsHeader auth={auth} />
 
-                <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                    <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+                    {/* Page Header */}
+                    <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                         <div>
-                            <h1 className="text-3xl font-bold">My Posts</h1>
-                            <p className="mt-1 text-muted-foreground">Manage your Day News posts</p>
+                            <h1 className="font-display text-3xl font-black tracking-tight md:text-4xl">My Posts</h1>
+                            <p className="mt-2 text-sm font-medium text-muted-foreground">Manage your Day News posts</p>
                         </div>
-                        <Button asChild>
+                        <Button asChild className="h-12 gap-2 px-6 font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20">
                             <Link href={route("daynews.posts.create") as any}>
-                                <Plus className="mr-2 size-4" />
+                                <Plus className="size-4" />
                                 Create Post
                             </Link>
                         </Button>
                     </div>
 
-                    <div className="mb-6 flex flex-wrap gap-4">
+                    {/* Filters */}
+                    <div className="mb-8 flex flex-wrap items-center gap-4">
+                        <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground">
+                            <SlidersHorizontal className="size-3.5" />
+                            Filters
+                        </div>
                         <div className="w-48">
                             <Select value={filters.type || "all"} onValueChange={(value) => handleFilterChange("type", value)}>
-                                <SelectTrigger>
+                                <SelectTrigger className="h-10 rounded-xl border-zinc-200 bg-zinc-50/50 font-bold text-sm focus:bg-white transition-colors">
                                     <SelectValue placeholder="All types" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="rounded-xl border-zinc-200">
                                     <SelectItem value="all">All types</SelectItem>
                                     <SelectItem value="article">Article</SelectItem>
                                     <SelectItem value="announcement">Announcement</SelectItem>
@@ -118,10 +124,10 @@ export default function PostsIndex({ auth, posts, filters }: PostsIndexProps) {
 
                         <div className="w-48">
                             <Select value={filters.status || "all"} onValueChange={(value) => handleFilterChange("status", value)}>
-                                <SelectTrigger>
+                                <SelectTrigger className="h-10 rounded-xl border-zinc-200 bg-zinc-50/50 font-bold text-sm focus:bg-white transition-colors">
                                     <SelectValue placeholder="All statuses" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="rounded-xl border-zinc-200">
                                     <SelectItem value="all">All statuses</SelectItem>
                                     <SelectItem value="draft">Draft</SelectItem>
                                     <SelectItem value="published">Published</SelectItem>
@@ -133,14 +139,20 @@ export default function PostsIndex({ auth, posts, filters }: PostsIndexProps) {
                     </div>
 
                     {posts.data.length === 0 ? (
-                        <div className="flex min-h-[400px] items-center justify-center rounded-lg border-2 border-dashed">
-                            <div className="text-center">
-                                <FileText className="mx-auto mb-4 size-12 text-muted-foreground" />
-                                <h2 className="mb-2 text-xl font-semibold">No posts found</h2>
-                                <p className="mb-4 text-muted-foreground">
+                        <div className="relative flex min-h-[400px] items-center justify-center overflow-hidden rounded-3xl border-2 border-dashed border-zinc-200">
+                            {/* Decorative blobs */}
+                            <div className="absolute -top-24 -right-24 size-64 rounded-full bg-primary/5 blur-3xl" />
+                            <div className="absolute -bottom-24 -left-24 size-64 rounded-full bg-indigo-500/5 blur-3xl" />
+
+                            <div className="relative z-10 text-center">
+                                <div className="mx-auto mb-6 flex size-20 items-center justify-center rounded-full bg-muted">
+                                    <FileText className="size-10 text-muted-foreground" />
+                                </div>
+                                <h2 className="mb-2 font-display text-xl font-black tracking-tight">No posts found</h2>
+                                <p className="mb-6 text-sm font-medium text-muted-foreground">
                                     {filters.type || filters.status ? "Try adjusting your filters" : "Get started by creating your first post"}
                                 </p>
-                                <Button asChild>
+                                <Button asChild className="h-12 px-8 font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20">
                                     <Link href={route("daynews.posts.create") as any}>Create Post</Link>
                                 </Button>
                             </div>
@@ -154,12 +166,15 @@ export default function PostsIndex({ auth, posts, filters }: PostsIndexProps) {
                             </div>
 
                             {posts.last_page > 1 && (
-                                <div className="mt-8 flex justify-center gap-2">
+                                <div className="mt-12 flex justify-center gap-3">
                                     {Array.from({ length: posts.last_page }, (_, i) => i + 1).map((page) => (
                                         <Button
                                             key={page}
                                             variant={page === posts.current_page ? "default" : "outline"}
                                             size="sm"
+                                            className={`h-10 min-w-[40px] px-4 font-bold transition-all ${
+                                                page === posts.current_page ? "shadow-lg shadow-primary/20 scale-110" : ""
+                                            }`}
                                             onClick={() =>
                                                 router.get(
                                                     route("daynews.posts.index") as any,

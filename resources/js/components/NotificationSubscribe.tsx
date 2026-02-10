@@ -174,7 +174,7 @@ export default function NotificationSubscribe({ platform, communityId, initialSu
     };
 
     return (
-        <div className="notification-subscribe p-6 bg-white rounded-lg shadow-lg border">
+        <div className="notification-subscribe p-6 bg-white rounded-lg shadow-lg border dark:bg-neutral-900 dark:border-neutral-800">
             <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
                 <Bell className="h-5 w-5" />
                 Get Notified
@@ -182,7 +182,7 @@ export default function NotificationSubscribe({ platform, communityId, initialSu
 
             {/* Notification Type Preferences */}
             <div className="mb-6">
-                <p className="text-sm text-gray-600 mb-3">What would you like to receive?</p>
+                <p className="text-sm text-muted-foreground mb-3">What would you like to receive?</p>
                 <div className="space-y-2">
                     <label className="flex items-center gap-2 cursor-pointer">
                         <Checkbox
@@ -210,7 +210,7 @@ export default function NotificationSubscribe({ platform, communityId, initialSu
 
             {/* Browser Push Section */}
             {isSupported && (
-                <div className="mb-6 pb-6 border-b">
+                <div className="mb-6 pb-6 border-b dark:border-neutral-800">
                     <h4 className="font-medium mb-3 flex items-center gap-2">
                         <Bell className="h-4 w-4" />
                         Browser Notifications
@@ -252,7 +252,7 @@ export default function NotificationSubscribe({ platform, communityId, initialSu
 
                 {step === "verify" && (
                     <div>
-                        <p className="text-sm text-gray-600 mb-2">Enter the 6-digit code sent to {phoneNumber}</p>
+                        <p className="text-sm text-muted-foreground mb-2">Enter the 6-digit code sent to {phoneNumber}</p>
                         <div className="flex gap-2">
                             <Input
                                 type="text"

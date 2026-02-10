@@ -1,5 +1,6 @@
 import { Head, Link, useForm } from "@inertiajs/react";
 import { useState } from "react";
+import { MapPin, Phone, Star, X, Send, MessageCircle, Mail, ExternalLink, Image, Calendar, Tag } from "lucide-react";
 import Layout from "@/layouts/layout";
 import { Business, BusinessTemplate, Tab } from "@/types";
 
@@ -74,61 +75,44 @@ export default function BusinessShow({
                 <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
             </Head>
 
-            <div className="min-h-screen bg-muted/50">
+            <div className="min-h-screen bg-muted/30">
                 {/* Hero Section */}
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="relative bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white overflow-hidden">
+                    <div className="absolute inset-0 bg-[url('data:image/svg+xml,...')] opacity-10" />
+                    <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
                             <div className="md:col-span-2">
-                                <h1 className="text-4xl font-bold mb-4">{business.name}</h1>
-                                {business.description && <p className="text-xl text-blue-100 mb-4">{business.description}</p>}
-                                <div className="flex flex-wrap gap-4 text-sm">
+                                <h1 className="font-display text-4xl lg:text-5xl font-black tracking-tight mb-4">{business.name}</h1>
+                                {business.description && <p className="text-xl text-blue-100/90 mb-6 max-w-2xl">{business.description}</p>}
+                                <div className="flex flex-wrap gap-5 text-sm">
                                     {business.address && (
-                                        <div className="flex items-center">
-                                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                                                />
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                                                />
-                                            </svg>
-                                            {business.address}, {business.city}, {business.state}
+                                        <div className="flex items-center gap-2">
+                                            <MapPin className="h-5 w-5 text-blue-200" />
+                                            <span>{business.address}, {business.city}, {business.state}</span>
                                         </div>
                                     )}
                                     {business.phone && (
-                                        <div className="flex items-center">
-                                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                                                />
-                                            </svg>
-                                            {business.phone}
+                                        <div className="flex items-center gap-2">
+                                            <Phone className="h-5 w-5 text-blue-200" />
+                                            <span>{business.phone}</span>
                                         </div>
                                     )}
                                     {business.rating && (
-                                        <div className="flex items-center">
-                                            <svg className="w-5 h-5 mr-1 text-yellow-300" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                            </svg>
+                                        <div className="flex items-center gap-2">
+                                            <Star className="h-5 w-5 text-yellow-300 fill-yellow-300" />
                                             <span className="font-semibold">{business.rating}</span>
-                                            {business.reviews_count && <span className="ml-1">({business.reviews_count} reviews)</span>}
+                                            {business.reviews_count && <span className="text-blue-200">({business.reviews_count} reviews)</span>}
                                         </div>
                                     )}
                                 </div>
                             </div>
                             <div className="md:col-span-1">
                                 {business.images && business.images.length > 0 && (
-                                    <img src={business.images[0]} alt={business.name} className="w-full h-64 object-cover rounded-lg shadow-lg" />
+                                    <img
+                                        src={business.images[0]}
+                                        alt={business.name}
+                                        className="w-full h-64 object-cover rounded-2xl shadow-2xl ring-4 ring-white/20"
+                                    />
                                 )}
                             </div>
                         </div>
@@ -136,17 +120,17 @@ export default function BusinessShow({
                 </div>
 
                 {/* Tabs Navigation */}
-                <div className="bg-card border-b border sticky top-0 z-10">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <nav className="flex space-x-8 overflow-x-auto">
+                <div className="bg-card border-b sticky top-0 z-10 shadow-sm">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                        <nav className="flex gap-1 overflow-x-auto py-1">
                             {tabs.map((tab) => (
                                 <Link
                                     key={tab}
                                     href={`/business/${business.slug}/${tab}`}
-                                    className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                                    className={`py-3 px-4 border-b-2 font-medium text-sm whitespace-nowrap rounded-t-lg transition-colors ${
                                         activeTab === tab
-                                            ? "border-blue-500 text-primary"
-                                            : "border-transparent text-muted-foreground hover:text-foreground hover:border"
+                                            ? "border-primary text-primary bg-primary/5"
+                                            : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50"
                                     }`}
                                 >
                                     {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -157,26 +141,26 @@ export default function BusinessShow({
                 </div>
 
                 {/* Main Content */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         {/* Main Content Area */}
-                        <div className="lg:col-span-2">
+                        <div className="lg:col-span-2 space-y-6">
                             {activeTab === "overview" && (
-                                <div className="bg-card rounded-lg shadow p-6">
-                                    <h2 className="text-2xl font-bold mb-4">About {business.name}</h2>
-                                    {business.description && <p className="text-foreground mb-4">{business.description}</p>}
+                                <div className="bg-card rounded-2xl border-none shadow-sm p-6 lg:p-8">
+                                    <h2 className="font-display text-2xl font-black tracking-tight mb-4">About {business.name}</h2>
+                                    {business.description && <p className="text-foreground leading-relaxed mb-6">{business.description}</p>}
                                     {crossPlatformContent?.articles && crossPlatformContent.articles.length > 0 && (
-                                        <div className="mt-6">
-                                            <h3 className="text-xl font-semibold mb-3">Related Articles</h3>
+                                        <div className="mt-8 pt-6 border-t">
+                                            <h3 className="font-display text-xl font-bold tracking-tight mb-4">Related Articles</h3>
                                             <div className="space-y-3">
                                                 {crossPlatformContent.articles.slice(0, 3).map((article: any) => (
                                                     <Link
                                                         key={article.id}
                                                         href={article.url}
-                                                        className="block p-3 border border rounded hover:bg-muted/50"
+                                                        className="group block rounded-xl border p-4 hover:shadow-md hover:border-primary/30 transition-all"
                                                     >
-                                                        <h4 className="font-semibold">{article.title}</h4>
-                                                        <p className="text-sm text-muted-foreground">{article.excerpt}</p>
+                                                        <h4 className="font-semibold group-hover:text-primary transition-colors">{article.title}</h4>
+                                                        <p className="text-sm text-muted-foreground mt-1">{article.excerpt}</p>
                                                     </Link>
                                                 ))}
                                             </div>
@@ -186,15 +170,15 @@ export default function BusinessShow({
                             )}
 
                             {activeTab === "reviews" && (
-                                <div className="bg-card rounded-lg shadow p-6">
-                                    <h2 className="text-2xl font-bold mb-4">Reviews</h2>
+                                <div className="bg-card rounded-2xl border-none shadow-sm p-6 lg:p-8">
+                                    <h2 className="font-display text-2xl font-black tracking-tight mb-4">Reviews</h2>
                                     <p className="text-muted-foreground">Reviews will be displayed here.</p>
                                 </div>
                             )}
 
                             {activeTab === "photos" && (
-                                <div className="bg-card rounded-lg shadow p-6">
-                                    <h2 className="text-2xl font-bold mb-4">Photos</h2>
+                                <div className="bg-card rounded-2xl border-none shadow-sm p-6 lg:p-8">
+                                    <h2 className="font-display text-2xl font-black tracking-tight mb-4">Photos</h2>
                                     {business.images && business.images.length > 0 ? (
                                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                             {business.images.map((image, index) => (
@@ -202,81 +186,101 @@ export default function BusinessShow({
                                                     key={index}
                                                     src={image}
                                                     alt={`${business.name} - Photo ${index + 1}`}
-                                                    className="w-full h-48 object-cover rounded"
+                                                    className="w-full h-48 object-cover rounded-xl hover:opacity-90 transition-opacity"
                                                 />
                                             ))}
                                         </div>
                                     ) : (
-                                        <p className="text-muted-foreground">No photos available.</p>
+                                        <div className="text-center py-12">
+                                            <Image className="mx-auto mb-3 h-12 w-12 text-muted-foreground/40" />
+                                            <p className="text-muted-foreground">No photos available.</p>
+                                        </div>
                                     )}
                                 </div>
                             )}
 
                             {activeTab === "events" && crossPlatformContent?.events && (
-                                <div className="bg-card rounded-lg shadow p-6">
-                                    <h2 className="text-2xl font-bold mb-4">Upcoming Events</h2>
+                                <div className="bg-card rounded-2xl border-none shadow-sm p-6 lg:p-8">
+                                    <h2 className="font-display text-2xl font-black tracking-tight mb-4">Upcoming Events</h2>
                                     {crossPlatformContent.events.length > 0 ? (
                                         <div className="space-y-4">
                                             {crossPlatformContent.events.map((event: any) => (
-                                                <div key={event.id} className="border border rounded p-4">
+                                                <div key={event.id} className="group rounded-xl border p-5 hover:shadow-md transition-all">
                                                     <h3 className="font-semibold text-lg">{event.title}</h3>
-                                                    <p className="text-sm text-muted-foreground">{event.date}</p>
+                                                    <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
+                                                        <Calendar className="h-3.5 w-3.5" />
+                                                        {event.date}
+                                                    </p>
                                                     <p className="text-foreground mt-2">{event.description}</p>
                                                 </div>
                                             ))}
                                         </div>
                                     ) : (
-                                        <p className="text-muted-foreground">No upcoming events.</p>
+                                        <div className="text-center py-12">
+                                            <Calendar className="mx-auto mb-3 h-12 w-12 text-muted-foreground/40" />
+                                            <p className="text-muted-foreground">No upcoming events.</p>
+                                        </div>
                                     )}
                                 </div>
                             )}
 
                             {activeTab === "coupons" && crossPlatformContent?.coupons && (
-                                <div className="bg-card rounded-lg shadow p-6">
-                                    <h2 className="text-2xl font-bold mb-4">Coupons & Deals</h2>
+                                <div className="bg-card rounded-2xl border-none shadow-sm p-6 lg:p-8">
+                                    <h2 className="font-display text-2xl font-black tracking-tight mb-4">Coupons & Deals</h2>
                                     {crossPlatformContent.coupons.length > 0 ? (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             {crossPlatformContent.coupons.map((coupon: any) => (
-                                                <div key={coupon.id} className="border border rounded p-4">
-                                                    <h3 className="font-semibold">{coupon.title}</h3>
-                                                    <p className="text-sm text-muted-foreground">{coupon.description}</p>
-                                                    <button className="mt-3 px-4 py-2 bg-primary text-white rounded hover:bg-primary">
+                                                <div key={coupon.id} className="group rounded-xl border p-5 hover:shadow-md transition-all">
+                                                    <h3 className="font-semibold flex items-center gap-2">
+                                                        <Tag className="h-4 w-4 text-primary" />
+                                                        {coupon.title}
+                                                    </h3>
+                                                    <p className="text-sm text-muted-foreground mt-1">{coupon.description}</p>
+                                                    <button className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 text-sm font-medium transition-colors">
                                                         Get Deal
                                                     </button>
                                                 </div>
                                             ))}
                                         </div>
                                     ) : (
-                                        <p className="text-muted-foreground">No coupons available.</p>
+                                        <div className="text-center py-12">
+                                            <Tag className="mx-auto mb-3 h-12 w-12 text-muted-foreground/40" />
+                                            <p className="text-muted-foreground">No coupons available.</p>
+                                        </div>
                                     )}
                                 </div>
                             )}
                         </div>
 
                         {/* Sidebar */}
-                        <div className="lg:col-span-1">
-                            <div className="bg-card rounded-lg shadow p-6 mb-6">
-                                <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
-                                {business.phone && (
-                                    <p className="text-foreground mb-2">
-                                        <strong>Phone:</strong> {business.phone}
-                                    </p>
-                                )}
-                                {business.email && (
-                                    <p className="text-foreground mb-2">
-                                        <strong>Email:</strong> {business.email}
-                                    </p>
-                                )}
-                                {business.address && (
-                                    <p className="text-foreground">
-                                        <strong>Address:</strong> {business.address}, {business.city}, {business.state}
-                                    </p>
-                                )}
+                        <div className="lg:col-span-1 space-y-6">
+                            <div className="bg-card rounded-2xl border-none shadow-sm p-6">
+                                <h3 className="font-display text-lg font-bold tracking-tight mb-4">Contact Information</h3>
+                                <div className="space-y-3">
+                                    {business.phone && (
+                                        <div className="flex items-center gap-3 text-sm">
+                                            <Phone className="h-4 w-4 text-muted-foreground shrink-0" />
+                                            <span>{business.phone}</span>
+                                        </div>
+                                    )}
+                                    {business.email && (
+                                        <div className="flex items-center gap-3 text-sm">
+                                            <Mail className="h-4 w-4 text-muted-foreground shrink-0" />
+                                            <span>{business.email}</span>
+                                        </div>
+                                    )}
+                                    {business.address && (
+                                        <div className="flex items-start gap-3 text-sm">
+                                            <MapPin className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+                                            <span>{business.address}, {business.city}, {business.state}</span>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             {/* Cross-Platform Links */}
-                            <div className="bg-card rounded-lg shadow p-6 mb-6">
-                                <h3 className="text-lg font-semibold mb-4">Also Available On</h3>
+                            <div className="bg-card rounded-2xl border-none shadow-sm p-6">
+                                <h3 className="font-display text-lg font-bold tracking-tight mb-4">Also Available On</h3>
                                 <div className="space-y-2">
                                     {Object.entries(communityLinks).map(([key, link]) => (
                                         <a
@@ -284,8 +288,9 @@ export default function BusinessShow({
                                             href={link.url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="block text-primary hover:text-primary text-sm"
+                                            className="flex items-center gap-2 text-primary hover:text-primary/80 text-sm transition-colors"
                                         >
+                                            <ExternalLink className="h-3.5 w-3.5" />
                                             {link.label}
                                         </a>
                                     ))}
@@ -294,17 +299,20 @@ export default function BusinessShow({
 
                             {/* Related Businesses */}
                             {relatedBusinesses && relatedBusinesses.length > 0 && (
-                                <div className="bg-card rounded-lg shadow p-6">
-                                    <h3 className="text-lg font-semibold mb-4">Related Businesses</h3>
+                                <div className="bg-card rounded-2xl border-none shadow-sm p-6">
+                                    <h3 className="font-display text-lg font-bold tracking-tight mb-4">Related Businesses</h3>
                                     <div className="space-y-3">
                                         {relatedBusinesses.map((related) => (
                                             <Link
                                                 key={related.id}
                                                 href={`/business/${related.slug}`}
-                                                className="block p-3 border border rounded hover:bg-muted/50"
+                                                className="group block rounded-xl border p-3 hover:shadow-md hover:border-primary/30 transition-all"
                                             >
-                                                <h4 className="font-semibold">{related.name}</h4>
-                                                <p className="text-sm text-muted-foreground">{related.address}</p>
+                                                <h4 className="font-semibold group-hover:text-primary transition-colors">{related.name}</h4>
+                                                <p className="text-sm text-muted-foreground flex items-center gap-1 mt-0.5">
+                                                    <MapPin className="h-3 w-3" />
+                                                    {related.address}
+                                                </p>
                                             </Link>
                                         ))}
                                     </div>
@@ -318,21 +326,24 @@ export default function BusinessShow({
                 {aiServices.enabled && aiServices.chat_enabled && (
                     <>
                         {chatOpen && (
-                            <div className="fixed bottom-20 right-4 w-96 bg-card rounded-lg shadow-xl border border z-50">
-                                <div className="bg-primary text-white p-4 rounded-t-lg flex justify-between items-center">
-                                    <h3 className="font-semibold">Chat with {business.name}</h3>
-                                    <button onClick={() => setChatOpen(false)} className="text-white hover:text-gray-200">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
+                            <div className="fixed bottom-20 right-4 w-96 bg-card rounded-2xl shadow-2xl border z-50 overflow-hidden">
+                                <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 flex justify-between items-center">
+                                    <h3 className="font-semibold flex items-center gap-2">
+                                        <MessageCircle className="h-4 w-4" />
+                                        Chat with {business.name}
+                                    </h3>
+                                    <button onClick={() => setChatOpen(false)} className="text-white/80 hover:text-white transition-colors">
+                                        <X className="w-5 h-5" />
                                     </button>
                                 </div>
                                 <div className="h-96 overflow-y-auto p-4 space-y-3">
                                     {chatMessages.map((msg, idx) => (
                                         <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                                             <div
-                                                className={`max-w-xs p-3 rounded-lg ${
-                                                    msg.role === "user" ? "bg-primary text-white" : "bg-muted text-gray-800"
+                                                className={`max-w-xs p-3 rounded-2xl text-sm ${
+                                                    msg.role === "user"
+                                                        ? "bg-primary text-primary-foreground rounded-br-md"
+                                                        : "bg-muted text-foreground rounded-bl-md"
                                                 }`}
                                             >
                                                 {msg.content}
@@ -340,22 +351,22 @@ export default function BusinessShow({
                                         </div>
                                     ))}
                                 </div>
-                                <form onSubmit={handleChatSubmit} className="p-4 border-t border">
-                                    <div className="flex space-x-2">
+                                <form onSubmit={handleChatSubmit} className="p-4 border-t">
+                                    <div className="flex gap-2">
                                         <input
                                             type="text"
                                             value={data.message}
                                             onChange={(e) => setData("message", e.target.value)}
                                             placeholder="Type your message..."
-                                            className="flex-1 border border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="flex-1 border rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
                                             disabled={processing}
                                         />
                                         <button
                                             type="submit"
                                             disabled={processing}
-                                            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary disabled:opacity-50"
+                                            className="p-2 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 disabled:opacity-50 transition-colors"
                                         >
-                                            Send
+                                            <Send className="h-4 w-4" />
                                         </button>
                                     </div>
                                 </form>
@@ -363,16 +374,9 @@ export default function BusinessShow({
                         )}
                         <button
                             onClick={() => setChatOpen(!chatOpen)}
-                            className="fixed bottom-4 right-4 bg-primary text-white p-4 rounded-full shadow-lg hover:bg-primary z-50"
+                            className="fixed bottom-4 right-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-shadow z-50"
                         >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                                />
-                            </svg>
+                            <MessageCircle className="w-6 h-6" />
                         </button>
                     </>
                 )}

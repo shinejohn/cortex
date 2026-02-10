@@ -73,12 +73,14 @@ export const FilterSidebar = ({ filters, onFilterChange, onClearFilters, classNa
     );
 
     return (
-        <div className={cn("p-4 sm:p-6 space-y-4 sm:space-y-6 h-fit bg-card rounded-lg shadow-sm", className)}>
+        <div className={cn("p-5 sm:p-6 space-y-5 sm:space-y-6 h-fit bg-card rounded-xl border border-border/50 shadow-sm", className)}>
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <FilterIcon className="h-5 w-5 text-muted-foreground" />
-                    <h3 className="text-base sm:text-lg font-semibold">Filters</h3>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-950/30">
+                        <FilterIcon className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                    <h3 className="font-display text-base sm:text-lg font-black tracking-tight">Filters</h3>
                 </div>
                 {hasActiveFilters && (
                     <Button
@@ -95,7 +97,7 @@ export const FilterSidebar = ({ filters, onFilterChange, onClearFilters, classNa
 
             {/* Search */}
             <div className="space-y-2">
-                <Label htmlFor="search-tickets">Search</Label>
+                <Label htmlFor="search-tickets" className="text-sm font-medium">Search</Label>
                 <div className="relative">
                     <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
@@ -104,7 +106,7 @@ export const FilterSidebar = ({ filters, onFilterChange, onClearFilters, classNa
                         placeholder="Search events..."
                         value={filters.search || ""}
                         onChange={handleSearchChange}
-                        className="pl-10"
+                        className="pl-10 bg-muted/30 border-border/50 focus:bg-background"
                     />
                 </div>
             </div>
@@ -114,16 +116,20 @@ export const FilterSidebar = ({ filters, onFilterChange, onClearFilters, classNa
                 <Label className="text-sm font-medium">Categories</Label>
                 <div className="space-y-2">
                     {CATEGORIES.map((category) => (
-                        <div key={category} className="flex items-center space-x-2">
+                        <label
+                            key={category}
+                            htmlFor={`category-${category}`}
+                            className="flex items-center gap-2.5 rounded-md px-2 py-1.5 cursor-pointer hover:bg-muted/50 transition-colors"
+                        >
                             <Checkbox
                                 id={`category-${category}`}
                                 checked={filters.categories?.includes(category) || false}
                                 onCheckedChange={(checked) => handleCategoryChange(category, checked as boolean)}
                             />
-                            <Label htmlFor={`category-${category}`} className="text-sm font-normal cursor-pointer">
+                            <span className="text-sm">
                                 {category}
-                            </Label>
-                        </div>
+                            </span>
+                        </label>
                     ))}
                 </div>
             </div>
@@ -135,11 +141,11 @@ export const FilterSidebar = ({ filters, onFilterChange, onClearFilters, classNa
                     <div className="px-2">
                         <Slider value={priceRange} onValueChange={handlePriceChange} max={500} min={0} step={5} className="w-full" />
                         <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                            <span>${priceRange[0]}</span>
-                            <span>${priceRange[1]}</span>
+                            <span className="font-medium">${priceRange[0]}</span>
+                            <span className="font-medium">${priceRange[1]}</span>
                         </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div className="grid grid-cols-2 gap-1.5">
                         {PRICE_RANGES.map((range) => (
                             <Button
                                 key={range.label}
@@ -148,7 +154,8 @@ export const FilterSidebar = ({ filters, onFilterChange, onClearFilters, classNa
                                 onClick={() => handlePriceQuickSelect(range.min, range.max)}
                                 className={cn(
                                     "text-xs h-8",
-                                    priceRange[0] === range.min && priceRange[1] === range.max && "bg-primary text-primary-foreground border-primary",
+                                    priceRange[0] === range.min && priceRange[1] === range.max &&
+                                    "bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700 hover:text-white",
                                 )}
                             >
                                 {range.label}
@@ -160,7 +167,7 @@ export const FilterSidebar = ({ filters, onFilterChange, onClearFilters, classNa
 
             {/* Date */}
             <div className="space-y-2">
-                <Label htmlFor="event-date">Event Date</Label>
+                <Label htmlFor="event-date" className="text-sm font-medium">Event Date</Label>
                 <Input
                     id="event-date"
                     type="date"
@@ -170,12 +177,12 @@ export const FilterSidebar = ({ filters, onFilterChange, onClearFilters, classNa
                             date: e.target.value || undefined,
                         })
                     }
-                    className="w-full"
+                    className="w-full bg-muted/30 border-border/50 focus:bg-background"
                 />
             </div>
 
             {/* Free Events Only */}
-            <div className="flex items-center space-x-2">
+            <label htmlFor="free-only" className="flex items-center gap-2.5 rounded-md px-2 py-2 cursor-pointer hover:bg-muted/50 transition-colors">
                 <Checkbox
                     id="free-only"
                     checked={filters.free_only || false}
@@ -185,10 +192,10 @@ export const FilterSidebar = ({ filters, onFilterChange, onClearFilters, classNa
                         })
                     }
                 />
-                <Label htmlFor="free-only" className="text-sm font-normal cursor-pointer">
+                <span className="text-sm font-medium">
                     Free events only
-                </Label>
-            </div>
+                </span>
+            </label>
         </div>
     );
 };

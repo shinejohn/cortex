@@ -91,7 +91,7 @@ export default function GroupsIndex({ my_groups, suggested_groups }: Props) {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     {/* Page header */}
                     <div className="mb-6">
-                        <h1 className="text-2xl font-bold text-foreground">Groups</h1>
+                        <h1 className="text-2xl font-display font-black tracking-tight text-foreground">Groups</h1>
                         <p className="text-muted-foreground">Connect with people who share your interests</p>
                     </div>
 
@@ -99,21 +99,21 @@ export default function GroupsIndex({ my_groups, suggested_groups }: Props) {
                     <div className="flex flex-col md:flex-row gap-6">
                         {/* Left sidebar */}
                         <div className="md:w-1/4">
-                            <div className="bg-card rounded-lg shadow mb-6">
+                            <div className="bg-card rounded-lg shadow-sm mb-6">
                                 <div className="p-4">
                                     <Link
                                         href="/social/groups/create"
-                                        className="w-full flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                                        className="w-full flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
                                     >
                                         <PlusIcon className="h-5 w-5 mr-2" />
                                         Create New Group
                                     </Link>
                                 </div>
-                                <div className="border-t border">
+                                <div className="border-t">
                                     <nav className="p-2">
                                         <button
                                             onClick={() => setActiveTab("my-groups")}
-                                            className={`flex items-center w-full px-3 py-2 text-left rounded-md ${
+                                            className={`flex items-center w-full px-3 py-2 text-left rounded-md transition-colors ${
                                                 activeTab === "my-groups" ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted/50"
                                             }`}
                                         >
@@ -125,7 +125,7 @@ export default function GroupsIndex({ my_groups, suggested_groups }: Props) {
                                         </button>
                                         <button
                                             onClick={() => setActiveTab("discover")}
-                                            className={`flex items-center w-full px-3 py-2 text-left rounded-md ${
+                                            className={`flex items-center w-full px-3 py-2 text-left rounded-md transition-colors ${
                                                 activeTab === "discover" ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted/50"
                                             }`}
                                         >
@@ -137,8 +137,8 @@ export default function GroupsIndex({ my_groups, suggested_groups }: Props) {
                             </div>
 
                             {/* Categories filter */}
-                            <div className="bg-card rounded-lg shadow">
-                                <div className="p-4 border-b border">
+                            <div className="bg-card rounded-lg shadow-sm">
+                                <div className="p-4 border-b">
                                     <h3 className="font-medium text-foreground">Categories</h3>
                                 </div>
                                 <div className="p-4 max-h-80 overflow-y-auto">
@@ -147,7 +147,7 @@ export default function GroupsIndex({ my_groups, suggested_groups }: Props) {
                                             <button
                                                 key={category}
                                                 onClick={() => setSelectedCategory(category)}
-                                                className={`flex items-center w-full px-3 py-2 text-left rounded-md ${
+                                                className={`flex items-center w-full px-3 py-2 text-left rounded-md transition-colors ${
                                                     selectedCategory === category
                                                         ? "bg-primary/10 text-primary font-medium"
                                                         : "text-foreground hover:bg-muted/50"
@@ -164,7 +164,7 @@ export default function GroupsIndex({ my_groups, suggested_groups }: Props) {
                         {/* Main content area */}
                         <div className="md:w-3/4">
                             {/* Search and filter */}
-                            <div className="bg-card rounded-lg shadow mb-6 p-4">
+                            <div className="bg-card rounded-lg shadow-sm mb-6 p-4">
                                 <div className="flex flex-col sm:flex-row gap-4">
                                     <div className="relative flex-grow">
                                         <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -249,7 +249,7 @@ export default function GroupsIndex({ my_groups, suggested_groups }: Props) {
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="bg-card rounded-lg shadow p-8 text-center">
+                                        <div className="bg-card rounded-lg shadow-sm p-8 text-center">
                                             <UsersIcon className="h-12 w-12 mx-auto text-muted-foreground" />
                                             <h3 className="mt-2 text-lg font-medium text-foreground">No groups found</h3>
                                             <p className="mt-1 text-muted-foreground">You haven't joined any groups yet or none match your search.</p>

@@ -126,9 +126,17 @@ export default function SearchPage() {
         ...results.tags.map((r) => ({ ...r, type: "tag" as const })),
     ];
 
+    const filterOptions = [
+        { value: "all", label: "All" },
+        { value: "articles", label: "Articles" },
+        { value: "events", label: "Events" },
+        { value: "businesses", label: "Businesses" },
+        { value: "tags", label: "Tags" },
+    ];
+
     return (
         <LocationProvider>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen bg-gray-50">
                 <Head title={`Search${searchQuery ? `: ${searchQuery}` : ""} - Day News`} />
                 <SEO
                     type="website"
@@ -141,12 +149,12 @@ export default function SearchPage() {
                 />
                 <DayNewsHeader auth={auth} />
 
-                <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                    {/* Search Bar */}
-                    <div className="mb-6">
+                <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                    {/* Persistent Search Bar */}
+                    <div className="sticky top-0 z-10 mb-6 overflow-hidden rounded-lg border-none bg-white p-4 shadow-md">
                         <form onSubmit={handleSearch} className="relative">
                             <div className="relative">
-                                <Search className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+                                <Search className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
                                 <Input
                                     type="text"
                                     value={searchQuery}
@@ -156,7 +164,7 @@ export default function SearchPage() {
                                     }}
                                     onFocus={() => setShowSuggestions(true)}
                                     placeholder="Search for anything in your community..."
-                                    className="h-14 pl-12 pr-12 text-lg"
+                                    className="h-14 rounded-full border border-gray-300 pl-12 pr-12 text-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
                                 />
                                 {searchQuery && (
                                     <button
@@ -165,48 +173,52 @@ export default function SearchPage() {
                                             setSearchQuery("");
                                             searchForm.setData("q", "");
                                         }}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2"
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                                     >
-                                        <X className="size-5 text-muted-foreground" />
+                                        <X className="size-5" />
                                     </button>
                                 )}
                             </div>
 
                             {/* Suggestions Dropdown */}
                             {showSuggestions && (suggestions.length > 0 || trendingSearches.length > 0) && (
-                                <div className="absolute z-10 mt-2 w-full rounded-lg border bg-card shadow-lg">
+                                <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
                                     {suggestions.length > 0 && (
                                         <div className="p-2">
-                                            <div className="mb-2 px-2 text-xs font-semibold text-muted-foreground">Suggestions</div>
+                                            <div className="mb-2 px-3 text-xs font-semibold uppercase text-gray-500">
+                                                Suggestions
+                                            </div>
                                             {suggestions.map((suggestion, index) => (
                                                 <button
                                                     key={index}
                                                     type="button"
                                                     onClick={() => handleSuggestionClick(suggestion)}
-                                                    className="w-full rounded px-3 py-2 text-left text-sm hover:bg-muted"
+                                                    className="flex w-full items-center rounded px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
                                                 >
-                                                    <Search className="mr-2 inline size-4 text-muted-foreground" />
+                                                    <Search className="mr-2 inline size-4 text-gray-400" />
                                                     {suggestion}
                                                 </button>
                                             ))}
                                         </div>
                                     )}
                                     {trendingSearches.length > 0 && (
-                                        <div className="border-t p-2">
-                                            <div className="mb-2 flex items-center gap-2 px-2 text-xs font-semibold text-muted-foreground">
+                                        <div className="border-t border-gray-100 p-2">
+                                            <div className="mb-2 flex items-center gap-2 px-3 text-xs font-semibold uppercase text-gray-500">
                                                 <TrendingUp className="size-3" />
                                                 Trending Searches
                                             </div>
-                                            {trendingSearches.map((trending, index) => (
-                                                <button
-                                                    key={index}
-                                                    type="button"
-                                                    onClick={() => handleSuggestionClick(trending)}
-                                                    className="w-full rounded px-3 py-2 text-left text-sm hover:bg-muted"
-                                                >
-                                                    {trending}
-                                                </button>
-                                            ))}
+                                            <div className="flex flex-wrap gap-2 px-3 pb-2">
+                                                {trendingSearches.map((trending, index) => (
+                                                    <button
+                                                        key={index}
+                                                        type="button"
+                                                        onClick={() => handleSuggestionClick(trending)}
+                                                        className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700 hover:bg-gray-200"
+                                                    >
+                                                        {trending}
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
                                     )}
                                 </div>
@@ -218,41 +230,44 @@ export default function SearchPage() {
                     {searchQuery && (
                         <div className="mb-6 flex flex-wrap items-center gap-4">
                             <div className="flex items-center gap-2">
-                                <Filter className="size-4 text-muted-foreground" />
-                                <span className="text-sm font-medium">Filter:</span>
+                                <Filter className="size-4 text-gray-500" />
+                                <span className="text-sm font-medium text-gray-700">Filter:</span>
                                 <div className="flex gap-2">
-                                    {["all", "articles", "events", "businesses", "tags"].map((f) => (
-                                        <Button
-                                            key={f}
-                                            variant={filter === f ? "default" : "outline"}
-                                            size="sm"
-                                            onClick={() => handleFilterChange(f)}
+                                    {filterOptions.map((f) => (
+                                        <button
+                                            key={f.value}
+                                            onClick={() => handleFilterChange(f.value)}
+                                            className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                                                filter === f.value
+                                                    ? "bg-indigo-600 text-white"
+                                                    : "bg-white text-gray-700 shadow-sm hover:bg-gray-50"
+                                            }`}
                                         >
-                                            {f.charAt(0).toUpperCase() + f.slice(1)}
-                                        </Button>
+                                            {f.label}
+                                        </button>
                                     ))}
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium">Sort:</span>
+                                <span className="text-sm font-medium text-gray-700">Sort:</span>
                                 <select
                                     value={sort}
                                     onChange={(e) => handleSortChange(e.target.value)}
-                                    className="rounded-md border bg-background px-3 py-1.5 text-sm"
+                                    className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm focus:border-indigo-500 focus:ring-indigo-500"
                                 >
                                     <option value="relevance">Relevance</option>
-                                    <option value="date">Date</option>
-                                    <option value="popularity">Popularity</option>
+                                    <option value="date">Most Recent</option>
+                                    <option value="popularity">Most Popular</option>
                                 </select>
                             </div>
 
                             <div className="flex items-center gap-2">
-                                <Clock className="size-4 text-muted-foreground" />
+                                <Clock className="size-4 text-gray-500" />
                                 <select
                                     value={timeFilter}
                                     onChange={(e) => handleTimeFilterChange(e.target.value)}
-                                    className="rounded-md border bg-background px-3 py-1.5 text-sm"
+                                    className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm focus:border-indigo-500 focus:ring-indigo-500"
                                 >
                                     <option value="any">Any Time</option>
                                     <option value="today">Today</option>
@@ -267,23 +282,30 @@ export default function SearchPage() {
                     {/* Results */}
                     {searchQuery ? (
                         <div>
-                            <div className="mb-4 text-sm text-muted-foreground">
-                                {totalResults} {totalResults === 1 ? "result" : "results"} for "{searchQuery}"
+                            {/* Results Summary */}
+                            <div className="mb-6 flex items-center justify-between">
+                                <h2 className="text-xl font-bold text-gray-900">
+                                    <span className="text-indigo-600">{totalResults}</span>{" "}
+                                    {totalResults === 1 ? "result" : "results"} for &ldquo;{searchQuery}&rdquo;
+                                </h2>
                             </div>
 
                             {totalResults === 0 ? (
-                                <div className="py-12 text-center">
-                                    <Search className="mx-auto mb-4 size-12 text-muted-foreground" />
-                                    <h3 className="mb-2 text-xl font-semibold">No results found</h3>
-                                    <p className="text-muted-foreground">Try adjusting your search terms or filters.</p>
+                                <div className="overflow-hidden rounded-lg border-none bg-white py-12 text-center shadow-sm">
+                                    <Search className="mx-auto mb-4 size-12 text-gray-400" />
+                                    <h3 className="mb-2 text-xl font-bold text-gray-700">No results found</h3>
+                                    <p className="mx-auto max-w-md text-gray-500">
+                                        We couldn&apos;t find any matches for &ldquo;{searchQuery}&rdquo;. Try different
+                                        keywords or filters.
+                                    </p>
                                 </div>
                             ) : (
-                                <div className="space-y-6">
+                                <div className="space-y-8">
                                     {/* Articles */}
                                     {results.articles.length > 0 && (
                                         <div>
-                                            <h2 className="mb-4 flex items-center gap-2 border-b pb-2 font-serif text-2xl font-bold">
-                                                <FileText className="size-5" />
+                                            <h2 className="mb-4 flex items-center gap-2 border-b border-gray-200 pb-2 font-display text-xl font-black tracking-tight text-gray-900">
+                                                <FileText className="size-5 text-indigo-600" />
                                                 Articles ({results.articles.length})
                                             </h2>
                                             <div className="space-y-4">
@@ -304,7 +326,8 @@ export default function SearchPage() {
                                                                       name: article.author.name,
                                                                   }
                                                                 : null,
-                                                            regions: article.regions?.map((r) => ({ id: r, name: r })) || [],
+                                                            regions:
+                                                                article.regions?.map((r) => ({ id: r, name: r })) || [],
                                                         }}
                                                     />
                                                 ))}
@@ -315,21 +338,33 @@ export default function SearchPage() {
                                     {/* Events */}
                                     {results.events.length > 0 && (
                                         <div>
-                                            <h2 className="mb-4 flex items-center gap-2 border-b pb-2 font-serif text-2xl font-bold">
-                                                <Calendar className="size-5" />
+                                            <h2 className="mb-4 flex items-center gap-2 border-b border-gray-200 pb-2 font-display text-xl font-black tracking-tight text-gray-900">
+                                                <Calendar className="size-5 text-indigo-600" />
                                                 Events ({results.events.length})
                                             </h2>
                                             <div className="grid gap-4 md:grid-cols-2">
                                                 {results.events.map((event) => (
-                                                    <div key={event.id} className="rounded-lg border p-4">
-                                                        <h3 className="mb-2 font-semibold">{event.title}</h3>
+                                                    <div
+                                                        key={event.id}
+                                                        className="group overflow-hidden rounded-lg border-none bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+                                                    >
+                                                        <h3 className="mb-2 font-semibold text-gray-900 group-hover:text-indigo-600">
+                                                            {event.title}
+                                                        </h3>
                                                         {event.description && (
-                                                            <p className="mb-2 text-sm text-muted-foreground">{event.description}</p>
+                                                            <p className="mb-2 text-sm text-gray-500">
+                                                                {event.description}
+                                                            </p>
                                                         )}
-                                                        <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                                                            {event.date && <span>{new Date(event.date).toLocaleDateString()}</span>}
-                                                            {event.venue && <span>• {event.venue}</span>}
-                                                            {event.location && <span>• {event.location}</span>}
+                                                        <div className="flex flex-wrap gap-2 text-xs text-gray-500">
+                                                            {event.date && (
+                                                                <span className="flex items-center gap-1">
+                                                                    <Calendar className="size-3" />
+                                                                    {new Date(event.date).toLocaleDateString()}
+                                                                </span>
+                                                            )}
+                                                            {event.venue && <span>* {event.venue}</span>}
+                                                            {event.location && <span>* {event.location}</span>}
                                                         </div>
                                                     </div>
                                                 ))}
@@ -340,21 +375,34 @@ export default function SearchPage() {
                                     {/* Businesses */}
                                     {results.businesses.length > 0 && (
                                         <div>
-                                            <h2 className="mb-4 flex items-center gap-2 border-b pb-2 font-serif text-2xl font-bold">
-                                                <Building className="size-5" />
+                                            <h2 className="mb-4 flex items-center gap-2 border-b border-gray-200 pb-2 font-display text-xl font-black tracking-tight text-gray-900">
+                                                <Building className="size-5 text-indigo-600" />
                                                 Businesses ({results.businesses.length})
                                             </h2>
                                             <div className="grid gap-4 md:grid-cols-2">
                                                 {results.businesses.map((business) => (
-                                                    <div key={business.id} className="rounded-lg border p-4">
-                                                        <h3 className="mb-2 font-semibold">{business.title}</h3>
+                                                    <div
+                                                        key={business.id}
+                                                        className="group overflow-hidden rounded-lg border-none bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+                                                    >
+                                                        <h3 className="mb-2 font-semibold text-gray-900 group-hover:text-indigo-600">
+                                                            {business.title}
+                                                        </h3>
                                                         {business.description && (
-                                                            <p className="mb-2 text-sm text-muted-foreground">{business.description}</p>
+                                                            <p className="mb-2 text-sm text-gray-500">
+                                                                {business.description}
+                                                            </p>
                                                         )}
-                                                        <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                                                        <div className="flex flex-wrap gap-2 text-xs text-gray-500">
                                                             {business.address && <span>{business.address}</span>}
-                                                            {business.rating && <span>• Rating: {business.rating}/5</span>}
-                                                            {business.review_count && <span>• {business.review_count} reviews</span>}
+                                                            {business.rating && (
+                                                                <span className="text-indigo-600">
+                                                                    * Rating: {business.rating}/5
+                                                                </span>
+                                                            )}
+                                                            {business.review_count && (
+                                                                <span>* {business.review_count} reviews</span>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 ))}
@@ -365,8 +413,8 @@ export default function SearchPage() {
                                     {/* Tags */}
                                     {results.tags.length > 0 && (
                                         <div>
-                                            <h2 className="mb-4 flex items-center gap-2 border-b pb-2 font-serif text-2xl font-bold">
-                                                <Hash className="size-5" />
+                                            <h2 className="mb-4 flex items-center gap-2 border-b border-gray-200 pb-2 font-display text-xl font-black tracking-tight text-gray-900">
+                                                <Hash className="size-5 text-indigo-600" />
                                                 Tags ({results.tags.length})
                                             </h2>
                                             <div className="flex flex-wrap gap-2">
@@ -374,11 +422,15 @@ export default function SearchPage() {
                                                     <Badge
                                                         key={tag.id}
                                                         variant="outline"
-                                                        className="cursor-pointer px-4 py-2 text-base hover:bg-primary/10"
+                                                        className="cursor-pointer border-gray-200 px-4 py-2 text-base text-gray-700 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600"
                                                         onClick={() => router.visit(`/tag/${tag.slug}`)}
                                                     >
                                                         {tag.title}
-                                                        {tag.article_count && <span className="ml-2 text-xs">({tag.article_count})</span>}
+                                                        {tag.article_count && (
+                                                            <span className="ml-2 text-xs text-gray-400">
+                                                                ({tag.article_count})
+                                                            </span>
+                                                        )}
                                                     </Badge>
                                                 ))}
                                             </div>
@@ -388,18 +440,30 @@ export default function SearchPage() {
                             )}
                         </div>
                     ) : (
+                        /* Empty State / Trending */
                         <div className="py-12 text-center">
-                            <Search className="mx-auto mb-4 size-12 text-muted-foreground" />
-                            <h3 className="mb-2 text-xl font-semibold">Start your search</h3>
-                            <p className="mb-6 text-muted-foreground">Search for articles, events, businesses, and more.</p>
+                            <Search className="mx-auto mb-4 size-12 text-gray-400" />
+                            <h3 className="mb-2 font-display text-xl font-black tracking-tight text-gray-900">
+                                Start your search
+                            </h3>
+                            <p className="mb-6 text-gray-500">
+                                Search for articles, events, businesses, and more.
+                            </p>
                             {trendingSearches.length > 0 && (
                                 <div>
-                                    <p className="mb-2 text-sm font-medium text-muted-foreground">Trending Searches:</p>
+                                    <p className="mb-3 flex items-center justify-center gap-2 text-sm font-medium text-gray-500">
+                                        <TrendingUp className="size-4 text-indigo-600" />
+                                        Trending Searches
+                                    </p>
                                     <div className="flex flex-wrap justify-center gap-2">
                                         {trendingSearches.map((trending, index) => (
-                                            <Button key={index} variant="outline" size="sm" onClick={() => handleSuggestionClick(trending)}>
+                                            <button
+                                                key={index}
+                                                onClick={() => handleSuggestionClick(trending)}
+                                                className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 shadow-sm transition-colors hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600"
+                                            >
                                                 {trending}
-                                            </Button>
+                                            </button>
                                         ))}
                                     </div>
                                 </div>

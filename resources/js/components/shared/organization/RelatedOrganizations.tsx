@@ -37,28 +37,24 @@ export function RelatedOrganizations({
         return null;
     }
 
-    const themeColors = {
-        daynews: "text-blue-600",
-        downtownsguide: "text-purple-600",
-        eventcity: "text-indigo-600",
-    };
-
     return (
-        <div className={cn("space-y-2", className)}>
-            <h3 className="text-sm font-semibold text-foreground">Related Organizations</h3>
-            <div className="space-y-2">
+        <div className={cn("space-y-3", className)}>
+            <h3 className="text-[10px] uppercase tracking-widest font-black text-muted-foreground">Related Organizations</h3>
+            <div className="space-y-1">
                 {displayedOrgs.map((org) => {
                     const href = org.slug ? `/organizations/${org.slug}` : `/organizations/${org.id}`;
 
                     return (
-                        <Link key={org.id} href={href} className="flex items-center gap-2 rounded-md p-2 hover:bg-muted">
-                            <BuildingIcon className={cn("h-4 w-4", themeColors[theme])} />
-                            <div className="flex-1">
-                                <p className="text-sm font-medium text-foreground">{org.name}</p>
+                        <Link key={org.id} href={href} className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-muted">
+                            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-indigo-50">
+                                <BuildingIcon className="size-4 text-primary" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="truncate text-sm font-medium text-foreground">{org.name}</p>
                                 {showRelationshipType && org.relationship_type && (
                                     <p className="text-xs text-muted-foreground capitalize">
                                         {org.relationship_type.replace("_", " ")}
-                                        {org.is_primary && " • Primary"}
+                                        {org.is_primary && " \u00b7 Primary"}
                                     </p>
                                 )}
                             </div>

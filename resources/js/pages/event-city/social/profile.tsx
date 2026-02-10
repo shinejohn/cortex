@@ -166,9 +166,12 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
             <div className="min-h-screen bg-muted/50">
                 <div className="max-w-4xl mx-auto">
                     {/* Cover photo */}
-                    <div className="relative h-64 bg-gradient-to-r from-blue-500 to-purple-600 rounded-b-lg overflow-hidden">
+                    <div className="relative h-64 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-b-lg overflow-hidden">
+                        {profile_user.social_profile?.cover_photo && (
+                            <img src={profile_user.social_profile.cover_photo} alt="Cover" className="w-full h-full object-cover" />
+                        )}
                         {isOwnProfile && (
-                            <button className="absolute top-4 right-4 bg-card bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm rounded-lg px-3 py-2 text-white text-sm font-medium">
+                            <button className="absolute top-4 right-4 bg-card/20 hover:bg-card/30 backdrop-blur-sm rounded-lg px-3 py-2 text-white text-sm font-medium transition-colors">
                                 <CameraIcon className="h-4 w-4 mr-2 inline" />
                                 Edit Cover Photo
                             </button>
@@ -176,17 +179,17 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
                     </div>
 
                     {/* Profile header */}
-                    <div className="relative bg-card shadow rounded-b-lg -mt-16 pt-16 pb-6 px-6">
-                        <div className="flex flex-col sm:flex-row items-center sm:items-end space-y-4 sm:space-y-0 sm:space-x-6">
+                    <div className="relative bg-card shadow-sm rounded-b-lg -mt-16 pt-16 pb-6 px-6">
+                        <div className="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6">
                             {/* Profile photo */}
                             <div className="relative -mt-20">
                                 <img
                                     src={profile_user.avatar}
                                     alt={profile_user.name}
-                                    className="w-32 h-32 rounded-full ring-4 ring-white bg-card object-cover"
+                                    className="w-32 h-32 rounded-full ring-4 ring-background bg-card object-cover shadow-md"
                                 />
                                 {isOwnProfile && (
-                                    <button className="absolute bottom-2 right-2 bg-secondary hover:bg-secondary/80 text-secondary-foreground rounded-full p-2">
+                                    <button className="absolute bottom-2 right-2 bg-secondary hover:bg-secondary/80 text-secondary-foreground rounded-full p-2 shadow-sm transition-colors">
                                         <CameraIcon className="h-4 w-4" />
                                     </button>
                                 )}
@@ -194,7 +197,7 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
 
                             {/* Profile info */}
                             <div className="flex-1 text-center sm:text-left">
-                                <h1 className="text-2xl font-bold text-foreground">{profile_user.name}</h1>
+                                <h1 className="text-2xl font-display font-black tracking-tight text-foreground">{profile_user.name}</h1>
                                 {profile_user.username && <p className="text-muted-foreground">@{profile_user.username}</p>}
                                 {profile_user.social_profile?.bio && <p className="text-foreground mt-2">{profile_user.social_profile.bio}</p>}
 
@@ -219,7 +222,7 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
                                                 href={profile_user.social_profile.website}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-primary hover:text-primary/80"
+                                                className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300"
                                             >
                                                 Website
                                             </a>
@@ -248,7 +251,7 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
                             </div>
 
                             {/* Action buttons */}
-                            <div className="flex space-x-2">
+                            <div className="flex gap-2">
                                 {isOwnProfile ? (
                                     <Link href="/settings/profile">
                                         <Button variant="outline">
@@ -290,10 +293,10 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
                     </div>
 
                     {/* Profile content */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 px-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 px-4 sm:px-6">
                         {/* Left sidebar - About */}
                         <div className="lg:col-span-1">
-                            <div className="bg-card rounded-lg shadow p-6">
+                            <div className="group bg-card overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow rounded-lg p-6">
                                 <h3 className="text-lg font-semibold text-foreground mb-4">About</h3>
 
                                 <div className="space-y-4">
@@ -318,7 +321,7 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
                                                 href={profile_user.social_profile.website}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-sm text-primary hover:text-primary/80"
+                                                className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300"
                                             >
                                                 {profile_user.social_profile.website}
                                             </a>
@@ -337,10 +340,10 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
                             </div>
 
                             {/* Friends preview */}
-                            <div className="bg-card rounded-lg shadow p-6 mt-6">
+                            <div className="group bg-card overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow rounded-lg p-6 mt-6">
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="text-lg font-semibold text-foreground">Friends</h3>
-                                    <Link href={`/social/profile/${profile_user.id}/friends`} className="text-sm text-primary hover:text-primary/80">
+                                    <Link href={`/social/profile/${profile_user.id}/friends`} className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300">
                                         See all
                                     </Link>
                                 </div>
@@ -373,24 +376,24 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
                             <div className="space-y-6">
                                 {posts.length > 0 ? (
                                     posts.map((post) => (
-                                        <div key={post.id} className="bg-card rounded-lg shadow p-6">
+                                        <div key={post.id} className="group bg-card overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow rounded-lg p-6">
                                             {/* Post header */}
                                             <div className="flex items-center justify-between mb-4">
-                                                <div className="flex items-center space-x-3">
+                                                <div className="flex items-center gap-3">
                                                     <img src={profile_user.avatar} alt={profile_user.name} className="w-10 h-10 rounded-full" />
                                                     <div>
                                                         <h3 className="font-medium text-foreground">{profile_user.name}</h3>
                                                         <p className="text-sm text-muted-foreground">{formatDate(post.created_at)}</p>
                                                     </div>
                                                 </div>
-                                                <button className="text-muted-foreground hover:text-muted-foreground">
+                                                <button className="text-muted-foreground hover:text-foreground transition-colors">
                                                     <MoreHorizontalIcon className="h-5 w-5" />
                                                 </button>
                                             </div>
 
                                             {/* Post content */}
                                             <div className="mb-4">
-                                                <p className="text-gray-800 whitespace-pre-line">{post.content}</p>
+                                                <p className="text-foreground whitespace-pre-line">{post.content}</p>
                                                 {post.media && post.media.length > 0 && (
                                                     <div className="mt-3 grid grid-cols-1 gap-2">
                                                         {post.media.map((media, index) => (
@@ -406,21 +409,21 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
                                             </div>
 
                                             {/* Post actions */}
-                                            <div className="flex items-center justify-between border-t border-gray-100 pt-3">
+                                            <div className="flex items-center justify-between border-t pt-3">
                                                 <button
                                                     onClick={() => (post.is_liked_by_user ? handleUnlikePost(post.id) : handleLikePost(post.id))}
-                                                    className={`flex items-center space-x-2 ${
+                                                    className={`flex items-center gap-2 ${
                                                         post.is_liked_by_user ? "text-primary" : "text-muted-foreground hover:text-foreground"
-                                                    }`}
+                                                    } transition-colors`}
                                                 >
                                                     <ThumbsUpIcon className="h-5 w-5" />
                                                     <span>{post.likes_count}</span>
                                                 </button>
-                                                <button className="flex items-center space-x-2 text-muted-foreground hover:text-foreground">
+                                                <button className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
                                                     <MessageCircleIcon className="h-5 w-5" />
                                                     <span>{post.comments_count}</span>
                                                 </button>
-                                                <button className="flex items-center space-x-2 text-muted-foreground hover:text-foreground">
+                                                <button className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
                                                     <ShareIcon className="h-5 w-5" />
                                                     <span>{post.shares_count}</span>
                                                 </button>
@@ -428,7 +431,7 @@ export default function Profile({ profile_user, posts, current_user, friends, fr
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="bg-card rounded-lg shadow p-8 text-center">
+                                    <div className="bg-card rounded-lg shadow-sm p-8 text-center">
                                         <p className="text-muted-foreground">No posts yet.</p>
                                     </div>
                                 )}

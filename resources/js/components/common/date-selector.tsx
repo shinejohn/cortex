@@ -48,8 +48,6 @@ const DateSelector = ({ onDateChange, currentView, setCurrentView, onCategoryCha
 
     const handleViewChange = (view: "daily" | "weekly" | "monthly") => {
         setCurrentView(view);
-        // You might want to adjust the selected date based on view
-        // For example, if switching to weekly, you might want to set to the start of the week
     };
 
     const handleDateSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,7 +65,7 @@ const DateSelector = ({ onDateChange, currentView, setCurrentView, onCategoryCha
     return (
         <div className="py-4 bg-muted/30">
             {/* Date and View Selection Section */}
-            <div className="max-w-7xl mx-auto px-3 sm:px-4">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
                     {/* Date Display and Navigation */}
                     <div className="flex items-center gap-4">

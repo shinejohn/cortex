@@ -49,10 +49,12 @@ export default function ContactPage() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-primary text-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="relative bg-primary text-white overflow-hidden">
+                <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
                     <div className="text-center">
-                        <h1 className="text-4xl font-extrabold sm:text-5xl">Contact Us</h1>
+                        <h1 className="font-display text-4xl font-black tracking-tight sm:text-5xl">Contact Us</h1>
                         <p className="mt-4 text-xl text-indigo-100 max-w-3xl mx-auto">
                             Have a question or want to get in touch? We'd love to hear from you.
                         </p>
@@ -65,7 +67,7 @@ export default function ContactPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Contact Form */}
                     <div className="lg:col-span-2">
-                        <Card>
+                        <Card className="overflow-hidden border-none shadow-sm">
                             <CardHeader>
                                 <CardTitle>Send us a message</CardTitle>
                             </CardHeader>
@@ -151,7 +153,7 @@ export default function ContactPage() {
 
                     {/* Contact Information */}
                     <div className="space-y-6">
-                        <Card>
+                        <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                             <CardHeader>
                                 <CardTitle>Get in Touch</CardTitle>
                             </CardHeader>
@@ -184,7 +186,7 @@ export default function ContactPage() {
                             </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                             <CardHeader>
                                 <CardTitle>Office Hours</CardTitle>
                             </CardHeader>
@@ -206,7 +208,7 @@ export default function ContactPage() {
                             </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                             <CardHeader>
                                 <CardTitle>Quick Links</CardTitle>
                             </CardHeader>

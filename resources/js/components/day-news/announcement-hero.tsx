@@ -16,27 +16,20 @@ export function AnnouncementHero({ location = "Clearwater", readerCount = 247 }:
         if (hour >= 5 && hour < 12) setGreeting("Good Morning");
         else if (hour >= 12 && hour < 18) setGreeting("Good Afternoon");
         else setGreeting("Good Evening");
-
-        /* 
-        const interval = setInterval(() => {
-            setActiveReaders((prev) => Math.floor(Math.random() * 20) - 10 + prev);
-        }, 5000);
-
-        return () => clearInterval(interval);
-        */
     }, []);
 
     return (
         <div className="relative overflow-hidden bg-white border-b">
+            {/* Decorative blobs */}
             <div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-primary/5 blur-3xl" />
             <div className="absolute bottom-0 left-0 -ml-16 -mb-16 h-64 w-64 rounded-full bg-blue-500/5 blur-3xl" />
 
-            <div className="container relative mx-auto px-4 py-8 lg:px-8">
+            <div className="container relative mx-auto px-4 py-8 sm:px-6 lg:px-8">
                 <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
                     <div>
                         <div className="mb-2 flex items-center gap-2 text-primary">
                             <Sparkles className="size-4 fill-current" />
-                            <span className="text-xs font-black uppercase tracking-[0.2em]">{greeting}, {location}</span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em]">{greeting}, {location}</span>
                         </div>
                         <h1 className="font-display text-4xl font-black tracking-tight md:text-5xl lg:text-6xl">
                             Community <span className="text-primary italic">Announcements</span>
@@ -48,9 +41,9 @@ export function AnnouncementHero({ location = "Clearwater", readerCount = 247 }:
 
                     <div className="flex items-center gap-8 border-l border-muted pl-8 md:pl-12">
                         <div className="flex flex-col">
-                            <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Community Pulse</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Community Pulse</span>
                             <div className="mt-1 flex items-center gap-2">
-                                <span className="flex size-2 items-center justify-center">
+                                <span className="relative flex size-2 items-center justify-center">
                                     <span className="absolute size-2 animate-ping rounded-full bg-green-500 opacity-75"></span>
                                     <span className="relative size-2 rounded-full bg-green-500"></span>
                                 </span>
@@ -62,7 +55,7 @@ export function AnnouncementHero({ location = "Clearwater", readerCount = 247 }:
                         </div>
 
                         <div className="hidden lg:flex flex-col">
-                            <span className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Regional Focus</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Regional Focus</span>
                             <div className="mt-1 flex items-center gap-2">
                                 <div className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-primary">
                                     <MapPin className="size-4" />

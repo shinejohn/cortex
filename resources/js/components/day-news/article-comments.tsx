@@ -55,7 +55,6 @@ export function ArticleComments({ articleId, comments: initialComments, total, a
             onSuccess: () => {
                 commentForm.reset();
                 setReplyingTo(null);
-                // Reload comments section only
                 router.reload({ only: ["comments"] });
             },
         });
@@ -94,10 +93,10 @@ export function ArticleComments({ articleId, comments: initialComments, total, a
                             replies: comment.replies?.map((reply) =>
                                 reply.id === commentId
                                     ? {
-                                        ...reply,
-                                        likes_count: data.likes_count,
-                                        is_liked_by_user: data.liked,
-                                    }
+                                          ...reply,
+                                          likes_count: data.likes_count,
+                                          is_liked_by_user: data.liked,
+                                      }
                                     : reply,
                             ),
                         };
@@ -121,11 +120,11 @@ export function ArticleComments({ articleId, comments: initialComments, total, a
     });
 
     return (
-        <div className="mt-8 rounded-lg border bg-card">
+        <div className="mt-8 overflow-hidden rounded-lg border bg-card">
             {/* Header */}
-            <div className="bg-primary text-primary-foreground flex items-center px-6 py-4">
+            <div className="flex items-center bg-primary px-6 py-4 text-primary-foreground">
                 <MessageSquare className="mr-2 size-5" />
-                <h2 className="text-xl font-bold">Join the Conversation</h2>
+                <h2 className="font-display text-xl font-black tracking-tight">Join the Conversation</h2>
             </div>
 
             {/* Comment Form */}
@@ -133,9 +132,9 @@ export function ArticleComments({ articleId, comments: initialComments, total, a
                 <div className="border-b p-6">
                     <form onSubmit={handleSubmit} className="flex gap-3">
                         <Avatar className="size-10 shrink-0 ring-2 ring-background">
-                            <AvatarImage src={auth.user?.avatar || undefined} alt={auth.user?.name || 'User'} />
-                            <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
-                                {auth.user?.name?.slice(0, 2).toUpperCase() || 'U'}
+                            <AvatarImage src={auth.user?.avatar || undefined} alt={auth.user?.name || "User"} />
+                            <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
+                                {auth.user?.name?.slice(0, 2).toUpperCase() || "U"}
                             </AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
@@ -143,7 +142,7 @@ export function ArticleComments({ articleId, comments: initialComments, total, a
                                 placeholder={replyingTo ? "Write a reply..." : "What's your take?"}
                                 value={commentForm.data.content}
                                 onChange={(e) => commentForm.setData("content", e.target.value)}
-                                className="min-h-[80px] resize-none"
+                                className="min-h-[80px] resize-none focus-within:ring-2 focus-within:ring-primary"
                                 rows={3}
                             />
                             <div className="mt-2 flex items-center justify-between">
@@ -154,7 +153,12 @@ export function ArticleComments({ articleId, comments: initialComments, total, a
                                             Cancel
                                         </Button>
                                     )}
-                                    <Button type="submit" size="sm" disabled={!commentForm.data.content.trim() || commentForm.processing}>
+                                    <Button
+                                        type="submit"
+                                        size="sm"
+                                        disabled={!commentForm.data.content.trim() || commentForm.processing}
+                                        className="flex items-center"
+                                    >
                                         <Send className="mr-1.5 size-4" />
                                         Post Comment
                                     </Button>
@@ -173,13 +177,13 @@ export function ArticleComments({ articleId, comments: initialComments, total, a
                         <select
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value as "best" | "newest" | "oldest")}
-                            className="appearance-none rounded-md border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                            className="appearance-none rounded-md border bg-background px-3 py-1.5 pr-8 text-sm font-medium text-primary focus:outline-none focus:ring-2 focus:ring-primary"
                         >
                             <option value="best">Best</option>
                             <option value="newest">Newest</option>
                             <option value="oldest">Oldest</option>
                         </select>
-                        <ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-4 -translate-y-1/2" />
+                        <ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                     </div>
                 </div>
                 <span className="text-sm text-muted-foreground">{total} comments</span>
@@ -206,6 +210,13 @@ export function ArticleComments({ articleId, comments: initialComments, total, a
                     )}
                 </div>
             )}
+
+            {/* Load more */}
+            {sortedComments.length > 0 && sortedComments.length < total && (
+                <div className="p-6 text-center">
+                    <button className="font-medium text-primary hover:underline">Load More Comments</button>
+                </div>
+            )}
         </div>
     );
 }
@@ -225,36 +236,41 @@ function CommentItem({ comment, onLike, onReply, auth }: CommentItemProps) {
             <div className="flex gap-3">
                 <Avatar className="size-10 shrink-0 ring-2 ring-background">
                     <AvatarImage src={comment.user.avatar || undefined} alt={comment.user.name} />
-                    <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
+                    <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
                         {comment.user.name.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                    <div className="mb-2 flex items-center gap-2">
-                        <span className="font-semibold">{comment.user.name}</span>
+                    <div className="mb-1 flex items-center gap-2">
+                        <span className="font-semibold text-foreground">{comment.user.name}</span>
                         {comment.is_pinned && (
                             <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
                                 PINNED
                             </Badge>
                         )}
-                        <span className="text-sm text-muted-foreground">•</span>
+                        <span className="text-sm text-muted-foreground">&middot;</span>
                         <span className="text-sm text-muted-foreground">{comment.time_ago}</span>
                     </div>
-                    <p className="mb-3 whitespace-pre-wrap text-sm">{comment.content}</p>
+                    <p className="mb-3 whitespace-pre-wrap text-sm text-foreground">{comment.content}</p>
                     <div className="flex items-center gap-4">
-                        <Button variant="ghost" size="sm" onClick={onLike} className="h-8">
-                            <ThumbsUp className={`mr-1.5 size-4 ${comment.is_liked_by_user ? "fill-current" : ""}`} />
-                            {comment.likes_count}
-                        </Button>
+                        <button
+                            onClick={onLike}
+                            className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                        >
+                            <ThumbsUp className={`size-4 ${comment.is_liked_by_user ? "fill-current" : ""}`} />
+                            <span>{comment.likes_count}</span>
+                        </button>
                         {auth && (
-                            <Button variant="ghost" size="sm" onClick={onReply} className="h-8">
-                                Reply
-                            </Button>
+                            <button
+                                onClick={onReply}
+                                className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                            >
+                                <MessageSquare className="size-4" />
+                                <span>Reply</span>
+                            </button>
                         )}
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8"
+                        <button
+                            className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
                             onClick={async () => {
                                 if (!auth) return;
                                 const reason = prompt("Reason for reporting:\n1. spam\n2. harassment\n3. inappropriate\n4. other");
@@ -264,7 +280,8 @@ function CommentItem({ comment, onLike, onReply, auth }: CommentItemProps) {
                                         method: "POST",
                                         headers: {
                                             "Content-Type": "application/json",
-                                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "",
+                                            "X-CSRF-TOKEN":
+                                                document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "",
                                         },
                                         body: JSON.stringify({ reason }),
                                     });
@@ -274,33 +291,35 @@ function CommentItem({ comment, onLike, onReply, auth }: CommentItemProps) {
                                 }
                             }}
                         >
-                            <Flag className="mr-1.5 size-4" />
-                            Report
-                        </Button>
+                            <Flag className="size-4" />
+                            <span>Report</span>
+                        </button>
                     </div>
                     {/* Replies */}
                     {comment.replies && comment.replies.length > 0 && (
-                        <div className="ml-8 mt-4 space-y-4 border-l-2 pl-4">
+                        <div className="ml-6 mt-4 space-y-4 border-l-2 border-muted pl-4">
                             {comment.replies.map((reply) => (
                                 <div key={reply.id} className="flex gap-3">
                                     <Avatar className="size-8 shrink-0 ring-2 ring-background">
                                         <AvatarImage src={reply.user.avatar || undefined} alt={reply.user.name} />
-                                        <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-medium">
+                                        <AvatarFallback className="bg-primary/10 text-[10px] font-medium text-primary">
                                             {reply.user.name.slice(0, 2).toUpperCase()}
                                         </AvatarFallback>
                                     </Avatar>
                                     <div className="flex-1">
                                         <div className="mb-1 flex items-center gap-2">
-                                            <span className="text-sm font-semibold">{reply.user.name}</span>
-                                            <span className="text-xs text-muted-foreground">•</span>
+                                            <span className="text-sm font-semibold text-foreground">{reply.user.name}</span>
+                                            <span className="text-xs text-muted-foreground">&middot;</span>
                                             <span className="text-xs text-muted-foreground">{reply.time_ago}</span>
                                         </div>
-                                        <p className="mb-2 whitespace-pre-wrap text-sm">{reply.content}</p>
+                                        <p className="mb-2 whitespace-pre-wrap text-sm text-foreground">{reply.content}</p>
                                         <div className="flex items-center gap-4">
-                                            <Button variant="ghost" size="sm" className="h-7 text-xs">
-                                                <ThumbsUp className={`mr-1 size-3 ${reply.is_liked_by_user ? "fill-current" : ""}`} />
-                                                {reply.likes_count}
-                                            </Button>
+                                            <button className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground">
+                                                <ThumbsUp
+                                                    className={`size-3 ${reply.is_liked_by_user ? "fill-current" : ""}`}
+                                                />
+                                                <span>{reply.likes_count}</span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

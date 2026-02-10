@@ -1,7 +1,8 @@
 import { Head, Link, router } from "@inertiajs/react";
-import { ArrowLeftIcon, FilterIcon, StarIcon } from "lucide-react";
+import { ArrowLeft, Filter, Star } from "lucide-react";
 import { ReviewList } from "@/components/shared/reviews/ReviewList";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface DowntownGuideReviewsIndexProps {
@@ -53,31 +54,28 @@ export default function DowntownGuideReviewsIndex({
         <>
             <Head title={`Reviews for ${business.name} - DowntownsGuide`} />
 
-            <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
-                {/* Header */}
-                <div className="border-b-4 border-purple-600 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        <Link
-                            href={route("downtown-guide.businesses.show", business.slug)}
-                            className="mb-4 inline-flex items-center gap-2 text-purple-100 hover:text-white"
-                        >
-                            <ArrowLeftIcon className="h-4 w-4" />
-                            <span>Back to Business</span>
-                        </Link>
-                        <h1 className="text-2xl font-bold text-white">Reviews for {business.name}</h1>
-                    </div>
-                </div>
+            <div className="min-h-screen bg-background">
+                <main className="container mx-auto px-4 py-8">
+                    {/* Back link */}
+                    <Link
+                        href={route("downtown-guide.businesses.show", business.slug)}
+                        className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                        <ArrowLeft className="size-4" />
+                        Back to {business.name}
+                    </Link>
 
-                <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                    <h1 className="mb-8 font-display text-3xl font-black tracking-tight">Reviews for {business.name}</h1>
+
                     <div className="grid gap-8 lg:grid-cols-4">
                         {/* Main Content */}
-                        <div className="lg:col-span-3 space-y-6">
+                        <div className="space-y-6 lg:col-span-3">
                             {/* Filters */}
-                            <div className="rounded-xl border-2 border bg-card p-4 shadow-lg">
+                            <div className="rounded-lg border bg-card p-4">
                                 <div className="flex flex-wrap items-center gap-4">
                                     <div className="flex items-center gap-2">
-                                        <FilterIcon className="h-4 w-4 text-muted-foreground" />
-                                        <span className="text-sm font-medium text-foreground">Filter:</span>
+                                        <Filter className="h-4 w-4 text-muted-foreground" />
+                                        <span className="text-sm font-medium">Filter:</span>
                                     </div>
                                     <Select
                                         value={filters.rating?.toString() || "all"}
@@ -115,28 +113,26 @@ export default function DowntownGuideReviewsIndex({
 
                             {/* Pagination */}
                             {reviews.last_page > 1 && (
-                                <div className="flex justify-center">
-                                    <div className="flex gap-2">
-                                        {reviews.links.map((link, index) => (
-                                            <button
-                                                key={index}
-                                                onClick={() => {
-                                                    if (link.url) {
-                                                        router.visit(link.url);
-                                                    }
-                                                }}
-                                                disabled={!link.url || link.active}
-                                                className={`rounded-lg px-3 py-2 text-sm font-medium ${
-                                                    link.active
-                                                        ? "bg-primary text-white"
-                                                        : link.url
-                                                          ? "bg-card text-foreground hover:bg-accent/50"
-                                                          : "bg-muted text-muted-foreground cursor-not-allowed"
-                                                }`}
-                                                dangerouslySetInnerHTML={{ __html: link.label }}
-                                            />
-                                        ))}
-                                    </div>
+                                <div className="mt-8 flex items-center justify-center gap-2">
+                                    {reviews.links.map((link, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => {
+                                                if (link.url) {
+                                                    router.visit(link.url);
+                                                }
+                                            }}
+                                            disabled={!link.url || link.active}
+                                            className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                                                link.active
+                                                    ? "bg-primary text-primary-foreground"
+                                                    : link.url
+                                                      ? "bg-card text-foreground hover:bg-muted"
+                                                      : "bg-muted text-muted-foreground cursor-not-allowed"
+                                            }`}
+                                            dangerouslySetInnerHTML={{ __html: link.label }}
+                                        />
+                                    ))}
                                 </div>
                             )}
                         </div>
@@ -144,55 +140,59 @@ export default function DowntownGuideReviewsIndex({
                         {/* Sidebar */}
                         <div className="space-y-6">
                             {/* Rating Summary */}
-                            <div className="rounded-xl border-2 border bg-card p-6 shadow-lg">
-                                <h3 className="mb-4 text-lg font-bold text-foreground">Rating Summary</h3>
-                                <div className="text-center">
-                                    <div className="mb-2 text-4xl font-bold text-primary">{averageRating.toFixed(1)}</div>
-                                    <div className="mb-4 flex items-center justify-center gap-1">
-                                        {[...Array(5)].map((_, i) => (
-                                            <StarIcon
-                                                key={i}
-                                                className={`h-5 w-5 ${
-                                                    i < Math.floor(averageRating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-                                                }`}
-                                            />
-                                        ))}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="text-lg">Rating Summary</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="text-center">
+                                        <div className="mb-2 text-4xl font-bold text-primary">{averageRating.toFixed(1)}</div>
+                                        <div className="mb-4 flex items-center justify-center gap-0.5">
+                                            {[1, 2, 3, 4, 5].map((i) => (
+                                                <Star
+                                                    key={i}
+                                                    className={`size-5 ${
+                                                        i <= Math.floor(averageRating) ? "fill-yellow-400 text-yellow-400" : "fill-muted text-muted"
+                                                    }`}
+                                                />
+                                            ))}
+                                        </div>
+                                        <p className="text-sm text-muted-foreground">
+                                            Based on {reviewCount} {reviewCount === 1 ? "review" : "reviews"}
+                                        </p>
                                     </div>
-                                    <p className="text-sm text-muted-foreground">
-                                        Based on {reviewCount} {reviewCount === 1 ? "review" : "reviews"}
-                                    </p>
-                                </div>
 
-                                {/* Rating Distribution */}
-                                <div className="mt-6 space-y-2">
-                                    {[5, 4, 3, 2, 1].map((rating) => {
-                                        const count = ratingDistribution[rating] || 0;
-                                        const percentage = reviewCount > 0 ? (count / reviewCount) * 100 : 0;
-                                        return (
-                                            <div key={rating} className="flex items-center gap-2">
-                                                <div className="flex items-center gap-1">
-                                                    <span className="text-sm font-medium">{rating}</span>
-                                                    <StarIcon className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <div className="h-2 overflow-hidden rounded-full bg-muted">
-                                                        <div className="h-full bg-primary transition-all" style={{ width: `${percentage}%` }} />
+                                    {/* Rating Distribution */}
+                                    <div className="mt-6 space-y-2">
+                                        {[5, 4, 3, 2, 1].map((rating) => {
+                                            const count = ratingDistribution[rating] || 0;
+                                            const percentage = reviewCount > 0 ? (count / reviewCount) * 100 : 0;
+                                            return (
+                                                <div key={rating} className="flex items-center gap-2">
+                                                    <div className="flex items-center gap-1">
+                                                        <span className="text-sm font-medium">{rating}</span>
+                                                        <Star className="size-3 fill-yellow-400 text-yellow-400" />
                                                     </div>
+                                                    <div className="flex-1">
+                                                        <div className="h-2 overflow-hidden rounded-full bg-muted">
+                                                            <div className="h-full bg-primary transition-all" style={{ width: `${percentage}%` }} />
+                                                        </div>
+                                                    </div>
+                                                    <span className="text-xs text-muted-foreground">{count}</span>
                                                 </div>
-                                                <span className="text-xs text-muted-foreground">{count}</span>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
+                                            );
+                                        })}
+                                    </div>
+                                </CardContent>
+                            </Card>
 
                             {/* Write Review CTA */}
                             <Link href={route("downtown-guide.reviews.create", business.slug)}>
-                                <Button className="w-full bg-primary hover:bg-primary">Write a Review</Button>
+                                <Button className="w-full">Write a Review</Button>
                             </Link>
                         </div>
                     </div>
-                </div>
+                </main>
             </div>
         </>
     );

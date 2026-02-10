@@ -201,7 +201,7 @@ export default function HubShow() {
                                                     href={hub.website}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="font-medium text-primary hover:text-primary/80"
+                                                    className="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300"
                                                 >
                                                     Visit Website
                                                 </a>

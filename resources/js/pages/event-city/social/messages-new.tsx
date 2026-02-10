@@ -57,18 +57,18 @@ export default function MessagesNew({ friends }: Props) {
         <AppLayout>
             <Head title="New Message" />
             <div className="min-h-screen bg-muted/50">
-                <div className="max-w-2xl mx-auto py-8">
-                    <div className="bg-card rounded-lg shadow">
+                <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <div className="bg-card rounded-lg border-none shadow-sm">
                         {/* Header */}
-                        <div className="p-4 border-b border flex items-center justify-between">
-                            <div className="flex items-center">
+                        <div className="p-4 border-b flex items-center justify-between">
+                            <div className="flex items-center gap-4">
                                 <Link
                                     href="/social/messages"
-                                    className="mr-4 p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-accent"
+                                    className="p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-accent transition-colors"
                                 >
                                     <ArrowLeftIcon className="h-5 w-5" />
                                 </Link>
-                                <h1 className="text-xl font-bold text-foreground">New Message</h1>
+                                <h1 className="text-xl font-display font-black tracking-tight text-foreground">New Message</h1>
                             </div>
                             {selectedFriends.length > 0 && (
                                 <Button onClick={handleStartConversation}>
@@ -79,7 +79,7 @@ export default function MessagesNew({ friends }: Props) {
                         </div>
 
                         {/* Search */}
-                        <div className="p-4 border-b border">
+                        <div className="p-4 border-b">
                             <div className="relative">
                                 <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                 <Input
@@ -108,7 +108,7 @@ export default function MessagesNew({ friends }: Props) {
                                                     {friend.name}
                                                     <button
                                                         onClick={() => handleFriendToggle(friendId)}
-                                                        className="ml-2 text-primary hover:text-primary/80"
+                                                        className="ml-2 text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300"
                                                     >
                                                         ×
                                                     </button>
@@ -123,7 +123,7 @@ export default function MessagesNew({ friends }: Props) {
                         {/* Friends list */}
                         <div className="max-h-96 overflow-y-auto">
                             {filteredFriends.length > 0 ? (
-                                <div className="divide-y divide-gray-200">
+                                <div className="divide-y divide-border">
                                     {filteredFriends.map((friend) => (
                                         <button
                                             key={friend.id}
@@ -178,7 +178,7 @@ export default function MessagesNew({ friends }: Props) {
 
                         {/* Instructions */}
                         {filteredFriends.length > 0 && (
-                            <div className="p-4 bg-muted/50 border-t border">
+                            <div className="p-4 bg-muted/50 border-t">
                                 <p className="text-sm text-muted-foreground text-center">
                                     Select one friend for a direct message, or multiple friends to start a group chat.
                                 </p>

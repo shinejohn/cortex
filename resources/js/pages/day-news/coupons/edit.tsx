@@ -16,7 +16,7 @@ interface Props extends CouponEditPageProps {
 export default function CouponEdit({ auth, coupon, categories }: Props) {
     return (
         <LocationProvider>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen bg-gray-50">
                 <SEO
                     type="website"
                     site="day-news"
@@ -28,10 +28,10 @@ export default function CouponEdit({ auth, coupon, categories }: Props) {
                 />
                 <DayNewsHeader auth={auth} />
 
-                <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+                <main className="container mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
                     {/* Back link */}
                     <div className="mb-6">
-                        <Button variant="ghost" size="sm" asChild>
+                        <Button variant="ghost" size="sm" asChild className="text-indigo-600 hover:text-indigo-700">
                             <Link href={route("daynews.coupons.index")}>
                                 <ArrowLeft className="mr-2 size-4" />
                                 Back to Coupons
@@ -40,16 +40,24 @@ export default function CouponEdit({ auth, coupon, categories }: Props) {
                     </div>
 
                     {/* Page header */}
-                    <div className="mb-8">
-                        <h1 className="flex items-center gap-2 font-serif text-3xl font-bold">
-                            <Edit className="size-8" />
-                            Edit Coupon
-                        </h1>
-                        <p className="mt-2 text-muted-foreground">Update your coupon details below.</p>
+                    <div className="mb-8 flex items-center">
+                        <div className="mr-4 rounded-lg bg-indigo-100 p-3">
+                            <Edit className="size-6 text-indigo-600" />
+                        </div>
+                        <div>
+                            <h1 className="font-display text-3xl font-black tracking-tight text-gray-900">
+                                Edit Coupon
+                            </h1>
+                            <p className="mt-1 text-gray-600">Update your coupon details below.</p>
+                        </div>
                     </div>
 
-                    {/* Form */}
-                    <CouponForm categories={categories} initialData={coupon} mode="edit" />
+                    {/* Form Card */}
+                    <div className="overflow-hidden rounded-xl border-none bg-white shadow-sm">
+                        <div className="p-6">
+                            <CouponForm categories={categories} initialData={coupon} mode="edit" />
+                        </div>
+                    </div>
                 </main>
             </div>
         </LocationProvider>

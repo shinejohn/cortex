@@ -408,7 +408,7 @@ export default function Tickets() {
                             <div className="mt-12">
                                 <div className="flex justify-between items-center mb-6">
                                     <h2 className="text-2xl font-bold">Featured Events</h2>
-                                    <Link href="/events" className="text-primary hover:text-primary/80 flex items-center font-medium text-sm">
+                                    <Link href="/events" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 flex items-center font-medium text-sm">
                                         View all events
                                     </Link>
                                 </div>

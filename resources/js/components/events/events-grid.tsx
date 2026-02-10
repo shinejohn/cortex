@@ -15,7 +15,6 @@ const EventsGrid = ({ events: propEvents, title }: { events?: any[], title?: str
     const [calendarSuccess, setCalendarSuccess] = useState<string | null>(null);
 
     const handleShareEvent = (e: React.MouseEvent, event: Event): void => {
-        // ... (rest of the content)
         e.preventDefault();
         e.stopPropagation();
 
@@ -63,14 +62,26 @@ const EventsGrid = ({ events: propEvents, title }: { events?: any[], title?: str
     );
 
     const renderEventActions = (event: any) => (
-        <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => handleShareEvent(e, event)}>
+        <>
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => handleShareEvent(e, event)}
+                className="text-muted-foreground hover:text-primary p-1 h-8 w-8"
+                title="Share Event"
+            >
                 {shareSuccess === event.id ? <CheckIcon className="h-4 w-4 text-green-500" /> : <ShareIcon className="h-4 w-4" />}
             </Button>
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => handleAddToCalendar(e, event)}>
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => handleAddToCalendar(e, event)}
+                className="text-muted-foreground hover:text-primary p-1 h-8 w-8"
+                title="Add to Calendar"
+            >
                 {calendarSuccess === event.id ? <CheckIcon className="h-4 w-4 text-green-500" /> : <CalendarIcon className="h-4 w-4" />}
             </Button>
-        </div>
+        </>
     );
 
     if (!events || events.length === 0) return null;

@@ -19,8 +19,6 @@ export function NewsCategoryFilter({
 }: NewsCategoryFilterProps) {
     const [activeCategory, setActiveCategory] = useState(selectedCategory);
 
-    // Use semantic tokens - consistent across themes
-
     const handleCategoryClick = (category: string) => {
         setActiveCategory(category);
         onCategoryChange?.(category);
@@ -32,7 +30,7 @@ export function NewsCategoryFilter({
                 onClick={() => handleCategoryClick("all")}
                 variant={activeCategory === "all" ? "default" : "secondary"}
                 size="sm"
-                className="rounded-full"
+                className="rounded-full text-[10px] uppercase tracking-widest font-black"
             >
                 All
             </Button>
@@ -43,10 +41,10 @@ export function NewsCategoryFilter({
                     onClick={() => handleCategoryClick(category.slug)}
                     variant={activeCategory === category.slug ? "default" : "secondary"}
                     size="sm"
-                    className="rounded-full"
+                    className="rounded-full text-[10px] uppercase tracking-widest font-black"
                 >
                     {category.name}
-                    {category.count !== undefined && <span className="ml-2 opacity-75">({category.count})</span>}
+                    {category.count !== undefined && <span className="ml-1.5 opacity-75">({category.count})</span>}
                 </Button>
             ))}
         </div>

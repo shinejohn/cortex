@@ -27,10 +27,12 @@ export default function HowItWorksPage() {
             <Header auth={auth} />
 
             {/* Hero Section */}
-            <div className="bg-primary text-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div className="relative bg-primary text-white overflow-hidden">
+                <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
                     <div className="text-center">
-                        <h1 className="text-4xl font-extrabold sm:text-5xl">How It Works</h1>
+                        <h1 className="font-display text-4xl font-black tracking-tight sm:text-5xl">How It Works</h1>
                         <p className="mt-4 text-xl text-indigo-100 max-w-3xl mx-auto">
                             Discover amazing events, connect with your community, and make the most of your local scene.
                         </p>
@@ -41,14 +43,14 @@ export default function HowItWorksPage() {
             {/* For Event Goers */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                 <div className="text-center mb-12">
-                    <h2 className="text-3xl font-bold text-foreground mb-4">For Event Goers</h2>
+                    <h2 className="font-display text-3xl font-black tracking-tight text-foreground mb-4">For Event Goers</h2>
                     <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
                         Finding and attending events has never been easier. Follow these simple steps to get started.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-                    <Card>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                    <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                         <CardContent className="p-6 text-center">
                             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent text-primary mb-4">
                                 <Search className="h-8 w-8" />
@@ -60,7 +62,7 @@ export default function HowItWorksPage() {
                         </CardContent>
                     </Card>
 
-                    <Card>
+                    <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                         <CardContent className="p-6 text-center">
                             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent text-primary mb-4">
                                 <Ticket className="h-8 w-8" />
@@ -72,7 +74,7 @@ export default function HowItWorksPage() {
                         </CardContent>
                     </Card>
 
-                    <Card>
+                    <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                         <CardContent className="p-6 text-center">
                             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent text-primary mb-4">
                                 <Calendar className="h-8 w-8" />
@@ -84,7 +86,7 @@ export default function HowItWorksPage() {
                         </CardContent>
                     </Card>
 
-                    <Card>
+                    <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                         <CardContent className="p-6 text-center">
                             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent text-primary mb-4">
                                 <Heart className="h-8 w-8" />
@@ -100,7 +102,7 @@ export default function HowItWorksPage() {
                 {/* For Event Organizers */}
                 <div className="bg-card rounded-lg shadow-sm p-8 mb-16">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-foreground mb-4">For Event Organizers</h2>
+                        <h2 className="font-display text-3xl font-black tracking-tight text-foreground mb-4">For Event Organizers</h2>
                         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
                             Create and promote your events with our easy-to-use platform. Reach your audience and grow your community.
                         </p>
@@ -109,7 +111,7 @@ export default function HowItWorksPage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div>
                             <div className="flex items-center mb-4">
-                                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-accent text-primary flex items-center justify-center font-bold text-lg mr-4">
+                                <div className="shrink-0 w-10 h-10 rounded-full bg-accent text-primary flex items-center justify-center font-bold text-lg mr-4">
                                     1
                                 </div>
                                 <h3 className="text-xl font-semibold text-foreground">Create Your Event</h3>
@@ -121,7 +123,7 @@ export default function HowItWorksPage() {
 
                         <div>
                             <div className="flex items-center mb-4">
-                                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-accent text-primary flex items-center justify-center font-bold text-lg mr-4">
+                                <div className="shrink-0 w-10 h-10 rounded-full bg-accent text-primary flex items-center justify-center font-bold text-lg mr-4">
                                     2
                                 </div>
                                 <h3 className="text-xl font-semibold text-foreground">Promote & Share</h3>
@@ -133,7 +135,7 @@ export default function HowItWorksPage() {
 
                         <div>
                             <div className="flex items-center mb-4">
-                                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-accent text-primary flex items-center justify-center font-bold text-lg mr-4">
+                                <div className="shrink-0 w-10 h-10 rounded-full bg-accent text-primary flex items-center justify-center font-bold text-lg mr-4">
                                     3
                                 </div>
                                 <h3 className="text-xl font-semibold text-foreground">Manage & Analyze</h3>
@@ -147,9 +149,9 @@ export default function HowItWorksPage() {
 
                 {/* Features */}
                 <div className="mb-16">
-                    <h2 className="text-3xl font-bold text-foreground mb-8 text-center">Key Features</h2>
+                    <h2 className="font-display text-3xl font-black tracking-tight text-foreground mb-8 text-center">Key Features</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <Card>
+                        <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                             <CardContent className="p-6">
                                 <MapPin className="h-8 w-8 text-primary mb-3" />
                                 <h3 className="text-lg font-semibold text-foreground mb-2">Location-Based Discovery</h3>
@@ -157,7 +159,7 @@ export default function HowItWorksPage() {
                             </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                             <CardContent className="p-6">
                                 <Bell className="h-8 w-8 text-primary mb-3" />
                                 <h3 className="text-lg font-semibold text-foreground mb-2">Smart Notifications</h3>
@@ -167,7 +169,7 @@ export default function HowItWorksPage() {
                             </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                             <CardContent className="p-6">
                                 <Users className="h-8 w-8 text-primary mb-3" />
                                 <h3 className="text-lg font-semibold text-foreground mb-2">Social Features</h3>
@@ -177,7 +179,7 @@ export default function HowItWorksPage() {
                             </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                             <CardContent className="p-6">
                                 <Share2 className="h-8 w-8 text-primary mb-3" />
                                 <h3 className="text-lg font-semibold text-foreground mb-2">Easy Sharing</h3>
@@ -185,7 +187,7 @@ export default function HowItWorksPage() {
                             </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                             <CardContent className="p-6">
                                 <Ticket className="h-8 w-8 text-primary mb-3" />
                                 <h3 className="text-lg font-semibold text-foreground mb-2">Secure Ticketing</h3>
@@ -195,7 +197,7 @@ export default function HowItWorksPage() {
                             </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card className="group overflow-hidden border-none shadow-sm hover:shadow-md transition-shadow">
                             <CardContent className="p-6">
                                 <Calendar className="h-8 w-8 text-primary mb-3" />
                                 <h3 className="text-lg font-semibold text-foreground mb-2">Calendar Integration</h3>
@@ -208,29 +210,33 @@ export default function HowItWorksPage() {
                 </div>
 
                 {/* CTA Section */}
-                <div className="bg-primary rounded-lg p-8 text-center text-white">
-                    <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-                    <p className="text-xl text-indigo-100 mb-6">Join thousands of people discovering and sharing amazing local events.</p>
-                    <div className="flex justify-center space-x-4">
-                        {auth.user ? (
-                            <Button size="lg" variant="secondary" onClick={() => router.visit("/events/create")}>
-                                Create Your First Event
-                            </Button>
-                        ) : (
-                            <>
-                                <Button size="lg" variant="secondary" onClick={() => router.visit("/register")}>
-                                    Sign Up Free
+                <div className="relative bg-primary rounded-lg p-8 text-center text-white overflow-hidden">
+                    <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-64 h-64 rounded-full bg-white/5 blur-3xl" />
+                    <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-64 h-64 rounded-full bg-white/5 blur-3xl" />
+                    <div className="relative z-10">
+                        <h2 className="font-display text-3xl font-black tracking-tight mb-4">Ready to Get Started?</h2>
+                        <p className="text-xl text-indigo-100 mb-6">Join thousands of people discovering and sharing amazing local events.</p>
+                        <div className="flex justify-center gap-4">
+                            {auth.user ? (
+                                <Button size="lg" variant="secondary" onClick={() => router.visit("/events/create")}>
+                                    Create Your First Event
                                 </Button>
-                                <Button
-                                    size="lg"
-                                    variant="outline"
-                                    className="bg-transparent border-white text-white hover:bg-card/10"
-                                    onClick={() => router.visit("/events")}
-                                >
-                                    Browse Events
-                                </Button>
-                            </>
-                        )}
+                            ) : (
+                                <>
+                                    <Button size="lg" variant="secondary" onClick={() => router.visit("/register")}>
+                                        Sign Up Free
+                                    </Button>
+                                    <Button
+                                        size="lg"
+                                        variant="outline"
+                                        className="bg-transparent border-white text-white hover:bg-card/10"
+                                        onClick={() => router.visit("/events")}
+                                    >
+                                        Browse Events
+                                    </Button>
+                                </>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

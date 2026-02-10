@@ -42,18 +42,6 @@ export function EventCard({
 }: EventCardProps) {
     const [_shareSuccess, setShareSuccess] = useState(false);
 
-    const themeClasses = {
-        daynews: "border-border hover:border-primary/50",
-        downtownsguide: "border-border hover:border-primary/50",
-        eventcity: "border-border hover:border-primary/50",
-    };
-
-    const _categoryColors = {
-        daynews: "bg-accent text-accent-foreground",
-        downtownsguide: "bg-accent text-accent-foreground",
-        eventcity: "bg-accent text-accent-foreground",
-    };
-
     const href = event.slug ? `/events/${event.slug}` : `/events/${event.id}`;
 
     const formatDate = (dateString?: string) => {
@@ -91,36 +79,58 @@ export function EventCard({
     };
 
     return (
-        <Link href={href} className={cn("group block rounded-lg border bg-card p-4 transition-all hover:shadow-md", themeClasses[theme], className)}>
+        <Link
+            href={href}
+            className={cn(
+                "group block overflow-hidden rounded-xl border-none bg-card shadow-sm transition-all hover:shadow-md",
+                className,
+            )}
+        >
+            {/* Image */}
             {event.image && (
-                <div className="mb-4 aspect-video w-full overflow-hidden rounded-md">
-                    <img src={event.image} alt={event.title} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                <div className="relative aspect-[16/10] w-full overflow-hidden">
+                    <img
+                        src={event.image}
+                        alt={event.title}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    {event.category && (
+                        <div className="absolute left-3 top-3">
+                            <Badge className="bg-primary text-primary-foreground text-[10px] uppercase tracking-widest font-black">
+                                {event.category}
+                            </Badge>
+                        </div>
+                    )}
                 </div>
             )}
 
-            <div className="space-y-2">
+            <div className="p-4">
                 <div className="flex items-start justify-between gap-2">
-                    {event.category && (
-                        <Badge variant="secondary" className="text-xs">
+                    {!event.image && event.category && (
+                        <Badge variant="secondary" className="text-[10px] uppercase tracking-widest font-black">
                             {event.category}
                         </Badge>
                     )}
 
                     {showShare && (
-                        <button onClick={handleShare} className="rounded-md p-1 hover:bg-muted" title="Share event">
-                            <Share2Icon className="h-4 w-4 text-muted-foreground" />
+                        <button onClick={handleShare} className="rounded-lg p-1.5 transition-colors hover:bg-muted" title="Share event">
+                            <Share2Icon className="size-4 text-muted-foreground" />
                         </button>
                     )}
                 </div>
 
-                <h3 className="line-clamp-2 text-lg font-semibold text-foreground">{event.title}</h3>
+                <h3 className="mt-1 line-clamp-2 font-display text-lg font-black tracking-tight text-foreground transition-colors group-hover:text-primary">
+                    {event.title}
+                </h3>
 
-                {showDescription && event.description && <p className="line-clamp-2 text-sm text-muted-foreground">{event.description}</p>}
+                {showDescription && event.description && (
+                    <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-muted-foreground">{event.description}</p>
+                )}
 
-                <div className="space-y-1 text-sm text-muted-foreground">
+                <div className="mt-3 space-y-1.5 text-sm text-muted-foreground">
                     {dateInfo && (
                         <div className="flex items-center gap-1">
-                            <CalendarIcon className="h-4 w-4" />
+                            <CalendarIcon className="size-3.5 text-primary" />
                             <span>
                                 {dateInfo.date} {dateInfo.time && `at ${dateInfo.time}`}
                             </span>
@@ -129,7 +139,7 @@ export function EventCard({
 
                     {showVenue && event.venue && (
                         <div className="flex items-center gap-1">
-                            <MapPinIcon className="h-4 w-4" />
+                            <MapPinIcon className="size-3.5 text-primary" />
                             <span>
                                 {event.venue.name}
                                 {event.venue.city && `, ${event.venue.city}`}
@@ -139,8 +149,8 @@ export function EventCard({
 
                     {showPrice && (
                         <div className="flex items-center gap-1">
-                            <DollarSignIcon className="h-4 w-4" />
-                            <span>
+                            <DollarSignIcon className="size-3.5 text-primary" />
+                            <span className={event.is_free ? "font-medium text-green-600" : ""}>
                                 {event.is_free
                                     ? "Free"
                                     : event.price_min

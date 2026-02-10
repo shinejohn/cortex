@@ -1,5 +1,5 @@
 import { router } from "@inertiajs/react";
-import { CheckCircle, MapPin } from "lucide-react";
+import { CheckCircle, MapPin, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -48,7 +48,11 @@ export function CheckInButton({ eventId, eventName, venueName, isCheckedIn = fal
             disabled={isCheckedIn || isLoading}
             variant={isCheckedIn ? "default" : variant}
             size={size}
-            className={isCheckedIn ? "bg-green-600 hover:bg-green-700" : ""}
+            className={
+                isCheckedIn
+                    ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all"
+                    : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm hover:shadow-md transition-all"
+            }
         >
             {isCheckedIn ? (
                 <>
@@ -56,7 +60,10 @@ export function CheckInButton({ eventId, eventName, venueName, isCheckedIn = fal
                     Checked In
                 </>
             ) : isLoading ? (
-                "Checking In..."
+                <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Checking In...
+                </>
             ) : (
                 <>
                     <MapPin className="h-4 w-4 mr-2" />

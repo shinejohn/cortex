@@ -1,5 +1,5 @@
 import { Link } from "@inertiajs/react";
-import { CheckCircleIcon, ClockIcon, GlobeIcon, MapPinIcon, PhoneIcon, StarIcon } from "lucide-react";
+import { BadgeCheck, ClockIcon, GlobeIcon, MapPinIcon, PhoneIcon, StarIcon } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { sanitizeHtml } from "@/lib/sanitize";
@@ -36,8 +36,6 @@ interface BusinessDetailProps {
 export function BusinessDetail({ business, theme = "downtownsguide", className, showMap = false }: BusinessDetailProps) {
     const [imageError, setImageError] = useState(false);
 
-    // Use semantic tokens - consistent across themes
-
     const formatAddress = () => {
         const parts = [];
         if (business.address) parts.push(business.address);
@@ -48,20 +46,26 @@ export function BusinessDetail({ business, theme = "downtownsguide", className, 
     };
 
     return (
-        <article className={cn("space-y-6", className)}>
-            {/* Header */}
-            <header className="space-y-4">
-                <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                            <h1 className="text-3xl font-bold text-foreground md:text-4xl">{business.name}</h1>
-                            {business.is_verified && <CheckCircleIcon className="h-6 w-6 text-primary" title="Verified Business" />}
+        <article className={cn("space-y-8", className)}>
+            {/* Hero Image */}
+            {business.image && !imageError && (
+                <div className="relative aspect-[21/9] w-full overflow-hidden rounded-xl">
+                    <img
+                        src={business.image}
+                        alt={business.name}
+                        className="h-full w-full object-cover"
+                        onError={() => setImageError(true)}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                        <div className="flex items-center gap-3">
+                            <h1 className="font-display text-3xl font-black tracking-tight text-white md:text-4xl">{business.name}</h1>
+                            {business.is_verified && <BadgeCheck className="size-6 text-white" title="Verified Business" />}
                         </div>
-
                         {business.categories && business.categories.length > 0 && (
-                            <div className="mt-2 flex flex-wrap gap-2">
+                            <div className="mt-3 flex flex-wrap gap-2">
                                 {business.categories.map((category, index) => (
-                                    <Badge key={index} variant="secondary">
+                                    <Badge key={index} variant="secondary" className="bg-white/20 text-white backdrop-blur-sm">
                                         {category}
                                     </Badge>
                                 ))}
@@ -69,41 +73,73 @@ export function BusinessDetail({ business, theme = "downtownsguide", className, 
                         )}
                     </div>
                 </div>
+            )}
 
-                {showMap && business.latitude && business.longitude && (
-                    <div className="aspect-video w-full overflow-hidden rounded-lg border">
-                        <iframe
-                            width="100%"
-                            height="100%"
-                            style={{ border: 0 }}
-                            loading="lazy"
-                            allowFullScreen
-                            referrerPolicy="no-referrer-when-downgrade"
-                            src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}&q=${business.latitude},${business.longitude}`}
-                        />
+            {/* Header - shown when no image */}
+            {(!business.image || imageError) && (
+                <header className="space-y-4">
+                    <div className="flex items-center gap-3">
+                        <h1 className="font-display text-3xl font-black tracking-tight text-foreground md:text-4xl">{business.name}</h1>
+                        {business.is_verified && <BadgeCheck className="size-6 text-primary" title="Verified Business" />}
                     </div>
-                )}
 
-                {business.image && !imageError && (
-                    <div className="aspect-video w-full overflow-hidden rounded-lg">
-                        <img src={business.image} alt={business.name} className="h-full w-full object-cover" onError={() => setImageError(true)} />
-                    </div>
-                )}
-            </header>
+                    {business.categories && business.categories.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                            {business.categories.map((category, index) => (
+                                <Badge key={index} variant="secondary">
+                                    {category}
+                                </Badge>
+                            ))}
+                        </div>
+                    )}
+                </header>
+            )}
 
-            {/* Business Details */}
-            <div className="grid gap-4 md:grid-cols-2">
+            {/* Map */}
+            {showMap && business.latitude && business.longitude && (
+                <div className="aspect-video w-full overflow-hidden rounded-xl border shadow-sm">
+                    <iframe
+                        width="100%"
+                        height="100%"
+                        style={{ border: 0 }}
+                        loading="lazy"
+                        allowFullScreen
+                        referrerPolicy="no-referrer-when-downgrade"
+                        src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}&q=${business.latitude},${business.longitude}`}
+                    />
+                </div>
+            )}
+
+            {/* Business Details Grid */}
+            <div className="grid gap-6 md:grid-cols-2">
                 {/* Rating */}
                 {business.rating !== undefined && (
-                    <div className="rounded-lg border bg-card p-4">
-                        <div className="flex items-center gap-2">
-                            <StarIcon className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                    <div className="overflow-hidden rounded-xl border-none bg-card p-5 shadow-sm">
+                        <div className="flex items-center gap-3">
+                            <div className="flex size-10 items-center justify-center rounded-lg bg-yellow-50">
+                                <StarIcon className="size-5 fill-yellow-400 text-yellow-400" />
+                            </div>
                             <div>
-                                <h3 className="font-semibold text-foreground">Rating</h3>
-                                <p className="text-sm text-muted-foreground">
-                                    {business.rating.toFixed(1)} out of 5
-                                    {business.reviews_count !== undefined && ` (${business.reviews_count.toLocaleString()} reviews)`}
-                                </p>
+                                <h3 className="font-display font-black tracking-tight text-foreground">Rating</h3>
+                                <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-0.5">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <StarIcon
+                                                key={star}
+                                                className={cn(
+                                                    "size-4",
+                                                    star <= Math.round(business.rating!)
+                                                        ? "fill-yellow-400 text-yellow-400"
+                                                        : "fill-muted text-muted",
+                                                )}
+                                            />
+                                        ))}
+                                    </div>
+                                    <span className="text-sm font-medium text-foreground">{business.rating.toFixed(1)}</span>
+                                    {business.reviews_count !== undefined && (
+                                        <span className="text-sm text-muted-foreground">({business.reviews_count.toLocaleString()} reviews)</span>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -111,12 +147,25 @@ export function BusinessDetail({ business, theme = "downtownsguide", className, 
 
                 {/* Address */}
                 {(business.address || business.city) && (
-                    <div className="rounded-lg border bg-card p-4">
+                    <div className="overflow-hidden rounded-xl border-none bg-card p-5 shadow-sm">
                         <div className="flex items-start gap-3">
-                            <MapPinIcon className="mt-1 h-5 w-5 text-muted-foreground" />
+                            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-indigo-50">
+                                <MapPinIcon className="size-5 text-primary" />
+                            </div>
                             <div>
-                                <h3 className="font-semibold text-foreground">Address</h3>
+                                <h3 className="font-display font-black tracking-tight text-foreground">Address</h3>
                                 <p className="text-sm text-muted-foreground">{formatAddress()}</p>
+                                {business.latitude != null && business.longitude != null && (
+                                    <a
+                                        href={`https://www.google.com/maps/dir/?api=1&destination=${business.latitude},${business.longitude}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+                                    >
+                                        <MapPinIcon className="size-3.5" />
+                                        Get Directions
+                                    </a>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -124,34 +173,28 @@ export function BusinessDetail({ business, theme = "downtownsguide", className, 
 
                 {/* Contact */}
                 {(business.phone || business.email || business.website) && (
-                    <div className="rounded-lg border bg-card p-4">
-                        <h3 className="mb-2 font-semibold text-foreground">Contact</h3>
-                        <div className="space-y-2 text-sm text-muted-foreground">
+                    <div className="overflow-hidden rounded-xl border-none bg-card p-5 shadow-sm">
+                        <h3 className="mb-3 font-display font-black tracking-tight text-foreground">Contact</h3>
+                        <div className="space-y-3 text-sm text-muted-foreground">
                             {business.phone && (
-                                <div className="flex items-center gap-2">
-                                    <PhoneIcon className="h-4 w-4" />
-                                    <a href={`tel:${business.phone}`} className="hover:text-foreground">
-                                        {business.phone}
-                                    </a>
-                                </div>
+                                <a href={`tel:${business.phone}`} className="flex items-center gap-2 hover:text-foreground">
+                                    <PhoneIcon className="size-3.5 text-primary" />
+                                    <span>{business.phone}</span>
+                                </a>
                             )}
 
                             {business.email && (
-                                <div className="flex items-center gap-2">
-                                    <span className="h-4 w-4">@</span>
-                                    <a href={`mailto:${business.email}`} className="hover:text-foreground">
-                                        {business.email}
-                                    </a>
-                                </div>
+                                <a href={`mailto:${business.email}`} className="flex items-center gap-2 hover:text-foreground">
+                                    <span className="size-3.5 text-center text-primary">@</span>
+                                    <span>{business.email}</span>
+                                </a>
                             )}
 
                             {business.website && (
-                                <div className="flex items-center gap-2">
-                                    <GlobeIcon className="h-4 w-4" />
-                                    <a href={business.website} target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
-                                        Visit Website
-                                    </a>
-                                </div>
+                                <a href={business.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-foreground">
+                                    <GlobeIcon className="size-3.5 text-primary" />
+                                    <span>Visit Website</span>
+                                </a>
                             )}
                         </div>
                     </div>
@@ -159,16 +202,18 @@ export function BusinessDetail({ business, theme = "downtownsguide", className, 
 
                 {/* Hours */}
                 {business.opening_hours && Object.keys(business.opening_hours).length > 0 && (
-                    <div className="rounded-lg border bg-card p-4">
+                    <div className="overflow-hidden rounded-xl border-none bg-card p-5 shadow-sm">
                         <div className="flex items-start gap-3">
-                            <ClockIcon className="mt-1 h-5 w-5 text-muted-foreground" />
-                            <div>
-                                <h3 className="mb-2 font-semibold text-foreground">Hours</h3>
-                                <div className="space-y-1 text-sm text-muted-foreground">
+                            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-green-50">
+                                <ClockIcon className="size-5 text-green-600" />
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="mb-3 font-display font-black tracking-tight text-foreground">Hours</h3>
+                                <div className="space-y-1.5 text-sm text-muted-foreground">
                                     {Object.entries(business.opening_hours).map(([day, hours]) => (
                                         <div key={day} className="flex justify-between gap-4">
                                             <span className="capitalize">{day}</span>
-                                            <span>{hours || "Closed"}</span>
+                                            <span className={hours ? "" : "text-destructive"}>{hours || "Closed"}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -180,9 +225,9 @@ export function BusinessDetail({ business, theme = "downtownsguide", className, 
 
             {/* Description */}
             {business.description && (
-                <div className="rounded-lg border bg-card p-4">
-                    <h3 className="mb-2 font-semibold text-foreground">About</h3>
-                    <p className="text-muted-foreground">{business.description}</p>
+                <div className="overflow-hidden rounded-xl border-none bg-card p-6 shadow-sm">
+                    <h3 className="mb-3 font-display text-xl font-black tracking-tight text-foreground">About</h3>
+                    <p className="leading-relaxed text-muted-foreground">{business.description}</p>
                 </div>
             )}
 

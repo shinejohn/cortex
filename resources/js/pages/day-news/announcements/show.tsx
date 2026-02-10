@@ -67,21 +67,21 @@ export default function ShowAnnouncement() {
 
                 <DayNewsHeader auth={auth} />
 
-                <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                <main className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
                     {/* Navigation */}
                     <div className="mb-8 flex items-center justify-between">
                         <Link
                             href={route("daynews.announcements.index") as any}
-                            className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-colors group"
+                            className="flex items-center gap-2 text-[10px] font-black text-muted-foreground hover:text-primary transition-colors group uppercase tracking-widest"
                         >
                             <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
-                            BACK TO ANNOUNCEMENTS
+                            Back to Announcements
                         </Link>
 
                         <div className="flex items-center gap-2">
-                            <Button variant="outline" size="sm" className="gap-2 font-bold rounded-full">
+                            <Button variant="outline" size="sm" className="gap-2 font-black rounded-full text-[10px] uppercase tracking-widest">
                                 <Share2 className="size-3.5" />
-                                SHARE
+                                Share
                             </Button>
                             <Button variant="outline" size="icon" className="size-9 rounded-full">
                                 <MoreHorizontal className="size-4" />
@@ -101,7 +101,7 @@ export default function ShowAnnouncement() {
                                         {announcement.title}
                                     </h1>
 
-                                    <div className="flex flex-wrap items-center gap-6 border-y py-6 border-zinc-100">
+                                    <div className="flex flex-wrap items-center gap-6 rounded-xl border bg-card p-5 shadow-sm">
                                         <div className="flex items-center gap-3">
                                             <Avatar className="size-10 border-2 border-white shadow-sm">
                                                 <AvatarImage src={announcement.user.avatar ?? undefined} />
@@ -117,7 +117,7 @@ export default function ShowAnnouncement() {
 
                                         <Separator orientation="vertical" className="hidden h-8 sm:block bg-zinc-100" />
 
-                                        <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                                        <div className="flex flex-wrap items-center gap-4 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
                                             <div className="flex items-center gap-2">
                                                 <Calendar className="size-3.5 text-primary" />
                                                 <span>{announcement.published_at_diff}</span>
@@ -142,7 +142,7 @@ export default function ShowAnnouncement() {
                                     </div>
                                 )}
 
-                                <div className="prose prose-zinc prose-lg max-w-none dark:prose-invert prose-p:leading-relaxed prose-headings:font-display prose-headings:font-black">
+                                <div className="prose prose-zinc prose-lg max-w-none dark:prose-invert prose-p:leading-[1.8] prose-headings:font-display prose-headings:font-black">
                                     <p className="whitespace-pre-wrap text-zinc-800/90 leading-relaxed text-xl font-medium mb-8 border-l-4 border-primary/20 pl-6 italic">
                                         {announcement.content.substring(0, announcement.content.indexOf('\n') > 0 ? announcement.content.indexOf('\n') : 200)}
                                     </p>
@@ -151,7 +151,8 @@ export default function ShowAnnouncement() {
                                     </p>
                                 </div>
 
-                                <div className="mt-12 flex items-center justify-between rounded-xl bg-zinc-50 p-6 border border-zinc-100">
+                                {/* Reactions bar */}
+                                <div className="mt-12 flex items-center justify-between rounded-2xl bg-zinc-50 p-6 border border-zinc-100">
                                     <div className="flex items-center gap-6">
                                         <button className="flex items-center gap-2 group">
                                             <div className="flex size-10 items-center justify-center rounded-full bg-white border shadow-sm group-hover:bg-red-50 group-hover:border-red-100 transition-colors">
@@ -192,7 +193,7 @@ export default function ShowAnnouncement() {
                                             </Badge>
                                             <h2 className="font-display text-3xl font-black tracking-tight text-zinc-900">Related Announcements</h2>
                                         </div>
-                                        <Link href={route("daynews.announcements.index") as any} className="text-xs font-black text-primary hover:underline uppercase tracking-widest mb-1 items-center gap-1 hidden sm:flex">
+                                        <Link href={route("daynews.announcements.index") as any} className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest mb-1 items-center gap-1 hidden sm:flex">
                                             View all
                                             <ArrowLeft className="size-3 rotate-180" />
                                         </Link>
@@ -215,7 +216,7 @@ export default function ShowAnnouncement() {
                                     className="pt-0 shadow-lg shadow-zinc-200/50"
                                 />
 
-                                <div className="mt-8 rounded-2xl bg-primary/5 p-8 border border-primary/10 relative overflow-hidden group">
+                                <div className="mt-8 rounded-3xl bg-primary/5 p-8 border border-primary/10 relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 p-4 opacity-10 transition-transform duration-700 group-hover:scale-150 rotate-12">
                                         <MessageSquare className="size-32" />
                                     </div>
@@ -223,7 +224,7 @@ export default function ShowAnnouncement() {
                                     <p className="relative z-10 mb-6 text-sm text-zinc-700/80 leading-relaxed font-medium">
                                         Have a milestone to share with your community? Let everyone know.
                                     </p>
-                                    <Button className="relative z-10 w-full font-black uppercase tracking-tighter" asChild>
+                                    <Button className="relative z-10 w-full font-black uppercase tracking-widest text-xs rounded-xl" asChild>
                                         <Link href={route("daynews.announcements.create") as any}>Create Announcement</Link>
                                     </Button>
                                 </div>

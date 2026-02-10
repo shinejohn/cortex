@@ -1,4 +1,6 @@
+import { ExternalLink, Star, Award } from "lucide-react";
 import { PollOption } from '@/types/poll';
+import { cn } from "@/lib/utils";
 
 interface Props {
     option: PollOption;
@@ -22,39 +24,37 @@ export default function OptionCard({
     return (
         <div
             onClick={onSelect}
-            className={`
-                relative p-4 rounded-lg border-2 cursor-pointer
-                transition-all duration-200
-                ${isSelected
-                    ? 'border-blue-500 bg-blue-50 shadow-md'
-                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                }
-                ${option.is_sponsored ? 'ring-2 ring-yellow-400' : ''}
-            `}
+            className={cn(
+                "relative rounded-xl border-2 p-4 cursor-pointer transition-all duration-200",
+                isSelected
+                    ? "border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/20 shadow-md ring-1 ring-indigo-500/20"
+                    : "border-border/50 hover:border-indigo-200 hover:bg-muted/30 dark:hover:border-indigo-800/50",
+                option.is_sponsored && "ring-2 ring-amber-400/50"
+            )}
         >
             {/* Sponsor Badge */}
             {option.participation_tier === 'premium_sponsor' && (
-                <div className="absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 text-xs px-2 py-1 rounded-full font-semibold">
-                    ⭐ Sponsor
+                <div className="absolute -top-2.5 -right-2.5 flex items-center gap-1 bg-gradient-to-r from-amber-400 to-amber-500 text-amber-900 text-xs px-2.5 py-1 rounded-full font-semibold shadow-sm">
+                    <Star className="h-3 w-3 fill-current" />
+                    Sponsor
                 </div>
             )}
             {option.participation_tier === 'featured' && (
-                <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                <div className="absolute -top-2.5 -right-2.5 flex items-center gap-1 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-xs px-2.5 py-1 rounded-full font-semibold shadow-sm">
+                    <Award className="h-3 w-3" />
                     Featured
                 </div>
             )}
 
             <div className="flex items-start gap-4">
                 {/* Radio Button */}
-                <div className="flex-shrink-0 mt-1">
-                    <div className={`
-                        w-5 h-5 rounded-full border-2
-                        flex items-center justify-center
-                        ${isSelected
-                            ? 'border-blue-500 bg-blue-500'
-                            : 'border-gray-300'
-                        }
-                    `}>
+                <div className="shrink-0 mt-1">
+                    <div className={cn(
+                        "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all",
+                        isSelected
+                            ? "border-indigo-500 bg-indigo-500 shadow-sm"
+                            : "border-muted-foreground/30"
+                    )}>
                         {isSelected && (
                             <div className="w-2 h-2 rounded-full bg-white" />
                         )}
@@ -63,25 +63,25 @@ export default function OptionCard({
 
                 {/* Option Image */}
                 {option.image_url && (
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                         <img
                             src={option.image_url}
                             alt={option.name}
-                            className="w-16 h-16 rounded-lg object-cover"
+                            className="w-16 h-16 rounded-lg object-cover shadow-sm"
                         />
                     </div>
                 )}
 
                 {/* Option Content */}
-                <div className="flex-grow min-w-0">
-                    <h4 className="font-semibold text-gray-900">{option.name}</h4>
+                <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-foreground">{option.name}</h4>
 
                     {option.description && (
-                        <p className="text-sm text-gray-600 mt-1">{option.description}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{option.description}</p>
                     )}
 
                     {option.special_offer && (
-                        <div className="mt-2 inline-flex items-center text-sm text-green-700 bg-green-50 px-2 py-1 rounded">
+                        <div className="mt-2 inline-flex items-center gap-1.5 text-sm text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2.5 py-1 rounded-lg">
                             🎁 {option.special_offer}
                         </div>
                     )}
@@ -89,13 +89,18 @@ export default function OptionCard({
                     {/* Vote Count (if showing results) */}
                     {showVoteCounts && (
                         <div className="mt-3">
-                            <div className="flex justify-between text-sm mb-1">
-                                <span className="text-gray-600">{option.vote_count} votes</span>
-                                <span className="font-semibold">{votePercentage}%</span>
+                            <div className="flex justify-between text-sm mb-1.5">
+                                <span className="text-muted-foreground">{option.vote_count} votes</span>
+                                <span className="font-semibold text-foreground">{votePercentage}%</span>
                             </div>
-                            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div className="h-2.5 bg-muted rounded-full overflow-hidden">
                                 <div
-                                    className="h-full bg-blue-500 rounded-full transition-all duration-500"
+                                    className={cn(
+                                        "h-full rounded-full transition-all duration-700",
+                                        isSelected
+                                            ? "bg-gradient-to-r from-indigo-500 to-indigo-600"
+                                            : "bg-gradient-to-r from-blue-400 to-indigo-400"
+                                    )}
                                     style={{ width: `${votePercentage}%` }}
                                 />
                             </div>
@@ -110,11 +115,9 @@ export default function OptionCard({
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="flex-shrink-0 text-gray-400 hover:text-blue-500"
+                        className="shrink-0 text-muted-foreground hover:text-indigo-500 transition-colors"
                     >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
+                        <ExternalLink className="w-4.5 h-4.5" />
                     </a>
                 )}
             </div>

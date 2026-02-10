@@ -45,14 +45,15 @@ export function NewsList({
 
     if (articles.length === 0) {
         return (
-            <div className="rounded-lg border border-dashed p-8 text-center">
-                <p className="text-muted-foreground">No articles found</p>
+            <div className="rounded-xl border border-dashed p-12 text-center">
+                <p className="font-display font-black tracking-tight text-foreground">No articles found</p>
+                <p className="mt-1 text-sm text-muted-foreground">Check back later for the latest news</p>
             </div>
         );
     }
 
     return (
-        <div className={cn("grid gap-4", gridClasses[gridCols], className)}>
+        <div className={cn("grid gap-6", gridClasses[gridCols], className)}>
             {articles.map((article) => (
                 <NewsCard
                     key={article.id}

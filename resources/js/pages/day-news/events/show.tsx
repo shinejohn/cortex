@@ -40,7 +40,7 @@ export default function ShowEvent() {
 
     return (
         <LocationProvider>
-            <div className="min-h-screen bg-[#FDFCFB]">
+            <div className="min-h-screen bg-[#F8F9FB]">
                 <Head title={`${event.title} - Day News`} />
                 <SEO
                     type="article"
@@ -55,7 +55,7 @@ export default function ShowEvent() {
 
                 <DayNewsHeader auth={auth} />
 
-                <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                <main className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                     {/* Navigation */}
                     <div className="mb-8 flex items-center justify-between">
                         <Link
@@ -93,7 +93,7 @@ export default function ShowEvent() {
                                 </div>
 
                                 {event.image && (
-                                    <div className="mb-10 overflow-hidden rounded-2xl border shadow-xl shadow-zinc-200/50">
+                                    <div className="mb-10 overflow-hidden rounded-2xl shadow-xl shadow-zinc-200/50">
                                         <img
                                             src={event.image}
                                             alt={event.title}
@@ -104,14 +104,14 @@ export default function ShowEvent() {
 
                                 <div className="grid gap-8 md:grid-cols-3 mb-12">
                                     <div className="md:col-span-2 prose prose-zinc prose-lg max-w-none dark:prose-invert">
-                                        <h3 className="font-bold text-xl mb-4">About this Event</h3>
+                                        <h3 className="font-display font-bold text-xl mb-4">About this Event</h3>
                                         <div className="whitespace-pre-wrap text-zinc-700/80 leading-[1.8]">
                                             {event.description}
                                         </div>
                                     </div>
 
                                     <div className="space-y-6">
-                                        <div className="rounded-2xl border bg-zinc-50 p-6 space-y-6">
+                                        <div className="rounded-2xl bg-zinc-50 p-6 space-y-6">
                                             <div className="flex items-start gap-3">
                                                 <Calendar className="size-5 text-primary mt-1" />
                                                 <div>

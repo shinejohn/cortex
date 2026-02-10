@@ -1,8 +1,8 @@
-import { usePage } from "@inertiajs/react";
-import { type ReactNode } from "react";
 import AppLayoutTemplate from "@/layouts/app/app-header-layout";
 import { ErrorBoundary } from "@/components/common/error-boundary";
 import { Auth, type BreadcrumbItem, SharedData } from "@/types";
+import { usePage } from "@inertiajs/react";
+import { type ReactNode } from "react";
 
 interface AppLayoutProps {
     children: ReactNode;

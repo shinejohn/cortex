@@ -14,7 +14,7 @@ interface CouponFiltersProps {
     filters: {
         category?: string;
         search?: string;
-        global?: string; // Changed to string to match URL param usually, or boolean if parsed
+        global?: string | boolean;
     };
     hasRegion: boolean;
 }
@@ -22,7 +22,6 @@ interface CouponFiltersProps {
 export function CouponFilters({ categories, filters, hasRegion }: CouponFiltersProps) {
     const [search, setSearch] = useState(filters.search ?? "");
     const [category, setCategory] = useState(filters.category ?? "");
-    // Handle '1' or 'true' or true
     const initialGlobal = filters.global === "1" || filters.global === "true" || filters.global === true;
     const [showGlobal, setShowGlobal] = useState(initialGlobal);
     const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);

@@ -64,9 +64,11 @@ export default function Welcome({ featuredEvents, featuredVenues, featuredPerfor
             {/* Hero Section */}
             <div className="relative bg-background overflow-hidden border-b">
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 pointer-events-none" />
+                <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-96 h-96 rounded-full bg-primary/5 blur-3xl" />
+                <div className="absolute bottom-0 left-0 translate-y-1/4 -translate-x-1/4 w-96 h-96 rounded-full bg-accent/5 blur-3xl" />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
                     <div className="text-center max-w-3xl mx-auto">
-                        <h1 className="text-5xl font-extrabold tracking-tight text-foreground sm:text-6xl mb-6">
+                        <h1 className="font-display text-5xl font-black tracking-tight text-foreground sm:text-6xl mb-6">
                             Experience Your City Like Never Before
                         </h1>
                         <p className="mt-4 text-xl text-muted-foreground mb-10">

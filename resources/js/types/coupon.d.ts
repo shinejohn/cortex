@@ -14,6 +14,8 @@ export interface Business {
     review_count?: number;
     is_verified?: boolean;
     slug: string;
+    categories?: string[];
+    opening_hours?: Record<string, string>;
 }
 
 export interface Region {
@@ -33,6 +35,8 @@ export interface Comment {
     content: string;
     user: CouponUser;
     created_at: string;
+    likes_count?: number;
+    is_liked?: boolean;
     replies?: Comment[];
 }
 
