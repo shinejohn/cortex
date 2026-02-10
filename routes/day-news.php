@@ -52,7 +52,7 @@ Route::get('/', function () {
 
     // Fetch additional data for the homepage
     $announcements = App\Models\Announcement::query()
-        ->when($currentRegion, fn ($q) => $q->where('region_id', $currentRegion->id))
+        ->when($currentRegion, fn ($q) => $q->whereHas('regions', fn ($r) => $r->where('regions.id', $currentRegion->id)))
         ->latest()
         ->take(5)
         ->get();
@@ -70,14 +70,14 @@ Route::get('/', function () {
         ->get();
 
     $events = App\Models\Event::query()
-        ->when($currentRegion, fn ($q) => $q->where('region_id', $currentRegion->id))
-        ->where('start_date', '>=', now())
-        ->orderBy('start_date')
+        ->when($currentRegion, fn ($q) => $q->whereHas('regions', fn ($r) => $r->where('regions.id', $currentRegion->id)))
+        ->where('event_date', '>=', now())
+        ->orderBy('event_date')
         ->take(5)
         ->get();
 
     $legalNotices = App\Models\LegalNotice::query()
-        ->when($currentRegion, fn ($q) => $q->where('region_id', $currentRegion->id))
+        ->when($currentRegion, fn ($q) => $q->whereHas('regions', fn ($r) => $r->where('regions.id', $currentRegion->id)))
         ->latest('publish_date')
         ->take(5)
         ->get();
@@ -101,7 +101,7 @@ Route::get('/', function () {
         'events' => $events,
         'legalNotices' => $legalNotices,
         'advertisements' => [
-            'banner' => $bannerAds->map(fn ($ad) => [
+            'banner' => $bannerAds->filter(fn ($ad) => $ad->advertable !== null)->map(fn ($ad) => [
                 'id' => $ad->id,
                 'placement' => $ad->placement,
                 'advertable' => [
@@ -111,9 +111,9 @@ Route::get('/', function () {
                     'featured_image' => $ad->advertable->featured_image,
                     'slug' => $ad->advertable->slug,
                 ],
-                'expires_at' => $ad->expires_at->toISOString(),
-            ]),
-            'featured' => $featuredAds->map(fn ($ad) => [
+                'expires_at' => $ad->expires_at?->toISOString(),
+            ])->values(),
+            'featured' => $featuredAds->filter(fn ($ad) => $ad->advertable !== null)->map(fn ($ad) => [
                 'id' => $ad->id,
                 'placement' => $ad->placement,
                 'advertable' => [
@@ -123,9 +123,9 @@ Route::get('/', function () {
                     'featured_image' => $ad->advertable->featured_image,
                     'slug' => $ad->advertable->slug,
                 ],
-                'expires_at' => $ad->expires_at->toISOString(),
-            ]),
-            'inline' => $inlineAds->map(fn ($ad) => [
+                'expires_at' => $ad->expires_at?->toISOString(),
+            ])->values(),
+            'inline' => $inlineAds->filter(fn ($ad) => $ad->advertable !== null)->map(fn ($ad) => [
                 'id' => $ad->id,
                 'placement' => $ad->placement,
                 'advertable' => [
@@ -135,9 +135,9 @@ Route::get('/', function () {
                     'featured_image' => $ad->advertable->featured_image,
                     'slug' => $ad->advertable->slug,
                 ],
-                'expires_at' => $ad->expires_at->toISOString(),
-            ]),
-            'sidebar' => $sidebarAds->map(fn ($ad) => [
+                'expires_at' => $ad->expires_at?->toISOString(),
+            ])->values(),
+            'sidebar' => $sidebarAds->filter(fn ($ad) => $ad->advertable !== null)->map(fn ($ad) => [
                 'id' => $ad->id,
                 'placement' => $ad->placement,
                 'advertable' => [
@@ -147,8 +147,8 @@ Route::get('/', function () {
                     'featured_image' => $ad->advertable->featured_image,
                     'slug' => $ad->advertable->slug,
                 ],
-                'expires_at' => $ad->expires_at->toISOString(),
-            ]),
+                'expires_at' => $ad->expires_at?->toISOString(),
+            ])->values(),
         ],
     ]);
 })->name('home');

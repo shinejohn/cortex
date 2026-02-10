@@ -42,10 +42,9 @@ final class HomeController extends Controller
             ];
         });
 
-        // 2. Get Recent Deals/Coupons (Need to check Coupon model existence/service)
-        // Assuming Coupon model exists based on routes/downtown-guide.php line 7
+        // 2. Get Recent Deals/Coupons
         $recentCoupons = Coupon::with('business')
-            ->where('expires_at', '>', now())
+            ->notExpired()
             ->latest()
             ->take(6)
             ->get()
@@ -56,10 +55,10 @@ final class HomeController extends Controller
                     'discount' => $coupon->discount_value,
                     'type' => $coupon->discount_type,
                     'business' => [
-                        'name' => $coupon->business->name,
-                        'slug' => $coupon->business->slug,
+                        'name' => $coupon->business?->name ?? 'Unknown Business',
+                        'slug' => $coupon->business?->slug ?? '',
                     ],
-                    'expires_at' => $coupon->expires_at->format('M d, Y'),
+                    'expires_at' => $coupon->end_date?->format('M d, Y'),
                 ];
             });
 

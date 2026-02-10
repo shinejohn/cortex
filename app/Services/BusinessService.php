@@ -22,7 +22,7 @@ final class BusinessService
     public function create(array $data): Business
     {
         // Geocode address if provided
-        if (isset($data['address']) && !isset($data['latitude'], $data['longitude'])) {
+        if (isset($data['address']) && ! isset($data['latitude'], $data['longitude'])) {
             $geocoded = $this->geocodingService->geocodeAddress(
                 $data['address'],
                 $data['city'] ?? null,
@@ -58,8 +58,8 @@ final class BusinessService
     {
         // Geocode address if changed
         $addressChanged = isset($data['address']) || isset($data['city']) || isset($data['state']) || isset($data['postal_code']);
-        
-        if ($addressChanged && !isset($data['latitude'], $data['longitude'])) {
+
+        if ($addressChanged && ! isset($data['latitude'], $data['longitude'])) {
             $geocoded = $this->geocodingService->geocodeAddress(
                 $data['address'] ?? $business->address,
                 $data['city'] ?? $business->city,
@@ -94,7 +94,7 @@ final class BusinessService
     public function find(string $id): ?Business
     {
         $cacheKey = "business:{$id}";
-        
+
         return $this->cacheService->remember($cacheKey, 3600, function () use ($id) {
             return Business::with(['regions', 'workspace'])->find($id);
         });
@@ -106,7 +106,7 @@ final class BusinessService
     public function findBySlug(string $slug): ?Business
     {
         $cacheKey = "business:slug:{$slug}";
-        
+
         return $this->cacheService->remember($cacheKey, CacheService::DURATION_LONG, function () use ($slug) {
             return Business::with(['regions', 'workspace'])->where('slug', $slug)->first();
         });
@@ -116,13 +116,13 @@ final class BusinessService
      * Search businesses
      */
     public function search(
-        string $query = null,
+        ?string $query = null,
         array $filters = [],
         int $perPage = 20,
         int $page = 1
     ): LengthAwarePaginator {
         $cacheKey = 'business:search:'.md5(serialize([$query, $filters, $perPage, $page]));
-        
+
         return $this->cacheService->remember($cacheKey, 300, function () use ($query, $filters, $perPage, $page) {
             $searchQuery = Business::query();
 
@@ -130,9 +130,9 @@ final class BusinessService
             if ($query) {
                 $searchQuery->where(function ($q) use ($query) {
                     $q->where('name', 'like', "%{$query}%")
-                      ->orWhere('description', 'like', "%{$query}%")
-                      ->orWhere('address', 'like', "%{$query}%")
-                      ->orWhere('city', 'like', "%{$query}%");
+                        ->orWhere('description', 'like', "%{$query}%")
+                        ->orWhere('address', 'like', "%{$query}%")
+                        ->orWhere('city', 'like', "%{$query}%");
                 });
             }
 
@@ -179,7 +179,7 @@ final class BusinessService
             // Sorting
             $sortBy = $filters['sort_by'] ?? 'name';
             $sortOrder = $filters['sort_order'] ?? 'asc';
-            
+
             if ($sortBy === 'rating') {
                 $searchQuery->orderBy('rating', $sortOrder);
             } elseif ($sortBy === 'reviews_count') {
@@ -202,15 +202,15 @@ final class BusinessService
     {
         $regionId = $region instanceof Region ? $region->id : $region;
         $cacheKey = "businesses:region:{$regionId}:limit:{$limit}";
-        
+
         return $this->cacheService->remember($cacheKey, 600, function () use ($regionId, $limit) {
             return Business::whereHas('regions', function ($q) use ($regionId) {
                 $q->where('regions.id', $regionId);
             })
-            ->active()
-            ->with(['regions'])
-            ->limit($limit)
-            ->get();
+                ->active()
+                ->with(['regions'])
+                ->limit($limit)
+                ->get();
         });
     }
 
@@ -220,7 +220,7 @@ final class BusinessService
     public function getByCategory(string $category, int $limit = 50): Collection
     {
         $cacheKey = "businesses:category:{$category}:limit:{$limit}";
-        
+
         return $this->cacheService->remember($cacheKey, 600, function () use ($category, $limit) {
             return Business::byCategory($category)
                 ->active()
@@ -236,7 +236,7 @@ final class BusinessService
     public function getFeatured(int $limit = 10): Collection
     {
         $cacheKey = "businesses:featured:limit:{$limit}";
-        
+
         return $this->cacheService->remember($cacheKey, 1800, function () use ($limit) {
             return Business::where('featured', true)
                 ->active()
@@ -254,7 +254,7 @@ final class BusinessService
     public function getWithinRadius(float $latitude, float $longitude, float $radiusKm, int $limit = 50): Collection
     {
         $cacheKey = "businesses:radius:{$latitude}:{$longitude}:{$radiusKm}:limit:{$limit}";
-        
+
         return $this->cacheService->remember($cacheKey, 300, function () use ($latitude, $longitude, $radiusKm, $limit) {
             return Business::withinRadius($latitude, $longitude, $radiusKm)
                 ->active()
@@ -272,35 +272,11 @@ final class BusinessService
     {
         $id = $business->id;
         $result = $business->delete();
-        
+
         // Clear cache
         $this->clearBusinessCache($business);
-        
-        return $result;
-    }
 
-    /**
-     * Clear business-related cache
-     */
-    private function clearBusinessCache(Business $business): void
-    {
-        $this->cacheService->forget("business:{$business->id}");
-        $this->cacheService->forget("business:slug:{$business->slug}");
-        
-        // Clear region caches
-        foreach ($business->regions as $region) {
-            $this->cacheService->forget("businesses:region:{$region->id}:limit:*");
-        }
-        
-        // Clear category caches
-        if ($business->categories) {
-            foreach ($business->categories as $category) {
-                $this->cacheService->forget("businesses:category:{$category}:limit:*");
-            }
-        }
-        
-        // Clear search caches (pattern matching would be ideal, but Cache doesn't support it)
-        // In production, consider using Redis with pattern matching or cache tags
+        return $result;
     }
 
     /**
@@ -309,19 +285,19 @@ final class BusinessService
     public function getBusinessForAlphaSite(string $slugOrSubdomain): ?Business
     {
         $cacheKey = "alphasite:business:{$slugOrSubdomain}";
-        
+
         return $this->cacheService->remember($cacheKey, 3600, function () use ($slugOrSubdomain) {
             return Business::with([
                 'industry',
                 'template',
                 'subscription',
-                'achievements' => fn($q) => $q->orderBy('display_order'),
-                'reviews' => fn($q) => $q->latest()->limit(10),
-                'faqs' => fn($q) => $q->where('is_active', true),
+                'achievements' => fn ($q) => $q->orderBy('display_order'),
+                'reviews' => fn ($q) => $q->latest()->limit(10),
+                'faqs' => fn ($q) => $q->where('is_active', true),
             ])
-            ->where('slug', $slugOrSubdomain)
-            ->orWhere('alphasite_subdomain', $slugOrSubdomain)
-            ->first();
+                ->where('slug', $slugOrSubdomain)
+                ->orWhere('alphasite_subdomain', $slugOrSubdomain)
+                ->first();
         });
     }
 
@@ -336,17 +312,17 @@ final class BusinessService
     ): LengthAwarePaginator {
         $query = Business::query()
             ->with(['industry', 'subscription'])
-            ->whereHas('industry', fn($q) => $q->where('slug', $industrySlug))
+            ->whereHas('industry', fn ($q) => $q->where('slug', $industrySlug))
             ->where('status', 'active');
-        
+
         if ($city) {
             $query->where('city', $city);
         }
-        
+
         if ($state) {
             $query->where('state', $state);
         }
-        
+
         return $query
             ->orderByDesc('featured')
             ->orderByDesc('rating')
@@ -368,5 +344,28 @@ final class BusinessService
             ->limit($limit)
             ->get();
     }
-}
 
+    /**
+     * Clear business-related cache
+     */
+    private function clearBusinessCache(Business $business): void
+    {
+        $this->cacheService->forget("business:{$business->id}");
+        $this->cacheService->forget("business:slug:{$business->slug}");
+
+        // Clear region caches
+        foreach ($business->regions as $region) {
+            $this->cacheService->forget("businesses:region:{$region->id}:limit:*");
+        }
+
+        // Clear category caches
+        if ($business->categories) {
+            foreach ($business->categories as $category) {
+                $this->cacheService->forget("businesses:category:{$category}:limit:*");
+            }
+        }
+
+        // Clear search caches (pattern matching would be ideal, but Cache doesn't support it)
+        // In production, consider using Redis with pattern matching or cache tags
+    }
+}
