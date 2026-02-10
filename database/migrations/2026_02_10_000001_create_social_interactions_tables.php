@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('comment_type');
             $table->unsignedBigInteger('comment_id');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->timestamp('created_at')->useCurrent();
 
             $table->unique(['comment_type', 'comment_id', 'user_id']);
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->id();
             $table->string('shareable_type');
             $table->unsignedBigInteger('shareable_id');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->string('platform')->nullable();
             $table->timestamp('created_at')->useCurrent();
 
@@ -40,7 +40,7 @@ return new class extends Migration
             $table->id();
             $table->string('post_type');
             $table->unsignedBigInteger('post_id');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->string('reaction_type')->default('like');
             $table->timestamp('created_at')->useCurrent();
 

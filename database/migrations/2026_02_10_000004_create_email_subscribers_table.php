@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('email_subscribers', function (Blueprint $table) {
             $table->id();
             $table->string('email')->unique();
-            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignUuid('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('source')->default('footer');
             $table->string('status')->default('active');
             $table->timestamp('subscribed_at')->useCurrent();
