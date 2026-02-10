@@ -108,7 +108,7 @@ export default function DayNewsBusinessShow({
                 {/* Header */}
                 <div className="border-b-4 border-blue-600 bg-card shadow-sm">
                     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        <Link href={route("businesses.index")} className="mb-4 inline-flex items-center gap-2 text-primary hover:text-primary">
+                        <Link href={route("daynews.businesses.index") as any} className="mb-4 inline-flex items-center gap-2 text-primary hover:text-primary">
                             <ArrowLeftIcon className="h-4 w-4" />
                             <span>Back to Business Directory</span>
                         </Link>

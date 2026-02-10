@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -7,32 +9,32 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AlphaSiteCommunity>
  */
-class AlphaSiteCommunityFactory extends Factory
+final class AlphaSiteCommunityFactory extends Factory
 {
     /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
      */
-        public function definition(): array
+    public function definition(): array
     {
         return [
-            'city' => $this->faker->word(),
-            'state' => $this->faker->dateTime(),
-            'country' => $this->faker->numberBetween(0, 100),
-            'slug' => $this->faker->slug(),
-            'name' => $this->faker->sentence(),
-            'description' => $this->faker->paragraph(),
-            'hero_image_url' => $this->faker->optional()->url(),
-            'logo_url' => $this->faker->optional()->url(),
-            'total_businesses' => $this->faker->word(),
-            'premium_businesses' => $this->faker->word(),
-            'total_categories' => $this->faker->dateTime(),
+            'city' => $this->faker->city(),
+            'state' => $this->faker->stateAbbr(),
+            'country' => 'US',
+            'slug' => $this->faker->unique()->slug(),
+            'name' => $this->faker->city().' Community',
+            'description' => $this->faker->sentence(),
+            'hero_image_url' => $this->faker->imageUrl(),
+            'logo_url' => $this->faker->imageUrl(100, 100),
+            'total_businesses' => $this->faker->numberBetween(0, 1000),
+            'premium_businesses' => $this->faker->numberBetween(0, 100),
+            'total_categories' => $this->faker->numberBetween(5, 50),
             'seo_title' => $this->faker->sentence(),
-            'seo_description' => $this->faker->paragraph(),
-            'featured_categories' => $this->faker->dateTime(),
-            'is_active' => $this->faker->boolean(),
-            'launched_at' => $this->faker->dateTime(),
+            'seo_description' => $this->faker->sentence(),
+            'featured_categories' => json_encode($this->faker->words(3)),
+            'is_active' => $this->faker->boolean(80),
+            'launched_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
     }
 }

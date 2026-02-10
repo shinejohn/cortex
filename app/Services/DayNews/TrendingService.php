@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\DayNews;
 
+use App\Models\ArticleComment;
 use App\Models\DayNewsPost;
 use App\Models\Region;
 use App\Models\Tag;
@@ -209,5 +210,65 @@ final class TrendingService
             'total_today' => array_sum($pulse),
         ];
     }
-}
 
+    /**
+     * Get community engagement statistics for the trending page
+     *
+     * @return array{comment_count: int, contributor_count: int, share_count: int, reaction_count: int}
+     */
+    public function getEngagementStats(string $timePeriod = 'now', ?Region $region = null): array
+    {
+        $timeRange = match ($timePeriod) {
+            'hour' => now()->subHour(),
+            'day' => now()->subDay(),
+            'week' => now()->subWeek(),
+            'month' => now()->subMonth(),
+            default => now()->subHour(),
+        };
+
+        // Count comments on articles within the time period
+        $commentQuery = ArticleComment::where('created_at', '>=', $timeRange)
+            ->where('is_active', true);
+
+        if ($region) {
+            $commentQuery->whereHas('article', function ($q) use ($region) {
+                $q->published()->whereHas('regions', function ($regionQuery) use ($region) {
+                    $regionQuery->where('region_id', $region->id);
+                });
+            });
+        }
+
+        $commentCount = $commentQuery->count();
+
+        // Count unique contributors (authors who published in the time period)
+        $contributorQuery = User::whereHas('authoredDayNewsPosts', function ($q) use ($timeRange, $region) {
+            $q->published()->where('published_at', '>=', $timeRange);
+            if ($region) {
+                $q->whereHas('regions', function ($regionQuery) use ($region) {
+                    $regionQuery->where('region_id', $region->id);
+                });
+            }
+        });
+
+        $contributorCount = $contributorQuery->count();
+
+        // Count shares of day_news_post content in the time period
+        $shareCount = DB::table('content_shares')
+            ->where('shareable_type', 'day_news_post')
+            ->where('created_at', '>=', $timeRange)
+            ->count();
+
+        // Count reactions on day_news_post content in the time period
+        $reactionCount = DB::table('post_reactions')
+            ->where('post_type', 'day_news_post')
+            ->where('created_at', '>=', $timeRange)
+            ->count();
+
+        return [
+            'comment_count' => $commentCount,
+            'contributor_count' => $contributorCount,
+            'share_count' => $shareCount,
+            'reaction_count' => $reactionCount,
+        ];
+    }
+}

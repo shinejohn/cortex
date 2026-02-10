@@ -21,13 +21,22 @@ final class CartItemSeeder extends Seeder
 
         if ($carts->isEmpty() || $products->isEmpty()) {
             $this->command->warn('⚠ No carts or products found. Run CartSeeder and ProductSeeder first.');
+
             return;
         }
 
         foreach ($carts as $cart) {
             // Create 1-5 items per cart
+            // Simulate shopping at a specific store
+            $randomStoreId = $products->pluck('store_id')->unique()->random();
+            $storeProducts = $products->where('store_id', $randomStoreId);
+
+            if ($storeProducts->isEmpty()) {
+                continue;
+            }
+
             $itemCount = rand(1, 5);
-            $availableProducts = $products->where('store_id', $cart->store_id)->random(min($itemCount, $products->where('store_id', $cart->store_id)->count()));
+            $availableProducts = $storeProducts->random(min($itemCount, $storeProducts->count()));
 
             foreach ($availableProducts as $product) {
                 CartItem::factory()->create([
@@ -41,5 +50,3 @@ final class CartItemSeeder extends Seeder
         $this->command->info("✓ Total cart items: {$totalItems}");
     }
 }
-
-

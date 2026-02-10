@@ -21,19 +21,17 @@ final class CartSeeder extends Seeder
 
         if ($users->isEmpty() || $stores->isEmpty()) {
             $this->command->warn('⚠ No users or stores found. Run UserSeeder and StoreSeeder first.');
+
             return;
         }
 
         // Create carts using factory
         $targetCount = 100;
         $carts = Cart::factory($targetCount)->create([
-            'user_id' => fn() => $users->random()->id,
-            'store_id' => fn() => $stores->random()->id,
+            'user_id' => fn () => $users->random()->id,
         ]);
 
         $this->command->info("✓ Created {$targetCount} carts");
-        $this->command->info("✓ Total carts: " . Cart::count());
+        $this->command->info('✓ Total carts: '.Cart::count());
     }
 }
-
-

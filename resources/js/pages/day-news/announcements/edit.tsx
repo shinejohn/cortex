@@ -43,7 +43,8 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // Use post with _method: PATCH for file upload compatibility in some environments
-        form.post(`/announcements/${announcement.id}`, {
+        // Use post with _method: PATCH for file upload compatibility in some environments
+        form.post(route("daynews.announcements.update", announcement.id) as any, {
             forceFormData: true,
         });
     };
@@ -83,7 +84,7 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
                     {/* Navigation */}
                     <div className="mb-10">
                         <Link
-                            href={`/announcements/${announcement.id}`}
+                            href={route("daynews.announcements.show", announcement.id) as any}
                             className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-colors group"
                         >
                             <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
@@ -252,7 +253,7 @@ export default function EditAnnouncement({ auth, announcement }: EditAnnouncemen
                                 </section>
 
                                 <div className="flex items-center justify-end gap-6 pt-6">
-                                    <Link href={`/announcements/${announcement.id}`} className="text-xs font-black text-muted-foreground hover:text-zinc-900 uppercase tracking-widest transition-colors">
+                                    <Link href={route("daynews.announcements.show", announcement.id) as any} className="text-xs font-black text-muted-foreground hover:text-zinc-900 uppercase tracking-widest transition-colors">
                                         Cancel & Discard
                                     </Link>
                                     <Button

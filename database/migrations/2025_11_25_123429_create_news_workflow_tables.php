@@ -29,10 +29,11 @@ return new class extends Migration
             $table->json('metadata')->nullable(); // Raw SERP data
             $table->string('content_hash')->index(); // Deduplication
             $table->boolean('processed')->default(false)->index();
+            $table->uuid('writer_agent_id')->nullable()->index();
             $table->timestamps();
 
-// FK DISABLED
-// FK DISABLED
+            // FK DISABLED
+            // FK DISABLED
         });
 
         // Table 2: AI-generated article drafts tracking workflow progress
@@ -56,9 +57,9 @@ return new class extends Migration
             $table->text('rejection_reason')->nullable();
             $table->timestamps();
 
-// FK DISABLED
-// FK DISABLED
-// FK DISABLED
+            // FK DISABLED
+            // FK DISABLED
+            // FK DISABLED
 
             $table->index('status');
             $table->index('quality_score'); // For hybrid auto-publish filtering
@@ -76,13 +77,14 @@ return new class extends Migration
             $table->json('metadata')->nullable();
             $table->timestamps();
 
-// FK DISABLED
+            // FK DISABLED
         });
 
         // Table 4: Workflow execution tracking for observability
         Schema::create('news_workflow_runs', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('region_id')->nullable()->index();
+            $table->uuid('writer_agent_id')->nullable()->index();
             $table->string('phase'); // business_discovery, news_collection, etc.
             $table->string('status'); // running, completed, failed
             $table->timestamp('started_at');

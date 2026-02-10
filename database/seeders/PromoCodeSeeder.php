@@ -19,13 +19,9 @@ final class PromoCodeSeeder extends Seeder
 
         // Create promo codes using factory
         $targetCount = 30;
-        $promoCodes = PromoCode::factory($targetCount)->create([
-            'event_id' => fn() => $events->isNotEmpty() && rand(0, 1) ? $events->random()->id : null,
-        ]);
+        $promoCodes = PromoCode::factory($targetCount)->create();
 
         $this->command->info("✓ Created {$targetCount} promo codes");
-        $this->command->info("✓ Total promo codes: " . PromoCode::count());
+        $this->command->info('✓ Total promo codes: '.PromoCode::count());
     }
 }
-
-

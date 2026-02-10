@@ -14,6 +14,10 @@ use Inertia\Response;
 
 final class PerformerController extends Controller
 {
+    public function __construct(
+        protected \App\Services\AdvertisementService $advertisementService
+    ) {}
+
     /**
      * Public performers page (no authentication required)
      */
@@ -276,7 +280,7 @@ final class PerformerController extends Controller
             'name' => $performer->name,
             'description' => $performer->bio,
             'image' => $performer->profile_image,
-            'url' => "/performers/{$performer->id}",
+            'url' => route('performers.show', $performer->id),
             'genres' => $performer->genres,
             'homeCity' => $performer->home_city,
             'isVerified' => $performer->is_verified,
@@ -489,6 +493,36 @@ final class PerformerController extends Controller
 
         return redirect()->route('performers.index')
             ->with('success', 'Performer profile deleted successfully!');
+    }
+
+    /**
+     * Display the performer onboarding page.
+     */
+    public function onboarding(Request $request): Response
+    {
+        return Inertia::render('event-city/performers/onboarding', [
+            'user' => $request->user(),
+        ]);
+    }
+
+    /**
+     * Display the performer management page.
+     */
+    public function management(Request $request): Response
+    {
+        $user = $request->user();
+        $currentWorkspace = $user->currentWorkspace;
+
+        $performers = Performer::query()
+            ->when($currentWorkspace, fn ($q) => $q->where('workspace_id', $currentWorkspace->id))
+            ->where('created_by', $user->id)
+            ->with('upcomingShows')
+            ->latest()
+            ->paginate(12);
+
+        return Inertia::render('event-city/performers/management', [
+            'performers' => $performers,
+        ]);
     }
 
     /**

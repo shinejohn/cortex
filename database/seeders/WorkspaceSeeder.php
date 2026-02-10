@@ -19,6 +19,7 @@ final class WorkspaceSeeder extends Seeder
 
         if ($users->isEmpty()) {
             $this->command->warn('⚠ No users found. Run UserSeeder first.');
+
             return;
         }
 
@@ -31,21 +32,26 @@ final class WorkspaceSeeder extends Seeder
             ]
         );
 
+        // Assign to Admin User
+        $adminUser = $users->first();
+        if ($adminUser) {
+            $adminUser->current_workspace_id = $demoWorkspace->id;
+            $adminUser->save();
+        }
+
         // Create additional workspaces using factory
         $existingCount = Workspace::count();
         $targetCount = 10;
 
         if ($existingCount < $targetCount) {
             $workspaces = Workspace::factory($targetCount - $existingCount)->create([
-                'owner_id' => fn() => $users->random()->id,
+                'owner_id' => fn () => $users->random()->id,
             ]);
 
-            $this->command->info('✓ Created ' . $workspaces->count() . ' additional workspaces');
+            $this->command->info('✓ Created '.$workspaces->count().' additional workspaces');
         }
 
         $totalWorkspaces = Workspace::count();
         $this->command->info("✓ Total workspaces: {$totalWorkspaces}");
     }
 }
-
-

@@ -19,6 +19,7 @@ final class RegionZipcodeSeeder extends Seeder
 
         if ($regions->isEmpty()) {
             $this->command->warn('⚠ No city regions found. Run RegionSeeder first.');
+
             return;
         }
 
@@ -26,14 +27,15 @@ final class RegionZipcodeSeeder extends Seeder
             // Create 1-5 zipcodes per city
             $zipcodeCount = rand(1, 5);
             for ($i = 0; $i < $zipcodeCount; $i++) {
+                $zipcode = fake()->postcode();
                 RegionZipcode::firstOrCreate(
                     [
                         'region_id' => $region->id,
-                        'zipcode' => fake()->postcode(),
+                        'zipcode' => $zipcode,
                     ],
                     RegionZipcode::factory()->make([
                         'region_id' => $region->id,
-                        'zipcode' => fake()->postcode(),
+                        'zipcode' => $zipcode,
                         'is_primary' => $i === 0,
                     ])->toArray()
                 );
@@ -44,5 +46,3 @@ final class RegionZipcodeSeeder extends Seeder
         $this->command->info("✓ Total region zipcodes: {$totalZipcodes}");
     }
 }
-
-

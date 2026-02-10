@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +25,7 @@ Route::get('/healthcheck', function () {
     try {
         DB::connection()->getPdo();
         $checks['database'] = 'ok';
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         $checks['database'] = 'error';
         $checks['database_error'] = $e->getMessage();
     }
@@ -34,7 +34,7 @@ Route::get('/healthcheck', function () {
     try {
         Redis::connection()->ping();
         $checks['redis'] = 'ok';
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         $checks['redis'] = 'error';
         $checks['redis_error'] = $e->getMessage();
     }
@@ -51,3 +51,10 @@ Route::get('/health', function () {
     ]);
 })->name('health');
 
+// Railway compatibility: handle /Health (capital H) for healthchecks
+Route::get('/Health', function () {
+    return response()->json([
+        'status' => 'healthy',
+        'timestamp' => now()->toIso8601String(),
+    ]);
+});

@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import AppLayout from "@/layouts/app-layout";
+import FormLayout from "@/layouts/form-layout";
 
 interface Venue {
     id: string;
@@ -139,14 +139,14 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                 formDataToSend.append(`images[${index}]`, file);
             });
 
-            const response = await axios.post(route("events.store"), formDataToSend, {
+            const response = await axios.post(route("events.store") as any, formDataToSend, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
 
             if (response.status === 200 || response.status === 201) {
-                router.visit(route("events.show", response.data.id || response.data.event?.id));
+                router.visit(route("events.show", (response.data.id || response.data.event?.id).toString()) as any);
             }
         } catch (error: any) {
             if (error.response?.data?.errors) {
@@ -251,134 +251,395 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
     };
 
     return (
-        <AppLayout>
-            <Head title="Create Event" />
-            <div className="min-h-screen bg-background">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <div className="mb-6">
-                        <Link href={route("events")}>
-                            <Button variant="ghost" size="sm" className="mb-4">
-                                <ArrowLeftIcon className="h-4 w-4 mr-2" />
-                                Back to Events
-                            </Button>
-                        </Link>
-                        <h1 className="text-3xl font-bold text-foreground">Create New Event</h1>
-                        <p className="text-muted-foreground mt-1">Add a new event to your workspace</p>
-                    </div>
+        <FormLayout
+            title="Create New Event"
+            description="Add a new event to your workspace"
+            backHref={route("events") as any}
+            backLabel="Back to Events"
+        >
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Event Details</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div>
+                            <Label htmlFor="title">Event Title *</Label>
+                            <Input
+                                id="title"
+                                type="text"
+                                placeholder="Enter event title"
+                                value={formData.title}
+                                onChange={(e) => handleInputChange("title", e.target.value)}
+                                required
+                                className="mt-1"
+                            />
+                            {errors.title && <p className="text-sm text-destructive mt-1">{errors.title}</p>}
+                        </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Event Details</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
+                        <div>
+                            <Label htmlFor="description">Description *</Label>
+                            <Textarea
+                                id="description"
+                                placeholder="Describe the event"
+                                value={formData.description}
+                                onChange={(e) => handleInputChange("description", e.target.value)}
+                                required
+                                rows={4}
+                                className="mt-1"
+                            />
+                            {errors.description && <p className="text-sm text-destructive mt-1">{errors.description}</p>}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <Label htmlFor="event_date">Event Date *</Label>
+                                <Input
+                                    id="event_date"
+                                    type="date"
+                                    value={formData.event_date}
+                                    onChange={(e) => handleInputChange("event_date", e.target.value)}
+                                    required
+                                    className="mt-1"
+                                />
+                                {errors.event_date && <p className="text-sm text-destructive mt-1">{errors.event_date}</p>}
+                            </div>
+
+                            <div>
+                                <Label htmlFor="time">Event Time *</Label>
+                                <Input
+                                    id="time"
+                                    type="time"
+                                    value={formData.time}
+                                    onChange={(e) => handleInputChange("time", e.target.value)}
+                                    required
+                                    className="mt-1"
+                                />
+                                {errors.time && <p className="text-sm text-destructive mt-1">{errors.time}</p>}
+                            </div>
+                        </div>
+
+                        <div>
+                            <Label htmlFor="category">Category *</Label>
+                            <Input
+                                id="category"
+                                type="text"
+                                placeholder="e.g., Concert, Theater, Sports"
+                                value={formData.category}
+                                onChange={(e) => handleInputChange("category", e.target.value)}
+                                required
+                                className="mt-1"
+                            />
+                            {errors.category && <p className="text-sm text-destructive mt-1">{errors.category}</p>}
+                        </div>
+
+                        <div>
+                            <Label>Event Images</Label>
+                            <ImageUpload
+                                value={imageFiles}
+                                onChange={setImageFiles}
+                                maxFiles={5}
+                                maxSize={5}
+                                label=""
+                                description="Drag and drop event images here, or click to select"
+                            />
+                            {errors.images && <p className="mt-2 text-sm text-destructive">{errors.images}</p>}
+                        </div>
+
+                        <div>
+                            <Label>Subcategories</Label>
+                            <div className="flex gap-2 mt-1">
+                                <Input
+                                    type="text"
+                                    placeholder="Add subcategory"
+                                    value={subcategoryInput}
+                                    onChange={(e) => setSubcategoryInput(e.target.value)}
+                                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSubcategory())}
+                                />
+                                <Button type="button" onClick={addSubcategory}>
+                                    Add
+                                </Button>
+                            </div>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                {formData.subcategories.map((subcategory) => (
+                                    <span
+                                        key={subcategory}
+                                        className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-sm"
+                                    >
+                                        {subcategory}
+                                        <button
+                                            type="button"
+                                            onClick={() => removeSubcategory(subcategory)}
+                                            className="hover:text-destructive"
+                                        >
+                                            ×
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div>
+                            <Label>Badges</Label>
+                            <div className="flex gap-2 mt-1">
+                                <Input
+                                    type="text"
+                                    placeholder="Add badge (e.g., Featured, Popular)"
+                                    value={badgeInput}
+                                    onChange={(e) => setBadgeInput(e.target.value)}
+                                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addBadge())}
+                                />
+                                <Button type="button" onClick={addBadge}>
+                                    Add
+                                </Button>
+                            </div>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                {formData.badges.map((badge) => (
+                                    <span key={badge} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-sm">
+                                        {badge}
+                                        <button type="button" onClick={() => removeBadge(badge)} className="hover:text-destructive">
+                                            ×
+                                        </button>
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Pricing</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        {!workspace.can_accept_payments && (
+                            <div className="rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-4">
+                                <p className="text-sm text-amber-800 dark:text-amber-200">
+                                    <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect to set paid
+                                    pricing. Only free events (price = $0.00) are allowed until approval. Contact support for approval.
+                                </p>
+                            </div>
+                        )}
+                        <div className="flex items-center space-x-2">
+                            <Checkbox
+                                id="is_free"
+                                checked={formData.is_free || !workspace.can_accept_payments}
+                                onCheckedChange={(checked) => handleInputChange("is_free", !!checked)}
+                                disabled={!workspace.can_accept_payments}
+                            />
+                            <Label htmlFor="is_free" className="cursor-pointer">
+                                This is a free event {!workspace.can_accept_payments && "(Required)"}
+                            </Label>
+                        </div>
+
+                        {!formData.is_free && workspace.can_accept_payments && (
+                            <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <Label htmlFor="title">Event Title *</Label>
+                                    <Label htmlFor="price_min">Minimum Price *</Label>
                                     <Input
-                                        id="title"
-                                        type="text"
-                                        placeholder="Enter event title"
-                                        value={formData.title}
-                                        onChange={(e) => handleInputChange("title", e.target.value)}
-                                        required
+                                        id="price_min"
+                                        type="number"
+                                        step="0.01"
+                                        placeholder="0.00"
+                                        value={formData.price_min}
+                                        onChange={(e) => handleInputChange("price_min", e.target.value)}
+                                        min="0"
                                         className="mt-1"
                                     />
-                                    {errors.title && <p className="text-sm text-destructive mt-1">{errors.title}</p>}
+                                    {errors.price_min && <p className="text-sm text-destructive mt-1">{errors.price_min}</p>}
                                 </div>
 
                                 <div>
-                                    <Label htmlFor="description">Description *</Label>
-                                    <Textarea
-                                        id="description"
-                                        placeholder="Describe the event"
-                                        value={formData.description}
-                                        onChange={(e) => handleInputChange("description", e.target.value)}
-                                        required
-                                        rows={4}
+                                    <Label htmlFor="price_max">Maximum Price *</Label>
+                                    <Input
+                                        id="price_max"
+                                        type="number"
+                                        step="0.01"
+                                        placeholder="0.00"
+                                        value={formData.price_max}
+                                        onChange={(e) => handleInputChange("price_max", e.target.value)}
+                                        min="0"
                                         className="mt-1"
                                     />
-                                    {errors.description && <p className="text-sm text-destructive mt-1">{errors.description}</p>}
+                                    {errors.price_max && <p className="text-sm text-destructive mt-1">{errors.price_max}</p>}
+                                </div>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Venue</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Tabs value={venueMode} onValueChange={(value) => setVenueMode(value as "select" | "create")}>
+                            <TabsList className="grid w-full grid-cols-2">
+                                <TabsTrigger value="select">Select Existing</TabsTrigger>
+                                <TabsTrigger value="create">Create New</TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="select" className="space-y-4">
+                                <div>
+                                    <Label htmlFor="venue_id">Select Venue</Label>
+                                    <Select value={formData.venue_id} onValueChange={(value) => handleInputChange("venue_id", value)}>
+                                        <SelectTrigger className="mt-1">
+                                            <SelectValue placeholder="Choose a venue" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {venues.map((venue) => (
+                                                <SelectItem key={venue.id} value={venue.id}>
+                                                    {venue.name} - {venue.address}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="create" className="space-y-4">
+                                <div>
+                                    <Label htmlFor="new_venue_name">Venue Name *</Label>
+                                    <Input
+                                        id="new_venue_name"
+                                        type="text"
+                                        placeholder="Enter venue name"
+                                        value={newVenue.name}
+                                        onChange={(e) => handleNewVenueChange("name", e.target.value)}
+                                        className="mt-1"
+                                    />
+                                </div>
+
+                                <div>
+                                    <Label htmlFor="new_venue_description">Description *</Label>
+                                    <Textarea
+                                        id="new_venue_description"
+                                        placeholder="Describe the venue"
+                                        value={newVenue.description}
+                                        onChange={(e) => handleNewVenueChange("description", e.target.value)}
+                                        rows={3}
+                                        className="mt-1"
+                                    />
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <Label htmlFor="event_date">Event Date *</Label>
+                                        <Label htmlFor="new_venue_type">Venue Type *</Label>
                                         <Input
-                                            id="event_date"
-                                            type="date"
-                                            value={formData.event_date}
-                                            onChange={(e) => handleInputChange("event_date", e.target.value)}
-                                            required
+                                            id="new_venue_type"
+                                            type="text"
+                                            placeholder="e.g., Concert Hall"
+                                            value={newVenue.venue_type}
+                                            onChange={(e) => handleNewVenueChange("venue_type", e.target.value)}
                                             className="mt-1"
                                         />
-                                        {errors.event_date && <p className="text-sm text-destructive mt-1">{errors.event_date}</p>}
                                     </div>
 
                                     <div>
-                                        <Label htmlFor="time">Event Time *</Label>
+                                        <Label htmlFor="new_venue_capacity">Capacity *</Label>
                                         <Input
-                                            id="time"
-                                            type="time"
-                                            value={formData.time}
-                                            onChange={(e) => handleInputChange("time", e.target.value)}
-                                            required
+                                            id="new_venue_capacity"
+                                            type="number"
+                                            placeholder="Capacity"
+                                            value={newVenue.capacity}
+                                            onChange={(e) => handleNewVenueChange("capacity", e.target.value)}
+                                            min="1"
                                             className="mt-1"
                                         />
-                                        {errors.time && <p className="text-sm text-destructive mt-1">{errors.time}</p>}
                                     </div>
                                 </div>
 
+                                <GoogleMapsProvider>
+                                    <GooglePlacesAutocomplete
+                                        onPlaceSelected={handleNewVenuePlaceSelected}
+                                        defaultValue={newVenue.address}
+                                        label="Venue Address"
+                                        placeholder="Search for venue address..."
+                                    />
+                                </GoogleMapsProvider>
+                            </TabsContent>
+                        </Tabs>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Performer</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Tabs value={performerMode} onValueChange={(value) => setPerformerMode(value as "select" | "create")}>
+                            <TabsList className="grid w-full grid-cols-2">
+                                <TabsTrigger value="select">Select Existing</TabsTrigger>
+                                <TabsTrigger value="create">Create New</TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="select" className="space-y-4">
                                 <div>
-                                    <Label htmlFor="category">Category *</Label>
+                                    <Label htmlFor="performer_id">Select Performer</Label>
+                                    <Select value={formData.performer_id} onValueChange={(value) => handleInputChange("performer_id", value)}>
+                                        <SelectTrigger className="mt-1">
+                                            <SelectValue placeholder="Choose a performer" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {performers.map((performer) => (
+                                                <SelectItem key={performer.id} value={performer.id}>
+                                                    {performer.name} - {performer.genres.join(", ")}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="create" className="space-y-4">
+                                <div>
+                                    <Label htmlFor="new_performer_name">Performer Name *</Label>
                                     <Input
-                                        id="category"
+                                        id="new_performer_name"
                                         type="text"
-                                        placeholder="e.g., Concert, Theater, Sports"
-                                        value={formData.category}
-                                        onChange={(e) => handleInputChange("category", e.target.value)}
-                                        required
+                                        placeholder="Enter performer name"
+                                        value={newPerformer.name}
+                                        onChange={(e) => handleNewPerformerChange("name", e.target.value)}
                                         className="mt-1"
                                     />
-                                    {errors.category && <p className="text-sm text-destructive mt-1">{errors.category}</p>}
                                 </div>
 
                                 <div>
-                                    <Label>Event Images</Label>
-                                    <ImageUpload
-                                        value={imageFiles}
-                                        onChange={setImageFiles}
-                                        maxFiles={5}
-                                        maxSize={5}
-                                        label=""
-                                        description="Drag and drop event images here, or click to select"
+                                    <Label htmlFor="new_performer_bio">Bio *</Label>
+                                    <Textarea
+                                        id="new_performer_bio"
+                                        placeholder="Tell us about the performer"
+                                        value={newPerformer.bio}
+                                        onChange={(e) => handleNewPerformerChange("bio", e.target.value)}
+                                        rows={3}
+                                        className="mt-1"
                                     />
-                                    {errors.images && <p className="mt-2 text-sm text-destructive">{errors.images}</p>}
                                 </div>
 
                                 <div>
-                                    <Label>Subcategories</Label>
+                                    <Label>Genres *</Label>
                                     <div className="flex gap-2 mt-1">
                                         <Input
                                             type="text"
-                                            placeholder="Add subcategory"
-                                            value={subcategoryInput}
-                                            onChange={(e) => setSubcategoryInput(e.target.value)}
-                                            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSubcategory())}
+                                            placeholder="Add genre"
+                                            value={performerGenreInput}
+                                            onChange={(e) => setPerformerGenreInput(e.target.value)}
+                                            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addPerformerGenre())}
                                         />
-                                        <Button type="button" onClick={addSubcategory}>
+                                        <Button type="button" onClick={addPerformerGenre}>
                                             Add
                                         </Button>
                                     </div>
                                     <div className="flex flex-wrap gap-2 mt-2">
-                                        {formData.subcategories.map((subcategory) => (
+                                        {newPerformer.genres.map((genre) => (
                                             <span
-                                                key={subcategory}
+                                                key={genre}
                                                 className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-sm"
                                             >
-                                                {subcategory}
+                                                {genre}
                                                 <button
                                                     type="button"
-                                                    onClick={() => removeSubcategory(subcategory)}
+                                                    onClick={() => removePerformerGenre(genre)}
                                                     className="hover:text-destructive"
                                                 >
                                                     ×
@@ -387,357 +648,85 @@ export default function CreateEvent({ venues, performers, workspace = { can_acce
                                         ))}
                                     </div>
                                 </div>
+                            </TabsContent>
+                        </Tabs>
+                    </CardContent>
+                </Card>
 
-                                <div>
-                                    <Label>Badges</Label>
-                                    <div className="flex gap-2 mt-1">
-                                        <Input
-                                            type="text"
-                                            placeholder="Add badge (e.g., Featured, Popular)"
-                                            value={badgeInput}
-                                            onChange={(e) => setBadgeInput(e.target.value)}
-                                            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addBadge())}
-                                        />
-                                        <Button type="button" onClick={addBadge}>
-                                            Add
-                                        </Button>
-                                    </div>
-                                    <div className="flex flex-wrap gap-2 mt-2">
-                                        {formData.badges.map((badge) => (
-                                            <span key={badge} className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-sm">
-                                                {badge}
-                                                <button type="button" onClick={() => removeBadge(badge)} className="hover:text-destructive">
-                                                    ×
-                                                </button>
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Location</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <GoogleMapsProvider>
+                            <GooglePlacesAutocomplete
+                                onPlaceSelected={handleEventPlaceSelected}
+                                label="Event Location"
+                                placeholder="Search for event location..."
+                                required
+                            />
+                        </GoogleMapsProvider>
 
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Pricing</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                {!workspace.can_accept_payments && (
-                                    <div className="rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-4">
-                                        <p className="text-sm text-amber-800 dark:text-amber-200">
-                                            <strong>Payment restrictions:</strong> Your workspace must be approved for Stripe Connect to set paid
-                                            pricing. Only free events (price = $0.00) are allowed until approval. Contact support for approval.
-                                        </p>
-                                    </div>
-                                )}
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox
-                                        id="is_free"
-                                        checked={formData.is_free || !workspace.can_accept_payments}
-                                        onCheckedChange={(checked) => handleInputChange("is_free", !!checked)}
-                                        disabled={!workspace.can_accept_payments}
-                                    />
-                                    <Label htmlFor="is_free" className="cursor-pointer">
-                                        This is a free event {!workspace.can_accept_payments && "(Required)"}
-                                    </Label>
-                                </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <Label htmlFor="latitude">Latitude</Label>
+                                <Input
+                                    id="latitude"
+                                    type="text"
+                                    placeholder="Auto-filled from location"
+                                    value={formData.latitude}
+                                    readOnly
+                                    className="mt-1 bg-muted"
+                                />
+                                {errors.latitude && <p className="text-sm text-destructive mt-1">{errors.latitude}</p>}
+                            </div>
 
-                                {!formData.is_free && workspace.can_accept_payments && (
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <Label htmlFor="price_min">Minimum Price *</Label>
-                                            <Input
-                                                id="price_min"
-                                                type="number"
-                                                step="0.01"
-                                                placeholder="0.00"
-                                                value={formData.price_min}
-                                                onChange={(e) => handleInputChange("price_min", e.target.value)}
-                                                min="0"
-                                                className="mt-1"
-                                            />
-                                            {errors.price_min && <p className="text-sm text-destructive mt-1">{errors.price_min}</p>}
-                                        </div>
-
-                                        <div>
-                                            <Label htmlFor="price_max">Maximum Price *</Label>
-                                            <Input
-                                                id="price_max"
-                                                type="number"
-                                                step="0.01"
-                                                placeholder="0.00"
-                                                value={formData.price_max}
-                                                onChange={(e) => handleInputChange("price_max", e.target.value)}
-                                                min="0"
-                                                className="mt-1"
-                                            />
-                                            {errors.price_max && <p className="text-sm text-destructive mt-1">{errors.price_max}</p>}
-                                        </div>
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Venue</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <Tabs value={venueMode} onValueChange={(value) => setVenueMode(value as "select" | "create")}>
-                                    <TabsList className="grid w-full grid-cols-2">
-                                        <TabsTrigger value="select">Select Existing</TabsTrigger>
-                                        <TabsTrigger value="create">Create New</TabsTrigger>
-                                    </TabsList>
-
-                                    <TabsContent value="select" className="space-y-4">
-                                        <div>
-                                            <Label htmlFor="venue_id">Select Venue</Label>
-                                            <Select value={formData.venue_id} onValueChange={(value) => handleInputChange("venue_id", value)}>
-                                                <SelectTrigger className="mt-1">
-                                                    <SelectValue placeholder="Choose a venue" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {venues.map((venue) => (
-                                                        <SelectItem key={venue.id} value={venue.id}>
-                                                            {venue.name} - {venue.address}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </TabsContent>
-
-                                    <TabsContent value="create" className="space-y-4">
-                                        <div>
-                                            <Label htmlFor="new_venue_name">Venue Name *</Label>
-                                            <Input
-                                                id="new_venue_name"
-                                                type="text"
-                                                placeholder="Enter venue name"
-                                                value={newVenue.name}
-                                                onChange={(e) => handleNewVenueChange("name", e.target.value)}
-                                                className="mt-1"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <Label htmlFor="new_venue_description">Description *</Label>
-                                            <Textarea
-                                                id="new_venue_description"
-                                                placeholder="Describe the venue"
-                                                value={newVenue.description}
-                                                onChange={(e) => handleNewVenueChange("description", e.target.value)}
-                                                rows={3}
-                                                className="mt-1"
-                                            />
-                                        </div>
-
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <Label htmlFor="new_venue_type">Venue Type *</Label>
-                                                <Input
-                                                    id="new_venue_type"
-                                                    type="text"
-                                                    placeholder="e.g., Concert Hall"
-                                                    value={newVenue.venue_type}
-                                                    onChange={(e) => handleNewVenueChange("venue_type", e.target.value)}
-                                                    className="mt-1"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <Label htmlFor="new_venue_capacity">Capacity *</Label>
-                                                <Input
-                                                    id="new_venue_capacity"
-                                                    type="number"
-                                                    placeholder="Capacity"
-                                                    value={newVenue.capacity}
-                                                    onChange={(e) => handleNewVenueChange("capacity", e.target.value)}
-                                                    min="1"
-                                                    className="mt-1"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <GoogleMapsProvider>
-                                            <GooglePlacesAutocomplete
-                                                onPlaceSelected={handleNewVenuePlaceSelected}
-                                                defaultValue={newVenue.address}
-                                                label="Venue Address"
-                                                placeholder="Search for venue address..."
-                                            />
-                                        </GoogleMapsProvider>
-                                    </TabsContent>
-                                </Tabs>
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Performer</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <Tabs value={performerMode} onValueChange={(value) => setPerformerMode(value as "select" | "create")}>
-                                    <TabsList className="grid w-full grid-cols-2">
-                                        <TabsTrigger value="select">Select Existing</TabsTrigger>
-                                        <TabsTrigger value="create">Create New</TabsTrigger>
-                                    </TabsList>
-
-                                    <TabsContent value="select" className="space-y-4">
-                                        <div>
-                                            <Label htmlFor="performer_id">Select Performer</Label>
-                                            <Select value={formData.performer_id} onValueChange={(value) => handleInputChange("performer_id", value)}>
-                                                <SelectTrigger className="mt-1">
-                                                    <SelectValue placeholder="Choose a performer" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {performers.map((performer) => (
-                                                        <SelectItem key={performer.id} value={performer.id}>
-                                                            {performer.name} - {performer.genres.join(", ")}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </TabsContent>
-
-                                    <TabsContent value="create" className="space-y-4">
-                                        <div>
-                                            <Label htmlFor="new_performer_name">Performer Name *</Label>
-                                            <Input
-                                                id="new_performer_name"
-                                                type="text"
-                                                placeholder="Enter performer name"
-                                                value={newPerformer.name}
-                                                onChange={(e) => handleNewPerformerChange("name", e.target.value)}
-                                                className="mt-1"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <Label htmlFor="new_performer_bio">Bio *</Label>
-                                            <Textarea
-                                                id="new_performer_bio"
-                                                placeholder="Tell us about the performer"
-                                                value={newPerformer.bio}
-                                                onChange={(e) => handleNewPerformerChange("bio", e.target.value)}
-                                                rows={3}
-                                                className="mt-1"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <Label>Genres *</Label>
-                                            <div className="flex gap-2 mt-1">
-                                                <Input
-                                                    type="text"
-                                                    placeholder="Add genre"
-                                                    value={performerGenreInput}
-                                                    onChange={(e) => setPerformerGenreInput(e.target.value)}
-                                                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addPerformerGenre())}
-                                                />
-                                                <Button type="button" onClick={addPerformerGenre}>
-                                                    Add
-                                                </Button>
-                                            </div>
-                                            <div className="flex flex-wrap gap-2 mt-2">
-                                                {newPerformer.genres.map((genre) => (
-                                                    <span
-                                                        key={genre}
-                                                        className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary text-sm"
-                                                    >
-                                                        {genre}
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => removePerformerGenre(genre)}
-                                                            className="hover:text-destructive"
-                                                        >
-                                                            ×
-                                                        </button>
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </TabsContent>
-                                </Tabs>
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Location</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <GoogleMapsProvider>
-                                    <GooglePlacesAutocomplete
-                                        onPlaceSelected={handleEventPlaceSelected}
-                                        label="Event Location"
-                                        placeholder="Search for event location..."
-                                        required
-                                    />
-                                </GoogleMapsProvider>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <Label htmlFor="latitude">Latitude</Label>
-                                        <Input
-                                            id="latitude"
-                                            type="text"
-                                            placeholder="Auto-filled from location"
-                                            value={formData.latitude}
-                                            readOnly
-                                            className="mt-1 bg-muted"
-                                        />
-                                        {errors.latitude && <p className="text-sm text-destructive mt-1">{errors.latitude}</p>}
-                                    </div>
-
-                                    <div>
-                                        <Label htmlFor="longitude">Longitude</Label>
-                                        <Input
-                                            id="longitude"
-                                            type="text"
-                                            placeholder="Auto-filled from location"
-                                            value={formData.longitude}
-                                            readOnly
-                                            className="mt-1 bg-muted"
-                                        />
-                                        {errors.longitude && <p className="text-sm text-destructive mt-1">{errors.longitude}</p>}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Additional Information</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div>
-                                    <Label htmlFor="curator_notes">Curator Notes</Label>
-                                    <Textarea
-                                        id="curator_notes"
-                                        placeholder="Add any special notes or information"
-                                        value={formData.curator_notes}
-                                        onChange={(e) => handleInputChange("curator_notes", e.target.value)}
-                                        rows={3}
-                                        className="mt-1"
-                                    />
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        <div className="flex justify-end gap-4">
-                            <Link href={route("events")}>
-                                <Button type="button" variant="outline">
-                                    Cancel
-                                </Button>
-                            </Link>
-                            <Button type="submit" disabled={isSubmitting}>
-                                {isSubmitting ? "Creating..." : "Create Event"}
-                            </Button>
+                            <div>
+                                <Label htmlFor="longitude">Longitude</Label>
+                                <Input
+                                    id="longitude"
+                                    type="text"
+                                    placeholder="Auto-filled from location"
+                                    value={formData.longitude}
+                                    readOnly
+                                    className="mt-1 bg-muted"
+                                />
+                                {errors.longitude && <p className="text-sm text-destructive mt-1">{errors.longitude}</p>}
+                            </div>
                         </div>
-                    </form>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Additional Information</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div>
+                            <Label htmlFor="curator_notes">Curator Notes</Label>
+                            <Textarea
+                                id="curator_notes"
+                                placeholder="Add any special notes or information"
+                                value={formData.curator_notes}
+                                onChange={(e) => handleInputChange("curator_notes", e.target.value)}
+                                rows={3}
+                                className="mt-1"
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <div className="flex justify-end gap-4">
+                    <Link href={route("events") as any}>
+                        <Button type="button" variant="outline">
+                            Cancel
+                        </Button>
+                    </Link>
+                    <Button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? "Creating..." : "Create Event"}
+                    </Button>
                 </div>
-            </div>
-        </AppLayout>
+            </form>
+        </FormLayout>
     );
 }

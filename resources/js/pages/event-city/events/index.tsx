@@ -1,4 +1,4 @@
-import { Head, usePage } from "@inertiajs/react";
+import { Head, Link, usePage, router } from "@inertiajs/react";
 import { CalendarIcon, CheckIcon, MapPinIcon, ShareIcon } from "lucide-react";
 import { useState } from "react";
 import CategoryFilter from "@/components/common/category-filter";
@@ -7,11 +7,27 @@ import { Footer } from "@/components/common/footer";
 import { GridCard } from "@/components/common/grid-card";
 import Header from "@/components/common/header";
 import { Button } from "@/components/ui/button";
-import { type DayEvents, type Event, type EventsPageProps } from "@/types/events";
+import { type DayEvents, type Event, type EventsPageProps, type EventFilters } from "@/types/events";
 
 export default function Events() {
-    const { auth, featuredEvents = [], upcomingEvents = [] } = usePage<EventsPageProps>().props;
-    const [selectedCategory, setSelectedCategory] = useState("All");
+    const { auth, featuredEvents = [], upcomingEvents = [], filters = {} as EventFilters } = usePage<EventsPageProps>().props;
+    // content of filters prop: { search, category, date, is_free }
+
+    // Initialize state from server filters
+    const [selectedCategory, setSelectedCategory] = useState(filters.category || "All");
+
+    // Handler for category change
+    const handleCategoryChange = (category: string) => {
+        setSelectedCategory(category);
+        router.visit(route("events", {
+            ...filters, // Keep existng filters
+            category: category === "All" ? undefined : category
+        }) as any, {
+            preserveScroll: true,
+            preserveState: true,
+        });
+    };
+
     const [shareSuccess, setShareSuccess] = useState<string | null>(null);
     const [calendarSuccess, setCalendarSuccess] = useState<string | null>(null);
 
@@ -26,10 +42,10 @@ export default function Events() {
             navigator.share({
                 title: event.title,
                 text: `Check out this event: ${event.title}`,
-                url: window.location.origin + `/events/${event.id}`,
+                url: route('events.show', event.id),
             });
         } else {
-            navigator.clipboard.writeText(`${window.location.origin}/events/${event.id}`);
+            navigator.clipboard.writeText(route('events.show', event.id));
         }
     };
 
@@ -45,7 +61,7 @@ export default function Events() {
 
         const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
             event.title,
-        )}&dates=${startDate}/${endDate}&details=${encodeURIComponent(`Event at ${event.venue}`)}&location=${encodeURIComponent(event.venue)}`;
+        )}&dates=${startDate}/${endDate}&details=${encodeURIComponent(`Event at ${event.venue.name}`)}&location=${encodeURIComponent(event.venue.name)}`;
 
         window.open(googleCalendarUrl, "_blank");
     };
@@ -53,11 +69,17 @@ export default function Events() {
     // Generate next 7 days
     const getNext7Days = (): DayEvents[] => {
         const days: DayEvents[] = [];
-        const today = new Date();
+        // If we have date filter, start from there, else today
+        const startDate = filters?.date ? new Date(filters.date) : new Date();
+
+        // If we have specific filters (category/search), we might want to show all results in one bucket?
+        // But the UI is designed as "Community Events by Day". using 7 days.
+        // If filters are active, upcomingEvents might contain events beyond 7 days?
+        // Let's stick to the 7-day view logic for now, but ensure it handles the events passed in.
 
         for (let i = 0; i < 7; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() + i);
+            const date = new Date(startDate);
+            date.setDate(startDate.getDate() + i);
 
             const dayName = date.toLocaleDateString("en-US", {
                 weekday: "long",
@@ -70,9 +92,17 @@ export default function Events() {
 
             // Generate display name with Today/Tomorrow
             let displayName: string;
-            if (i === 0) {
+            const now = new Date();
+            // Reset time parts for comparison
+            const dateOnly = new Date(date).setHours(0, 0, 0, 0);
+            const todayOnly = new Date(now).setHours(0, 0, 0, 0);
+            const diffTime = dateOnly - todayOnly;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+
+            if (diffDays === 0) {
                 displayName = `Today - ${dateString}`;
-            } else if (i === 1) {
+            } else if (diffDays === 1) {
                 displayName = `Tomorrow - ${dateString}`;
             } else {
                 displayName = `${dayName} - ${dateString}`;
@@ -85,8 +115,7 @@ export default function Events() {
                     const currentDate = new Date(date);
                     return eventDate.toDateString() === currentDate.toDateString();
                 } catch {
-                    // Fallback: distribute events across the 7 days if date parsing fails
-                    return parseInt(event.id) % 7 === i;
+                    return false;
                 }
             });
 
@@ -116,9 +145,9 @@ export default function Events() {
             <div className="flex items-center justify-between">
                 <div className="flex items-center text-sm text-muted-foreground">
                     <MapPinIcon className="h-4 w-4 mr-1" />
-                    {event.venue}
+                    {event.venue.name}
                 </div>
-                <span className="text-sm font-medium">{event.price}</span>
+                <span className="text-sm font-medium">{event.price?.min ? `$${event.price.min}` : (typeof event.price === 'string' ? event.price : 'Free')}</span>
             </div>
         </>
     );
@@ -161,7 +190,7 @@ export default function Events() {
             </div>
 
             {/* Category Filter */}
-            <CategoryFilter selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
+            <CategoryFilter selectedCategory={selectedCategory} onCategoryChange={handleCategoryChange} />
 
             {/* Featured Events Section */}
             <div className="py-4 bg-muted/50">
@@ -178,7 +207,7 @@ export default function Events() {
                             <GridCard
                                 key={event.id}
                                 id={event.id}
-                                href={`/events/${event.id}`}
+                                href={route('events.show', event.id) as any}
                                 image={event.image}
                                 imageAlt={event.title}
                                 badge={event.category}
@@ -237,7 +266,7 @@ export default function Events() {
                                                 <GridCard
                                                     key={event.id}
                                                     id={event.id}
-                                                    href={`/events/${event.id}`}
+                                                    href={route('events.show', event.id) as any}
                                                     image={event.image}
                                                     imageAlt={event.title}
                                                     badge={event.category}

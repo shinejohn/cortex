@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\Tenant;
@@ -9,7 +11,7 @@ use Illuminate\Support\Str;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Tenant>
  */
-class TenantFactory extends Factory
+final class TenantFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,14 +21,14 @@ class TenantFactory extends Factory
     public function definition(): array
     {
         $name = $this->faker->company();
-        $subdomain = Str::slug($name) . '-' . $this->faker->unique()->randomNumber(5);
-        
+        $subdomain = Str::slug($name).'-'.time().'-'.Str::random(5);
+
         return [
             'id' => Str::uuid(),
             'name' => $name,
             'subdomain' => $subdomain,
-            'domain' => $this->faker->optional()->domainName(),
-            'email' => $this->faker->unique()->companyEmail(),
+            'domain' => $this->faker->optional()->lexify('????????').'.com',
+            'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->phoneNumber(),
             'address' => $this->faker->address(),
             'city' => $this->faker->city(),

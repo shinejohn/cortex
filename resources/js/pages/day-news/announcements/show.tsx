@@ -61,7 +61,7 @@ export default function ShowAnnouncement() {
                         title: announcement.title,
                         description: announcement.content.substring(0, 160),
                         image: announcement.image ?? undefined,
-                        url: `/announcements/${announcement.id}`,
+                        url: route("daynews.announcements.show", announcement.id) as any,
                     }}
                 />
 
@@ -71,7 +71,7 @@ export default function ShowAnnouncement() {
                     {/* Navigation */}
                     <div className="mb-8 flex items-center justify-between">
                         <Link
-                            href="/announcements"
+                            href={route("daynews.announcements.index") as any}
                             className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-colors group"
                         >
                             <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
@@ -192,7 +192,7 @@ export default function ShowAnnouncement() {
                                             </Badge>
                                             <h2 className="font-display text-3xl font-black tracking-tight text-zinc-900">Related Announcements</h2>
                                         </div>
-                                        <Link href="/announcements" className="text-xs font-black text-primary hover:underline uppercase tracking-widest mb-1 items-center gap-1 hidden sm:flex">
+                                        <Link href={route("daynews.announcements.index") as any} className="text-xs font-black text-primary hover:underline uppercase tracking-widest mb-1 items-center gap-1 hidden sm:flex">
                                             View all
                                             <ArrowLeft className="size-3 rotate-180" />
                                         </Link>
@@ -224,7 +224,7 @@ export default function ShowAnnouncement() {
                                         Have a milestone to share with your community? Let everyone know.
                                     </p>
                                     <Button className="relative z-10 w-full font-black uppercase tracking-tighter" asChild>
-                                        <Link href="/announcements/create">Create Announcement</Link>
+                                        <Link href={route("daynews.announcements.create") as any}>Create Announcement</Link>
                                     </Button>
                                 </div>
                             </div>

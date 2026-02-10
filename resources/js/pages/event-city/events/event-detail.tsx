@@ -130,7 +130,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
     };
 
     const handleGetTickets = () => {
-        router.visit(`/events/${event.id}/tickets`);
+        router.visit(route('events.tickets.selection', event.id) as any);
     };
 
     const handleShare = async () => {
@@ -232,16 +232,16 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                     title: event.title,
                     description: event.description,
                     image: event.image,
-                    url: `/events/${event.id}`,
+                    url: route('events.show', event.id),
                     startDate: event.event_date,
                     time: event.time,
                     location: event.venue
                         ? {
-                              name: event.venue.name,
-                              address: event.venue.address,
-                              latitude: event.venue.latitude,
-                              longitude: event.venue.longitude,
-                          }
+                            name: event.venue.name,
+                            address: event.venue.address,
+                            latitude: event.venue.latitude,
+                            longitude: event.venue.longitude,
+                        }
                         : undefined,
                     performer: event.performer?.name,
                     isFree: event.is_free,
@@ -370,7 +370,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
 
                                 {event.performer && (
                                     <Link
-                                        href={`/performers/${event.performer.id}`}
+                                        href={route('performers.show', event.performer.id) as any}
                                         className="flex items-center justify-between border-t border pt-6 hover:bg-muted/50 -mx-6 -mb-6 px-6 pb-6 transition-colors"
                                     >
                                         <div className="flex items-center">
@@ -426,7 +426,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                         <div className="flex flex-wrap gap-3 mb-8">
                             {canEdit && (
                                 <Button variant="default" asChild className="flex-1">
-                                    <Link href={`/events/${event.id}/edit`}>
+                                    <Link href={route('events.edit', event.id) as any}>
                                         <Edit className="h-5 w-5 mr-2" />
                                         Edit Event
                                     </Link>
@@ -730,7 +730,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                     <div className="flex justify-between items-center">
                                         <CardTitle>Similar Events</CardTitle>
                                         <Link
-                                            href={`/events?category=${event.category}`}
+                                            href={route('events', { category: event.category }) as any}
                                             className="text-sm text-primary hover:text-primary/80 flex items-center"
                                         >
                                             View all
@@ -742,7 +742,7 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                     {similarEvents.slice(0, 2).map((similarEvent) => (
                                         <Link
                                             key={similarEvent.id}
-                                            href={`/events/${similarEvent.id}`}
+                                            href={route('events.show', similarEvent.id) as any}
                                             className="flex items-start hover:bg-muted/50 p-2 -mx-2 rounded-md"
                                         >
                                             <div className="h-14 w-14 rounded-md overflow-hidden flex-shrink-0 bg-muted">

@@ -57,7 +57,7 @@ interface PostsIndexProps {
 export default function PostsIndex({ auth, posts, filters }: PostsIndexProps) {
     const handleDelete = (postId: number) => {
         if (confirm("Are you sure you want to delete this post?")) {
-            router.delete(`/posts/${postId}`, {
+            router.delete(route("daynews.posts.destroy", postId) as any, {
                 preserveScroll: true,
             });
         }
@@ -65,7 +65,7 @@ export default function PostsIndex({ auth, posts, filters }: PostsIndexProps) {
 
     const handleFilterChange = (key: string, value: string) => {
         router.get(
-            "/posts",
+            route("daynews.posts.index") as any,
             {
                 ...filters,
                 [key]: value === "all" ? undefined : value,
@@ -92,7 +92,7 @@ export default function PostsIndex({ auth, posts, filters }: PostsIndexProps) {
                             <p className="mt-1 text-muted-foreground">Manage your Day News posts</p>
                         </div>
                         <Button asChild>
-                            <Link href="/posts/create">
+                            <Link href={route("daynews.posts.create") as any}>
                                 <Plus className="mr-2 size-4" />
                                 Create Post
                             </Link>
@@ -141,7 +141,7 @@ export default function PostsIndex({ auth, posts, filters }: PostsIndexProps) {
                                     {filters.type || filters.status ? "Try adjusting your filters" : "Get started by creating your first post"}
                                 </p>
                                 <Button asChild>
-                                    <Link href="/posts/create">Create Post</Link>
+                                    <Link href={route("daynews.posts.create") as any}>Create Post</Link>
                                 </Button>
                             </div>
                         </div>
@@ -162,7 +162,7 @@ export default function PostsIndex({ auth, posts, filters }: PostsIndexProps) {
                                             size="sm"
                                             onClick={() =>
                                                 router.get(
-                                                    "/posts",
+                                                    route("daynews.posts.index") as any,
                                                     { ...filters, page },
                                                     {
                                                         preserveState: true,

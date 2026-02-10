@@ -16,7 +16,7 @@ return new class extends Migration
         if (Schema::hasTable('classifieds')) {
             return;
         }
-        
+
         Schema::create('classifieds', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
@@ -42,6 +42,7 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable();
             $table->unsignedInteger('views_count')->default(0);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index(['category', 'status']);
             $table->index(['status', 'posted_at']);
@@ -103,4 +104,3 @@ return new class extends Migration
         Schema::dropIfExists('classifieds');
     }
 };
-

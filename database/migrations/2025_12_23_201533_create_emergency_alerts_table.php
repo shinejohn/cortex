@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('emergency_alerts', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->unsignedBigInteger('community_id');
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->foreignId('municipal_partner_id')->nullable();
+            $table->uuid('community_id');
+            $table->uuid('created_by')->nullable();
+            $table->uuid('municipal_partner_id')->nullable();
             $table->enum('priority', ['critical', 'urgent', 'advisory', 'info'])->default('advisory');
             $table->string('category'); // weather, crime, health, utility, traffic, government, school, amber
             $table->string('title');

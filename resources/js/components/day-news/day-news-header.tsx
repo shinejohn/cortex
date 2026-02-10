@@ -26,24 +26,24 @@ interface DayNewsHeaderProps {
 }
 
 const navigationTabs = [
-    { title: "News", href: "/news" },
-    { title: "Announcements", href: "/announcements" },
-    { title: "Events", href: "/events" },
-    { title: "Legal Notices", href: "/legal-notices" },
-    { title: "Business", href: "/business" },
-    { title: "Classifieds", href: "/classifieds" },
-    { title: "Coupons", href: "/coupons" },
-    { title: "Photos", href: "/photos" },
-    { title: "Go Local Voices", href: "/local-voices", external: false },
-];
+    { title: "News", href: route("daynews.home") as any },
+    { title: "Announcements", href: route("daynews.announcements.index") as any },
+    { title: "Events", href: route("daynews.events.index") as any },
+    { title: "Legal Notices", href: route("daynews.legal-notices.index") as any },
+    { title: "Business", href: route("daynews.businesses.index") as any },
+    { title: "Classifieds", href: route("daynews.classifieds.index") as any },
+    { title: "Coupons", href: route("daynews.coupons.index") as any },
+    { title: "Photos", href: route("daynews.photos.index") as any },
+    { title: "Go Local Voices", href: route("daynews.local-voices.index") as any, external: false },
+] as const;
 
 const actionButtons = [
-    { title: "Write", type: "article" },
-    { title: "Post Ad", type: "ad" },
-    { title: "Announce", type: "announcement" },
-    { title: "Notice", type: "notice" },
-    { title: "Schedule", type: "schedule" },
-];
+    { title: "Write", route: "daynews.posts.create", params: { type: "article" } },
+    { title: "Post Ad", route: "daynews.classifieds.create", params: {} },
+    { title: "Announce", route: "daynews.announcements.create", params: {} },
+    { title: "Notice", route: "daynews.legal-notices.create", params: {} },
+    { title: "Schedule", route: "events.create", params: {} },
+] as const;
 
 export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -55,7 +55,7 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                 <div className="container mx-auto px-4">
                     <div className="flex h-16 items-center justify-between">
                         {/* Left: Logo */}
-                        <Link href="/" className="flex items-center gap-2">
+                        <Link href={route("daynews.home") as any} className="flex items-center gap-2">
                             <span className="text-2xl font-bold">Day News</span>
                         </Link>
 
@@ -167,8 +167,8 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                                         <h3 className="text-sm font-semibold text-muted-foreground">Actions</h3>
                                         {actionButtons.map((action) => (
                                             <Link
-                                                key={action.type}
-                                                href={route("daynews.posts.create", { type: action.type }) as string}
+                                                key={action.title}
+                                                href={route(action.route, action.params) as any}
                                                 className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
                                                 onClick={() => setMobileMenuOpen(false)}
                                             >
@@ -206,8 +206,8 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                         {/* Desktop Action Buttons - Right */}
                         <div className="hidden items-center gap-2 md:flex">
                             {actionButtons.map((action) => (
-                                <Button key={action.type} variant="ghost" size="sm" asChild>
-                                    <Link href={route("daynews.posts.create", { type: action.type }) as string}>{action.title}</Link>
+                                <Button key={action.title} variant="ghost" size="sm" asChild>
+                                    <Link href={route(action.route, action.params) as any}>{action.title}</Link>
                                 </Button>
                             ))}
                         </div>

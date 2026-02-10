@@ -17,15 +17,19 @@ final class RssFeedSeeder extends Seeder
     {
         $businesses = Business::all();
 
+        if ($businesses->isEmpty()) {
+            $this->command->warn('⚠ No businesses found. Run BusinessSeeder first.');
+
+            return;
+        }
+
         // Create RSS feeds using factory
         $targetCount = 30;
         $feeds = RssFeed::factory($targetCount)->create([
-            'business_id' => fn() => $businesses->isNotEmpty() && rand(0, 1) ? $businesses->random()->id : null,
+            'business_id' => fn () => $businesses->random()->id,
         ]);
 
         $this->command->info("✓ Created {$targetCount} RSS feeds");
-        $this->command->info("✓ Total RSS feeds: " . RssFeed::count());
+        $this->command->info('✓ Total RSS feeds: '.RssFeed::count());
     }
 }
-
-

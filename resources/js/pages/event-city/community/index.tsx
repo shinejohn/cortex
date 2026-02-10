@@ -38,7 +38,7 @@ export default function CommunityIndex() {
             <Header auth={auth} />
 
             {/* Community Showcase */}
-            <CommunityShowcase showcaseData={showcaseData} />
+            <CommunityShowcase showcaseData={showcaseData as any} />
 
             {/* Page Title */}
             <div className="py-8 bg-background">
@@ -50,7 +50,7 @@ export default function CommunityIndex() {
                                 Join conversations and connect with like-minded people in our community discussions.
                             </p>
                         </div>
-                        <Link href="/community/impact">
+                        <Link href={route("community.impact") as any}>
                             <Button variant="outline" className="flex items-center gap-2">
                                 <TrendingUpIcon className="h-4 w-4" />
                                 Community Impact
@@ -75,11 +75,10 @@ export default function CommunityIndex() {
                                 <GridCard
                                     key={community.id}
                                     id={community.id}
-                                    href={`/community/${community.id}`}
+                                    href={route("community.show", community.id) as any}
                                     image={community.image}
                                     imageAlt={community.name}
                                     title={community.name}
-                                    onClick={() => handleCommunityClick(community)}
                                 >
                                     <div className="mb-3">
                                         <p className="text-sm text-muted-foreground line-clamp-3">{community.description}</p>

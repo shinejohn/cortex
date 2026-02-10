@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\EmailTemplate;
-use App\Models\Workspace;
 use Illuminate\Database\Seeder;
 
 final class EmailTemplateSeeder extends Seeder
@@ -15,22 +14,12 @@ final class EmailTemplateSeeder extends Seeder
      */
     public function run(): void
     {
-        $workspaces = Workspace::all();
-
-        if ($workspaces->isEmpty()) {
-            $this->command->warn('⚠ No workspaces found. Run WorkspaceSeeder first.');
-            return;
-        }
 
         // Create email templates using factory
         $targetCount = 20;
-        $templates = EmailTemplate::factory($targetCount)->create([
-            'workspace_id' => fn() => $workspaces->random()->id,
-        ]);
+        $templates = EmailTemplate::factory($targetCount)->create();
 
         $this->command->info("✓ Created {$targetCount} email templates");
-        $this->command->info("✓ Total email templates: " . EmailTemplate::count());
+        $this->command->info('✓ Total email templates: '.EmailTemplate::count());
     }
 }
-
-

@@ -72,7 +72,7 @@ export default function DayNewsBusinessesIndex({ businesses, featuredBusinesses,
 
     const handleSearch = () => {
         router.get(
-            route("businesses.index"),
+            route("daynews.businesses.index") as any,
             {
                 search: search || undefined,
                 category: category || undefined,
@@ -182,7 +182,7 @@ export default function DayNewsBusinessesIndex({ businesses, featuredBusinesses,
                                     value={`${sort.sort}-${sort.direction}`}
                                     onValueChange={(value) => {
                                         const [sortBy, direction] = value.split("-");
-                                        router.get(route("businesses.index"), { ...filters, sort: sortBy, direction }, { preserveState: true });
+                                        router.get(route("daynews.businesses.index") as any, { ...filters, sort: sortBy, direction }, { preserveState: true });
                                     }}
                                 >
                                     <SelectTrigger className="w-40">

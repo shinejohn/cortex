@@ -33,8 +33,41 @@ final class DirectoryController extends Controller
         $bannerAds = $this->advertisementService->getActiveAds('alphasite', $region, 'banner')->take(1);
         $featuredAds = $this->advertisementService->getActiveAds('alphasite', $region, 'featured')->take(1);
 
+        // Get stats
+        $totalBusinesses = \App\Models\Business::count();
+        $totalCommunities = Region::active()->ofType('city')->count();
+        $totalIndustries = \App\Models\Industry::count();
+
+        // Get featured communities (cities)
+        $featuredCommunities = Region::active()
+            ->ofType('city')
+            ->withCount('businesses') // Ensure this relation exists in Region model
+            ->inRandomOrder()
+            ->take(6)
+            ->get()
+            ->map(function ($region) {
+                // Approximate state from parent or metadata
+                $state = $region->parent?->name ?? 'FL'; // Fallback or logic to get state
+
+                return [
+                    'id' => $region->id,
+                    'city' => $region->name,
+                    'state' => $state, // Ideally fetch parent state
+                    'slug' => $region->slug,
+                    'name' => $region->name,
+                    'total_businesses' => $region->businesses_count,
+                    'hero_image_url' => $region->metadata['hero_image'] ?? null,
+                ];
+            });
+
         return Inertia::render('alphasite/directory/home', [
             'featuredBusinesses' => $this->businessService->getFeatured(12),
+            'featuredCommunities' => $featuredCommunities,
+            'stats' => [
+                'total_businesses' => $totalBusinesses,
+                'total_communities' => $totalCommunities,
+                'total_industries' => $totalIndustries,
+            ],
             'advertisements' => [
                 'banner' => $bannerAds->map(fn ($ad) => $this->formatAd($ad)),
                 'featured' => $featuredAds->map(fn ($ad) => $this->formatAd($ad)),

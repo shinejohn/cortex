@@ -61,7 +61,7 @@ export function AnnouncementCard({ announcement }: AnnouncementCardProps) {
                     <span className="text-[10px] font-medium text-muted-foreground uppercase">{announcement.published_at_diff}</span>
                 </div>
 
-                <Link href={`/announcements/${announcement.id}`}>
+                <Link href={route("daynews.announcements.show", announcement.id) as any}>
                     <h3 className="mb-2 line-clamp-2 font-display text-xl font-black leading-tight group-hover:text-primary transition-colors">
                         {announcement.title}
                     </h3>

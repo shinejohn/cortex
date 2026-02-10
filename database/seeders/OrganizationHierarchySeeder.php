@@ -19,23 +19,24 @@ final class OrganizationHierarchySeeder extends Seeder
 
         if ($businesses->count() < 2) {
             $this->command->warn('⚠ Need at least 2 businesses. Run BusinessSeeder first.');
+
             return;
         }
 
         // Create hierarchies for 10% of businesses
-        $businessesToHierarchize = $businesses->random(ceil($businesses->count() * 0.1));
+        $businessesToHierarchize = $businesses->random((int) ceil($businesses->count() * 0.1));
 
         foreach ($businessesToHierarchize as $business) {
             $childBusiness = $businesses->where('id', '!=', $business->id)->random();
 
             OrganizationHierarchy::firstOrCreate(
                 [
+                    'organization_id' => $childBusiness->id,
                     'parent_id' => $business->id,
-                    'child_id' => $childBusiness->id,
                 ],
                 OrganizationHierarchy::factory()->make([
+                    'organization_id' => $childBusiness->id,
                     'parent_id' => $business->id,
-                    'child_id' => $childBusiness->id,
                 ])->toArray()
             );
         }
@@ -44,5 +45,3 @@ final class OrganizationHierarchySeeder extends Seeder
         $this->command->info("✓ Total organization hierarchies: {$totalHierarchies}");
     }
 }
-
-

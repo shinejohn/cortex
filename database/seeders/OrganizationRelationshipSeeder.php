@@ -19,11 +19,12 @@ final class OrganizationRelationshipSeeder extends Seeder
 
         if ($businesses->count() < 2) {
             $this->command->warn('⚠ Need at least 2 businesses. Run BusinessSeeder first.');
+
             return;
         }
 
         // Create relationships for 20% of businesses
-        $businessesToRelate = $businesses->random(ceil($businesses->count() * 0.2));
+        $businessesToRelate = $businesses->random((int) ceil($businesses->count() * 0.2));
 
         foreach ($businessesToRelate as $business) {
             $relatedBusiness = $businesses->where('id', '!=', $business->id)->random();
@@ -31,11 +32,13 @@ final class OrganizationRelationshipSeeder extends Seeder
             OrganizationRelationship::firstOrCreate(
                 [
                     'organization_id' => $business->id,
-                    'related_organization_id' => $relatedBusiness->id,
+                    'relatable_id' => $relatedBusiness->id,
+                    'relatable_type' => Business::class,
                 ],
                 OrganizationRelationship::factory()->make([
                     'organization_id' => $business->id,
-                    'related_organization_id' => $relatedBusiness->id,
+                    'relatable_id' => $relatedBusiness->id,
+                    'relatable_type' => Business::class,
                 ])->toArray()
             );
         }
@@ -44,5 +47,3 @@ final class OrganizationRelationshipSeeder extends Seeder
         $this->command->info("✓ Total organization relationships: {$totalRelationships}");
     }
 }
-
-

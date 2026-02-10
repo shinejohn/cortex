@@ -5,11 +5,8 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\Workspace;
-use App\Models\WorkspaceMembership;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 final class DatabaseSeeder extends Seeder
 {
@@ -150,7 +147,7 @@ final class DatabaseSeeder extends Seeder
             BusinessSubscriptionSeeder::class,
             BusinessFaqSeeder::class,
             BusinessSurveySeeder::class,
-            BusinessSurveyResponseSeeder::class,
+
             AchievementSeeder::class,
         ]);
 
@@ -190,6 +187,7 @@ final class DatabaseSeeder extends Seeder
             CrossDomainAuthTokenSeeder::class,
             SMBCrmCustomerSeeder::class,
             SMBCrmInteractionSeeder::class,
+            BusinessSurveyResponseSeeder::class,
         ]);
 
         // =====================================================================

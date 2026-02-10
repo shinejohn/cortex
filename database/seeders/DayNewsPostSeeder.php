@@ -154,7 +154,7 @@ final class DayNewsPostSeeder extends Seeder
                 'workspace_id' => $workspace->id,
                 'author_id' => $user->id,
                 'type' => $type,
-                'category' => fake()->optional(0.2)->randomElement(['demise', 'missing_person', 'emergency']),
+                'category' => fake()->optional(0.2)->randomElement(['obituary', 'missing_person', 'emergency']),
                 'title' => $title,
                 'slug' => \Illuminate\Support\Str::slug($title),
                 'content' => $this->generateContent(fake()->paragraph()),

@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers\DayNews;
 
 use App\Http\Controllers\Controller;
-use App\Models\ArticleComment;
 use App\Models\DayNewsPost;
 use App\Models\Event;
 use App\Models\Region;
 use App\Services\AdvertisementService;
 use App\Services\LocationService;
 use App\Services\SeoService;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -21,6 +21,7 @@ final class PublicPostController extends Controller
         private readonly AdvertisementService $advertisementService,
         private readonly LocationService $locationService
     ) {}
+
     public function show(string $slug): Response
     {
         $post = DayNewsPost::where('slug', $slug)
@@ -42,7 +43,7 @@ final class PublicPostController extends Controller
             ->orderBy('is_pinned', 'desc')
             ->orderBy('created_at', 'desc')
             ->get()
-            ->map(function ($comment) use ($post) {
+            ->map(function ($comment) {
                 return [
                     'id' => $comment->id,
                     'content' => $comment->content,
@@ -83,9 +84,9 @@ final class PublicPostController extends Controller
                 $q->whereHas('regions', function ($regionQuery) use ($regionIds) {
                     $regionQuery->whereIn('regions.id', $regionIds);
                 })
-                ->when($post->category, function ($categoryQuery) use ($post) {
-                    $categoryQuery->orWhere('category', $post->category);
-                });
+                    ->when($post->category, function ($categoryQuery) use ($post) {
+                        $categoryQuery->orWhere('category', $post->category);
+                    });
             })
             ->with(['author', 'writerAgent', 'regions', 'workspace'])
             ->orderBy('published_at', 'desc')
@@ -164,6 +165,10 @@ final class PublicPostController extends Controller
                 'featured_image' => $post->featured_image,
                 'metadata' => $post->metadata,
                 'view_count' => $post->view_count,
+                'shares_count' => DB::table('content_shares')
+                    ->where('shareable_type', 'day_news_post')
+                    ->where('shareable_id', $post->id)
+                    ->count(),
                 'published_at' => $post->published_at?->toISOString(),
                 'author' => $post->author ? [
                     'id' => $post->author->id,

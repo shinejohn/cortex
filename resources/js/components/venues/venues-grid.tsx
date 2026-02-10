@@ -4,8 +4,10 @@ import { GridCard } from "@/components/common/grid-card";
 import { GridSection } from "@/components/common/grid-section";
 import type { FullVenue, Venue, VenuesGridProps } from "@/types/home";
 
-const VenuesGrid = () => {
-    const { featuredVenues } = usePage<VenuesGridProps>().props;
+const VenuesGrid = ({ venues: propVenues, title }: { venues?: any[], title?: string }) => {
+    const { featuredVenues: contextVenues } = usePage<VenuesGridProps>().props;
+    const venues = propVenues || contextVenues;
+    const sectionTitle = title || "Featured Venues";
 
     const _formatDate = (dateString: string): string => {
         const date = new Date(dateString);
@@ -40,16 +42,18 @@ const VenuesGrid = () => {
         );
     };
 
+    if (!venues || venues.length === 0) return null;
+
     return (
         <GridSection
-            title="Featured Venues"
+            title={sectionTitle}
             viewAllHref="/venues"
             viewAllText="View all venues"
             promoteHref="/advertise/venue-promotion"
             promoteText="Promote your venue here"
             className="bg-background"
         >
-            {featuredVenues?.map((venue) => (
+            {venues.map((venue) => (
                 <GridCard
                     key={venue.id}
                     id={venue.id}

@@ -106,7 +106,7 @@ export default function PostCard({ post, onDelete }: PostCardProps) {
             <CardFooter className="flex gap-2">
                 {post.can_edit && (
                     <Button asChild size="sm" variant="outline">
-                        <Link href={`/posts/${post.id}/edit`}>
+                        <Link href={route("daynews.posts.edit", post.id) as any}>
                             <Edit className="mr-2 size-4" />
                             Edit
                         </Link>
@@ -115,13 +115,13 @@ export default function PostCard({ post, onDelete }: PostCardProps) {
 
                 {post.status === "draft" && (
                     <Button asChild size="sm">
-                        <Link href={`/posts/${post.id}/publish`}>Publish</Link>
+                        <Link href={route("daynews.posts.publish.show", post.id) as any}>Publish</Link>
                     </Button>
                 )}
 
                 {post.status === "published" && (
                     <Button asChild size="sm" variant="outline">
-                        <Link href={`/posts/${post.slug}`} target="_blank">
+                        <Link href={route("daynews.posts.show", post.slug) as any} target="_blank">
                             View
                         </Link>
                     </Button>

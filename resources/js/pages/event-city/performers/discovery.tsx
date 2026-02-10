@@ -24,9 +24,10 @@ interface Performer {
     is_touring: boolean;
 }
 
-interface Props {
-    auth: Auth;
-    performers: Performer[];
+import { PaginatedData, SharedData } from "@/types";
+
+interface Props extends SharedData {
+    performers: PaginatedData<Performer>;
     filters: {
         search?: string;
         genre?: string;
@@ -45,22 +46,23 @@ export default function PerformerDiscovery() {
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        router.get("/performers/discovery", { search: searchQuery, ...filters }, { preserveState: true });
+        router.get(route('performers.discovery'), { search: searchQuery, ...filters }, { preserveState: true });
     };
 
     const handleFilterChange = (key: string, value: string) => {
         const newFilters = { ...filters, [key]: value };
         setFilters(newFilters);
-        router.get("/performers/discovery", { search: searchQuery, ...newFilters }, { preserveState: true });
+        router.get(route('performers.discovery'), { search: searchQuery, ...newFilters }, { preserveState: true });
     };
 
     return (
         <div className="min-h-screen bg-muted/50">
             <SEO
-                type="page"
+                type="website"
                 site="event-city"
                 data={{
                     title: "Discover Performers - GoEventCity",
+                    url: route('performers.discovery') as string,
                 }}
             />
             <Header auth={auth} />
@@ -179,13 +181,13 @@ export default function PerformerDiscovery() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="flex items-center justify-between mb-6">
                     <p className="text-muted-foreground">
-                        Found <span className="font-semibold text-foreground">{performers.length}</span> performers
+                        Found <span className="font-semibold text-foreground">{performers.meta.total}</span> performers
                     </p>
                 </div>
 
                 {viewMode === "grid" ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {performers.map((performer) => (
+                        {performers.data.map((performer: Performer) => (
                             <Card key={performer.id} className="hover:shadow-lg transition-shadow">
                                 <div className="h-48 overflow-hidden">
                                     <img
@@ -206,7 +208,7 @@ export default function PerformerDiscovery() {
                                     </div>
                                     <p className="text-sm text-muted-foreground mb-2">{performer.category}</p>
                                     <div className="flex flex-wrap gap-1 mb-3">
-                                        {performer.genres.slice(0, 3).map((genre) => (
+                                        {performer.genres.slice(0, 3).map((genre: string) => (
                                             <Badge key={genre} variant="outline" className="text-xs">
                                                 {genre}
                                             </Badge>
@@ -232,7 +234,7 @@ export default function PerformerDiscovery() {
                     </div>
                 ) : (
                     <div className="space-y-4">
-                        {performers.map((performer) => (
+                        {performers.data.map((performer: Performer) => (
                             <Card key={performer.id} className="hover:shadow-md transition-shadow">
                                 <CardContent className="p-6">
                                     <div className="flex items-start gap-6">
@@ -260,7 +262,7 @@ export default function PerformerDiscovery() {
                                                 )}
                                             </div>
                                             <div className="flex flex-wrap gap-2 mb-3">
-                                                {performer.genres.map((genre) => (
+                                                {performer.genres.map((genre: string) => (
                                                     <Badge key={genre} variant="outline" className="text-xs">
                                                         {genre}
                                                     </Badge>
@@ -282,7 +284,7 @@ export default function PerformerDiscovery() {
                                             </div>
                                             <div className="flex items-center justify-between">
                                                 <span className="text-lg font-semibold text-foreground">{performer.price_range}</span>
-                                                <Button onClick={() => router.visit(`/performers/${performer.id}`)}>View Profile</Button>
+                                                <Button onClick={() => router.visit(route('performers.show', performer.id) as any)}>View Profile</Button>
                                             </div>
                                         </div>
                                     </div>
