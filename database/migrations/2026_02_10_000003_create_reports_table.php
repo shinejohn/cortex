@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('reportable_type');
             $table->unsignedBigInteger('reportable_id');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->text('reason');
             $table->text('description')->nullable();
             $table->string('status')->default('pending');
