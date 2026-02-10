@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\NewsFetchFrequency;
-use App\Models\RssFeed;
 use Illuminate\Database\Seeder;
 
 final class NewsFetchFrequencySeeder extends Seeder
@@ -15,19 +14,29 @@ final class NewsFetchFrequencySeeder extends Seeder
      */
     public function run(): void
     {
-        $feeds = RssFeed::all();
+        $categories = [
+            ['category' => 'Business', 'type' => 'news_category'],
+            ['category' => 'Technology', 'type' => 'news_category'],
+            ['category' => 'Sports', 'type' => 'news_category'],
+            ['category' => 'Entertainment', 'type' => 'news_category'],
+            ['category' => 'Local', 'type' => 'news_category'],
+            ['category' => 'Politics', 'type' => 'news_category'],
+            ['category' => 'Health', 'type' => 'news_category'],
+            ['category' => 'Restaurant', 'type' => 'business_category'],
+            ['category' => 'Retail', 'type' => 'business_category'],
+            ['category' => 'Service', 'type' => 'business_category'],
+        ];
 
-        if ($feeds->isEmpty()) {
-            $this->command->warn('⚠ No RSS feeds found. Run RssFeedSeeder first.');
-            return;
-        }
-
-        foreach ($feeds as $feed) {
+        foreach ($categories as $cat) {
             NewsFetchFrequency::firstOrCreate(
-                ['rss_feed_id' => $feed->id],
-                NewsFetchFrequency::factory()->make([
-                    'rss_feed_id' => $feed->id,
-                ])->toArray()
+                [
+                    'category' => $cat['category'],
+                    'category_type' => $cat['type'],
+                ],
+                [
+                    'frequency_type' => 'daily', // Default
+                    'is_enabled' => true,
+                ]
             );
         }
 
@@ -35,5 +44,3 @@ final class NewsFetchFrequencySeeder extends Seeder
         $this->command->info("✓ Total fetch frequencies: {$totalFrequencies}");
     }
 }
-
-

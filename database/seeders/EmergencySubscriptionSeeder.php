@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\EmergencySubscription;
-use App\Models\Region;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 final class EmergencySubscriptionSeeder extends Seeder
@@ -16,24 +14,22 @@ final class EmergencySubscriptionSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::all();
-        $regions = Region::where('type', 'city')->get();
+        $subscribers = \App\Models\EmailSubscriber::all();
 
-        if ($users->isEmpty()) {
-            $this->command->warn('⚠ No users found. Run UserSeeder first.');
+        if ($subscribers->isEmpty()) {
+            $this->command->warn('⚠ No subscribers found. Run EmailSubscriberSeeder first.');
+
             return;
         }
 
-        // Create subscriptions for 40% of users
-        foreach ($users->take(ceil($users->count() * 0.4)) as $user) {
+        // Create subscriptions for 40% of subscribers
+        foreach ($subscribers->take((int) ceil($subscribers->count() * 0.4)) as $subscriber) {
             EmergencySubscription::firstOrCreate(
                 [
-                    'user_id' => $user->id,
-                    'region_id' => fn() => $regions->isNotEmpty() ? $regions->random()->id : null,
+                    'subscriber_id' => $subscriber->id,
                 ],
                 EmergencySubscription::factory()->make([
-                    'user_id' => $user->id,
-                    'region_id' => fn() => $regions->isNotEmpty() ? $regions->random()->id : null,
+                    'subscriber_id' => $subscriber->id,
                 ])->toArray()
             );
         }
@@ -42,5 +38,3 @@ final class EmergencySubscriptionSeeder extends Seeder
         $this->command->info("✓ Total emergency subscriptions: {$totalSubscriptions}");
     }
 }
-
-

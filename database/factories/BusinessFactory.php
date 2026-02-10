@@ -83,7 +83,7 @@ final class BusinessFactory extends Factory
             'workspace_id' => null,
             'google_place_id' => 'ChIJ'.Str::random(20),
             'name' => $name,
-            'slug' => Str::slug($name),
+            'slug' => Str::slug($name).'-'.Str::random(6),
             'description' => fake()->paragraph(3),
             'website' => fake()->boolean(80) ? fake()->url() : null,
             'phone' => fake()->phoneNumber(),

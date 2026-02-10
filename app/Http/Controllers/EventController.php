@@ -8,14 +8,15 @@ use App\Http\Requests\StoreEventRequest;
 use App\Models\Event;
 use App\Models\Follow;
 use App\Models\Performer;
+use App\Models\PlannedEvent;
 use App\Models\Region;
 use App\Models\Venue;
 use App\Services\AdvertisementService;
 use App\Services\CacheService;
 use App\Services\EventService;
 use App\Services\LocationService;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -27,6 +28,7 @@ final class EventController extends Controller
         private readonly AdvertisementService $advertisementService,
         private readonly LocationService $locationService
     ) {}
+
     /**
      * Public events page (no authentication required)
      */
@@ -46,22 +48,59 @@ final class EventController extends Controller
                     'id' => $event->id,
                     'title' => $event->title,
                     'date' => $event->event_date->format('Y-m-d\TH:i:s.000\Z'),
-                    'venue' => $event->venue?->name ?? 'TBA',
+                    'venue' => [
+                        'name' => $event->venue?->name ?? 'TBA',
+                        'city' => $event->venue?->neighborhood ?? 'Unknown',
+                    ],
                     'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
                     'category' => $event->category,
                     'image' => $event->image,
                 ];
             })->toArray();
 
-            // Get upcoming events (next 7 days) using EventService
+            // Get upcoming events with dynamic filters
             $upcomingFilters = [
-                'date_from' => now(),
-                'date_to' => now()->addDays(7),
                 'sort_by' => 'event_date',
                 'sort_order' => 'asc',
             ];
+
+            // Date filtering
+            if ($request->filled('date')) {
+                try {
+                    $date = \Carbon\Carbon::parse($request->date);
+                    $upcomingFilters['date_from'] = $date->copy()->startOfDay();
+                    $upcomingFilters['date_to'] = $date->copy()->endOfDay();
+                } catch (Exception $e) {
+                    // Invalid date, ignore or set default
+                    $upcomingFilters['date_from'] = now();
+                    $upcomingFilters['date_to'] = now()->addDays(7);
+                }
+            } else {
+                $upcomingFilters['date_from'] = now();
+                // Only limit to 7 days if no broad filters are applied, to show relevant "upcoming"
+                // If searching or categorizing, allow looking further ahead (e.g. 30 days)
+                if (! $request->filled('category') && ! $request->filled('search')) {
+                    $upcomingFilters['date_to'] = now()->addDays(7);
+                } else {
+                    $upcomingFilters['date_to'] = now()->addDays(60); // Show next 2 months for filtered results
+                }
+            }
+
+            if ($request->filled('category') && $request->category !== 'All') {
+                $upcomingFilters['category'] = $request->category;
+            }
+
+            if ($request->filled('search')) {
+                $upcomingFilters['search'] = $request->search;
+            }
+
+            // Is Free filter
+            if ($request->boolean('is_free')) {
+                $upcomingFilters['is_free'] = true;
+            }
+
             $upcomingEvents = $this->eventService->getUpcoming($upcomingFilters, 50)->items();
-            
+
             $upcomingEvents = collect($upcomingEvents)->map(function ($event) {
                 $eventDateTime = $event->event_date->copy();
                 if ($event->time) {
@@ -73,7 +112,10 @@ final class EventController extends Controller
                     'id' => $event->id,
                     'title' => $event->title,
                     'date' => $eventDateTime->format('Y-m-d\TH:i:s.000\Z'),
-                    'venue' => $event->venue?->name ?? 'TBA',
+                    'venue' => [
+                        'name' => $event->venue?->name ?? 'TBA',
+                        'city' => $event->venue?->neighborhood ?? 'Unknown',
+                    ],
                     'price' => $event->is_free ? 'Free' : '$'.number_format((float) ($event->price_min ?? 0)),
                     'category' => $event->category,
                     'image' => $event->image ?? 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=300&fit=crop',
@@ -86,7 +128,7 @@ final class EventController extends Controller
             // Get advertisements for different placements
             $bannerAds = $this->advertisementService->getActiveAds('event_city', $region, 'banner')->take(1);
             $sidebarAds = $this->advertisementService->getActiveAds('event_city', $region, 'sidebar')->take(3);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Handle gracefully if there's an error
             $featuredEvents = [];
             $upcomingEvents = [];
@@ -97,8 +139,10 @@ final class EventController extends Controller
         return Inertia::render('event-city/events/index', [
             'featuredEvents' => $featuredEvents,
             'upcomingEvents' => $upcomingEvents,
+            'filters' => $request->only(['search', 'category', 'date', 'is_free']),
             'advertisements' => [
                 'banner' => $bannerAds->map(fn ($ad) => $this->formatAd($ad)),
+                'featured' => [], // Added 'featured' as per instruction, assuming it should be empty if not explicitly fetched
                 'sidebar' => $sidebarAds->map(fn ($ad) => $this->formatAd($ad)),
             ],
         ]);
@@ -227,7 +271,7 @@ final class EventController extends Controller
             try {
                 $weatherService = app(\App\Services\WeatherService::class);
                 $weather = $weatherService->getWeatherForEvent($event);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // Weather service failed, continue without weather
             }
         }
@@ -534,6 +578,62 @@ final class EventController extends Controller
 
         return redirect()->route('events.index')
             ->with('success', 'Event deleted successfully!');
+    }
+
+    /**
+     * Bookmark an event for the authenticated user.
+     */
+    public function bookmark(Request $request, Event $event): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user()->id;
+
+        $existing = PlannedEvent::where('event_id', $event->id)
+            ->where('user_id', $userId)
+            ->where('type', 'bookmarked')
+            ->first();
+
+        if ($existing) {
+            $existing->delete();
+
+            return response()->json(['bookmarked' => false]);
+        }
+
+        PlannedEvent::create([
+            'event_id' => $event->id,
+            'user_id' => $userId,
+            'type' => 'bookmarked',
+            'planned_at' => now(),
+        ]);
+
+        return response()->json(['bookmarked' => true]);
+    }
+
+    /**
+     * Mark interest in an event for the authenticated user.
+     */
+    public function interested(Request $request, Event $event): \Illuminate\Http\JsonResponse
+    {
+        $userId = $request->user()->id;
+
+        $existing = PlannedEvent::where('event_id', $event->id)
+            ->where('user_id', $userId)
+            ->where('type', 'interested')
+            ->first();
+
+        if ($existing) {
+            $existing->delete();
+
+            return response()->json(['interested' => false]);
+        }
+
+        PlannedEvent::create([
+            'event_id' => $event->id,
+            'user_id' => $userId,
+            'type' => 'interested',
+            'planned_at' => now(),
+        ]);
+
+        return response()->json(['interested' => true]);
     }
 
     /**

@@ -17,11 +17,13 @@ export function AnnouncementHero({ location = "Clearwater", readerCount = 247 }:
         else if (hour >= 12 && hour < 18) setGreeting("Good Afternoon");
         else setGreeting("Good Evening");
 
+        /* 
         const interval = setInterval(() => {
             setActiveReaders((prev) => Math.floor(Math.random() * 20) - 10 + prev);
         }, 5000);
 
         return () => clearInterval(interval);
+        */
     }, []);
 
     return (

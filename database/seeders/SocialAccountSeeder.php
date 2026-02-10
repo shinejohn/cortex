@@ -19,28 +19,25 @@ final class SocialAccountSeeder extends Seeder
 
         if ($users->isEmpty()) {
             $this->command->warn('⚠ No users found. Run UserSeeder first.');
+
             return;
         }
 
         // Create social accounts for 50% of users
-        foreach ($users->take(ceil($users->count() * 0.5)) as $user) {
+        foreach ($users->take((int) ceil($users->count() * 0.5)) as $user) {
             $provider = \Illuminate\Support\Arr::random(['google', 'facebook', 'twitter', 'github']);
-            
-            SocialAccount::firstOrCreate(
-                [
-                    'user_id' => $user->id,
-                    'provider' => $provider,
-                ],
-                SocialAccount::factory()->make([
-                    'user_id' => $user->id,
-                    'provider' => $provider,
-                ])->toArray()
-            );
+
+            if (SocialAccount::where('user_id', $user->id)->where('provider', $provider)->exists()) {
+                continue;
+            }
+
+            SocialAccount::factory()->create([
+                'user_id' => $user->id,
+                'provider' => $provider,
+            ]);
         }
 
         $totalAccounts = SocialAccount::count();
         $this->command->info("✓ Total social accounts: {$totalAccounts}");
     }
 }
-
-

@@ -37,7 +37,7 @@ interface EditPostProps {
 export default function EditPost({ auth, post, regions }: EditPostProps) {
     const handleSubmit = (data: any) => {
         router.post(
-            `/posts/${post.id}`,
+            route("daynews.posts.update", post.id) as any,
             {
                 ...data,
                 _method: "PATCH",

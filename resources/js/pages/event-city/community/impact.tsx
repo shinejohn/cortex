@@ -104,7 +104,7 @@ export default function CommunityImpact() {
     return (
         <>
             <Head title="Community Impact" />
-            <Header auth={{ user: null }} />
+            <Header auth={{ user: null } as any} />
 
             <div className="bg-background">
                 {/* Hero Section */}
@@ -116,11 +116,11 @@ export default function CommunityImpact() {
                                 Building stronger, more connected communities through shared experiences and local partnerships
                             </p>
                             <div className="flex flex-col sm:flex-row justify-center gap-4">
-                                <Button onClick={() => navigateTo("/contact")} variant="secondary">
+                                <Button onClick={() => navigateTo(route('contact') as any)} variant="secondary">
                                     Partner With Us
                                 </Button>
                                 <Button
-                                    onClick={() => navigateTo("/community")}
+                                    onClick={() => navigateTo(route('community.index') as any)}
                                     variant="outline"
                                     className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
                                 >
@@ -335,11 +335,11 @@ export default function CommunityImpact() {
                             communities.
                         </p>
                         <div className="flex flex-col sm:flex-row justify-center gap-4">
-                            <Button onClick={() => navigateTo("/contact")} variant="secondary">
+                            <Button onClick={() => navigateTo(route('contact') as any)} variant="secondary">
                                 Become a Partner
                             </Button>
                             <Button
-                                onClick={() => navigateTo("/contact")}
+                                onClick={() => navigateTo(route('contact') as any)}
                                 variant="outline"
                                 className="border-accent-foreground text-accent-foreground hover:bg-accent-foreground hover:text-accent"
                             >

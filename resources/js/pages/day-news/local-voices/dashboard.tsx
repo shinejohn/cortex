@@ -71,7 +71,7 @@ export default function CreatorDashboard() {
                     data={{
                         title: "Creator Dashboard - Local Voices",
                         description: "Manage your podcasts and episodes",
-                        url: "/local-voices/dashboard",
+                        url: route("daynews.local-voices.dashboard") as any,
                     }}
                 />
                 <DayNewsHeader auth={auth} />
@@ -121,7 +121,7 @@ export default function CreatorDashboard() {
                         <div className="mb-4 flex items-center justify-between">
                             <h2 className="text-2xl font-bold">Your Podcasts</h2>
                             {profile.status === "approved" && (
-                                <Button onClick={() => router.visit("/local-voices/podcasts/create")}>
+                                <Button onClick={() => router.visit(route("daynews.local-voices.podcast.create") as any)}>
                                     <Plus className="mr-2 size-4" />
                                     Create Podcast
                                 </Button>
@@ -132,7 +132,7 @@ export default function CreatorDashboard() {
                                 <Headphones className="mx-auto mb-4 size-12 text-muted-foreground" />
                                 <p className="mb-4 text-muted-foreground">No podcasts yet.</p>
                                 {profile.status === "approved" && (
-                                    <Button onClick={() => router.visit("/local-voices/podcasts/create")}>Create Your First Podcast</Button>
+                                    <Button onClick={() => router.visit(route("daynews.local-voices.podcast.create") as any)}>Create Your First Podcast</Button>
                                 )}
                                 {profile.status === "pending" && (
                                     <p className="text-sm text-muted-foreground">
@@ -146,7 +146,7 @@ export default function CreatorDashboard() {
                                     <div
                                         key={podcast.id}
                                         className="cursor-pointer rounded-lg border bg-card transition-shadow hover:shadow-md"
-                                        onClick={() => router.visit(`/local-voices/podcasts/${podcast.slug}`)}
+                                        onClick={() => router.visit(route("daynews.local-voices.podcast.show", podcast.slug) as any)}
                                     >
                                         {podcast.cover_image ? (
                                             <img src={podcast.cover_image} alt={podcast.title} className="h-48 w-full rounded-t-lg object-cover" />

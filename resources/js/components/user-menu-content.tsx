@@ -48,25 +48,25 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="#" as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={route("profile.edit") as any} as="button" prefetch onClick={cleanup}>
                         <UserIcon className="mr-2 size-4" />
                         View Profile
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="#" as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={route("tickets.index") as any} as="button" prefetch onClick={cleanup}>
                         <Ticket className="mr-2 size-4" />
                         My Tickets
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="#" as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={route("calendars.index") as any} as="button" prefetch onClick={cleanup}>
                         <Calendar className="mr-2 size-4" />
                         My Calendar
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="#" as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={route("dashboard") as any} as="button" prefetch onClick={cleanup}>
                         <LayoutDashboard className="mr-2 size-4" />
                         Dashboard
                     </Link>
@@ -75,25 +75,25 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="#" as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={route("notifications.index") as any} as="button" prefetch onClick={cleanup}>
                         <Bell className="mr-2 size-4" />
                         Notifications
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="#" as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={route("social.messages.index") as any} as="button" prefetch onClick={cleanup}>
                         <MessageSquare className="mr-2 size-4" />
                         Messages
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="#" as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={route("social.friends.index") as any} as="button" prefetch onClick={cleanup}>
                         <Users className="mr-2 size-4" />
                         Friends
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="#" as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={route("daynews.classifieds.saved") as any} as="button" prefetch onClick={cleanup}>
                         <Heart className="mr-2 size-4" />
                         Saved Items
                     </Link>
@@ -102,19 +102,19 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href={route("profile.edit")} as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={route("profile.edit") as any} as="button" prefetch onClick={cleanup}>
                         <Settings className="mr-2 size-4" />
                         Account Settings
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href={route("settings.workspace.billing")} as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={route("settings.workspace.billing") as any} as="button" prefetch onClick={cleanup}>
                         <CreditCard className="mr-2 size-4" />
                         Billing & Payouts
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="#" as="button" prefetch onClick={cleanup}>
+                    <Link className="block w-full" href={route("venues.index") as any} as="button" prefetch onClick={cleanup}>
                         <Building className="mr-2 size-4" />
                         Venue Management
                     </Link>
@@ -128,7 +128,7 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-                <Link className="block w-full" method="post" href={route("logout")} as="button" onClick={handleLogout}>
+                <Link className="block w-full" method="post" href={route("logout") as any} as="button" onClick={handleLogout}>
                     <LogOut className="mr-2 size-4" />
                     Logout
                 </Link>

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -7,14 +9,14 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Coupon>
  */
-class CouponFactory extends Factory
+final class CouponFactory extends Factory
 {
     /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
      */
-        public function definition(): array
+    public function definition(): array
     {
         return [
             'user_id' => \App\Models\User::factory(),
@@ -24,7 +26,7 @@ class CouponFactory extends Factory
             'discount_type' => $this->faker->randomElement(['percentage', 'fixed_amount', 'buy_one_get_one', 'free_item']),
             'discount_value' => $this->faker->randomFloat(2, 1, 50),
             'terms' => $this->faker->word(),
-            'code' => $this->faker->word(),
+            'code' => mb_strtoupper($this->faker->unique()->bothify('??###')),
             'image' => $this->faker->optional()->url(),
             'business_name' => $this->faker->sentence(),
             'business_location' => $this->faker->optional()->city(),

@@ -55,14 +55,14 @@ export default function PodcastShow() {
                         title: `${podcast.title} - Local Voices`,
                         description: podcast.description || podcast.title,
                         image: podcast.cover_image || undefined,
-                        url: `/local-voices/podcasts/${podcast.slug}`,
+                        url: route("daynews.local-voices.podcast.show", podcast.slug) as any,
                     }}
                 />
                 <DayNewsHeader auth={auth} />
 
                 <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                     <div className="mb-4">
-                        <Button variant="ghost" onClick={() => router.visit("/local-voices")}>
+                        <Button variant="ghost" onClick={() => router.visit(route("daynews.local-voices.index") as any)}>
                             ← Back to Local Voices
                         </Button>
                     </div>
@@ -110,7 +110,7 @@ export default function PodcastShow() {
                         <div className="mb-4 flex items-center justify-between">
                             <h2 className="text-2xl font-bold">Episodes</h2>
                             {auth && (
-                                <Button onClick={() => router.visit(`/local-voices/podcasts/${podcast.slug}/episodes/create`)}>Add Episode</Button>
+                                <Button onClick={() => router.visit(route("daynews.local-voices.episode.create", podcast.slug) as any)}>Add Episode</Button>
                             )}
                         </div>
                         {podcast.episodes.length === 0 ? (
@@ -124,7 +124,7 @@ export default function PodcastShow() {
                                     <div
                                         key={episode.id}
                                         className="cursor-pointer rounded-lg border bg-card p-6 transition-shadow hover:shadow-md"
-                                        onClick={() => router.visit(`/local-voices/podcasts/${podcast.slug}/episodes/${episode.slug}`)}
+                                        onClick={() => router.visit(route("daynews.local-voices.episode.show", [podcast.slug, episode.slug]) as any)}
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1">

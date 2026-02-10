@@ -21,6 +21,7 @@ final class UpcomingShowSeeder extends Seeder
 
         if ($performers->isEmpty()) {
             $this->command->warn('⚠ No performers found. Run PerformerSeeder first.');
+
             return;
         }
 
@@ -29,7 +30,7 @@ final class UpcomingShowSeeder extends Seeder
             $showCount = rand(1, 4);
             UpcomingShow::factory($showCount)->create([
                 'performer_id' => $performer->id,
-                'venue_id' => fn() => $venues->isNotEmpty() && rand(0, 1) ? $venues->random()->id : null,
+                'venue' => fn () => $venues->isNotEmpty() && rand(0, 1) ? $venues->random()->name : \Illuminate\Support\Str::ucfirst(fake()->words(2, true).' Venue'),
             ]);
         }
 
@@ -37,5 +38,3 @@ final class UpcomingShowSeeder extends Seeder
         $this->command->info("✓ Total upcoming shows: {$totalShows}");
     }
 }
-
-

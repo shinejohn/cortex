@@ -78,7 +78,7 @@ export function FeaturedAnnouncement({ announcement }: FeaturedAnnouncementProps
                             </div>
                         </div>
 
-                        <Link href={`/announcements/${announcement.id}`} className="w-full sm:w-auto">
+                        <Link href={route("daynews.announcements.show", announcement.id) as any} className="w-full sm:w-auto">
                             <Button className="h-14 w-full px-8 font-black uppercase tracking-widest text-sm shadow-lg shadow-primary/20 sm:w-auto">
                                 Read Full Announcement
                                 <ArrowRight className="ml-2 size-4" />

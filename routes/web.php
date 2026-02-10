@@ -4,31 +4,31 @@ declare(strict_types=1);
 
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\CheckInController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\EventCity\SitemapController as EventCitySitemapController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\HomePageController;
+use App\Http\Controllers\HubAnalyticsController;
+use App\Http\Controllers\HubBuilderController;
+use App\Http\Controllers\HubController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PerformerController;
+use App\Http\Controllers\PromoCodeController;
 use App\Http\Controllers\Social\ImageUploadController;
 use App\Http\Controllers\SocialController;
 use App\Http\Controllers\SocialFeedController;
 use App\Http\Controllers\SocialGroupController;
 use App\Http\Controllers\SocialGroupPostController;
 use App\Http\Controllers\SocialMessageController;
+use App\Http\Controllers\TicketGiftController;
+use App\Http\Controllers\TicketMarketplaceController;
 use App\Http\Controllers\TicketOrderController;
 use App\Http\Controllers\TicketPageController;
 use App\Http\Controllers\TicketPlanController;
-use App\Http\Controllers\VenueController;
-use App\Http\Controllers\HubController;
-use App\Http\Controllers\HubBuilderController;
-use App\Http\Controllers\HubAnalyticsController;
-use App\Http\Controllers\CheckInController;
-use App\Http\Controllers\PromoCodeController;
-use App\Http\Controllers\TicketMarketplaceController;
 use App\Http\Controllers\TicketTransferController;
-use App\Http\Controllers\TicketGiftController;
+use App\Http\Controllers\VenueController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -93,19 +93,20 @@ Route::get('/calendar', [CalendarController::class, 'publicIndex'])->name('calen
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
     Route::get('/performers/create', [PerformerController::class, 'create'])->name('performers.create');
+    Route::get('/performers/onboarding', [PerformerController::class, 'onboarding'])->name('performers.onboarding');
+    Route::get('/performers/management', [PerformerController::class, 'management'])->name('performers.management');
     Route::get('/venues/create', [VenueController::class, 'create'])->name('venues.create');
+    Route::get('/venues/management', [VenueController::class, 'management'])->name('venues.management');
     Route::get('/calendars/create', [CalendarController::class, 'create'])->name('calendars.create');
 });
 
 Route::get('/events', [EventController::class, 'publicIndex'])->name('events');
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show')->can('view', 'event');
+
+// Newsletter subscription (public)
+Route::post('/newsletter/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 Route::get('/performers', [PerformerController::class, 'publicIndex'])->name('performers');
-Route::get('/performers/discovery', function () {
-    return Inertia::render('event-city/performers/discovery', [
-        'performers' => [],
-        'filters' => [],
-    ]);
-})->name('performers.discovery');
+Route::get('/performers/discovery', [PerformerController::class, 'discovery'])->name('performers.discovery');
 Route::get('/performers/market-report', function () {
     return Inertia::render('event-city/performers/market-report', [
         'marketData' => [],
@@ -121,8 +122,8 @@ Route::get('/venues/submit', function () {
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show')->can('view', 'venue');
 
 // EventCity Business Directory (unique from venues - shows all businesses with event focus)
-Route::get('/businesses', [\App\Http\Controllers\EventCity\BusinessController::class, 'index'])->name('event-city.businesses.index');
-Route::get('/businesses/{business:slug}', [\App\Http\Controllers\EventCity\BusinessController::class, 'show'])->name('event-city.businesses.show');
+Route::get('/businesses', [App\Http\Controllers\EventCity\BusinessController::class, 'index'])->name('event-city.businesses.index');
+Route::get('/businesses/{business:slug}', [App\Http\Controllers\EventCity\BusinessController::class, 'show'])->name('event-city.businesses.show');
 
 // Calendar routes
 Route::get('/calendars', [CalendarController::class, 'index'])->name('calendars.index');
@@ -242,6 +243,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/api/events/{event}/check-in', [CheckInController::class, 'store'])->name('api.events.check-in');
     Route::get('/api/events/{event}/check-ins', [CheckInController::class, 'forEvent'])->name('api.events.check-ins');
 
+    // Event bookmark and interested routes
+    Route::post('/events/{event}/bookmark', [EventController::class, 'bookmark'])->name('events.bookmark');
+    Route::post('/events/{event}/interested', [EventController::class, 'interested'])->name('events.interested');
+
     // Planned events routes
     Route::post('/api/events/{event}/plan', function (Request $request, Event $event) {
         $plannedEvent = PlannedEvent::firstOrCreate([
@@ -250,12 +255,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ], [
             'planned_at' => now(),
         ]);
+
         return response()->json($plannedEvent);
     })->name('api.events.plan');
     Route::delete('/api/events/{event}/unplan', function (Request $request, Event $event) {
         PlannedEvent::where('event_id', $event->id)
             ->where('user_id', $request->user()->id)
             ->delete();
+
         return response()->json(['success' => true]);
     })->name('api.events.unplan');
 
@@ -509,9 +516,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::post('/stripe/webhook', App\Http\Controllers\StripeWebhookController::class)->name('stripe.webhook');
 
 // Admin routes (specific to this app)
-require __DIR__ . '/admin.php';
+require __DIR__.'/admin.php';
 
 // Public Poll Routes
 Route::get('/poll/{slug}', [App\Http\Controllers\PollPageController::class, 'show'])->name('poll.show');
 Route::get('/poll/{slug}/embed', [App\Http\Controllers\PollPageController::class, 'embed'])->name('poll.embed');
 Route::post('/api/polls/{slug}/vote', [App\Http\Controllers\PollPageController::class, 'vote'])->name('poll.vote');
+
+// Note: Performer onboarding, performer management, and venue management routes
+// have been moved into the auth middleware group above.
+// Appearance settings route is defined in routes/settings.php.

@@ -24,7 +24,7 @@ final class NewsArticleFactory extends Factory
             'source_type' => 'category',
             'source_name' => '',
             'title' => fake()->sentence(),
-            'url' => fake()->url(),
+            'url' => fake()->unique()->url(),
             'content_snippet' => fake()->paragraph(),
             'full_content' => fake()->paragraphs(3, true),
             'source_publisher' => fake()->company(),

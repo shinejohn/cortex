@@ -19,7 +19,7 @@ dayjs.extend(relativeTime);
 interface ThreadReplyProps {
     readonly reply: CommunityThreadReply;
     readonly threadId: string;
-    readonly currentUserId?: string;
+    readonly currentUserId?: string | number;
     readonly depth?: number;
 }
 
@@ -39,7 +39,7 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
 
         setIsSubmitting(true);
         try {
-            await axios.post(`/community/thread/${threadId}/replies`, {
+            await axios.post(route("community.thread.reply.store", threadId) as any, {
                 content: replyContent.trim(),
                 reply_to_id: reply.id,
             });
@@ -64,7 +64,7 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
 
         setIsSubmitting(true);
         try {
-            await axios.patch(`/community/reply/${reply.id}`, {
+            await axios.patch(route("community.reply.update", reply.id) as any, {
                 content: editContent.trim(),
             });
             setIsEditing(false);
@@ -85,7 +85,7 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
     const handleDelete = async (): Promise<void> => {
         if (confirm("Are you sure you want to delete this reply?")) {
             try {
-                await axios.delete(`/community/reply/${reply.id}`);
+                await axios.delete(route("community.reply.destroy", reply.id) as any);
                 toast.success("Reply deleted successfully");
                 router.reload({ only: ["thread"] });
             } catch (error: unknown) {
@@ -101,7 +101,7 @@ export function ThreadReply({ reply, threadId, currentUserId, depth = 0 }: Threa
 
     const handleLike = async (): Promise<void> => {
         try {
-            await axios.post(`/community/reply/${reply.id}/like`);
+            await axios.post(route("community.reply.like", reply.id) as any);
             router.reload({ only: ["thread"] });
         } catch (error: unknown) {
             console.error("Failed to like reply:", error);

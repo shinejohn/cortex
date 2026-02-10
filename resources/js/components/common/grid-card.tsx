@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 interface GridCardProps {
     readonly id: string;
     readonly href: string;
-    readonly image: string;
+    readonly image?: string;
     readonly imageAlt: string;
     readonly badge?: string;
     readonly title: string;
@@ -22,7 +22,7 @@ interface GridCardProps {
 export const GridCard = ({
     id,
     href,
-    image,
+    image = "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80",
     imageAlt,
     badge,
     title,

@@ -36,7 +36,7 @@ interface DayNewsBusinessCardProps {
  * Visual: Newspaper-style, editorial feel, blue theme
  */
 export function DayNewsBusinessCard({ business, recentArticlesCount = 0, latestArticle, className }: DayNewsBusinessCardProps) {
-    const href = business.slug ? `/businesses/${business.slug}` : `/businesses/${business.id}`;
+    const href = route("daynews.businesses.show", business.slug || business.id);
 
     return (
         <Card className={cn("group p-4 transition-all hover:shadow-md", className)}>
@@ -80,10 +80,9 @@ export function DayNewsBusinessCard({ business, recentArticlesCount = 0, latestA
                         </Badge>
                     )}
 
-                    {/* Latest Article Preview */}
                     {latestArticle && (
                         <Link
-                            href={`/posts/${latestArticle.slug || latestArticle.id}`}
+                            href={route("daynews.posts.show", latestArticle.slug || latestArticle.id) as any}
                             className="block rounded-md border bg-accent/50 p-2 hover:bg-accent transition-colors"
                         >
                             <div className="flex items-center gap-2">

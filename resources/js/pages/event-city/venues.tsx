@@ -77,7 +77,7 @@ export default function VenuesPage() {
     const clearAllFilters = () => {
         setCurrentFilters({});
         setSearchQuery("");
-        router.visit("/venues");
+        router.visit(route('venues'));
     };
 
     const renderVenueContent = (venue: Venue) => (
@@ -308,7 +308,7 @@ export default function VenuesPage() {
                                     <GridCard
                                         key={venue.id}
                                         id={String(venue.id)}
-                                        href={`/venues/${venue.id}`}
+                                        href={route('venues.show', venue.id) as any}
                                         image={venue.images[0] || "/images/venue-placeholder.jpg"}
                                         imageAlt={venue.name}
                                         badge={venue.venueType}
@@ -380,7 +380,7 @@ export default function VenuesPage() {
                                     <GridSection
                                         title="Trending Venues"
                                         description="Most popular places right now"
-                                        viewAllHref="/venues?sort=popular"
+                                        viewAllHref={route('venues', { sort: 'popular' }) as any}
                                         viewAllText="View all trending"
                                         promoteHref="/promote-venue"
                                         promoteText="Promote your venue here"
@@ -408,7 +408,7 @@ export default function VenuesPage() {
                                     <GridSection
                                         title="New Venues"
                                         description="Just added to our collection"
-                                        viewAllHref="/venues?sort=newest"
+                                        viewAllHref={route('venues', { sort: 'newest' }) as any}
                                         viewAllText="View all new venues"
                                         promoteHref="/promote-venue"
                                         promoteText="Promote your venue here"

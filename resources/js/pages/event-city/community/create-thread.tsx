@@ -25,7 +25,7 @@ export default function CreateThread() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(`/community/${community.id}/threads`, {
+        post(route('community.thread.store', community.id) as string, {
             onSuccess: () => {
                 // Will redirect to community page on success
             },

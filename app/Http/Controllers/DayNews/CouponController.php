@@ -7,10 +7,15 @@ namespace App\Http\Controllers\DayNews;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DayNews\StoreCouponRequest;
 use App\Http\Requests\DayNews\UpdateCouponRequest;
+use App\Models\Comment;
 use App\Models\Coupon;
+use App\Models\CouponVote;
+use App\Models\SavedCoupon;
 use App\Services\CouponService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -75,6 +80,7 @@ final class CouponController extends Controller
                     'state' => $coupon->business->state,
                     'images' => $coupon->business->images,
                     'categories' => $coupon->business->categories,
+                    'is_verified' => $coupon->business->is_verified,
                 ],
                 'regions' => $coupon->regions->map(fn ($r) => [
                     'id' => $r->id,
@@ -157,6 +163,7 @@ final class CouponController extends Controller
                     'images' => $coupon->business->images,
                     'categories' => $coupon->business->categories,
                     'rating' => $coupon->business->rating,
+                    'is_verified' => $coupon->business->is_verified,
                 ],
                 'regions' => $coupon->regions->map(fn ($r) => [
                     'id' => $r->id,
@@ -325,6 +332,144 @@ final class CouponController extends Controller
                     'images' => $coupon->business->images,
                 ],
             ]),
+        ]);
+    }
+
+    /**
+     * Toggle an upvote or downvote on a coupon.
+     */
+    public function vote(Request $request, Coupon $coupon): JsonResponse
+    {
+        $request->validate([
+            'vote_type' => ['required', 'in:up,down'],
+        ]);
+
+        $user = $request->user();
+        $voteType = $request->input('vote_type');
+
+        $existingVote = CouponVote::where('coupon_id', $coupon->id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if ($existingVote) {
+            if ($existingVote->vote_type === $voteType) {
+                $existingVote->delete();
+            } else {
+                $existingVote->update(['vote_type' => $voteType]);
+            }
+        } else {
+            CouponVote::create([
+                'coupon_id' => $coupon->id,
+                'user_id' => $user->id,
+                'vote_type' => $voteType,
+            ]);
+        }
+
+        $coupon->recalculateScore();
+        $coupon->refresh();
+
+        return response()->json([
+            'score' => $coupon->score,
+            'upvotes_count' => $coupon->upvotes_count,
+            'downvotes_count' => $coupon->downvotes_count,
+            'user_vote' => $coupon->getUserVote($user),
+        ]);
+    }
+
+    /**
+     * Store a comment on a coupon.
+     */
+    public function storeComment(Request $request, Coupon $coupon): JsonResponse
+    {
+        $request->validate([
+            'content' => ['required', 'string', 'max:2000'],
+            'parent_id' => ['nullable', 'exists:comments,id'],
+        ]);
+
+        $comment = $coupon->comments()->create([
+            'user_id' => $request->user()->id,
+            'content' => $request->input('content'),
+            'parent_id' => $request->input('parent_id'),
+            'is_active' => true,
+        ]);
+
+        $comment->load('user');
+
+        return response()->json([
+            'comment' => $this->transformComment($comment, $request->user()),
+        ], 201);
+    }
+
+    /**
+     * Toggle save/unsave a coupon for the authenticated user.
+     */
+    public function toggleSave(Request $request, Coupon $coupon): JsonResponse
+    {
+        $user = $request->user();
+
+        $existing = SavedCoupon::where('coupon_id', $coupon->id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if ($existing) {
+            $existing->delete();
+            $isSaved = false;
+        } else {
+            SavedCoupon::create([
+                'coupon_id' => $coupon->id,
+                'user_id' => $user->id,
+            ]);
+            $isSaved = true;
+        }
+
+        $coupon->recalculateScore();
+
+        return response()->json([
+            'is_saved' => $isSaved,
+            'saves_count' => $coupon->fresh()->saves_count,
+        ]);
+    }
+
+    /**
+     * Toggle like on a coupon comment.
+     */
+    public function toggleCommentLike(Request $request, int $commentId): JsonResponse
+    {
+        $userId = $request->user()->id;
+
+        $existing = DB::table('comment_likes')
+            ->where('comment_type', 'coupon_comment')
+            ->where('comment_id', $commentId)
+            ->where('user_id', $userId)
+            ->first();
+
+        if ($existing) {
+            DB::table('comment_likes')
+                ->where('comment_type', 'coupon_comment')
+                ->where('comment_id', $commentId)
+                ->where('user_id', $userId)
+                ->delete();
+
+            $isLiked = false;
+        } else {
+            DB::table('comment_likes')->insert([
+                'comment_type' => 'coupon_comment',
+                'comment_id' => $commentId,
+                'user_id' => $userId,
+                'created_at' => now(),
+            ]);
+
+            $isLiked = true;
+        }
+
+        $likesCount = DB::table('comment_likes')
+            ->where('comment_type', 'coupon_comment')
+            ->where('comment_id', $commentId)
+            ->count();
+
+        return response()->json([
+            'is_liked' => $isLiked,
+            'likes_count' => $likesCount,
         ]);
     }
 

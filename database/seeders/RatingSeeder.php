@@ -23,6 +23,7 @@ final class RatingSeeder extends Seeder
 
         if ($users->isEmpty()) {
             $this->command->warn('⚠ No users found. Run UserSeeder first.');
+
             return;
         }
 
@@ -43,6 +44,7 @@ final class RatingSeeder extends Seeder
                             'user_id' => $user->id,
                             'ratable_type' => Venue::class,
                             'ratable_id' => $venue->id,
+                            'booking_id' => null,
                         ])->toArray()
                     );
                 }
@@ -66,6 +68,7 @@ final class RatingSeeder extends Seeder
                             'user_id' => $user->id,
                             'ratable_type' => Performer::class,
                             'ratable_id' => $performer->id,
+                            'booking_id' => null,
                         ])->toArray()
                     );
                 }
@@ -76,5 +79,3 @@ final class RatingSeeder extends Seeder
         $this->command->info("✓ Total ratings: {$totalRatings}");
     }
 }
-
-

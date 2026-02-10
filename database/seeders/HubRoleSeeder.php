@@ -6,7 +6,6 @@ namespace Database\Seeders;
 
 use App\Models\Hub;
 use App\Models\HubRole;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 final class HubRoleSeeder extends Seeder
@@ -17,28 +16,30 @@ final class HubRoleSeeder extends Seeder
     public function run(): void
     {
         $hubs = Hub::all();
-        $users = User::all();
+        if ($hubs->isEmpty()) {
+            $this->command->warn('⚠ No hubs found. Run HubSeeder first.');
 
-        if ($hubs->isEmpty() || $users->isEmpty()) {
-            $this->command->warn('⚠ No hubs or users found. Run HubSeeder and UserSeeder first.');
             return;
         }
 
         foreach ($hubs as $hub) {
             // Add 2-5 roles per hub
-            $roleCount = rand(2, 5);
-            $availableUsers = $users->where('id', '!=', $hub->created_by)->random(min($roleCount, $users->count() - 1));
+            $roles = [
+                ['name' => 'Administrator', 'slug' => 'administrator', 'is_system' => true],
+                ['name' => 'Editor', 'slug' => 'editor', 'is_system' => false],
+                ['name' => 'Moderator', 'slug' => 'moderator', 'is_system' => false],
+            ];
 
-            foreach ($availableUsers as $user) {
+            foreach ($roles as $roleData) {
                 HubRole::firstOrCreate(
                     [
                         'hub_id' => $hub->id,
-                        'user_id' => $user->id,
+                        'slug' => $roleData['slug'],
                     ],
-                    HubRole::factory()->make([
-                        'hub_id' => $hub->id,
-                        'user_id' => $user->id,
-                    ])->toArray()
+                    array_merge($roleData, [
+                        'permissions' => ['all' => true],
+                        'description' => "{$roleData['name']} role for {$hub->name}",
+                    ])
                 );
             }
         }
@@ -47,5 +48,3 @@ final class HubRoleSeeder extends Seeder
         $this->command->info("✓ Total hub roles: {$totalRoles}");
     }
 }
-
-

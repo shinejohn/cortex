@@ -31,7 +31,7 @@ export default function CreateAnnouncement({ auth }: CreateAnnouncementProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        form.post("/announcements", {
+        form.post(route("daynews.announcements.store") as any, {
             forceFormData: true,
         });
     };
@@ -72,7 +72,7 @@ export default function CreateAnnouncement({ auth }: CreateAnnouncementProps) {
                     {/* Navigation */}
                     <div className="mb-10">
                         <Link
-                            href="/announcements"
+                            href={route("daynews.announcements.index") as any}
                             className="flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-colors group"
                         >
                             <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
@@ -235,7 +235,7 @@ export default function CreateAnnouncement({ auth }: CreateAnnouncementProps) {
                                 </section>
 
                                 <div className="flex items-center justify-end gap-6 pt-6">
-                                    <Link href="/announcements" className="text-xs font-black text-muted-foreground hover:text-zinc-900 uppercase tracking-widest transition-colors">
+                                    <Link href={route("daynews.announcements.index") as any} className="text-xs font-black text-muted-foreground hover:text-zinc-900 uppercase tracking-widest transition-colors">
                                         Cancel & Discard
                                     </Link>
                                     <Button

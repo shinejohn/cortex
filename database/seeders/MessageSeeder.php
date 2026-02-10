@@ -21,6 +21,7 @@ final class MessageSeeder extends Seeder
 
         if ($conversations->isEmpty() || $users->isEmpty()) {
             $this->command->warn('⚠ No conversations or users found. Run ConversationSeeder and UserSeeder first.');
+
             return;
         }
 
@@ -36,7 +37,7 @@ final class MessageSeeder extends Seeder
             for ($i = 0; $i < $messageCount; $i++) {
                 Message::factory()->create([
                     'conversation_id' => $conversation->id,
-                    'user_id' => $participants->random()->id,
+                    'sender_id' => $participants->random()->id,
                 ]);
             }
         }
@@ -45,5 +46,3 @@ final class MessageSeeder extends Seeder
         $this->command->info("✓ Total messages: {$totalMessages}");
     }
 }
-
-

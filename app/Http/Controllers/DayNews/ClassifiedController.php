@@ -9,10 +9,13 @@ use App\Http\Requests\DayNews\StoreClassifiedRequest;
 use App\Http\Requests\DayNews\UpdateClassifiedRequest;
 use App\Models\Classified;
 use App\Models\ClassifiedCategory;
+use App\Models\SavedClassified;
 use App\Services\ClassifiedService;
 use Closure;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -124,6 +127,8 @@ final class ClassifiedController extends Controller
                 'user' => [
                     'id' => $classified->user->id,
                     'name' => $classified->user->name,
+                    'created_at' => $classified->user->created_at?->toISOString(),
+                    'is_verified' => $classified->user->email_verified_at !== null,
                 ],
                 'category' => [
                     'id' => $classified->category->id,
@@ -182,7 +187,7 @@ final class ClassifiedController extends Controller
     /**
      * Store a new classified listing.
      */
-    public function store(StoreClassifiedRequest $request): RedirectResponse|\Illuminate\Http\JsonResponse
+    public function store(StoreClassifiedRequest $request): RedirectResponse|JsonResponse
     {
         $classified = $this->classifiedService->createClassified(
             user: $request->user(),
@@ -265,7 +270,7 @@ final class ClassifiedController extends Controller
     /**
      * Update a classified listing.
      */
-    public function update(UpdateClassifiedRequest $request, Classified $classified): RedirectResponse|\Illuminate\Http\JsonResponse
+    public function update(UpdateClassifiedRequest $request, Classified $classified): RedirectResponse|JsonResponse
     {
         $updatedClassified = $this->classifiedService->updateClassified($classified, $request->validated());
 
@@ -327,6 +332,84 @@ final class ClassifiedController extends Controller
     }
 
     /**
+     * Return the specifications for a classified category as JSON.
+     */
+    public function categorySpecifications(ClassifiedCategory $category): JsonResponse
+    {
+        $specifications = $category->getAllSpecifications();
+
+        return response()->json([
+            'specifications' => $specifications->map(fn ($spec) => [
+                'id' => $spec->id,
+                'name' => $spec->name,
+                'key' => $spec->key,
+                'type' => $spec->type,
+                'options' => $spec->options,
+                'is_required' => $spec->is_required,
+            ])->values(),
+        ]);
+    }
+
+    /**
+     * Toggle save/unsave a classified for the authenticated user.
+     */
+    public function toggleSave(Request $request, Classified $classified): JsonResponse
+    {
+        $user = $request->user();
+
+        $existing = SavedClassified::where('classified_id', $classified->id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if ($existing) {
+            $existing->delete();
+            $isSaved = false;
+        } else {
+            SavedClassified::create([
+                'classified_id' => $classified->id,
+                'user_id' => $user->id,
+            ]);
+            $isSaved = true;
+        }
+
+        $classified->recalculateSavesCount();
+
+        return response()->json([
+            'is_saved' => $isSaved,
+            'saves_count' => $classified->fresh()->saves_count,
+        ]);
+    }
+
+    /**
+     * Send a contact request about a classified listing.
+     */
+    public function contact(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'classified_id' => ['required', 'exists:classifieds,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'message' => ['required', 'string', 'max:2000'],
+        ]);
+
+        DB::table('classified_contacts')->insert([
+            'classified_id' => $validated['classified_id'],
+            'user_id' => $request->user()->id,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
+            'message' => $validated['message'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return response()->json([
+            'message' => 'Your message has been sent to the seller.',
+        ]);
+    }
+
+    /**
      * Display user's own classified listings.
      */
     public function myClassifieds(Request $request): Response
@@ -366,6 +449,34 @@ final class ClassifiedController extends Controller
         return Inertia::render('day-news/classifieds/saved', [
             'classifieds' => $classifieds->through($this->getCardTransformer($user)),
         ]);
+    }
+
+    /**
+     * Report a classified listing.
+     */
+    public function report(Request $request, Classified $classified): JsonResponse|RedirectResponse
+    {
+        $validated = $request->validate([
+            'reason' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        DB::table('reports')->insert([
+            'reportable_type' => 'classified',
+            'reportable_id' => $classified->id,
+            'user_id' => $request->user()->id,
+            'reason' => $validated['reason'],
+            'description' => $validated['description'] ?? null,
+            'status' => 'pending',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Report submitted successfully.']);
+        }
+
+        return redirect()->back()->with('success', 'Report submitted. We will review it shortly.');
     }
 
     /**

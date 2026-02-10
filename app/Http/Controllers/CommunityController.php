@@ -390,7 +390,7 @@ final class CommunityController extends Controller
                 'id' => $index + 1,
                 'image' => $event->image,
                 'title' => $event->title,
-                'eventUrl' => "/events/{$event->id}",
+                'eventUrl' => route('events.show', $event->id),
                 'stats' => [
                     'events' => $totalEvents,
                     'venues' => $totalVenues,
@@ -406,7 +406,7 @@ final class CommunityController extends Controller
                     'id' => 1,
                     'image' => 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
                     'title' => 'Community Events',
-                    'eventUrl' => '/events',
+                    'eventUrl' => route('events.index'),
                     'stats' => [
                         'events' => $totalEvents,
                         'venues' => $totalVenues,
@@ -438,7 +438,7 @@ final class CommunityController extends Controller
             'author' => [
                 'id' => $reply->author->id,
                 'name' => $reply->author->name,
-                'avatar' => $reply->author->avatar ?? 'https://api.dicebear.com/9.x/glass/svg?seed='.$reply->author->id,
+                'avatar' => $reply->author->avatar, // Mock avatar removed
                 'role' => 'Community Member',
             ],
             'replyToId' => $reply->reply_to_id,

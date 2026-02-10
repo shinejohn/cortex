@@ -21,21 +21,21 @@ final class BusinessSubscriptionSeeder extends Seeder
 
         if ($businesses->isEmpty() || $workspaces->isEmpty()) {
             $this->command->warn('⚠ No businesses or workspaces found. Run BusinessSeeder and WorkspaceSeeder first.');
+
             return;
         }
 
         // Create subscriptions for 30% of businesses
-        $businessesToSubscribe = $businesses->random(ceil($businesses->count() * 0.3));
+        $count = (int) ceil($businesses->count() * 0.3);
+        $businessesToSubscribe = $businesses->random($count);
 
         foreach ($businessesToSubscribe as $business) {
             BusinessSubscription::firstOrCreate(
                 [
                     'business_id' => $business->id,
-                    'workspace_id' => $workspaces->random()->id,
                 ],
                 BusinessSubscription::factory()->make([
                     'business_id' => $business->id,
-                    'workspace_id' => $workspaces->random()->id,
                 ])->toArray()
             );
         }
@@ -44,5 +44,3 @@ final class BusinessSubscriptionSeeder extends Seeder
         $this->command->info("✓ Total business subscriptions: {$totalSubscriptions}");
     }
 }
-
-

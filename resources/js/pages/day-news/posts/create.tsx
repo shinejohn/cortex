@@ -19,7 +19,7 @@ interface CreatePostProps {
 
 export default function CreatePost({ auth, regions, initialType }: CreatePostProps) {
     const handleSubmit = (data: any) => {
-        router.post("/posts", data, {
+        router.post(route("daynews.posts.store") as any, data, {
             preserveScroll: true,
         });
     };

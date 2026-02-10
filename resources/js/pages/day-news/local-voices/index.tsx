@@ -50,7 +50,7 @@ export default function LocalVoicesIndex() {
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        searchForm.get("/local-voices", {
+        searchForm.get(route("daynews.local-voices.index") as any, {
             preserveState: true,
             preserveScroll: true,
         });
@@ -79,7 +79,7 @@ export default function LocalVoicesIndex() {
                     data={{
                         title: "Local Voices - Day News",
                         description: "Community podcasts and audio content",
-                        url: "/local-voices",
+                        url: route("daynews.local-voices.index") as any,
                     }}
                 />
                 <DayNewsHeader auth={auth} />
@@ -92,7 +92,7 @@ export default function LocalVoicesIndex() {
                             <p className="mt-2 text-muted-foreground">Community podcasts and audio content</p>
                         </div>
                         {auth && (
-                            <Button onClick={() => router.visit("/local-voices/register")}>
+                            <Button onClick={() => router.visit(route("daynews.local-voices.register") as any)}>
                                 <Plus className="mr-2 size-4" />
                                 Become a Creator
                             </Button>
@@ -126,7 +126,7 @@ export default function LocalVoicesIndex() {
                                     size="sm"
                                     onClick={() => {
                                         searchForm.setData("category", cat.value);
-                                        searchForm.get("/local-voices", {
+                                        searchForm.get(route("daynews.local-voices.index") as any, {
                                             preserveState: true,
                                             preserveScroll: true,
                                         });
@@ -144,7 +144,7 @@ export default function LocalVoicesIndex() {
                             <Mic className="mx-auto mb-4 size-12 text-muted-foreground" />
                             <p className="text-muted-foreground">No podcasts found.</p>
                             {auth && (
-                                <Button className="mt-4" onClick={() => router.visit("/local-voices/register")}>
+                                <Button className="mt-4" onClick={() => router.visit(route("daynews.local-voices.register") as any)}>
                                     Become a Creator
                                 </Button>
                             )}
@@ -155,7 +155,7 @@ export default function LocalVoicesIndex() {
                                 <div
                                     key={podcast.id}
                                     className="cursor-pointer rounded-lg border bg-card transition-shadow hover:shadow-md"
-                                    onClick={() => router.visit(`/local-voices/podcasts/${podcast.slug}`)}
+                                    onClick={() => router.visit(route("daynews.local-voices.podcast.show", podcast.slug) as any)}
                                 >
                                     {podcast.cover_image ? (
                                         <img src={podcast.cover_image} alt={podcast.title} className="h-48 w-full rounded-t-lg object-cover" />

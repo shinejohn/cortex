@@ -21,11 +21,12 @@ final class TicketGiftSeeder extends Seeder
 
         if ($ticketOrderItems->isEmpty() || $users->count() < 2) {
             $this->command->warn('⚠ No ticket order items or insufficient users. Run TicketOrderSeeder and UserSeeder first.');
+
             return;
         }
 
         // Create gifts for 5% of ticket order items
-        $itemsToGift = $ticketOrderItems->random(ceil($ticketOrderItems->count() * 0.05));
+        $itemsToGift = $ticketOrderItems->random((int) ceil($ticketOrderItems->count() * 0.05));
 
         foreach ($itemsToGift as $item) {
             $gifter = $item->ticketOrder->user;
@@ -34,7 +35,9 @@ final class TicketGiftSeeder extends Seeder
             TicketGift::factory()->create([
                 'ticket_order_item_id' => $item->id,
                 'gifter_id' => $gifter->id,
-                'recipient_id' => $recipient->id,
+                'recipient_user_id' => $recipient->id,
+                'recipient_email' => $recipient->email,
+                'recipient_name' => $recipient->name,
             ]);
         }
 
@@ -42,5 +45,3 @@ final class TicketGiftSeeder extends Seeder
         $this->command->info("✓ Total ticket gifts: {$totalGifts}");
     }
 }
-
-

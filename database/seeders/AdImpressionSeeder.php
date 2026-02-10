@@ -18,22 +18,23 @@ final class AdImpressionSeeder extends Seeder
     {
         $creatives = AdCreative::all();
         $placements = AdPlacement::all();
+        $communities = \App\Models\Community::all();
 
         if ($creatives->isEmpty() || $placements->isEmpty()) {
             $this->command->warn('⚠ No ad creatives or placements found. Run AdCreativeSeeder and AdPlacementSeeder first.');
+
             return;
         }
 
         // Create impressions using factory
         $targetCount = 1000;
-        $impressions = AdImpression::factory($targetCount)->create([
-            'creative_id' => fn() => $creatives->random()->id,
-            'placement_id' => fn() => $placements->random()->id,
-        ]);
+        AdImpression::factory($targetCount)
+            ->recycle($creatives)
+            ->recycle($placements)
+            ->recycle($communities)
+            ->create();
 
         $this->command->info("✓ Created {$targetCount} ad impressions");
-        $this->command->info("✓ Total ad impressions: " . AdImpression::count());
+        $this->command->info('✓ Total ad impressions: '.AdImpression::count());
     }
 }
-
-
