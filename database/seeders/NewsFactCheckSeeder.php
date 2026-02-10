@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\NewsArticle;
 use App\Models\NewsFactCheck;
 use Illuminate\Database\Seeder;
 
@@ -15,19 +14,20 @@ final class NewsFactCheckSeeder extends Seeder
      */
     public function run(): void
     {
-        $articles = NewsArticle::all();
+        $drafts = \App\Models\NewsArticleDraft::all();
 
-        if ($articles->isEmpty()) {
-            $this->command->warn('⚠ No news articles found. Run NewsArticleSeeder first.');
+        if ($drafts->isEmpty()) {
+            $this->command->warn('⚠ No article drafts found. Run NewsArticleDraftSeeder first.');
+
             return;
         }
 
-        // Create fact checks for 30% of articles
-        $articlesToCheck = $articles->random(ceil($articles->count() * 0.3));
+        // Create fact checks for 30% of drafts
+        $draftsToCheck = $drafts->random((int) ceil($drafts->count() * 0.3));
 
-        foreach ($articlesToCheck as $article) {
+        foreach ($draftsToCheck as $draft) {
             NewsFactCheck::factory()->create([
-                'news_article_id' => $article->id,
+                'draft_id' => $draft->id,
             ]);
         }
 
@@ -35,5 +35,3 @@ final class NewsFactCheckSeeder extends Seeder
         $this->command->info("✓ Total news fact checks: {$totalChecks}");
     }
 }
-
-

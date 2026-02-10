@@ -26,25 +26,25 @@ export function DayNewsUserMenuContent({ user }: DayNewsUserMenuContentProps) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="/profile" as="button">
+                    <Link className="block w-full" href={route("profile.edit") as any} as="button">
                         <UserIcon className="mr-2 size-4" />
                         View Profile
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="/my-articles" as="button">
+                    <Link className="block w-full" href={route("daynews.posts.index") as any} as="button">
                         <Newspaper className="mr-2 size-4" />
                         My Articles
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="/my-announcements" as="button">
+                    <Link className="block w-full" href={route("daynews.announcements.index") as any} as="button">
                         <Megaphone className="mr-2 size-4" />
                         My Announcements
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="/my-ads" as="button">
+                    <Link className="block w-full" href={route("daynews.classifieds.my") as any} as="button">
                         <FileText className="mr-2 size-4" />
                         My Ads & Notices
                     </Link>
@@ -53,19 +53,19 @@ export function DayNewsUserMenuContent({ user }: DayNewsUserMenuContentProps) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="/saved" as="button">
+                    <Link className="block w-full" href={route("daynews.classifieds.saved") as any} as="button">
                         <BookOpen className="mr-2 size-4" />
                         Saved Articles
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="/notifications" as="button">
+                    <Link className="block w-full" href={route("notifications.index") as any} as="button">
                         <Bell className="mr-2 size-4" />
                         Notifications
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="/business-profile" as="button">
+                    <Link className="block w-full" href={route("daynews.businesses.index") as any} as="button">
                         <Building2 className="mr-2 size-4" />
                         Business Profile
                     </Link>
@@ -74,13 +74,13 @@ export function DayNewsUserMenuContent({ user }: DayNewsUserMenuContentProps) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href={route("profile.edit")} as="button">
+                    <Link className="block w-full" href={route("profile.edit") as any} as="button">
                         <Settings className="mr-2 size-4" />
                         Account Settings
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                    <Link className="block w-full" href="/help" as="button">
+                    <Link className="block w-full" href={route("daynews.home") as any} as="button">
                         <HelpCircle className="mr-2 size-4" />
                         Help & Support
                     </Link>

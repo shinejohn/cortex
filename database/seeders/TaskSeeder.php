@@ -23,20 +23,19 @@ final class TaskSeeder extends Seeder
 
         if ($tenants->isEmpty() || $customers->isEmpty() || $users->isEmpty()) {
             $this->command->warn('⚠ No tenants, customers, or users found. Run TenantSeeder, CustomerSeeder, and UserSeeder first.');
+
             return;
         }
 
         // Create tasks using factory
         $targetCount = 500;
         $tasks = Task::factory($targetCount)->create([
-            'tenant_id' => fn() => $tenants->random()->id,
-            'customer_id' => fn() => $customers->random()->id,
-            'user_id' => fn() => $users->random()->id,
+            'tenant_id' => fn () => $tenants->random()->id,
+            'customer_id' => fn () => $customers->random()->id,
+            'assigned_to_id' => fn () => $users->random()->id,
         ]);
 
         $this->command->info("✓ Created {$targetCount} tasks");
-        $this->command->info("✓ Total tasks: " . Task::count());
+        $this->command->info('✓ Total tasks: '.Task::count());
     }
 }
-
-

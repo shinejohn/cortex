@@ -27,6 +27,7 @@ return new class extends Migration
             ]);
             $table->string('subcategory')->nullable();
             $table->string('title');
+            $table->string('slug')->unique();
             $table->text('description');
             $table->decimal('price', 10, 2)->nullable();
             $table->string('price_type')->nullable(); // fixed, negotiable, contact_for_pricing
@@ -38,6 +39,7 @@ return new class extends Migration
             $table->timestamp('expires_at')->nullable();
             $table->unsignedInteger('views_count')->default(0);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index(['category', 'status']);
             $table->index(['status', 'posted_at']);
@@ -47,7 +49,7 @@ return new class extends Migration
 
         // Classified images table
         Schema::create('classified_images', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->uuid('classified_id');
             $table->string('image_path');
             $table->string('image_disk')->default('public');
@@ -99,4 +101,3 @@ return new class extends Migration
         Schema::dropIfExists('classifieds');
     }
 };
-

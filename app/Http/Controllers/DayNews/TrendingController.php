@@ -58,6 +58,9 @@ final class TrendingController extends Controller
             $q->published()->where('published_at', '>=', now()->subHour());
         })->count();
 
+        // Get community engagement stats
+        $engagementStats = $this->trendingService->getEngagementStats($timePeriod, $currentRegion);
+
         return Inertia::render('day-news/trending/index', [
             'timePeriod' => $timePeriod,
             'category' => $category,
@@ -67,8 +70,8 @@ final class TrendingController extends Controller
             'trendingPeople' => $data['people'],
             'communityPulse' => $data['community_pulse'],
             'activeReaders' => $activeReaders,
+            'engagementStats' => $engagementStats,
             'currentRegion' => $currentRegion,
         ]);
     }
 }
-

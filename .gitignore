@@ -55,3 +55,6 @@ test-results/
 # Python virtual environments and cache
 __pycache__/
 INFRASTRUCTURE/venv/
+
+# Private migration data
+private_migration_data.json

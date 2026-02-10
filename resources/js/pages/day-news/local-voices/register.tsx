@@ -65,7 +65,7 @@ export default function CreatorRegister() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        form.post("/local-voices/register", {
+        form.post(route("daynews.local-voices.register.store") as any, {
             forceFormData: true,
             preserveScroll: true,
         });
@@ -84,7 +84,7 @@ export default function CreatorRegister() {
                             <p className="mb-4 text-muted-foreground">
                                 Your creator profile "{existingProfile.display_name}" is {existingProfile.status}.
                             </p>
-                            <Button onClick={() => router.visit("/local-voices/dashboard")}>Go to Dashboard</Button>
+                            <Button onClick={() => router.visit(route("daynews.local-voices.dashboard") as any)}>Go to Dashboard</Button>
                         </div>
                     </div>
                 </div>
@@ -102,7 +102,7 @@ export default function CreatorRegister() {
                     data={{
                         title: "Become a Creator - Local Voices",
                         description: "Register as a podcast creator",
-                        url: "/local-voices/register",
+                        url: route("daynews.local-voices.register") as any,
                     }}
                 />
                 <DayNewsHeader auth={auth} />
@@ -300,7 +300,7 @@ export default function CreatorRegister() {
                                 <Mic className={`mr-2 size-4 ${form.processing ? "animate-spin" : ""}`} />
                                 {form.processing ? "Submitting..." : "Submit Application"}
                             </Button>
-                            <Button type="button" variant="outline" onClick={() => router.visit("/local-voices")} disabled={form.processing}>
+                            <Button type="button" variant="outline" onClick={() => router.visit(route("daynews.local-voices.index") as any)} disabled={form.processing}>
                                 Cancel
                             </Button>
                         </div>

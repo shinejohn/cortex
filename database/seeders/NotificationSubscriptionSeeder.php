@@ -19,36 +19,29 @@ final class NotificationSubscriptionSeeder extends Seeder
 
         if ($users->isEmpty()) {
             $this->command->warn('⚠ No users found. Run UserSeeder first.');
+
             return;
         }
 
-        foreach ($users as $user) {
-            // Create web push subscription for 70% of users
-            if (rand(1, 100) <= 70) {
-                NotificationSubscription::firstOrCreate(
-                    [
-                        'user_id' => $user->id,
-                        'type' => 'web_push',
-                    ],
-                    NotificationSubscription::factory()->make([
-                        'user_id' => $user->id,
-                        'type' => 'web_push',
-                    ])->toArray()
-                );
-            }
+        $platforms = ['daynews', 'goeventcity', 'downtownguide', 'alphasite'];
 
-            // Create SMS subscription for 30% of users
-            if (rand(1, 100) <= 30) {
-                NotificationSubscription::firstOrCreate(
-                    [
-                        'user_id' => $user->id,
-                        'type' => 'sms',
-                    ],
-                    NotificationSubscription::factory()->make([
-                        'user_id' => $user->id,
-                        'type' => 'sms',
-                    ])->toArray()
-                );
+        foreach ($users as $user) {
+            // Subscribe user to 1-3 platforms
+            $userPlatforms = \Illuminate\Support\Arr::random($platforms, rand(1, 3));
+
+            foreach ($userPlatforms as $platform) {
+                // Check uniqueness
+                if (NotificationSubscription::where('user_id', $user->id)->where('platform', $platform)->exists()) {
+                    continue;
+                }
+
+                NotificationSubscription::factory()->create([
+                    'user_id' => $user->id,
+                    'platform' => $platform,
+                    'phone_number' => rand(0, 1) ? fake()->phoneNumber() : null,
+                    'web_push_endpoint' => rand(0, 1) ? fake()->url() : null,
+                    'community_id' => null, // Simplify for now
+                ]);
             }
         }
 
@@ -56,5 +49,3 @@ final class NotificationSubscriptionSeeder extends Seeder
         $this->command->info("✓ Total notification subscriptions: {$totalSubscriptions}");
     }
 }
-
-

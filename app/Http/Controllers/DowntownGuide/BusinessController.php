@@ -55,11 +55,20 @@ final class BusinessController extends Controller
             (int) $request->input('page', 1)
         );
 
+        // Add active coupons count to businesses for "special offer" badge
+        $businesses->getCollection()->loadCount(['coupons as active_coupons_count' => function ($q) {
+            $q->where('status', 'active')
+                ->where(function ($q2) {
+                    $q2->whereNull('valid_until')
+                        ->orWhere('valid_until', '>=', now());
+                });
+        }]);
+
         // Get featured businesses with active deals/coupons
         $featuredBusinesses = $this->businessService->getFeatured(6);
         $featuredWithDeals = $featuredBusinesses->map(function ($business) {
             $activeCoupons = $this->couponService->getCouponsForBusiness($business, true);
-            $activeDeals = $activeCoupons->filter(fn ($c) => !in_array($c->discount_type, ['percentage', 'fixed']));
+            $activeDeals = $activeCoupons->filter(fn ($c) => ! in_array($c->discount_type, ['percentage', 'fixed']));
 
             return [
                 'business' => $business,
@@ -104,8 +113,8 @@ final class BusinessController extends Controller
     public function show(Request $request, Business $business): Response
     {
         $business = $this->businessService->find($business->id);
-        
-        if (!$business) {
+
+        if (! $business) {
             abort(404);
         }
 
@@ -116,7 +125,7 @@ final class BusinessController extends Controller
 
         // Get active coupons/deals
         $activeCoupons = $this->couponService->getCouponsForBusiness($business, true);
-        $deals = $activeCoupons->filter(fn ($c) => !in_array($c->discount_type, ['percentage', 'fixed']));
+        $deals = $activeCoupons->filter(fn ($c) => ! in_array($c->discount_type, ['percentage', 'fixed']));
 
         // Get upcoming events at this business
         $upcomingEvents = $this->eventService->getByVenue($business, 5);
@@ -186,4 +195,3 @@ final class BusinessController extends Controller
         ];
     }
 }
-

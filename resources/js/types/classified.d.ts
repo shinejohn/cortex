@@ -26,6 +26,8 @@ export interface CustomAttribute {
     value: string;
 }
 
+export type ClassifiedStatus = 'active' | 'sold' | 'expired' | 'draft' | 'removed';
+
 export interface Classified {
     id: number;
     title: string;
@@ -36,12 +38,13 @@ export interface Classified {
     price_type: 'fixed' | 'negotiable' | 'free' | 'contact';
     condition: string;
     condition_display?: string;
-    status: 'active' | 'sold' | 'expired' | 'draft';
+    status: ClassifiedStatus;
     location: string;
     contact_email?: string;
     contact_phone?: string;
     category: Category;
     images: ClassifiedImage[];
+    primary_image?: string;
     // For index view mostly, but can be present
     user: {
         id: number;
@@ -58,6 +61,8 @@ export interface Classified {
     is_owner: boolean;
     is_saved: boolean;
     saves_count: number;
+    can_edit?: boolean;
+    can_delete?: boolean;
 
     regions: Region[];
     specifications: Specification[];
@@ -90,6 +95,12 @@ export interface MyClassifiedsPageProps {
 
 export interface SimilarClassified extends Classified {
     primary_image?: string;
+}
+
+export interface ClassifiedCreatePageProps {
+    categories: Category[];
+    conditions: Condition[];
+    priceTypes: Condition[]; // Re-using Condition as it has value/label
 }
 
 export interface ClassifiedShowPageProps {

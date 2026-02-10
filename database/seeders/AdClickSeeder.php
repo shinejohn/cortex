@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Models\AdClick;
-use App\Models\AdCreative;
-use App\Models\AdPlacement;
 use Illuminate\Database\Seeder;
 
 final class AdClickSeeder extends Seeder
@@ -16,24 +14,23 @@ final class AdClickSeeder extends Seeder
      */
     public function run(): void
     {
-        $creatives = AdCreative::all();
-        $placements = AdPlacement::all();
+        $impressions = \App\Models\AdImpression::with(['creative', 'placement'])->inRandomOrder()->take(100)->get();
 
-        if ($creatives->isEmpty() || $placements->isEmpty()) {
-            $this->command->warn('⚠ No ad creatives or placements found. Run AdCreativeSeeder and AdPlacementSeeder first.');
+        if ($impressions->isEmpty()) {
+            $this->command->warn('⚠ No ad impressions found. Run AdImpressionSeeder first.');
+
             return;
         }
 
-        // Create clicks using factory (10% of impressions)
-        $targetCount = 100;
-        $clicks = AdClick::factory($targetCount)->create([
-            'creative_id' => fn() => $creatives->random()->id,
-            'placement_id' => fn() => $placements->random()->id,
-        ]);
+        $targetCount = $impressions->count();
+        foreach ($impressions as $impression) {
+            AdClick::factory()->create([
+                'impression_id' => $impression->id,
+                'creative_id' => $impression->creative_id,
+            ]);
+        }
 
         $this->command->info("✓ Created {$targetCount} ad clicks");
-        $this->command->info("✓ Total ad clicks: " . AdClick::count());
+        $this->command->info('✓ Total ad clicks: '.AdClick::count());
     }
 }
-
-

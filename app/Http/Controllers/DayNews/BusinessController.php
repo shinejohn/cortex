@@ -49,6 +49,15 @@ final class BusinessController extends Controller
             (int) $request->input('page', 1)
         );
 
+        // Add active coupons count to businesses for "special offer" badge
+        $businesses->getCollection()->loadCount(['coupons as active_coupons_count' => function ($q) {
+            $q->where('status', 'active')
+                ->where(function ($q2) {
+                    $q2->whereNull('valid_until')
+                        ->orWhere('valid_until', '>=', now());
+                });
+        }]);
+
         // Get featured businesses with recent news
         $featuredBusinesses = $this->businessService->getFeatured(6);
         $featuredWithNews = $featuredBusinesses->map(function ($business) {
@@ -86,8 +95,8 @@ final class BusinessController extends Controller
     public function show(Request $request, Business $business): Response
     {
         $business = $this->businessService->find($business->id);
-        
-        if (!$business) {
+
+        if (! $business) {
             abort(404);
         }
 
@@ -100,7 +109,7 @@ final class BusinessController extends Controller
         $organizationArticles = DayNewsPost::published()
             ->whereHas('organizationRelationships', function ($q) use ($business) {
                 $q->where('organization_id', $business->id)
-                  ->where('relatable_type', DayNewsPost::class);
+                    ->where('relatable_type', DayNewsPost::class);
             })
             ->with(['author', 'regions'])
             ->orderBy('published_at', 'desc')
@@ -135,4 +144,3 @@ final class BusinessController extends Controller
         ]);
     }
 }
-

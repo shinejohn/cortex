@@ -59,7 +59,7 @@ export default function PodcastCreate() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        form.post("/local-voices/podcasts", {
+        form.post(route("daynews.local-voices.podcast.store") as any, {
             forceFormData: true,
             preserveScroll: true,
         });
@@ -75,7 +75,7 @@ export default function PodcastCreate() {
                     data={{
                         title: "Create Podcast - Local Voices",
                         description: "Create a new podcast",
-                        url: "/local-voices/podcasts/create",
+                        url: route("daynews.local-voices.podcast.create") as any,
                     }}
                 />
                 <DayNewsHeader auth={auth} />
@@ -184,7 +184,7 @@ export default function PodcastCreate() {
                                 <Headphones className={`mr-2 size-4 ${form.processing ? "animate-spin" : ""}`} />
                                 {form.processing ? "Creating..." : "Create Podcast"}
                             </Button>
-                            <Button type="button" variant="outline" onClick={() => router.visit("/local-voices")} disabled={form.processing}>
+                            <Button type="button" variant="outline" onClick={() => router.visit(route("daynews.local-voices.index") as any)} disabled={form.processing}>
                                 Cancel
                             </Button>
                         </div>

@@ -23,20 +23,18 @@ final class InteractionSeeder extends Seeder
 
         if ($tenants->isEmpty() || $customers->isEmpty() || $users->isEmpty()) {
             $this->command->warn('⚠ No tenants, customers, or users found. Run TenantSeeder, CustomerSeeder, and UserSeeder first.');
+
             return;
         }
 
         // Create interactions using factory
         $targetCount = 500;
         $interactions = Interaction::factory($targetCount)->create([
-            'tenant_id' => fn() => $tenants->random()->id,
-            'customer_id' => fn() => $customers->random()->id,
-            'user_id' => fn() => $users->random()->id,
+            'tenant_id' => fn () => $tenants->random()->id,
+            'customer_id' => fn () => $customers->random()->id,
         ]);
 
         $this->command->info("✓ Created {$targetCount} interactions");
-        $this->command->info("✓ Total interactions: " . Interaction::count());
+        $this->command->info('✓ Total interactions: '.Interaction::count());
     }
 }
-
-

@@ -105,7 +105,7 @@ export default function ThreadDetail() {
 
         setIsSubmitting(true);
         try {
-            await axios.post(`/community/thread/${thread.id}/replies`, {
+            await axios.post(route("community.thread.reply.store", thread.id) as any, {
                 content: replyContent.trim(),
             });
             setReplyContent("");
@@ -130,14 +130,14 @@ export default function ThreadDetail() {
                     {/* Breadcrumb Navigation and Back Button */}
                     <div className="flex items-center space-x-2 text-sm mb-6">
                         <Link
-                            href="/community"
+                            href={route("community.index") as any}
                             className="p-0 h-auto text-muted-foreground hover:text-foreground text-sm underline-offset-4 hover:underline"
                         >
                             Communities
                         </Link>
                         <span className="text-muted-foreground">/</span>
                         <Link
-                            href={`/community/${community.id}`}
+                            href={route("community.show", community.id) as any}
                             className="p-0 h-auto text-muted-foreground hover:text-foreground text-sm underline-offset-4 hover:underline"
                         >
                             {community.name}
@@ -240,13 +240,13 @@ export default function ThreadDetail() {
                                     {auth.user ? (
                                         <Button
                                             disabled={thread.isLocked}
-                                            onClick={() => router.visit(`/community/${community.id}/thread/${thread.id}#reply-form`)}
+                                            onClick={() => router.visit((route('community.thread.show', { id: community.id, threadId: thread.id }) as string) + '#reply-form')}
                                         >
                                             <MessageCircleIcon className="h-4 w-4 mr-2" />
                                             Reply to Thread
                                         </Button>
                                     ) : (
-                                        <Link href="/login">
+                                        <Link href={route("login") as any}>
                                             <Button variant="outline">Sign in to Reply</Button>
                                         </Link>
                                     )}
@@ -288,7 +288,7 @@ export default function ThreadDetail() {
                                         <h4 className="mt-2 text-lg font-medium">No replies yet</h4>
                                         <p className="mt-1 text-sm">Be the first to share your thoughts on this thread.</p>
                                         {!auth.user && (
-                                            <Link href="/login">
+                                            <Link href={route("login") as any}>
                                                 <Button variant="outline" className="mt-4">
                                                     Sign in to Reply
                                                 </Button>
@@ -315,7 +315,7 @@ export default function ThreadDetail() {
                             <CardContent className="px-6 py-4">
                                 <div className="text-center py-8 text-muted-foreground">
                                     <p className="mb-2">Related threads will appear here based on tags and content similarity.</p>
-                                    <Link href={`/community/${community.id}`}>
+                                    <Link href={route("community.show", community.id) as any}>
                                         <Button variant="outline">View All {community.name} Threads</Button>
                                     </Link>
                                 </div>

@@ -17,20 +17,12 @@ final class PlannedEvent extends Model
     protected $fillable = [
         'event_id',
         'user_id',
+        'type',
         'planned_at',
         'reminder_sent',
         'reminder_sent_at',
         'notes',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'planned_at' => 'datetime',
-            'reminder_sent' => 'boolean',
-            'reminder_sent_at' => 'datetime',
-        ];
-    }
 
     public function event(): BelongsTo
     {
@@ -64,5 +56,13 @@ final class PlannedEvent extends Model
                 ]);
             });
     }
-}
 
+    protected function casts(): array
+    {
+        return [
+            'planned_at' => 'datetime',
+            'reminder_sent' => 'boolean',
+            'reminder_sent_at' => 'datetime',
+        ];
+    }
+}

@@ -324,7 +324,7 @@ final class VenueController extends Controller
             'name' => $venue->name,
             'description' => $venue->description,
             'image' => $venue->images[0] ?? null,
-            'url' => "/venues/{$venue->id}",
+            'url' => route('venues.show', $venue->id),
             'address' => $venue->address,
             'neighborhood' => $venue->neighborhood,
             'latitude' => $venue->latitude,
@@ -486,6 +486,26 @@ final class VenueController extends Controller
 
         return redirect()->route('venues')
             ->with('success', 'Venue deleted successfully!');
+    }
+
+    /**
+     * Display the venue management page.
+     */
+    public function management(Request $request): Response
+    {
+        $user = $request->user();
+        $currentWorkspace = $user->currentWorkspace;
+
+        $venues = Venue::query()
+            ->when($currentWorkspace, fn ($q) => $q->where('workspace_id', $currentWorkspace->id))
+            ->where('created_by', $user->id)
+            ->with(['approvedReviews' => fn ($q) => $q->latest()->limit(3)])
+            ->latest()
+            ->paginate(12);
+
+        return Inertia::render('event-city/venues/management', [
+            'venues' => $venues,
+        ]);
     }
 
     /**

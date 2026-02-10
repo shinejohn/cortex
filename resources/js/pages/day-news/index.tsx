@@ -2,19 +2,16 @@ import { Newspaper } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
-import { SEO } from "@/components/common/seo";
 import Advertisement from "@/components/day-news/advertisement";
-import DayNewsHeader from "@/components/day-news/day-news-header";
-import LocationPrompt from "@/components/day-news/location-prompt";
-import NewsArticleCard from "@/components/day-news/news-article-card";
 import NewspaperMasthead from "@/components/day-news/newspaper-masthead";
 import AnnouncementsSection from "@/components/day-news/announcements-section";
 import MarketplaceSection from "@/components/day-news/marketplace-section";
 import CouponsPreview from "@/components/day-news/coupons-preview";
 import EventsPreview from "@/components/day-news/events-preview";
 import ScrollableNewspaper from "@/components/day-news/scrollable-newspaper";
-import { LocationProvider, useLocation } from "@/contexts/location-context";
+import { useLocation } from "@/contexts/location-context";
 import type { Auth } from "@/types";
+import DayNewsLayout from "@/layouts/day-news-layout";
 
 interface Region {
     id: string;
@@ -149,7 +146,7 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
     return (
         <>
             {/* Header / Masthead */}
-            <div className="bg-white px-4 pt-8 text-center sm:px-6 lg:px-8">
+            <div className="bg-white text-center">
                 <div className="mx-auto max-w-7xl">
                     <div className="mb-2 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-community-green">
                         <div className="flex items-center">
@@ -174,7 +171,7 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
 
             {/* Banner Ad */}
             {advertisements.banner.length > 0 && (
-                <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+                <div className="py-4">
                     {advertisements.banner.map((ad) => (
                         <Advertisement key={ad.id} ad={ad} onImpression={handleAdImpression} onClick={handleAdClick} />
                     ))}
@@ -182,7 +179,7 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
             )}
 
             {/* Main content */}
-            <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            <div className="py-8">
                 {/* Spec View Toggle */}
                 <div className="mb-6 flex items-center justify-between border-b pb-4">
                     <h2 className="font-serif text-3xl font-bold">Headlines</h2>
@@ -215,6 +212,8 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
                     <>
                         {/* Featured article */}
                         <div className="mb-8">
+                            {/* NewsArticleCard import was missing in previous snippet but used, assuming it's available via auto-import or should be added */}
+                            {/* Adding NewsArticleCard import below */}
                             <NewsArticleCard article={featuredArticle} featured />
                         </div>
 
@@ -254,7 +253,7 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
                             <section>
                                 <div className="mb-6 flex items-center justify-between border-b-2 border-border pb-2">
                                     <h2 className="font-serif text-3xl font-bold">Local Events</h2>
-                                    <Link href="/events" className="text-sm font-bold text-news-primary uppercase tracking-wider hover:underline">See Calendar</Link>
+                                    <Link href={route("daynews.events.index") as any} className="text-sm font-bold text-news-primary uppercase tracking-wider hover:underline">See Calendar</Link>
                                 </div>
                                 <EventsPreview events={events} />
                             </section>
@@ -263,7 +262,7 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
                             <section>
                                 <div className="mb-6 flex items-center justify-between border-b-2 border-border pb-2">
                                     <h2 className="font-serif text-3xl font-bold">Community Deals</h2>
-                                    <Link href="/coupons" className="text-sm font-bold text-news-primary uppercase tracking-wider hover:underline">View All Coupons</Link>
+                                    <Link href={route("daynews.coupons.index") as any} className="text-sm font-bold text-news-primary uppercase tracking-wider hover:underline">View All Coupons</Link>
                                 </div>
                                 <CouponsPreview coupons={coupons} />
                             </section>
@@ -297,13 +296,8 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
 
                                 {/* Sidebar with Announcements & Marketplace & Legal Notices */}
                                 <div className="space-y-8">
-                                    {/* Announcements Section (from SPEC) */}
                                     <AnnouncementsSection announcements={announcements} />
-
-                                    {/* Marketplace Section (from SPEC) */}
                                     <MarketplaceSection classifieds={classifieds} />
-
-                                    {/* Legal Notices section */}
                                     {legalNotices.length > 0 && (
                                         <div className="rounded-md border border-gray-200 bg-white p-3 shadow-sm">
                                             <h3 className="mb-3 font-display text-sm font-bold uppercase tracking-wider text-news-primary">Legal Notices</h3>
@@ -311,7 +305,7 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
                                                 {legalNotices.map((notice) => (
                                                     <Link
                                                         key={notice.id}
-                                                        href={`/legal-notices/${notice.id}`}
+                                                        href={route("daynews.legal-notices.show", notice.id) as any}
                                                         className="block border-b border-gray-100 pb-2 text-xs hover:text-news-primary"
                                                     >
                                                         <span className="font-semibold text-gray-500">{notice.publish_date}: </span>
@@ -319,7 +313,7 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
                                                     </Link>
                                                 ))}
                                             </div>
-                                            <Link href="/legal-notices" className="mt-2 block text-[10px] font-bold text-news-primary uppercase">View All</Link>
+                                            <Link href={route("daynews.legal-notices.index") as any} className="mt-2 block text-[10px] font-bold text-news-primary uppercase">View All</Link>
                                         </div>
                                     )}
 
@@ -351,33 +345,30 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
     );
 }
 
+// Add missing NewsArticleCard import
+import NewsArticleCard from "@/components/day-news/news-article-card";
+
 export default function DayNewsIndex({ auth, news, hasRegion, advertisements, announcements, legalNotices, classifieds, coupons, events }: DayNewsIndexProps) {
     return (
-        <LocationProvider>
-            <div className="min-h-screen bg-background">
-                <SEO
-                    type="website"
-                    site="day-news"
-                    data={{
-                        title: "Your Daily Source for Local Stories",
-                        description:
-                            "Stay informed with the latest local news, stories, and updates from your community. Day News brings you relevant, timely coverage.",
-                        url: "/",
-                    }}
-                />
-                <DayNewsHeader auth={auth} />
-                <LocationPrompt />
-                <DayNewsContent
-                    news={news}
-                    hasRegion={hasRegion}
-                    advertisements={advertisements}
-                    announcements={announcements}
-                    legalNotices={legalNotices}
-                    classifieds={classifieds}
-                    coupons={coupons}
-                    events={events}
-                />
-            </div>
-        </LocationProvider>
+        <DayNewsLayout
+            auth={auth}
+            showLocationPrompt
+            seo={{
+                title: "Your Daily Source for Local Stories",
+                description: "Stay informed with the latest local news, stories, and updates from your community. Day News brings you relevant, timely coverage.",
+                url: "/",
+            }}
+        >
+            <DayNewsContent
+                news={news}
+                hasRegion={hasRegion}
+                advertisements={advertisements}
+                announcements={announcements}
+                legalNotices={legalNotices}
+                classifieds={classifieds}
+                coupons={coupons}
+                events={events}
+            />
+        </DayNewsLayout>
     );
 }

@@ -24,21 +24,21 @@ final class PhotoSeeder extends Seeder
 
         if ($users->isEmpty() || $workspaces->isEmpty()) {
             $this->command->warn('⚠ No users or workspaces found. Run UserSeeder and WorkspaceSeeder first.');
+
             return;
         }
 
         // Create photo albums first
         $albums = PhotoAlbum::factory(50)->create([
-            'user_id' => fn() => $users->random()->id,
-            'workspace_id' => fn() => $workspaces->random()->id,
+            'user_id' => fn () => $users->random()->id,
+            'workspace_id' => fn () => $workspaces->random()->id,
         ]);
 
         // Create photos
         $targetCount = 500;
         $photos = Photo::factory($targetCount)->create([
-            'user_id' => fn() => $users->random()->id,
-            'workspace_id' => fn() => $workspaces->random()->id,
-            'photo_album_id' => fn() => $albums->random()->id,
+            'user_id' => fn () => $users->random()->id,
+            'album_id' => fn () => $albums->random()->id,
         ]);
 
         // Attach photos to regions
@@ -49,8 +49,6 @@ final class PhotoSeeder extends Seeder
         }
 
         $this->command->info("✓ Created {$targetCount} photos");
-        $this->command->info("✓ Total photos: " . Photo::count());
+        $this->command->info('✓ Total photos: '.Photo::count());
     }
 }
-
-

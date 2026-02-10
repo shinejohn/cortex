@@ -18,6 +18,7 @@ return new class extends Migration
             $table->uuid('user_id');
             $table->uuid('business_id')->nullable();
             $table->string('title');
+            $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->enum('discount_type', ['percentage', 'fixed_amount', 'buy_one_get_one', 'free_item'])->default('percentage');
             $table->decimal('discount_value', 10, 2)->nullable(); // Percentage or fixed amount
@@ -34,6 +35,7 @@ return new class extends Migration
             $table->unsignedInteger('views_count')->default(0);
             $table->unsignedInteger('clicks_count')->default(0);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index(['status', 'start_date', 'end_date']);
             $table->index(['business_id', 'status']);
@@ -74,4 +76,3 @@ return new class extends Migration
         Schema::dropIfExists('coupons');
     }
 };
-

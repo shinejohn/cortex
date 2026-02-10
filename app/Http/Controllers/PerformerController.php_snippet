@@ -1,0 +1,65 @@
+
+    public function discovery(Request $request): Response
+    {
+        // Build the performers query for public directory
+        $query = Performer::active()
+            ->verified()
+            ->with(['upcomingShows' => fn ($q) => $q->where('date', '>=', now())->orderBy('date', 'asc')->limit(1)]);
+
+        // Apply search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('bio', 'like', "%{$search}%")
+                    ->orWhere('home_city', 'like', "%{$search}%")
+                    ->orWhereJsonContains('genres', $search);
+            });
+        }
+
+        // Apply genre filter
+        if ($request->filled('genre')) {
+            $query->whereJsonContains('genres', $request->genre);
+        }
+
+        // Apply location filter
+        if ($request->filled('location')) {
+            $query->where('home_city', 'like', "%{$request->location}%");
+        }
+
+        // Apply availability filter
+        if ($request->filled('availability')) {
+            // Simplified availability logic for demo
+            if ($request->availability === 'tonight') {
+                $query->where('available_for_booking', true);
+            }
+        }
+
+        $performers = $query->paginate(12)->withQueryString()
+            ->through(function ($performer) {
+                 return [
+                    'id' => $performer->id,
+                    'name' => $performer->name,
+                    'image' => $performer->profile_image ?? 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop',
+                    'category' => $performer->genres[0] ?? 'Performer', // Simplified
+                    'genres' => $performer->genres ?? [],
+                    'location' => $performer->home_city,
+                    'price_range' => $performer->base_price ? '$'.number_format($performer->base_price) : 'Contact for pricing',
+                    'rating' => (float) ($performer->average_rating ?? 0),
+                    'total_reviews' => $performer->total_reviews ?? 0,
+                    'upcoming_shows' => $performer->upcomingShows->count(),
+                    'is_touring' => $performer->is_touring_now ?? false,
+                ];
+            });
+
+        // Get current region for ads
+        $region = $request->attributes->get('detected_region');
+        
+        return Inertia::render('event-city/performers/discovery', [
+            'performers' => $performers, // Paginated object, frontend needs to handle it or we pass .data if checks are loose
+            'filters' => $request->only(['search', 'genre', 'location', 'price_range', 'availability']),
+            'auth' => [
+                'user' => $request->user(),
+            ],
+        ]);
+    }

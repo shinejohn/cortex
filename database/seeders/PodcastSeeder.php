@@ -23,14 +23,14 @@ final class PodcastSeeder extends Seeder
 
         if ($creatorProfiles->isEmpty() || $workspaces->isEmpty()) {
             $this->command->warn('⚠ No creator profiles or workspaces found. Run CreatorProfileSeeder and WorkspaceSeeder first.');
+
             return;
         }
 
         // Create podcasts using factory
         $targetCount = 30;
         $podcasts = Podcast::factory($targetCount)->create([
-            'creator_profile_id' => fn() => $creatorProfiles->random()->id,
-            'workspace_id' => fn() => $workspaces->random()->id,
+            'creator_profile_id' => fn () => $creatorProfiles->random()->id,
         ]);
 
         // Attach podcasts to regions
@@ -41,8 +41,6 @@ final class PodcastSeeder extends Seeder
         }
 
         $this->command->info("✓ Created {$targetCount} podcasts");
-        $this->command->info("✓ Total podcasts: " . Podcast::count());
+        $this->command->info('✓ Total podcasts: '.Podcast::count());
     }
 }
-
-

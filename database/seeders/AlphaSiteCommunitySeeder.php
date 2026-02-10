@@ -19,18 +19,15 @@ final class AlphaSiteCommunitySeeder extends Seeder
 
         if ($businesses->isEmpty()) {
             $this->command->warn('⚠ No businesses found. Run BusinessSeeder first.');
+
             return;
         }
 
         // Create communities using factory
         $targetCount = 20;
-        $communities = AlphaSiteCommunity::factory($targetCount)->create([
-            'business_id' => fn() => $businesses->random()->id,
-        ]);
+        $communities = AlphaSiteCommunity::factory($targetCount)->create();
 
         $this->command->info("✓ Created {$targetCount} AlphaSite communities");
-        $this->command->info("✓ Total AlphaSite communities: " . AlphaSiteCommunity::count());
+        $this->command->info('✓ Total AlphaSite communities: '.AlphaSiteCommunity::count());
     }
 }
-
-

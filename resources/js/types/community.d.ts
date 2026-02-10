@@ -74,6 +74,7 @@ export interface CommunityFilters {
     readonly threadType: string;
     readonly tag: string;
     readonly author: string;
+    readonly search?: string;
     readonly dateRange: string;
     readonly sortBy: "recent" | "popular" | "unanswered";
 }

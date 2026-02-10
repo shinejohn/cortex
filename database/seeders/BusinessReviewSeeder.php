@@ -21,6 +21,7 @@ final class BusinessReviewSeeder extends Seeder
 
         if ($smbBusinesses->isEmpty() || $customers->isEmpty()) {
             $this->command->warn('⚠ No SMB businesses or customers found. Run SmbBusinessSeeder and CustomerSeeder first.');
+
             return;
         }
 
@@ -33,11 +34,11 @@ final class BusinessReviewSeeder extends Seeder
                 BusinessReview::firstOrCreate(
                     [
                         'smb_business_id' => $business->id,
-                        'customer_id' => $customer->id,
+                        'author_name' => $customer->full_name,
                     ],
                     BusinessReview::factory()->make([
                         'smb_business_id' => $business->id,
-                        'customer_id' => $customer->id,
+                        'author_name' => $customer->full_name,
                     ])->toArray()
                 );
             }
@@ -47,5 +48,3 @@ final class BusinessReviewSeeder extends Seeder
         $this->command->info("✓ Total business reviews: {$totalReviews}");
     }
 }
-
-

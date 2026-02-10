@@ -11,6 +11,7 @@ use App\Services\LocationService;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Throwable;
 use Tighten\Ziggy\Ziggy;
 
 final class HandleInertiaRequests extends Middleware
@@ -73,6 +74,7 @@ final class HandleInertiaRequests extends Middleware
                 'ga4Id' => config('analytics.ga4.'.config('app.current_domain', 'event-city')),
             ],
             'location' => $this->getLocationData($request),
+            'siteLocation' => $this->getSiteLocationData($request),
             'crossDomainAuth' => [
                 'urls' => $request->session()->get('cross_domain_auth_urls', []),
                 'logoutUrls' => $request->session()->get('cross_domain_logout_urls', []),
@@ -135,6 +137,62 @@ final class HandleInertiaRequests extends Middleware
         return [
             'notifications' => $notifications->toArray(),
             'unread_count' => $unreadCount,
+        ];
+    }
+
+    /**
+     * Get site-level location data (cityName/stateName/address) from the detected region hierarchy.
+     *
+     * @return array{cityName: string|null, stateName: string|null, address: string|null}
+     */
+    private function getSiteLocationData(Request $request): array
+    {
+        $region = $request->attributes->get('detected_region');
+
+        if (! $region) {
+            return ['cityName' => null, 'stateName' => null, 'address' => null];
+        }
+
+        // The detected region is typically a "city" type region.
+        // Walk up the parent hierarchy to find the state.
+        $cityName = $region->type === 'city' ? $region->name : null;
+        $stateName = null;
+
+        $current = $region->parent;
+        while ($current) {
+            if ($current->type === 'city' && ! $cityName) {
+                $cityName = $current->name;
+            }
+            if ($current->type === 'state') {
+                $stateName = $current->name;
+                break;
+            }
+            $current = $current->parent;
+        }
+
+        // Try to get the tenant address for the current domain
+        $address = null;
+        try {
+            $tenant = \App\Models\Tenant::where('domain', config('app.current_domain'))
+                ->orWhere('subdomain', config('app.current_domain'))
+                ->first();
+
+            if ($tenant && $tenant->address) {
+                $parts = array_filter([
+                    $tenant->address,
+                    $tenant->city,
+                    $tenant->state ? ($tenant->state.' '.($tenant->postal_code ?? '')) : null,
+                ]);
+                $address = implode(', ', $parts);
+            }
+        } catch (Throwable $e) {
+            // Tenant lookup failed, continue without address
+        }
+
+        return [
+            'cityName' => $cityName,
+            'stateName' => $stateName,
+            'address' => $address,
         ];
     }
 

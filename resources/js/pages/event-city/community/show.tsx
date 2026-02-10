@@ -79,11 +79,11 @@ export default function CommunityShow() {
     };
 
     const handleStartThread = (): void => {
-        router.visit(`/community/${community.id}/new-thread`);
+        router.visit(route("community.thread.create", community.id) as any);
     };
 
-    const handleViewThread = (threadId: string): void => {
-        router.visit(`/community/${community.id}/thread/${threadId}`);
+    const handleViewThread = (threadId: number | string): void => {
+        router.visit(route("community.thread.show", { id: community.id, threadId }) as any);
     };
 
     const getUniqueAuthors = (): ThreadAuthor[] => {
@@ -119,7 +119,7 @@ export default function CommunityShow() {
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                         <div className="flex items-center mb-4">
                             <Link
-                                href="/community"
+                                href={route("community.index") as any}
                                 className="text-muted-foreground hover:text-foreground p-0 text-sm underline-offset-4 hover:underline"
                             >
                                 <ArrowLeftIcon className="h-4 w-4 mr-1" />

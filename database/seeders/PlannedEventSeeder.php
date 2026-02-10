@@ -6,7 +6,6 @@ namespace Database\Seeders;
 
 use App\Models\PlannedEvent;
 use App\Models\User;
-use App\Models\Workspace;
 use Illuminate\Database\Seeder;
 
 final class PlannedEventSeeder extends Seeder
@@ -17,23 +16,22 @@ final class PlannedEventSeeder extends Seeder
     public function run(): void
     {
         $users = User::all();
-        $workspaces = Workspace::all();
+        $events = \App\Models\Event::all();
 
-        if ($users->isEmpty() || $workspaces->isEmpty()) {
-            $this->command->warn('⚠ No users or workspaces found. Run UserSeeder and WorkspaceSeeder first.');
+        if ($users->isEmpty() || $events->isEmpty()) {
+            $this->command->warn('⚠ No users or events found. Run UserSeeder and EventSeeder first.');
+
             return;
         }
 
         // Create planned events using factory
         $targetCount = 50;
         $plannedEvents = PlannedEvent::factory($targetCount)->create([
-            'user_id' => fn() => $users->random()->id,
-            'workspace_id' => fn() => $workspaces->random()->id,
+            'user_id' => fn () => $users->random()->id,
+            'event_id' => fn () => $events->random()->id,
         ]);
 
         $this->command->info("✓ Created {$targetCount} planned events");
-        $this->command->info("✓ Total planned events: " . PlannedEvent::count());
+        $this->command->info('✓ Total planned events: '.PlannedEvent::count());
     }
 }
-
-

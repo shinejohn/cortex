@@ -38,6 +38,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { LocationProvider, useLocation } from "@/contexts/location-context";
 import { cn } from "@/lib/utils";
 import { type Auth, BreadcrumbItem, SharedData } from "@/types";
+import { type NotificationData, type NotificationSummary } from "@/types/notifications";
 import AppLogo from "../app-logo";
 import AppLogoIcon from "../app-logo-icon";
 import { CartDropdown } from "../CartDropdown";
@@ -61,56 +62,56 @@ interface NavItem {
 const getMobileNavItems = (): NavItem[] => [
     {
         title: "Events",
-        href: route("events"),
+        href: route("events") as any,
         icon: <Calendar className="size-4" />,
     },
     {
         title: "Venues",
-        href: "/venues",
+        href: route("venues") as any,
         icon: <MapPin className="size-4" />,
     },
     {
         title: "Performers",
-        href: route("performers"),
+        href: route("performers") as any,
         icon: <Music className="size-4" />,
     },
     {
         title: "Communities",
-        href: "/community",
+        href: route("community.index") as any,
         icon: <Users className="size-4" />,
         highlight: true,
     },
     {
         title: "Calendars",
-        href: "/calendars",
+        href: route("calendars.index") as any,
         icon: <Calendar className="size-4" />,
     },
     {
         title: "Social",
-        href: "/social",
+        href: route("social.index") as any,
         icon: <Users className="size-4" />,
         badge: { text: "NEW", variant: "secondary" },
     },
     {
         title: "Tickets",
-        href: "/tickets",
+        href: route("tickets.index") as any,
         icon: <Ticket className="size-4" />,
     },
     {
         title: "Book It",
-        href: "/book",
+        href: route("bookings.index") as any,
         icon: <BookOpen className="size-4" />,
         badge: { text: "NEW", variant: "secondary" },
     },
     {
         title: "Shop",
-        href: "/shop",
+        href: route("shop.discover") as any,
         icon: <ShoppingBag className="size-4" />,
         badge: { text: "NEW", variant: "secondary" },
     },
     {
         title: "Advertise",
-        href: "/advertise",
+        href: route("advertise") as any,
         icon: <Megaphone className="size-4" />,
     },
 ];
@@ -306,18 +307,9 @@ function SearchBar({ className }: SearchBarProps) {
     );
 }
 
-interface Notification {
-    type: string;
-    read: boolean;
-}
-
-interface NotificationsData {
-    notifications?: Notification[];
-}
-
-function MessagesButton({ notifications }: { notifications?: NotificationsData }) {
-    const messageNotifications = notifications?.notifications?.filter((n: Notification) => n.type === "message") || [];
-    const unreadMessageCount = messageNotifications.filter((n: Notification) => !n.read).length;
+function MessagesButton({ notifications }: { notifications?: NotificationSummary }) {
+    const messageNotifications = notifications?.notifications?.filter((n: NotificationData) => n.type === "message") || [];
+    const unreadMessageCount = messageNotifications.filter((n: NotificationData) => !n.read).length;
 
     return (
         <NotificationDropdown
@@ -326,8 +318,22 @@ function MessagesButton({ notifications }: { notifications?: NotificationsData }
             filterType="message"
             icon={<MessageSquare className="size-5" />}
             title="Messages"
-            viewAllRoute="/social/messages"
+            viewAllRoute={route("social.messages.index") as any}
             emptyMessage="No new messages"
+        />
+    );
+}
+
+function NotificationsButton({ notifications }: { notifications?: NotificationSummary }) {
+    return (
+        <NotificationDropdown
+            initialNotifications={notifications?.notifications}
+            initialUnreadCount={notifications?.unread_count}
+            filterType="all"
+            icon={<Bell className="size-5" />}
+            title="Notifications"
+            viewAllRoute={route("notifications.index") as any}
+            emptyMessage="No new notifications"
         />
     );
 }
@@ -348,7 +354,7 @@ function MobileNavigation({ auth }: MobileNavigationProps) {
             <SheetContent side="left" className="w-80">
                 <SheetHeader>
                     <SheetTitle>
-                        <Link href={route("home")}>
+                        <Link href={route("home") as any}>
                             <AppLogo />
                         </Link>
                     </SheetTitle>
@@ -409,14 +415,14 @@ function MobileNavigation({ auth }: MobileNavigationProps) {
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
-                            <Button variant="ghost" onClick={() => navigate("/notifications")} className="w-full justify-start gap-3">
+                            <Button variant="ghost" onClick={() => navigate(route("notifications.index") as any)} className="w-full justify-start gap-3">
                                 <Bell className="size-4" />
                                 Notifications
                                 {(sharedNotifications?.unread_count || 0) > 0 && (
                                     <Badge className="ml-auto">{sharedNotifications?.unread_count}</Badge>
                                 )}
                             </Button>
-                            <Button variant="ghost" onClick={() => navigate("/social/messages")} className="w-full justify-start gap-3">
+                            <Button variant="ghost" onClick={() => navigate(route("social.messages.index") as any)} className="w-full justify-start gap-3">
                                 <MessageSquare className="size-4" />
                                 Messages
                                 {(sharedNotifications?.notifications?.filter((n) => n.type === "message" && !n.read).length || 0) > 0 && (
@@ -433,7 +439,7 @@ function MobileNavigation({ auth }: MobileNavigationProps) {
                         {auth?.user ? (
                             <Button
                                 variant="ghost"
-                                onClick={() => navigate("/logout")}
+                                onClick={() => navigate(route("logout") as any)}
                                 className="w-full justify-start gap-3 text-destructive hover:text-destructive"
                             >
                                 <LogOut className="size-4" />
@@ -441,10 +447,10 @@ function MobileNavigation({ auth }: MobileNavigationProps) {
                             </Button>
                         ) : (
                             <div className="space-y-2 px-2">
-                                <Button onClick={() => navigate("/signup")} className="w-full">
+                                <Button onClick={() => navigate(route("register") as any)} className="w-full">
                                     Sign Up
                                 </Button>
-                                <Button variant="outline" onClick={() => navigate("/login")} className="w-full">
+                                <Button variant="outline" onClick={() => navigate(route("login") as any)} className="w-full">
                                     Log In
                                 </Button>
                             </div>
@@ -486,7 +492,7 @@ function HeaderContent({ auth }: HeaderProps) {
                     <div className="flex items-center justify-between h-16">
                         {/* Left Section */}
                         <div className="flex items-center gap-6">
-                            <Link href={route("home")}>
+                            <Link href={route("home") as any}>
                                 <AppLogo />
                             </Link>
                             <LocationSelector />
@@ -595,7 +601,7 @@ function HeaderContent({ auth }: HeaderProps) {
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             ) : (
-                                <Button size="sm" onClick={() => navigate("/login")}>
+                                <Button size="sm" onClick={() => navigate(route("login") as any)}>
                                     Login
                                 </Button>
                             )}
