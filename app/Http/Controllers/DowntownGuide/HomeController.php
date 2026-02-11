@@ -58,7 +58,7 @@ final class HomeController extends Controller
                         'name' => $coupon->business?->name ?? 'Unknown Business',
                         'slug' => $coupon->business?->slug ?? '',
                     ],
-                    'expires_at' => $coupon->end_date?->format('M d, Y'),
+                    'expires_at' => $coupon->valid_until?->format('M d, Y'),
                 ];
             });
 

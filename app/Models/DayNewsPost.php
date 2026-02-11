@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 final class DayNewsPost extends Model
 {
     /** @use HasFactory<\Database\Factories\DayNewsPostFactory> */
-    use HasFactory, HasReviewsAndRatings, \App\Traits\RelatableToOrganizations;
+    use \App\Traits\RelatableToOrganizations, HasFactory, HasReviewsAndRatings;
 
     protected $fillable = [
         'workspace_id',
@@ -156,7 +156,7 @@ final class DayNewsPost extends Model
         return $query->published();
     }
 
-    public function scopeForRegion($query, int $regionId)
+    public function scopeForRegion($query, string $regionId)
     {
         return $query->whereHas('regions', function ($q) use ($regionId) {
             $q->where('region_id', $regionId);
@@ -212,47 +212,9 @@ final class DayNewsPost extends Model
         return $this->attributes['featured_image'] ?? null;
     }
 
-    protected static function booted(): void
-    {
-        self::creating(function (DayNewsPost $post): void {
-            if (empty($post->slug)) {
-                $post->slug = static::generateUniqueSlug($post->title);
-            }
-        });
-    }
-
-    protected static function generateUniqueSlug(string $title): string
-    {
-        $slug = Str::slug($title);
-        $originalSlug = $slug;
-        $count = 1;
-
-        while (self::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $count;
-            $count++;
-        }
-
-        return $slug;
-    }
-
-    protected function casts(): array
-    {
-        return [
-            'published_at' => 'datetime',
-            'expires_at' => 'datetime',
-            'metadata' => 'array',
-            'view_count' => 'integer',
-            'likes_count' => 'integer',
-            'shares_count' => 'integer',
-            'comments_count' => 'integer',
-            'engagement_score' => 'decimal:2',
-            'engagement_calculated_at' => 'datetime',
-        ];
-    }
-
     /**
      * Calculate and update engagement score
-     * 
+     *
      * Formula: Weighted combination of views, likes, shares, comments
      * Weights: views=1, likes=3, shares=5, comments=4
      */
@@ -312,6 +274,7 @@ final class DayNewsPost extends Model
                 ->orWhere('engagement_calculated_at', '<', now()->subHours($hoursOld));
         });
     }
+
     /**
      * Get story threads this post belongs to
      */
@@ -321,5 +284,43 @@ final class DayNewsPost extends Model
         // Assuming this post corresponds to 'news_article_id' in the pivot
         return $this->belongsToMany(StoryThread::class, 'story_thread_articles', 'news_article_id', 'story_thread_id')
             ->withPivot(['sequence_number', 'narrative_role', 'contribution_summary']);
+    }
+
+    protected static function booted(): void
+    {
+        self::creating(function (DayNewsPost $post): void {
+            if (empty($post->slug)) {
+                $post->slug = static::generateUniqueSlug($post->title);
+            }
+        });
+    }
+
+    protected static function generateUniqueSlug(string $title): string
+    {
+        $slug = Str::slug($title);
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (self::where('slug', $slug)->exists()) {
+            $slug = $originalSlug.'-'.$count;
+            $count++;
+        }
+
+        return $slug;
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'published_at' => 'datetime',
+            'expires_at' => 'datetime',
+            'metadata' => 'array',
+            'view_count' => 'integer',
+            'likes_count' => 'integer',
+            'shares_count' => 'integer',
+            'comments_count' => 'integer',
+            'engagement_score' => 'decimal:2',
+            'engagement_calculated_at' => 'datetime',
+        ];
     }
 }

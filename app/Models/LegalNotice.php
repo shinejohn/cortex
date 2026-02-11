@@ -60,7 +60,7 @@ final class LegalNotice extends Model
         return $query->where('type', $type);
     }
 
-    public function scopeForRegion($query, int $regionId)
+    public function scopeForRegion($query, string $regionId)
     {
         return $query->whereHas('regions', function ($q) use ($regionId) {
             $q->where('region_id', $regionId);
@@ -93,4 +93,3 @@ final class LegalNotice extends Model
         ];
     }
 }
-

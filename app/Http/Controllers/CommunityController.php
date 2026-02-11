@@ -66,6 +66,10 @@ final class CommunityController extends Controller
      */
     public function show(Request $request, string $id): Response
     {
+        if (! \Illuminate\Support\Str::isUuid($id)) {
+            abort(404);
+        }
+
         $community = Community::where('id', $id)
             ->active()
             ->withCount(['activeMembers', 'threads'])
@@ -406,7 +410,7 @@ final class CommunityController extends Controller
                     'id' => 1,
                     'image' => 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
                     'title' => 'Community Events',
-                    'eventUrl' => route('events.index'),
+                    'eventUrl' => route('events'),
                     'stats' => [
                         'events' => $totalEvents,
                         'venues' => $totalVenues,

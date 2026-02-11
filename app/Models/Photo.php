@@ -10,12 +10,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Storage;
 
 final class Photo extends Model
 {
-    use HasFactory, HasUuid, HasReviewsAndRatings;
+    use HasFactory, HasReviewsAndRatings, HasUuid;
 
     protected $fillable = [
         'user_id',
@@ -68,9 +67,10 @@ final class Photo extends Model
 
     public function getThumbnailUrlAttribute(): ?string
     {
-        if (!$this->thumbnail_path) {
+        if (! $this->thumbnail_path) {
             return $this->image_url;
         }
+
         return Storage::disk($this->image_disk)->url($this->thumbnail_path);
     }
 
@@ -85,7 +85,7 @@ final class Photo extends Model
         return $query->where('category', $category);
     }
 
-    public function scopeForRegion($query, int $regionId)
+    public function scopeForRegion($query, string $regionId)
     {
         return $query->whereHas('regions', function ($q) use ($regionId) {
             $q->where('region_id', $regionId);
@@ -126,4 +126,3 @@ final class Photo extends Model
         ];
     }
 }
-

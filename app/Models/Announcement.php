@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 final class Announcement extends Model
 {
-    use HasFactory, HasUuid, HasReviewsAndRatings, \App\Traits\RelatableToOrganizations;
+    use \App\Traits\RelatableToOrganizations, HasFactory, HasReviewsAndRatings, HasUuid;
 
     protected $fillable = [
         'user_id',
@@ -78,7 +78,7 @@ final class Announcement extends Model
         });
     }
 
-    public function scopeForRegion($query, int $regionId)
+    public function scopeForRegion($query, string $regionId)
     {
         return $query->whereHas('regions', function ($q) use ($regionId) {
             $q->where('region_id', $regionId);
@@ -112,4 +112,3 @@ final class Announcement extends Model
         ];
     }
 }
-
