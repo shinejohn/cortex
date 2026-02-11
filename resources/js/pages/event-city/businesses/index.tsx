@@ -66,7 +66,7 @@ interface EventCityBusinessesIndexProps {
 
 export default function EventCityBusinessesIndex({ businesses, featuredBusinesses, filters, sort }: EventCityBusinessesIndexProps) {
     const [search, setSearch] = useState(filters.search || "");
-    const [category, setCategory] = useState(filters.category || "");
+    const [category, setCategory] = useState(filters.category || "all");
     const [verifiedOnly, setVerifiedOnly] = useState(filters.verified_only || false);
 
     const handleSearch = () => {
@@ -74,7 +74,7 @@ export default function EventCityBusinessesIndex({ businesses, featuredBusinesse
             route("event-city.businesses.index"),
             {
                 search: search || undefined,
-                category: category || undefined,
+                category: category === "all" ? undefined : category || undefined,
                 verified_only: verifiedOnly || undefined,
                 sort: sort.sort,
                 direction: sort.direction,
@@ -145,7 +145,7 @@ export default function EventCityBusinessesIndex({ businesses, featuredBusinesse
                                     <SelectValue placeholder="All Categories" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">All Categories</SelectItem>
+                                    <SelectItem value="all">All Categories</SelectItem>
                                     <SelectItem value="venue">Venues</SelectItem>
                                     <SelectItem value="performer">Performers</SelectItem>
                                     <SelectItem value="catering">Catering</SelectItem>
