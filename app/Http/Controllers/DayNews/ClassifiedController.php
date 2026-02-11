@@ -16,6 +16,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -219,34 +220,44 @@ final class ClassifiedController extends Controller
         $classified->load(['category', 'images', 'regions', 'specificationValues.specification', 'customAttributes']);
 
         // Get specifications for the category
-        $categorySpecs = $classified->category->getAllSpecifications();
+        $categorySpecs = $classified->category?->getAllSpecifications() ?? collect();
 
         return Inertia::render('day-news/classifieds/edit', [
             'classified' => [
                 'id' => $classified->id,
                 'title' => $classified->title,
+                'slug' => $classified->slug,
                 'description' => $classified->description,
-                'price' => $classified->price,
-                'price_type' => $classified->price_type,
-                'condition' => $classified->condition,
+                'price' => $classified->price_display,
+                'condition' => $classified->condition_display,
                 'contact_email' => $classified->contact_email,
                 'contact_phone' => $classified->contact_phone,
+                'posted_at' => $classified->created_at->format('M j, Y'),
+                'view_count' => $classified->view_count,
+                'saves_count' => $classified->saves_count,
                 'classified_category_id' => $classified->classified_category_id,
-                'category' => [
-                    'id' => $classified->category->id,
-                    'name' => $classified->category->name,
-                ],
                 'images' => $classified->images->map(fn ($img) => [
                     'id' => $img->id,
                     'url' => $img->url,
                     'is_primary' => $img->is_primary,
                 ]),
+                'category' => $classified->category ? [
+                    'id' => $classified->category->id,
+                    'name' => $classified->category->name,
+                    'slug' => $classified->category->slug,
+                ] : null,
                 'region_ids' => $classified->regions->pluck('id'),
                 'regions' => $classified->regions->map(fn ($r) => [
                     'id' => $r->id,
                     'name' => $r->name,
+                    'slug' => $r->slug,
                     'type' => $r->type,
                 ]),
+                'user' => $classified->user ? [
+                    'id' => $classified->user->id,
+                    'name' => $classified->user->name,
+                    'joined_at' => $classified->user->created_at->format('M Y'),
+                ] : null,
                 'specifications' => $classified->specificationValues->pluck('value', 'classified_specification_id'),
                 'custom_attributes' => $classified->customAttributes->map(fn ($attr) => [
                     'key' => $attr->key,
@@ -548,21 +559,25 @@ final class ClassifiedController extends Controller
                 'id' => $classified->id,
                 'title' => $classified->title,
                 'slug' => $classified->slug,
-                'price' => $classified->price,
-                'price_display' => $classified->price_display,
-                'condition' => $classified->condition,
-                'condition_display' => $classified->condition_display,
+                'description' => Str::limit($classified->description, 100),
+                'price' => $classified->price_display,
+                'condition' => $classified->condition_display,
+                'posted_at' => $classified->created_at->diffForHumans(),
                 'primary_image' => $classified->primary_image,
-                'created_at' => $classified->created_at->toISOString(),
-                'category' => [
+                'category' => $classified->category ? [
                     'id' => $classified->category->id,
                     'name' => $classified->category->name,
-                ],
+                    'slug' => $classified->category->slug,
+                ] : null,
                 'regions' => $classified->regions->map(fn ($r) => [
                     'id' => $r->id,
                     'name' => $r->name,
                     'slug' => $r->slug,
                 ]),
+                'user' => $classified->user ? [
+                    'id' => $classified->user->id,
+                    'name' => $classified->user->name,
+                ] : null,
                 'is_saved' => $user ? $classified->isSavedBy($user) : false,
             ];
         };
