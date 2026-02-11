@@ -1,4 +1,4 @@
-import { Newspaper } from "lucide-react";
+import { Newspaper, DollarSign } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Link } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,13 @@ import MarketplaceSection from "@/components/day-news/marketplace-section";
 import CouponsPreview from "@/components/day-news/coupons-preview";
 import EventsPreview from "@/components/day-news/events-preview";
 import ScrollableNewspaper from "@/components/day-news/scrollable-newspaper";
+import CommunityVoicesWidget from "@/components/day-news/community-voices-widget";
 import { useLocation } from "@/contexts/location-context";
 import type { Auth } from "@/types";
+import type { SocialPost } from "@/types/social";
 import DayNewsLayout from "@/layouts/day-news-layout";
+import DayNewsInfoBar from "@/components/day-news/day-news-info-bar";
+import NewsArticleCard from "@/components/day-news/news-article-card";
 
 interface Region {
     id: string;
@@ -82,11 +86,12 @@ interface DayNewsIndexProps {
     classifieds: any[];
     coupons: any[];
     events: any[];
+    socialPosts: SocialPost[];
     hasRegion: boolean;
     advertisements: Advertisements;
 }
 
-function DayNewsContent({ news, hasRegion, advertisements, announcements, legalNotices, classifieds, coupons, events }: { news: NewsArticle[]; hasRegion: boolean; advertisements: Advertisements; announcements: any[]; legalNotices: LegalNotice[]; classifieds: any[]; coupons: any[]; events: any[] }) {
+function DayNewsContent({ news, hasRegion, advertisements, announcements, legalNotices, classifieds, coupons, events, socialPosts }: { news: NewsArticle[]; hasRegion: boolean; advertisements: Advertisements; announcements: any[]; legalNotices: LegalNotice[]; classifieds: any[]; coupons: any[]; events: any[]; socialPosts: SocialPost[] }) {
     const { currentRegion } = useLocation();
     const [showNewspaperView, setShowNewspaperView] = useState(false);
     const [greeting, setGreeting] = useState('');
@@ -145,29 +150,9 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
 
     return (
         <>
-            {/* Header / Masthead */}
-            <div className="bg-white text-center">
-                <div className="mx-auto max-w-7xl">
-                    <div className="mb-2 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-community-green">
-                        <div className="flex items-center">
-                            <span className="relative flex h-2 w-2 mr-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-community-green opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-community-green"></span>
-                            </span>
-                            {activeReaders} neighbors reading now
-                        </div>
-                    </div>
-                    <p className="mb-1 text-sm font-medium text-muted-foreground">{greeting}, {currentRegion?.name || "Neighbor"}</p>
-                    <NewspaperMasthead region={currentRegion} />
-                    <div className="mt-4 flex items-center justify-center border-y border-border py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                        <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</span>
-                        <span className="mx-4 h-1 w-1 rounded-full bg-border"></span>
-                        <span>Volume 98 • Issue 245</span>
-                        <span className="mx-4 h-1 w-1 rounded-full bg-border"></span>
-                        <span className="text-news-primary">Official Local Edition</span>
-                    </div>
-                </div>
-            </div>
+            {/* Info Bar & Masthead */}
+            <DayNewsInfoBar region={currentRegion} activeReaders={activeReaders} />
+            <NewspaperMasthead region={currentRegion} />
 
             {/* Banner Ad */}
             {advertisements.banner.length > 0 && (
@@ -182,7 +167,7 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
             <div className="py-8">
                 {/* Spec View Toggle */}
                 <div className="mb-6 flex items-center justify-between border-b pb-4">
-                    <h2 className="font-serif text-3xl font-bold">Headlines</h2>
+                    <h2 className="font-serif text-3xl font-bold">Today's News</h2>
                     <div className="flex gap-2">
                         <Button
                             variant={showNewspaperView ? "outline" : "default"}
@@ -209,146 +194,163 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
                         regionName={currentRegion?.name}
                     />
                 ) : (
-                    <>
-                        {/* Featured article */}
-                        <div className="mb-8">
-                            {/* NewsArticleCard import was missing in previous snippet but used, assuming it's available via auto-import or should be added */}
-                            {/* Adding NewsArticleCard import below */}
+                    <div className="grid gap-8 lg:grid-cols-12">
+                        {/* LEFT COLUMN (Main Content) - Spans 5 columns */}
+                        <div className="space-y-8 lg:col-span-5">
+                            {/* Featured Article */}
                             <NewsArticleCard article={featuredArticle} featured />
-                        </div>
 
-                        {/* Top stories grid with featured ad */}
-                        {topStories.length > 0 && (
-                            <div className="mb-8">
-                                <h2 className="mb-4 border-b-2 border-border pb-2 font-serif text-2xl font-bold">Top Stories</h2>
-                                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                                    {topStories.map((article) => (
-                                        <NewsArticleCard key={article.id} article={article} />
-                                    ))}
-                                    {/* Featured ad in grid */}
-                                    {advertisements.featured.length > 0 && (
-                                        <NewsArticleCard
-                                            key={`ad-${advertisements.featured[0].id}`}
-                                            article={{
-                                                id: String(advertisements.featured[0].advertable.id),
-                                                title: advertisements.featured[0].advertable.title,
-                                                slug: advertisements.featured[0].advertable.slug,
-                                                excerpt: advertisements.featured[0].advertable.excerpt,
-                                                featured_image: advertisements.featured[0].advertable.featured_image,
-                                                published_at: advertisements.featured[0].expires_at,
-                                                view_count: 0,
-                                                author: null,
-                                                regions: [],
-                                            }}
-                                            isSponsored={true}
-                                        />
-                                    )}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Secondary content sections (Spec Previews) */}
-                        <div className="mt-16 space-y-16">
-                            {/* Events Section */}
-                            <section>
-                                <div className="mb-6 flex items-center justify-between border-b-2 border-border pb-2">
-                                    <h2 className="font-serif text-3xl font-bold">Local Events</h2>
-                                    <Link href={route("daynews.events.index") as any} className="text-sm font-bold text-news-primary uppercase tracking-wider hover:underline">See Calendar</Link>
-                                </div>
-                                <EventsPreview events={events} />
-                            </section>
-
-                            {/* Coupons Section */}
-                            <section>
-                                <div className="mb-6 flex items-center justify-between border-b-2 border-border pb-2">
-                                    <h2 className="font-serif text-3xl font-bold">Community Deals</h2>
-                                    <Link href={route("daynews.coupons.index") as any} className="text-sm font-bold text-news-primary uppercase tracking-wider hover:underline">View All Coupons</Link>
-                                </div>
-                                <CouponsPreview coupons={coupons} />
-                            </section>
-                        </div>
-
-                        {/* More news with sidebar */}
-                        {otherStories.length > 0 && (
-                            <div className="grid gap-8 lg:grid-cols-3">
-                                {/* Main column */}
-                                <div className="lg:col-span-2">
-                                    <h2 className="mb-4 border-b-2 border-border pb-2 font-serif text-2xl font-bold">Latest News</h2>
-                                    <div className="grid gap-6 sm:grid-cols-2">
-                                        {otherStories.slice(0, 6).map((article, index) => (
-                                            <React.Fragment key={article.id}>
-                                                <NewsArticleCard article={article} />
-                                                {/* Insert inline ad after every 3rd article */}
-                                                {(index + 1) % 3 === 0 && advertisements.inline.length > Math.floor((index + 1) / 3) - 1 && (
-                                                    <div className="sm:col-span-2">
-                                                        <Advertisement
-                                                            key={`inline-${advertisements.inline[Math.floor((index + 1) / 3) - 1].id}`}
-                                                            ad={advertisements.inline[Math.floor((index + 1) / 3) - 1]}
-                                                            onImpression={handleAdImpression}
-                                                            onClick={handleAdClick}
-                                                        />
-                                                    </div>
-                                                )}
-                                            </React.Fragment>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Sidebar with Announcements & Marketplace & Legal Notices */}
-                                <div className="space-y-8">
-                                    <AnnouncementsSection announcements={announcements} />
-                                    <MarketplaceSection classifieds={classifieds} />
-                                    {legalNotices.length > 0 && (
-                                        <div className="rounded-md border border-gray-200 bg-white p-3 shadow-sm">
-                                            <h3 className="mb-3 font-display text-sm font-bold uppercase tracking-wider text-news-primary">Legal Notices</h3>
-                                            <div className="space-y-2">
-                                                {legalNotices.map((notice) => (
-                                                    <Link
-                                                        key={notice.id}
-                                                        href={route("daynews.legal-notices.show", notice.id) as any}
-                                                        className="block border-b border-gray-100 pb-2 text-xs hover:text-news-primary"
-                                                    >
-                                                        <span className="font-semibold text-gray-500">{notice.publish_date}: </span>
-                                                        {notice.title}
-                                                    </Link>
-                                                ))}
-                                            </div>
-                                            <Link href={route("daynews.legal-notices.index") as any} className="mt-2 block text-[10px] font-bold text-news-primary uppercase">View All</Link>
-                                        </div>
-                                    )}
-
-                                    <h2 className="mb-4 border-b-2 border-border pb-2 font-serif text-xl font-bold">More Stories</h2>
-                                    <div className="space-y-0">
-                                        {otherStories.slice(6).map((article) => (
+                            {/* Top Stories List */}
+                            {topStories.length > 0 && (
+                                <div>
+                                    <h3 className="mb-4 border-b pb-2 font-serif text-xl font-bold">Essential Reads</h3>
+                                    <div className="space-y-6">
+                                        {topStories.map((article) => (
                                             <NewsArticleCard key={article.id} article={article} compact />
                                         ))}
                                     </div>
+                                </div>
+                            )}
 
-                                    {/* Sidebar ads */}
-                                    {advertisements.sidebar.length > 0 && (
-                                        <div className="mt-8">
-                                            <h3 className="mb-4 border-b border-border pb-2 text-sm font-semibold text-muted-foreground">Sponsored</h3>
-                                            <div className="space-y-4">
-                                                {advertisements.sidebar.map((ad) => (
-                                                    <Advertisement key={ad.id} ad={ad} onImpression={handleAdImpression} onClick={handleAdClick} />
-                                                ))}
+                            {/* More News */}
+                            {otherStories.length > 0 && (
+                                <div>
+                                    <h3 className="mb-4 border-b pb-2 font-serif text-xl font-bold">More Headlines</h3>
+                                    <div className="space-y-6">
+                                        {otherStories.slice(0, 4).map((article) => (
+                                            <NewsArticleCard key={article.id} article={article} compact />
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* MIDDLE COLUMN (Community & Trending) - Spans 4 columns */}
+                        <div className="space-y-8 lg:col-span-4">
+                            {/* Community Voices Feed */}
+                            <CommunityVoicesWidget posts={socialPosts} />
+
+                            {/* Trending / Popular */}
+                            <div>
+                                <h3 className="mb-4 border-b pb-2 font-serif text-xl font-bold">Trending in {currentRegion?.name}</h3>
+                                <div className="space-y-4">
+                                    {otherStories.slice(4, 7).map((article, idx) => (
+                                        <div key={article.id} className="flex gap-3 items-start group cursor-pointer">
+                                            <span className="text-2xl font-black text-muted-foreground/30 group-hover:text-news-primary transition-colors">
+                                                {idx + 1}
+                                            </span>
+                                            <div>
+                                                <Link href={route('daynews.posts.show', article.slug) as any} className="font-bold leading-tight hover:underline">
+                                                    {article.title}
+                                                </Link>
+                                                <p className="text-xs text-muted-foreground mt-1">
+                                                    {article.author?.name} • 4 min read
+                                                </p>
                                             </div>
                                         </div>
-                                    )}
+                                    ))}
                                 </div>
                             </div>
-                        )}
-                    </>
+
+                            {/* Announcements Widget */}
+                            <AnnouncementsSection announcements={announcements} />
+                        </div>
+
+                        {/* RIGHT COLUMN (Marketplace, Events, Ads) - Spans 3 columns */}
+                        <div className="space-y-8 lg:col-span-3">
+                            {/* Marketplace Preview */}
+                            <div>
+                                <div className="mb-4 flex items-center justify-between border-b pb-2">
+                                    <h3 className="font-serif text-xl font-bold">Marketplace</h3>
+                                    <Link href={route("daynews.classifieds.index") as any} className="text-xs font-bold text-news-primary uppercase hover:underline">See All</Link>
+                                </div>
+                                <div className="space-y-3">
+                                    {classifieds.slice(0, 3).map((item) => (
+                                        <Link key={item.id} href={route("daynews.classifieds.show", item.id) as any} className="block group">
+                                            <div className="aspect-video w-full rounded-md bg-muted overflow-hidden mb-2">
+                                                {item.images && item.images.length > 0 ? (
+                                                    <img src={item.images[0]} alt={item.title} className="h-full w-full object-cover group-hover:scale-105 transition-transform" />
+                                                ) : (
+                                                    <div className="flex h-full w-full items-center justify-center text-muted-foreground bg-muted">
+                                                        <DollarSign className="size-6 opacity-20" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="font-bold text-sm group-hover:underline">${item.price}</div>
+                                            <div className="text-sm leading-tight text-muted-foreground line-clamp-2">{item.title}</div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Events List */}
+                            <div>
+                                <div className="mb-4 flex items-center justify-between border-b pb-2">
+                                    <h3 className="font-serif text-xl font-bold">Upcoming Events</h3>
+                                    <Link href={route("daynews.events.index") as any} className="text-xs font-bold text-news-primary uppercase hover:underline">Calendar</Link>
+                                </div>
+                                <div className="space-y-4">
+                                    {events.map((event) => (
+                                        <div key={event.id} className="flex gap-3">
+                                            <div className="flex-shrink-0 flex flex-col items-center justify-center w-12 h-12 rounded border bg-muted/30">
+                                                <span className="text-[10px] font-bold uppercase text-red-600">
+                                                    {new Date(event.event_date).toLocaleDateString('en-US', { month: 'short' })}
+                                                </span>
+                                                <span className="text-lg font-bold leading-none">
+                                                    {new Date(event.event_date).getDate()}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <Link href={route('daynews.events.show', event.id) as any} className="font-bold text-sm hover:underline line-clamp-2">
+                                                    {event.title}
+                                                </Link>
+                                                <p className="text-xs text-muted-foreground mt-0.5">{event.venue?.name || "TBA"}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Sidebar Ads */}
+                            {advertisements.sidebar.length > 0 && (
+                                <div className="space-y-4">
+                                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Sponsored</h3>
+                                    {advertisements.sidebar.map((ad) => (
+                                        <Advertisement key={ad.id} ad={ad} onImpression={handleAdImpression} onClick={handleAdClick} />
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Legal Notices */}
+                            {legalNotices.length > 0 && (
+                                <div className="rounded-md border border-gray-200 bg-white p-3 shadow-sm">
+                                    <h3 className="mb-3 font-display text-sm font-bold uppercase tracking-wider text-news-primary">Legal Notices</h3>
+                                    <div className="space-y-2">
+                                        {legalNotices.map((notice) => (
+                                            <Link
+                                                key={notice.id}
+                                                href={route("daynews.legal-notices.show", notice.id) as any}
+                                                className="block border-b border-gray-100 pb-2 text-xs hover:text-news-primary"
+                                            >
+                                                <span className="font-semibold text-gray-500">{notice.publish_date}: </span>
+                                                {notice.title}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                    <Link href={route("daynews.legal-notices.index") as any} className="mt-2 block text-[10px] font-bold text-news-primary uppercase">View All</Link>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 )}
             </div>
         </>
     );
 }
 
-// Add missing NewsArticleCard import
-import NewsArticleCard from "@/components/day-news/news-article-card";
 
-export default function DayNewsIndex({ auth, news, hasRegion, advertisements, announcements, legalNotices, classifieds, coupons, events }: DayNewsIndexProps) {
+
+export default function DayNewsIndex({ auth, news, hasRegion, advertisements, announcements, legalNotices, classifieds, coupons, events, socialPosts }: DayNewsIndexProps) {
     return (
         <DayNewsLayout
             auth={auth}
@@ -368,6 +370,7 @@ export default function DayNewsIndex({ auth, news, hasRegion, advertisements, an
                 classifieds={classifieds}
                 coupons={coupons}
                 events={events}
+                socialPosts={socialPosts}
             />
         </DayNewsLayout>
     );

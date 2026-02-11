@@ -1,5 +1,5 @@
 import { Link } from "@inertiajs/react";
-import { Bell, Menu, User, Search } from "lucide-react";
+import { Bell, Menu, User, Search, PenLine, Megaphone, DollarSign, FileText } from "lucide-react";
 import { useState } from "react";
 import { route } from "ziggy-js";
 
@@ -13,10 +13,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 import type { Auth } from "@/types";
 import { DayNewsUserMenuContent } from "./day-news-user-menu-content";
 import LocationSelector from "./location-selector";
@@ -32,61 +30,99 @@ const navigationTabs = [
     { title: "Legal Notices", href: route("daynews.legal-notices.index") as any },
     { title: "Business", href: route("daynews.businesses.index") as any },
     { title: "Classifieds", href: route("daynews.classifieds.index") as any },
+    { title: "Local Voices", href: route("daynews.local-voices.index") as any, external: false },
     { title: "Coupons", href: route("daynews.coupons.index") as any },
     { title: "Photos", href: route("daynews.photos.index") as any },
-    { title: "Go Local Voices", href: route("daynews.local-voices.index") as any, external: false },
 ] as const;
 
 const actionButtons = [
-    { title: "Write", route: "daynews.posts.create", params: { type: "article" } },
-    { title: "Post Ad", route: "daynews.classifieds.create", params: {} },
-    { title: "Announce", route: "daynews.announcements.create", params: {} },
-    { title: "Notice", route: "daynews.legal-notices.create", params: {} },
-    { title: "Schedule", route: "events.create", params: {} },
+    { title: "Write", route: "daynews.posts.create", params: { type: "article" }, icon: PenLine },
+    { title: "Advertise", route: "daynews.classifieds.create", params: {}, icon: Megaphone },
+    { title: "Sell", route: "daynews.classifieds.create", params: {}, icon: DollarSign },
+    { title: "Announce", route: "daynews.announcements.create", params: {}, icon: Megaphone },
+    { title: "Notice", route: "daynews.legal-notices.create", params: {}, icon: FileText },
 ] as const;
 
 export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
-        <header className="border-b bg-background sticky top-0 z-50">
-            {/* Top Bar */}
-            <div className="border-b">
+        <header className="bg-background sticky top-0 z-50 flex flex-col">
+            {/* Row 1: Top Bar (Logo, Search, User) */}
+            <div className="border-b py-3">
                 <div className="container mx-auto px-4">
-                    <div className="flex h-16 items-center justify-between">
+                    <div className="flex items-center justify-between">
                         {/* Left: Logo */}
-                        <Link href={route("daynews.home") as any} className="flex items-center gap-2">
-                            <span className="text-2xl font-bold">Day News</span>
-                        </Link>
+                        <div className="flex items-center gap-4">
+                            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                                <SheetTrigger asChild>
+                                    <Button variant="ghost" size="icon" className="md:hidden">
+                                        <Menu className="size-5" />
+                                        <span className="sr-only">Toggle menu</span>
+                                    </Button>
+                                </SheetTrigger>
+                                <SheetContent side="left" className="w-80">
+                                    <SheetHeader>
+                                        <SheetTitle>Menu</SheetTitle>
+                                    </SheetHeader>
+                                    <div className="mt-6 flex flex-col gap-4">
+                                        <div className="flex flex-col gap-2">
+                                            <h3 className="text-sm font-semibold text-muted-foreground">Navigation</h3>
+                                            {navigationTabs.map((tab) => (
+                                                <Link
+                                                    key={tab.href}
+                                                    href={tab.href}
+                                                    className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+                                                    onClick={() => setMobileMenuOpen(false)}
+                                                >
+                                                    {tab.title}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <h3 className="text-sm font-semibold text-muted-foreground">Actions</h3>
+                                            {actionButtons.map(({ icon: Icon, ...action }) => (
+                                                <Link
+                                                    key={action.title}
+                                                    href={route(action.route, action.params) as any}
+                                                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+                                                    onClick={() => setMobileMenuOpen(false)}
+                                                >
+                                                    <Icon className="size-4" />
+                                                    {action.title}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </SheetContent>
+                            </Sheet>
 
-                        {/* Right: Search, Location, Notifications, User */}
+                            <Link href={route("daynews.home") as any} className="flex items-center gap-2">
+                                <span className="font-serif text-2xl font-black tracking-tight">Day.news</span>
+                            </Link>
+                        </div>
+
+                        {/* Right: Search, Notification, User */}
                         <div className="flex items-center gap-3">
-                            {/* Search Bar - Spec enhancement */}
-                            <form className="relative hidden lg:block w-48">
+                            <div className="relative hidden w-64 lg:block">
                                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     type="search"
-                                    placeholder="Search news..."
-                                    className="pl-8 bg-muted/50 border-none h-9 text-xs focus-visible:ring-news-primary"
+                                    placeholder="Search..."
+                                    className="h-9 rounded-full bg-muted/50 pl-9 text-sm border-none shadow-none focus-visible:ring-1"
                                 />
-                            </form>
-
-                            {/* Location Search - Hidden on mobile */}
-                            <div className="hidden md:block w-64">
-                                <LocationSelector />
                             </div>
 
-                            {/* Notification Bell */}
-                            <Button variant="ghost" size="icon" className="relative">
+                            <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
                                 <Bell className="size-5" />
+                                <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500 border-2 border-background"></span>
                                 <span className="sr-only">Notifications</span>
                             </Button>
 
-                            {/* User Button */}
                             {auth?.user ? (
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="icon">
+                                        <Button variant="ghost" size="icon" className="rounded-full">
                                             <Avatar className="size-8">
                                                 <AvatarImage src={auth.user?.avatar} alt={auth.user?.name || 'User'} />
                                                 <AvatarFallback>
@@ -97,7 +133,6 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                                                         .toUpperCase() || 'U'}
                                                 </AvatarFallback>
                                             </Avatar>
-                                            <span className="sr-only">User menu</span>
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end" className="w-56">
@@ -107,9 +142,8 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                             ) : (
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="icon">
+                                        <Button variant="ghost" size="icon" className="rounded-full bg-muted/50">
                                             <User className="size-5" />
-                                            <span className="sr-only">Sign in</span>
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end" className="w-56">
@@ -128,90 +162,48 @@ export default function DayNewsHeader({ auth }: DayNewsHeaderProps) {
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             )}
+
+                            {/* Write Button (Top Right specific) */}
+                            <Button variant="ghost" size="sm" className="hidden font-medium md:flex" asChild>
+                                <Link href={route("daynews.posts.create", { type: "article" }) as any}>Write</Link>
+                            </Button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Navigation Bar */}
-            <div className="border-b">
+            {/* Row 2: Main Navigation (Centered) */}
+            <div className="hidden border-b bg-background/95 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:block">
                 <div className="container mx-auto px-4">
-                    <div className="flex h-12 items-center justify-between">
-                        {/* Mobile Menu Toggle */}
-                        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-                            <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon" className="md:hidden">
-                                    <Menu className="size-5" />
-                                    <span className="sr-only">Toggle menu</span>
-                                </Button>
-                            </SheetTrigger>
-                            <SheetContent side="left" className="w-80">
-                                <SheetHeader>
-                                    <SheetTitle>Menu</SheetTitle>
-                                </SheetHeader>
-                                <div className="mt-6 flex flex-col gap-4">
-                                    <div className="flex flex-col gap-2">
-                                        <h3 className="text-sm font-semibold text-muted-foreground">Navigation</h3>
-                                        {navigationTabs.map((tab) => (
-                                            <Link
-                                                key={tab.href}
-                                                href={tab.href}
-                                                className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-                                                onClick={() => setMobileMenuOpen(false)}
-                                            >
-                                                {tab.title}
-                                            </Link>
-                                        ))}
-                                    </div>
-                                    <div className="flex flex-col gap-2">
-                                        <h3 className="text-sm font-semibold text-muted-foreground">Actions</h3>
-                                        {actionButtons.map((action) => (
-                                            <Link
-                                                key={action.title}
-                                                href={route(action.route, action.params) as any}
-                                                className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-                                                onClick={() => setMobileMenuOpen(false)}
-                                            >
-                                                {action.title}
-                                            </Link>
-                                        ))}
-                                    </div>
-                                    <div className="md:hidden">
-                                        <h3 className="mb-2 text-sm font-semibold text-muted-foreground">Location</h3>
-                                        <LocationSelector />
-                                    </div>
-                                </div>
-                            </SheetContent>
-                        </Sheet>
+                    <nav className="flex items-center justify-center gap-6">
+                        {navigationTabs.map((tab) => (
+                            <Link
+                                key={tab.href}
+                                href={tab.href}
+                                className="text-sm font-bold text-muted-foreground transition-colors hover:text-foreground"
+                            >
+                                {tab.title}
+                            </Link>
+                        ))}
+                    </nav>
+                </div>
+            </div>
 
-                        {/* Desktop Navigation Tabs - Left */}
-                        <NavigationMenu className="hidden md:flex">
-                            <NavigationMenuList>
-                                {navigationTabs.map((tab) => (
-                                    <NavigationMenuItem key={tab.href}>
-                                        <Link
-                                            href={tab.href}
-                                            className={cn(
-                                                navigationMenuTriggerStyle(),
-                                                "h-12 rounded-none border-b-2 border-transparent hover:border-primary hover:bg-transparent data-[active=true]:border-primary data-[active=true]:bg-transparent",
-                                            )}
-                                        >
-                                            {tab.title}
-                                        </Link>
-                                    </NavigationMenuItem>
-                                ))}
-                            </NavigationMenuList>
-                        </NavigationMenu>
-
-                        {/* Desktop Action Buttons - Right */}
-                        <div className="hidden items-center gap-2 md:flex">
-                            {actionButtons.map((action) => (
-                                <Button key={action.title} variant="ghost" size="sm" asChild>
-                                    <Link href={route(action.route, action.params) as any}>{action.title}</Link>
-                                </Button>
-                            ))}
-                        </div>
-                    </div>
+            {/* Row 3: Action Navigation (Centered) */}
+            <div className="hidden border-b bg-muted/20 py-2 md:block">
+                <div className="container mx-auto px-4">
+                    <nav className="flex items-center justify-center gap-6">
+                        {actionButtons.map(({ icon: Icon, ...action }) => (
+                            <Link
+                                key={action.title}
+                                href={route(action.route, action.params) as any}
+                                className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:text-primary"
+                            >
+                                <Icon className="size-3.5" />
+                                {action.title}
+                            </Link>
+                        ))}
+                    </nav>
                 </div>
             </div>
         </header>

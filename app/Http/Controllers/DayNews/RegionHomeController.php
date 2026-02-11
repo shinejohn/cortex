@@ -6,17 +6,18 @@ namespace App\Http\Controllers\DayNews;
 
 use App\Http\Controllers\Controller;
 use App\Models\Announcement;
-use App\Models\LegalNotice;
 use App\Models\Classified;
 use App\Models\Coupon;
-use App\Models\Event;
 use App\Models\DayNewsPost;
+use App\Models\Event;
+use App\Models\LegalNotice;
 use App\Models\Region;
 use App\Services\AdvertisementService;
 use App\Services\LocationService;
 use App\Services\SeoService;
 use Inertia\Inertia;
 use Inertia\Response;
+use Throwable;
 
 final class RegionHomeController extends Controller
 {
@@ -58,31 +59,44 @@ final class RegionHomeController extends Controller
             ->get();
 
         $legalNotices = LegalNotice::query()
-            ->whereHas('regions', fn($q) => $q->where('regions.id', $region->id))
+            ->whereHas('regions', fn ($q) => $q->where('regions.id', $region->id))
             ->where('status', 'active')
             ->latest('publish_date')
             ->limit(5)
             ->get();
 
         $classifieds = Classified::active()
-            ->forRegion($region->id)
+            ->inRegion($region->id)
             ->latest('posted_at')
             ->limit(5)
             ->get();
 
         $coupons = Coupon::active()
-            ->forRegion($region->id)
-            ->latest('start_date')
+            ->inRegion($region->id)
+            ->latest('valid_from')
             ->limit(4)
             ->get();
 
         $events = Event::published()
             ->upcoming()
-            ->whereHas('regions', fn($q) => $q->where('regions.id', $region->id))
+            ->whereHas('regions', fn ($q) => $q->where('regions.id', $region->id))
             ->with(['venue'])
             ->orderBy('event_date', 'asc')
             ->limit(4)
             ->get();
+
+        // Get latest social posts for Community Voices (safe if table doesn't exist yet)
+        try {
+            $socialPosts = \App\Models\SocialPost::query()
+                ->where('is_active', true)
+                ->where('visibility', 'public')
+                ->with('user')
+                ->latest()
+                ->limit(5)
+                ->get();
+        } catch (Throwable) {
+            $socialPosts = collect();
+        }
 
         // Build SEO JSON-LD with region-specific data
         $seoData = [
@@ -101,6 +115,7 @@ final class RegionHomeController extends Controller
             'classifieds' => $classifieds,
             'coupons' => $coupons,
             'events' => $events,
+            'socialPosts' => $socialPosts,
             'hasRegion' => true,
             'advertisements' => [
                 'banner' => $bannerAds->map(fn ($ad) => [
