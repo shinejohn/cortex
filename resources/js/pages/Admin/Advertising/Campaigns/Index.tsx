@@ -50,15 +50,15 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function CampaignIndex({ campaigns, filters, advertisers, statuses }: CampaignIndexProps) {
     const [_searchTerm, _setSearchTerm] = useState("");
-    const [statusFilter, setStatusFilter] = useState(filters.status || "");
-    const [advertiserFilter, setAdvertiserFilter] = useState(filters.advertiser_id?.toString() || "");
+    const [statusFilter, setStatusFilter] = useState(filters.status || "all");
+    const [advertiserFilter, setAdvertiserFilter] = useState(filters.advertiser_id?.toString() || "all");
 
     const handleFilter = () => {
         router.get(
             route("admin.advertising.campaigns.index"),
             {
-                status: statusFilter || undefined,
-                advertiser_id: advertiserFilter || undefined,
+                status: statusFilter === "all" ? undefined : statusFilter || undefined,
+                advertiser_id: advertiserFilter === "all" ? undefined : advertiserFilter || undefined,
             },
             { preserveState: true },
         );
@@ -108,7 +108,7 @@ export default function CampaignIndex({ campaigns, filters, advertisers, statuse
                                     <SelectValue placeholder="All Statuses" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">All Statuses</SelectItem>
+                                    <SelectItem value="all">All Statuses</SelectItem>
                                     {statuses.map((status) => (
                                         <SelectItem key={status} value={status}>
                                             {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -121,7 +121,7 @@ export default function CampaignIndex({ campaigns, filters, advertisers, statuse
                                     <SelectValue placeholder="All Advertisers" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">All Advertisers</SelectItem>
+                                    <SelectItem value="all">All Advertisers</SelectItem>
                                     {advertisers.map((advertiser) => (
                                         <SelectItem key={advertiser.id} value={advertiser.id.toString()}>
                                             {advertiser.name}
