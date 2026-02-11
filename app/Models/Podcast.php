@@ -71,7 +71,7 @@ final class Podcast extends Model
         return $query->where('category', $category);
     }
 
-    public function scopeForRegion($query, int $regionId)
+    public function scopeForRegion($query, string $regionId)
     {
         return $query->whereHas('regions', function ($q) use ($regionId) {
             $q->where('region_id', $regionId);
@@ -115,7 +115,7 @@ final class Podcast extends Model
         $count = 1;
 
         while (self::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $count;
+            $slug = $originalSlug.'-'.$count;
             $count++;
         }
 
@@ -133,4 +133,3 @@ final class Podcast extends Model
         ];
     }
 }
-

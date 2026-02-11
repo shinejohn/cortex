@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\Business;
 use App\Models\Coupon;
 use App\Models\CouponUsage;
-use App\Models\Business;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -33,8 +34,8 @@ final class CouponService
             'image' => $data['image'] ?? null,
             'business_name' => $data['business_name'] ?? null,
             'business_location' => $data['business_location'] ?? null,
-            'start_date' => $data['start_date'] ?? now(),
-            'end_date' => $data['end_date'] ?? null,
+            'valid_from' => $data['start_date'] ?? now(),
+            'valid_until' => $data['end_date'] ?? null,
             'usage_limit' => $data['usage_limit'] ?? null,
             'used_count' => 0,
             'status' => $data['status'] ?? 'active',
@@ -76,7 +77,7 @@ final class CouponService
     {
         $coupon = Coupon::where('code', $code)->first();
 
-        if (!$coupon) {
+        if (! $coupon) {
             return [
                 'valid' => false,
                 'error' => 'Coupon code not found',
@@ -92,14 +93,14 @@ final class CouponService
         }
 
         // Check dates
-        if ($coupon->start_date && $coupon->start_date->isFuture()) {
+        if ($coupon->valid_from && $coupon->valid_from->isFuture()) {
             return [
                 'valid' => false,
                 'error' => 'Coupon has not started yet',
             ];
         }
 
-        if ($coupon->end_date && $coupon->end_date->isPast()) {
+        if ($coupon->valid_until && $coupon->valid_until->isPast()) {
             return [
                 'valid' => false,
                 'error' => 'Coupon has expired',
@@ -136,13 +137,13 @@ final class CouponService
     public function apply(Coupon $coupon, int $userId, ?float $orderAmount = null): CouponUsage
     {
         DB::beginTransaction();
-        
+
         try {
             // Validate before applying
             $validation = $this->validate($coupon->code, $userId);
-            
-            if (!$validation['valid']) {
-                throw new \Exception($validation['error']);
+
+            if (! $validation['valid']) {
+                throw new Exception($validation['error']);
             }
 
             // Create usage record
@@ -166,7 +167,7 @@ final class CouponService
             $this->clearCouponCache($coupon);
 
             return $usage;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw $e;
         }
@@ -177,7 +178,7 @@ final class CouponService
      */
     public function trackView(Coupon $coupon): void
     {
-        $coupon->increment('views_count');
+        $coupon->increment('view_count');
         $this->clearCouponCache($coupon);
     }
 
@@ -196,20 +197,20 @@ final class CouponService
     public function getActiveCoupons(array $filters = [], int $limit = 50): Collection
     {
         $cacheKey = 'coupons:active:'.md5(serialize([$filters, $limit]));
-        
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(10), function () use ($filters, $limit) {
+
+        return $this->cacheService->remember($cacheKey, 600, function () use ($filters, $limit) {
             $query = Coupon::where('status', 'active')
                 ->where(function ($q) {
-                    $q->whereNull('start_date')
-                      ->orWhere('start_date', '<=', now());
+                    $q->whereNull('valid_from')
+                        ->orWhere('valid_from', '<=', now());
                 })
                 ->where(function ($q) {
-                    $q->whereNull('end_date')
-                      ->orWhere('end_date', '>=', now());
+                    $q->whereNull('valid_until')
+                        ->orWhere('valid_until', '>=', now());
                 })
                 ->where(function ($q) {
                     $q->whereNull('usage_limit')
-                      ->orWhereColumn('used_count', '<', 'usage_limit');
+                        ->orWhereColumn('used_count', '<', 'usage_limit');
                 });
 
             // Filters
@@ -246,19 +247,19 @@ final class CouponService
     {
         $businessId = $business instanceof Business ? $business->id : $business;
         $cacheKey = "coupons:business:{$businessId}:".($activeOnly ? 'active' : 'all');
-        
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(10), function () use ($businessId, $activeOnly) {
+
+        return $this->cacheService->remember($cacheKey, 600, function () use ($businessId, $activeOnly) {
             $query = Coupon::where('business_id', $businessId);
 
             if ($activeOnly) {
                 $query->where('status', 'active')
                     ->where(function ($q) {
-                        $q->whereNull('start_date')
-                          ->orWhere('start_date', '<=', now());
+                        $q->whereNull('valid_from')
+                            ->orWhere('valid_from', '<=', now());
                     })
                     ->where(function ($q) {
-                        $q->whereNull('end_date')
-                          ->orWhere('end_date', '>=', now());
+                        $q->whereNull('valid_until')
+                            ->orWhere('valid_until', '>=', now());
                     });
             }
 
@@ -284,9 +285,10 @@ final class CouponService
     public function calculateDiscount(Coupon $coupon, ?float $orderAmount = null): float
     {
         if ($coupon->discount_type === 'percentage') {
-            if (!$orderAmount) {
+            if (! $orderAmount) {
                 return 0.0;
             }
+
             return round($orderAmount * ($coupon->discount_value / 100), 2);
         }
 
@@ -295,12 +297,69 @@ final class CouponService
     }
 
     /**
+     * Get featured coupons
+     */
+    public function getFeaturedCoupons(?string $regionId = null, int $limit = 6): Collection
+    {
+        $cacheKey = "coupons:featured:{$regionId}:{$limit}";
+
+        return $this->cacheService->remember($cacheKey, 600, function () use ($regionId, $limit) {
+            $query = Coupon::active()
+                ->featured()
+                ->latest();
+
+            if ($regionId) {
+                $query->whereHas('regions', function ($q) use ($regionId) {
+                    $q->where('regions.id', $regionId);
+                });
+            }
+
+            return $query->take($limit)->get();
+        });
+    }
+
+    /**
+     * Get coupons with pagination/filtering
+     */
+    public function getCoupons(
+        ?string $regionId = null,
+        ?string $categoryId = null,
+        ?string $search = null,
+        bool $showGlobal = false,
+        int $perPage = 12
+    ): \Illuminate\Contracts\Pagination\LengthAwarePaginator {
+        $query = Coupon::active()->latest();
+
+        if ($regionId) {
+            $query->where(function ($q) use ($regionId, $showGlobal) {
+                $q->whereHas('regions', function ($sq) use ($regionId) {
+                    $sq->where('regions.id', $regionId);
+                });
+
+                if ($showGlobal) {
+                    $q->orWhereDoesntHave('regions');
+                }
+            });
+        }
+
+        if ($categoryId) {
+            $query->where('category', $categoryId);
+        }
+
+        if ($search) {
+            $query->search($search);
+        }
+
+        return $query->paginate($perPage);
+    }
+
+    /**
      * Generate unique coupon code
      */
     private function generateUniqueCode(int $length = 8): string
     {
         do {
-            $code = strtoupper(substr(md5(uniqid((string) mt_rand(), true)), 0, $length));
+            $code = mb_strtoupper(mb_substr(md5(uniqid((string) mt_rand(), true)), 0, $length));
         } while (Coupon::where('code', $code)->exists());
 
         return $code;
@@ -312,10 +371,9 @@ final class CouponService
     private function clearCouponCache(Coupon $coupon): void
     {
         $this->cacheService->forget('coupons:active:*');
-        
+
         if ($coupon->business_id) {
             $this->cacheService->forget("coupons:business:{$coupon->business_id}:*");
         }
     }
 }
-
