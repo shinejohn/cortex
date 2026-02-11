@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreVenueRequest;
 use App\Models\Follow;
 use App\Models\Venue;
+use App\Services\AdvertisementService;
 use App\Services\SeoService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -14,6 +15,10 @@ use Inertia\Response;
 
 final class VenueController extends Controller
 {
+    public function __construct(
+        private readonly AdvertisementService $advertisementService
+    ) {}
+
     /**
      * Public venues page (no authentication required)
      */

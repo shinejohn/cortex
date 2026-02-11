@@ -43,7 +43,7 @@ final class CouponController extends Controller
         // Get all coupons with pagination
         $coupons = $this->couponService->getCoupons(
             regionId: $regionId,
-            category: $category,
+            categoryId: $category,
             search: $search,
             showGlobal: $showGlobal,
             perPage: 12
@@ -71,7 +71,7 @@ final class CouponController extends Controller
                 'upvotes_count' => $coupon->upvotes_count,
                 'downvotes_count' => $coupon->downvotes_count,
                 'saves_count' => $coupon->saves_count,
-                'business' => [
+                'business' => $coupon->business ? [
                     'id' => $coupon->business->id,
                     'name' => $coupon->business->name,
                     'slug' => $coupon->business->slug,
@@ -81,7 +81,7 @@ final class CouponController extends Controller
                     'images' => $coupon->business->images,
                     'categories' => $coupon->business->categories,
                     'is_verified' => $coupon->business->is_verified,
-                ],
+                ] : null,
                 'regions' => $coupon->regions->map(fn ($r) => [
                     'id' => $r->id,
                     'name' => $r->name,
@@ -149,7 +149,7 @@ final class CouponController extends Controller
                     'id' => $coupon->user->id,
                     'name' => $coupon->user->name,
                 ],
-                'business' => [
+                'business' => $coupon->business ? [
                     'id' => $coupon->business->id,
                     'name' => $coupon->business->name,
                     'slug' => $coupon->business->slug,
@@ -164,7 +164,7 @@ final class CouponController extends Controller
                     'categories' => $coupon->business->categories,
                     'rating' => $coupon->business->rating,
                     'is_verified' => $coupon->business->is_verified,
-                ],
+                ] : null,
                 'regions' => $coupon->regions->map(fn ($r) => [
                     'id' => $r->id,
                     'name' => $r->name,

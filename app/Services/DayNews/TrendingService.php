@@ -184,9 +184,12 @@ final class TrendingService
      */
     public function getCommunityPulse(?Region $region = null): array
     {
+        $driver = DB::connection()->getDriverName();
+        $hourFunc = $driver === 'sqlite' ? "strftime('%H', published_at)" : 'HOUR(published_at)';
+
         $query = DayNewsPost::published()
             ->where('published_at', '>=', now()->subDay())
-            ->selectRaw('HOUR(published_at) as hour, COUNT(*) as count')
+            ->selectRaw("{$hourFunc} as hour, COUNT(*) as count")
             ->groupBy('hour')
             ->orderBy('hour');
 

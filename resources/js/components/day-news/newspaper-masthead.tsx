@@ -1,8 +1,4 @@
-import { MapPin } from "lucide-react";
 import React from "react";
-import { Badge } from "@/components/ui/badge";
-import { useWeather } from "@/hooks/day-news/use-weather";
-import { getWeatherIcon } from "@/lib/day-news/weather-icons";
 
 interface Region {
     id: string;
@@ -21,50 +17,33 @@ export default function NewspaperMasthead({ region }: NewspaperMastheadProps) {
     const today = new Date();
     const formattedDate = today.toLocaleDateString("en-US", {
         weekday: "long",
-        year: "numeric",
         month: "long",
         day: "numeric",
+        year: "numeric",
     });
 
-    const { weather } = useWeather(
-        region?.latitude ? Number.parseFloat(region.latitude) : null,
-        region?.longitude ? Number.parseFloat(region.longitude) : null,
-    );
-
-    const WeatherIcon = weather ? getWeatherIcon(weather.weatherCode, weather.isDay) : null;
-
     return (
-        <div className="bg-background py-6">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                {/* Date and location */}
-                <div className="mb-4 flex items-center justify-between text-sm text-muted-foreground">
-                    <div className="flex items-center gap-3">
+        <div className="bg-background py-4 sm:py-6">
+            <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+                {/* Massive Newspaper Title */}
+                <h1 className="font-serif text-4xl font-black uppercase tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
+                    {region ? `${region.name} Day News` : "Day News"}
+                </h1>
+
+                {/* Date and Tagline Separator */}
+                <div className="mt-3 flex items-center justify-center border-y-2 border-primary py-2">
+                    <div className="flex flex-col items-center justify-center gap-1.5 text-xs font-bold uppercase tracking-[0.15em] sm:flex-row sm:gap-6">
                         <time dateTime={today.toISOString()}>{formattedDate}</time>
-                        {weather && WeatherIcon && (
-                            <div className="flex items-center gap-1.5">
-                                <WeatherIcon className="size-4" />
-                                <span className="font-medium">{weather.temperature}°F</span>
-                            </div>
+                        <span className="hidden h-1.5 w-1.5 rounded-full bg-primary sm:block" />
+                        <span className="text-muted-foreground">"Your Daily Source for Local Stories"</span>
+                        {region && (
+                            <>
+                                <span className="hidden h-1.5 w-1.5 rounded-full bg-primary sm:block" />
+                                <span className="text-primary">{region.full_name || region.name} Edition</span>
+                            </>
                         )}
                     </div>
-                    {region && (
-                        <Badge variant="outline">
-                            <MapPin />
-                            {region.full_name || region.name} Edition
-                        </Badge>
-                    )}
                 </div>
-
-                {/* Newspaper name */}
-                <div className="text-center">
-                    <h1 className="font-serif text-5xl font-black tracking-tight sm:text-6xl md:text-7xl">
-                        {region ? `${region.name} Day News` : "Day News"}
-                    </h1>
-                    <p className="mt-2 font-serif text-sm italic text-muted-foreground">"Your Daily Source for Local Stories"</p>
-                </div>
-
-                {/* Decorative border */}
-                <div className="mt-4 border-t-2 border-border" />
             </div>
         </div>
     );
