@@ -10,11 +10,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 final class Memorial extends Model
 {
-    use HasFactory, HasUuid, HasReviewsAndRatings;
+    use HasFactory, HasReviewsAndRatings, HasUuid;
 
     protected $fillable = [
         'user_id',
@@ -68,7 +67,7 @@ final class Memorial extends Model
         return $query->where('is_featured', true);
     }
 
-    public function scopeForRegion($query, int $regionId)
+    public function scopeForRegion($query, string $regionId)
     {
         return $query->whereHas('regions', function ($q) use ($regionId) {
             $q->where('region_id', $regionId);
@@ -103,4 +102,3 @@ final class Memorial extends Model
         ];
     }
 }
-

@@ -8,6 +8,7 @@ use App\Models\Region;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Stevebauman\Location\Facades\Location;
 use Stevebauman\Location\Position;
@@ -176,10 +177,12 @@ final class LocationService
             return collect();
         }
 
+        $operator = DB::connection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
+
         return Region::active()
-            ->where(function ($q) use ($query) {
-                $q->where('name', 'ilike', "%{$query}%")
-                    ->orWhere('slug', 'ilike', "%{$query}%")
+            ->where(function ($q) use ($query, $operator) {
+                $q->where('name', $operator, "%{$query}%")
+                    ->orWhere('slug', $operator, "%{$query}%")
                     ->orWhereHas('zipcodes', function ($q) use ($query) {
                         $q->where('zipcode', 'like', "{$query}%");
                     });
@@ -208,13 +211,13 @@ final class LocationService
                 if (! Schema::hasTable('regions')) {
                     return null;
                 }
-                
+
                 try {
                     return Region::active()
                         ->topLevel()
                         ->orderBy('display_order')
                         ->first();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     // If query fails (e.g., table doesn't exist), return null
                     return null;
                 }

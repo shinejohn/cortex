@@ -193,6 +193,13 @@ final class Classified extends Model
         });
     }
 
+    public function scopeFeatured($query)
+    {
+        return $query->where('status', 'active')
+            ->orderByDesc('view_count')
+            ->orderByDesc('saves_count');
+    }
+
     public function scopeOrderByRecent($query)
     {
         return $query->orderByDesc('created_at');

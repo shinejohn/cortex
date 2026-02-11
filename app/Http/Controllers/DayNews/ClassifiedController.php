@@ -10,7 +10,7 @@ use App\Http\Requests\DayNews\UpdateClassifiedRequest;
 use App\Models\Classified;
 use App\Models\ClassifiedCategory;
 use App\Models\SavedClassified;
-use App\Services\ClassifiedService;
+use App\Services\DayNews\ClassifiedService;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
