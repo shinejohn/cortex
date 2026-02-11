@@ -147,46 +147,60 @@ return [
     |
     */
 
-    'redis' => [
+    'redis' => value(function () {
+        // Parse REDIS_URL to extract components as fallbacks for Railway/cloud deployments
+        $redisUrl = env('REDIS_URL');
+        $parsed = $redisUrl ? parse_url($redisUrl) : [];
+        $urlHost = $parsed['host'] ?? null;
+        $urlPort = $parsed['port'] ?? null;
+        $urlPass = isset($parsed['pass']) ? urldecode($parsed['pass']) : null;
+        $urlUser = isset($parsed['user']) && $parsed['user'] !== 'default' ? $parsed['user'] : null;
+        $urlDb = isset($parsed['path']) ? ltrim($parsed['path'], '/') : null;
+        $urlScheme = isset($parsed['scheme']) && $parsed['scheme'] === 'rediss' ? 'tls' : 'tcp';
 
-        // Default to predis (pure PHP, no extension needed) unless phpredis extension is explicitly configured
-        // If REDIS_CLIENT is not set, we'll auto-detect in AppServiceProvider
-        'client' => env('REDIS_CLIENT', 'predis'),
+        $host = env('REDIS_HOST', $urlHost ?? '127.0.0.1');
+        $password = env('REDIS_PASSWORD', env('REDISPASSWORD', $urlPass));
+        $port = (int) env('REDIS_PORT', $urlPort ?? 6379);
+        $username = env('REDIS_USERNAME', $urlUser);
+        $scheme = env('REDIS_SCHEME', $urlScheme);
+        $ssl = env('REDIS_TLS', false) || $scheme === 'tls' ? [
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+        ] : [];
 
-        'options' => [
-            'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
-            'persistent' => env('REDIS_PERSISTENT', false),
-        ],
+        return [
+            // Default to predis (pure PHP, no extension needed) unless phpredis extension is explicitly configured
+            // If REDIS_CLIENT is not set, we'll auto-detect in AppServiceProvider
+            'client' => env('REDIS_CLIENT', 'predis'),
 
-        'default' => [
-            'url' => env('REDIS_URL'),
-            'host' => env('REDIS_HOST', '127.0.0.1'),
-            'username' => env('REDIS_USERNAME'),
-            'password' => env('REDIS_PASSWORD'),
-            'port' => (int) env('REDIS_PORT', 6379),
-            'database' => env('REDIS_DB', '0'),
-            'scheme' => env('REDIS_SCHEME', 'tcp'),
-            'ssl' => env('REDIS_TLS', false) ? [
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-            ] : [],
-        ],
+            'options' => [
+                'cluster' => env('REDIS_CLUSTER', 'redis'),
+                'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+                'persistent' => env('REDIS_PERSISTENT', false),
+            ],
 
-        'cache' => [
-            'url' => env('REDIS_URL'),
-            'host' => env('REDIS_HOST', '127.0.0.1'),
-            'username' => env('REDIS_USERNAME'),
-            'password' => env('REDIS_PASSWORD'),
-            'port' => (int) env('REDIS_PORT', 6379),
-            'database' => env('REDIS_CACHE_DB', '1'),
-            'scheme' => env('REDIS_SCHEME', 'tcp'),
-            'ssl' => env('REDIS_TLS', false) ? [
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-            ] : [],
-        ],
+            'default' => [
+                'url' => $redisUrl,
+                'host' => $host,
+                'username' => $username,
+                'password' => $password,
+                'port' => $port,
+                'database' => env('REDIS_DB', $urlDb ?: '0'),
+                'scheme' => $scheme,
+                'ssl' => $ssl,
+            ],
 
-    ],
+            'cache' => [
+                'url' => $redisUrl,
+                'host' => $host,
+                'username' => $username,
+                'password' => $password,
+                'port' => $port,
+                'database' => env('REDIS_CACHE_DB', '1'),
+                'scheme' => $scheme,
+                'ssl' => $ssl,
+            ],
+        ];
+    }),
 
 ];
