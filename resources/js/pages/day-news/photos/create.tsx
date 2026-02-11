@@ -170,12 +170,12 @@ export default function PhotoCreate() {
                         {albums.length > 0 && (
                             <div>
                                 <Label htmlFor="album_id">Album (Optional)</Label>
-                                <Select value={form.data.album_id} onValueChange={(value) => form.setData("album_id", value)}>
+                                <Select value={form.data.album_id || "none"} onValueChange={(value) => form.setData("album_id", value === "none" ? "" : value)}>
                                     <SelectTrigger className="mt-2">
                                         <SelectValue placeholder="Select album" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="">None</SelectItem>
+                                        <SelectItem value="none">None</SelectItem>
                                         {albums.map((album) => (
                                             <SelectItem key={album.id} value={album.id}>
                                                 {album.title}

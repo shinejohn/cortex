@@ -67,7 +67,7 @@ interface DayNewsBusinessesIndexProps {
 
 export default function DayNewsBusinessesIndex({ businesses, featuredBusinesses, filters, sort, currentRegion }: DayNewsBusinessesIndexProps) {
     const [search, setSearch] = useState(filters.search || "");
-    const [category, setCategory] = useState(filters.category || "");
+    const [category, setCategory] = useState(filters.category || "all");
     const [verifiedOnly, setVerifiedOnly] = useState(filters.verified_only || false);
 
     const handleSearch = () => {
@@ -75,7 +75,7 @@ export default function DayNewsBusinessesIndex({ businesses, featuredBusinesses,
             route("daynews.businesses.index") as any,
             {
                 search: search || undefined,
-                category: category || undefined,
+                category: category === "all" ? undefined : category || undefined,
                 verified_only: verifiedOnly || undefined,
                 sort: sort.sort,
                 direction: sort.direction,
@@ -142,7 +142,7 @@ export default function DayNewsBusinessesIndex({ businesses, featuredBusinesses,
                                     <SelectValue placeholder="All Categories" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">All Categories</SelectItem>
+                                    <SelectItem value="all">All Categories</SelectItem>
                                     <SelectItem value="restaurant">Restaurants</SelectItem>
                                     <SelectItem value="retail">Retail</SelectItem>
                                     <SelectItem value="service">Services</SelectItem>
