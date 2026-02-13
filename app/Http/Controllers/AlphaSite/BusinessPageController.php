@@ -6,14 +6,15 @@ namespace App\Http\Controllers\AlphaSite;
 
 use App\Http\Controllers\Controller;
 use App\Models\Business;
-use App\Services\BusinessService;
-use App\Services\AlphaSite\PageGeneratorService;
-use App\Services\AlphaSite\LinkingService;
 use App\Services\AlphaSite\FourCallsIntegrationService;
-use App\Services\ReviewService;
+use App\Services\AlphaSite\LinkingService;
+use App\Services\AlphaSite\PageGeneratorService;
+use App\Services\BusinessService;
 use App\Services\CouponService;
 use App\Services\EventService;
 use App\Services\NewsService;
+use App\Services\ReviewService;
+use Exception;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -37,8 +38,8 @@ final class BusinessPageController extends Controller
     public function showBySubdomain(string $subdomain): Response
     {
         $business = $this->businessService->getBusinessForAlphaSite($subdomain);
-        
-        if (!$business) {
+
+        if (! $business) {
             abort(404);
         }
 
@@ -51,8 +52,8 @@ final class BusinessPageController extends Controller
     public function show(string $slug): Response
     {
         $business = $this->businessService->getBusinessForAlphaSite($slug);
-        
-        if (!$business) {
+
+        if (! $business) {
             abort(404);
         }
 
@@ -65,49 +66,12 @@ final class BusinessPageController extends Controller
     public function showTab(string $slug, string $tab): Response
     {
         $business = $this->businessService->getBusinessForAlphaSite($slug);
-        
-        if (!$business) {
+
+        if (! $business) {
             abort(404);
         }
 
         return $this->renderBusinessPage($business, $tab);
-    }
-
-    /**
-     * Render the business page with all data
-     */
-    private function renderBusinessPage(Business $business, string $activeTab): Response
-    {
-        // Generate the complete page data
-        $pageData = $this->pageGeneratorService->generateBusinessPage($business);
-        
-        // Get cross-platform content (articles, events, coupons from other platforms)
-        $crossPlatformContent = $this->linkingService->getCrossPlatformContent($business);
-        
-        // Get related businesses
-        $relatedBusinesses = $this->businessService->getRelatedBusinesses($business);
-
-        // Get 4calls.ai integration status if available
-        $fourCallsIntegration = null;
-        try {
-            $fourCallsIntegration = $this->fourCallsService->getIntegrationStatus($business);
-        } catch (\Exception $e) {
-            // Silently fail if integration doesn't exist or service is unavailable
-        }
-
-        return Inertia::render('alphasite/business/show', [
-            'business' => $business,
-            'template' => $pageData['template'],
-            'seo' => $pageData['seo'],
-            'schema' => $pageData['schema'],
-            'tabs' => $pageData['tabs'],
-            'aiServices' => $pageData['aiServices'],
-            'communityLinks' => $pageData['communityLinks'],
-            'crossPlatformContent' => $crossPlatformContent,
-            'relatedBusinesses' => $relatedBusinesses,
-            'fourCallsIntegration' => $fourCallsIntegration,
-            'activeTab' => $activeTab,
-        ]);
     }
 
     /**
@@ -177,8 +141,8 @@ final class BusinessPageController extends Controller
         ]);
 
         $business = $this->businessService->getBusinessForAlphaSite($slug);
-        
-        if (!$business) {
+
+        if (! $business) {
             abort(404);
         }
 
@@ -195,12 +159,51 @@ final class BusinessPageController extends Controller
                 'conversation_id' => $response['conversation_id'] ?? $request->input('conversation_id'),
                 'data' => $response,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'error' => $e->getMessage(),
                 'message' => 'AI chat service is currently unavailable. Please try again later.',
             ], 503);
         }
+    }
+
+    /**
+     * Render the business page with all data
+     */
+    private function renderBusinessPage(Business $business, string $activeTab): Response
+    {
+        // Generate the complete page data
+        $pageData = $this->pageGeneratorService->generateBusinessPage($business);
+
+        // Get cross-platform content (articles, events, coupons from other platforms)
+        $crossPlatformContent = $this->linkingService->getCrossPlatformContent($business);
+
+        // Get related businesses
+        $relatedBusinesses = $this->businessService->getRelatedBusinesses($business);
+
+        // Get 4calls.ai integration status if available
+        $fourCallsIntegration = null;
+        try {
+            $fourCallsIntegration = $this->fourCallsService->getIntegrationStatus($business);
+        } catch (Exception $e) {
+            // Silently fail if integration doesn't exist or service is unavailable
+        }
+
+        return Inertia::render('alphasite/business/show', [
+            'business' => $business,
+            'template' => $pageData['template'],
+            'seo' => $pageData['seo'],
+            'schema' => $pageData['schema'],
+            'schemas' => $pageData['schemas'] ?? null,
+            'tabs' => $pageData['tabs'],
+            'aiServices' => $pageData['aiServices'],
+            'communityLinks' => $pageData['communityLinks'],
+            'crossPlatformContent' => $crossPlatformContent,
+            'relatedBusinesses' => $relatedBusinesses,
+            'fourCallsIntegration' => $fourCallsIntegration,
+            'activeTab' => $activeTab,
+            'goeventcityDomain' => config('domains.event-city', 'goeventcity.com'),
+        ]);
     }
 }

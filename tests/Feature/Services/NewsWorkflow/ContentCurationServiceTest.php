@@ -10,7 +10,7 @@ use App\Services\News\PrismAiService;
 use Illuminate\Support\Facades\Config;
 
 beforeEach(function () {
-    $this->prismAiMock = \Mockery::mock(PrismAiService::class);
+    $this->prismAiMock = Mockery::mock(PrismAiService::class);
     $this->service = new ContentCurationService($this->prismAiMock);
 });
 
@@ -160,7 +160,7 @@ it('performs final selection of drafts', function () {
     expect($count)->toBe(1);
 
     $draft->refresh();
-    expect($draft->status)->toBe('ready_for_publishing');
+    expect($draft->status)->toBe('selected_for_generation');
     expect((float) $draft->quality_score)->toBe(88.0);
 });
 
@@ -178,6 +178,7 @@ it('returns zero when final selection is disabled', function () {
 
 it('filters drafts by minimum quality score', function () {
     Config::set('news-workflow.final_selection.min_quality_score', 80);
+    Config::set('news-workflow.final_selection.articles_per_region', 1);
 
     $region = Region::factory()->create();
     $article1 = NewsArticle::factory()->create(['region_id' => $region->id]);
@@ -211,7 +212,7 @@ it('filters drafts by minimum quality score', function () {
 
     $draft1->refresh();
     $draft2->refresh();
-    expect($draft1->status)->toBe('ready_for_publishing');
+    expect($draft1->status)->toBe('selected_for_generation');
     expect($draft2->status)->toBe('rejected');
     expect($draft2->rejection_reason)->toContain('Did not meet quality threshold');
 });
@@ -244,7 +245,7 @@ it('limits final selection to configured count', function () {
     $count = $this->service->finalSelection($region);
 
     expect($count)->toBe(2);
-    expect(NewsArticleDraft::where('status', 'ready_for_publishing')->count())->toBe(2);
+    expect(NewsArticleDraft::where('status', 'selected_for_generation')->count())->toBe(2);
     expect(NewsArticleDraft::where('status', 'rejected')->count())->toBe(2);
 });
 

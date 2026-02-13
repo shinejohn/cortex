@@ -235,8 +235,8 @@ class UnsplashService
             'small_url' => $photo['urls']['small'] ?? '',
             'photographer_name' => $user['name'] ?? 'Unknown',
             'photographer_username' => $user['username'] ?? '',
-            'photographer_url' => $user['links']['html'] ?? '',
-            'unsplash_url' => $photo['links']['html'] ?? '',
+            'photographer_url' => $this->addUtmParams($user['links']['html'] ?? ''),
+            'unsplash_url' => $this->addUtmParams('https://unsplash.com'),
             'photo_id' => $photo['id'] ?? '',
             'alt_description' => $photo['alt_description'] ?? $photo['description'] ?? '',
             'color' => $photo['color'] ?? '#cccccc',
@@ -253,8 +253,8 @@ class UnsplashService
     private function buildAttribution(array $user, array $photo): string
     {
         $photographerName = $user['name'] ?? 'Unknown';
-        $photographerUrl = ($user['links']['html'] ?? '').'?utm_source='.config('app.name').'&utm_medium=referral';
-        $unsplashUrl = 'https://unsplash.com/?utm_source='.config('app.name').'&utm_medium=referral';
+        $photographerUrl = $this->addUtmParams($user['links']['html'] ?? '');
+        $unsplashUrl = $this->addUtmParams('https://unsplash.com');
 
         return sprintf(
             'Photo by <a href="%s" target="_blank" rel="noopener noreferrer">%s</a> on <a href="%s" target="_blank" rel="noopener noreferrer">Unsplash</a>',
@@ -262,6 +262,19 @@ class UnsplashService
             htmlspecialchars($photographerName),
             $unsplashUrl
         );
+    }
+
+    /**
+     * Add UTM params to a URL for Unsplash attribution tracking.
+     */
+    private function addUtmParams(string $url): string
+    {
+        if ($url === '') {
+            return '';
+        }
+        $separator = str_contains($url, '?') ? '&' : '?';
+
+        return $url.$separator.'utm_source='.urlencode(config('app.name')).'&utm_medium=referral';
     }
 
     /**
@@ -278,13 +291,12 @@ class UnsplashService
         }
 
         try {
-            Http::async()
+            Http::timeout(5)
                 ->withHeaders([
                     'Authorization' => 'Client-ID '.$this->getAccessKey(),
                 ])
                 ->get($downloadLocation);
         } catch (Exception $e) {
-            // Non-blocking, just log the error
             Log::debug('Unsplash download tracking failed', ['error' => $e->getMessage()]);
         }
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Middleware\DetectAppDomain;
 use App\Http\Middleware\DetectUserLocation;
+use App\Http\Middleware\DomainResolutionMiddleware;
 use App\Http\Middleware\ForceHttps;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -34,7 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
             // API routes
             $apiDomain = config('domains.api');
-            if ($apiDomain && $apiDomain !== 'api.day.news') { 
+            if ($apiDomain && $apiDomain !== 'api.day.news') {
                 // Dedicated API Domain Mode
                 Route::domain($apiDomain)
                     ->name('api.')
@@ -68,7 +69,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     });
 
                 // Subdomain support - add prefix to differentiate from apex
-                Route::domain('{subdomain}.' . $downtownGuideDomain)
+                Route::domain('{subdomain}.'.$downtownGuideDomain)
                     ->where(['subdomain' => '[a-z0-9-]*'])
                     ->middleware('web')
                     ->name('subdomain.') // Prefix subdomain routes to avoid name collision with apex domain
@@ -111,7 +112,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     });
 
                 // Subdomain support - add prefix to differentiate from apex
-                Route::domain('{subdomain}.' . $eventCityDomain)
+                Route::domain('{subdomain}.'.$eventCityDomain)
                     ->where(['subdomain' => '[a-z0-9-]*'])
                     ->middleware('web')
                     ->name('subdomain.') // Prefix subdomain routes to avoid name collision with apex domain
@@ -127,7 +128,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Trust all proxies (AWS ALB, CloudFront, etc.)
         // In production behind a load balancer, we need to trust proxies to get correct client IP and protocol
         $middleware->trustProxies(at: '*');
-        
+
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
         $middleware->validateCsrfTokens(except: [
@@ -147,6 +148,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'n8n.api' => VerifyN8nApiKey::class,
+            'domain.resolve' => DomainResolutionMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
@@ -155,13 +157,13 @@ return Application::configure(basePath: dirname(__DIR__))
             if (config('app.observability.sentry.enabled', false)) {
                 Integration::handles($exceptions);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Silently fail if Sentry config is broken - don't break the app
         }
 
         // Handle Redis/Predis connection errors gracefully
-        $exceptions->render(function (\Predis\Connection\ConnectionException | \RedisException | \Illuminate\Redis\Connections\ConnectionException $e, \Illuminate\Http\Request $request) {
-            \Illuminate\Support\Facades\Log::warning('Redis connection error - falling back to database cache', [
+        $exceptions->render(function (Predis\Connection\ConnectionException|RedisException|Illuminate\Redis\Connections\ConnectionException $e, Illuminate\Http\Request $request) {
+            Illuminate\Support\Facades\Log::warning('Redis connection error - falling back to database cache', [
                 'error' => $e->getMessage(),
                 'url' => $request->fullUrl(),
                 'type' => get_class($e),
@@ -173,9 +175,9 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         // Handle config errors gracefully (like scribe.php issues)
-        $exceptions->render(function (\Error | \ParseError | \TypeError $e, \Illuminate\Http\Request $request) {
+        $exceptions->render(function (Error|ParseError|TypeError $e, Illuminate\Http\Request $request) {
             // Log the error but don't expose details in production
-            \Illuminate\Support\Facades\Log::error('Configuration error', [
+            Illuminate\Support\Facades\Log::error('Configuration error', [
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
@@ -198,20 +200,20 @@ return Application::configure(basePath: dirname(__DIR__))
         // Log all exceptions for debugging (only in non-production or when debug is enabled)
         $appDebug = env('APP_DEBUG', false);
         $appEnv = env('APP_ENV', 'production');
-        
+
         if ($appDebug || $appEnv !== 'production') {
-            $exceptions->report(function (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::error('Exception occurred', [
+            $exceptions->report(function (Throwable $e) {
+                Illuminate\Support\Facades\Log::error('Exception occurred', [
                     'message' => $e->getMessage(),
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
-                    'trace' => substr($e->getTraceAsString(), 0, 1000), // Limit trace length
+                    'trace' => mb_substr($e->getTraceAsString(), 0, 1000), // Limit trace length
                 ]);
             });
         } else {
             // In production, still log errors but don't expose details
-            $exceptions->report(function (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::error('Exception occurred in production', [
+            $exceptions->report(function (Throwable $e) {
+                Illuminate\Support\Facades\Log::error('Exception occurred in production', [
                     'message' => $e->getMessage(),
                     'file' => basename($e->getFile()),
                     'line' => $e->getLine(),
