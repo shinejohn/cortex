@@ -36,3 +36,5 @@ Schedule::command('newsroom:collect')->everyFifteenMinutes()->withoutOverlapping
 Schedule::command('newsroom:classify')->everyTenMinutes()->withoutOverlapping()->runInBackground();
 Schedule::command('newsroom:process')->everyFiveMinutes()->withoutOverlapping()->runInBackground();
 
+// AlphaSite Domain Convenience Service - Check pending external domain DNS records
+Schedule::command('domains:check-pending')->everyFiveMinutes()->withoutOverlapping()->runInBackground();

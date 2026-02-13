@@ -6,8 +6,8 @@ namespace App\Jobs\News;
 
 use App\Models\NewsArticleDraft;
 use App\Models\Region;
+use App\Services\MediaLibraryService;
 use App\Services\News\PrismAiService;
-use App\Services\News\UnsplashService;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -39,7 +39,7 @@ final class ProcessSingleArticleGenerationJob implements ShouldQueue
         public Region $region
     ) {}
 
-    public function handle(PrismAiService $prismAi, UnsplashService $unsplash): void
+    public function handle(PrismAiService $prismAi, MediaLibraryService $mediaLibrary): void
     {
         Log::info('Phase 6: Starting single article generation', [
             'draft_id' => $this->draft->id,
@@ -47,7 +47,7 @@ final class ProcessSingleArticleGenerationJob implements ShouldQueue
         ]);
 
         try {
-            $this->generateArticle($prismAi, $unsplash);
+            $this->generateArticle($prismAi, $mediaLibrary);
 
             Log::info('Phase 6: Completed single article generation', [
                 'draft_id' => $this->draft->id,
@@ -92,7 +92,7 @@ final class ProcessSingleArticleGenerationJob implements ShouldQueue
     /**
      * Generate the article content using AI.
      */
-    private function generateArticle(PrismAiService $prismAi, UnsplashService $unsplash): void
+    private function generateArticle(PrismAiService $prismAi, MediaLibraryService $mediaLibrary): void
     {
         $sourceArticle = $this->draft->newsArticle;
 
@@ -125,8 +125,8 @@ final class ProcessSingleArticleGenerationJob implements ShouldQueue
         $seoMetadata = $this->generateSeoMetadata($result['title'], $result['content'], $this->draft->topic_tags ?? []);
         $seoMetadata['keywords'] = array_merge($seoMetadata['keywords'], $result['seo_keywords'] ?? []);
 
-        // Fetch a relevant image from Unsplash
-        $imageData = $this->fetchArticleImage($result['title'], $this->draft->topic_tags ?? [], $unsplash);
+        // Fetch a relevant image (local library first, then Unsplash)
+        $imageData = $this->fetchArticleImage($result['title'], $mediaLibrary);
 
         // Store image attribution in SEO metadata if available
         if ($imageData) {
@@ -149,41 +149,34 @@ final class ProcessSingleArticleGenerationJob implements ShouldQueue
     }
 
     /**
-     * Fetch a relevant image for the article from Unsplash.
+     * Fetch a relevant image for the article (local library first, then Unsplash).
      */
-    private function fetchArticleImage(string $title, array $topicTags, UnsplashService $unsplash): ?array
+    private function fetchArticleImage(string $title, MediaLibraryService $mediaLibrary): ?array
     {
         if (! config('news-workflow.unsplash.enabled', true)) {
             return null;
         }
 
         $titleKeywords = $this->extractKeywords($title);
-        $keywords = array_merge($topicTags, $titleKeywords);
-        $orientation = config('news-workflow.unsplash.orientation', 'landscape');
+        $keywords = array_merge($this->draft->topic_tags ?? [], $titleKeywords);
+        $sourceArticle = $this->draft->newsArticle;
 
-        $imageData = $unsplash->searchImage($keywords, $orientation);
+        $mediaAsset = $mediaLibrary->findImageForArticle(
+            keywords: $keywords,
+            regionId: $this->draft->region_id,
+            businessId: $sourceArticle?->business_id ?? null,
+        );
 
-        if ($imageData) {
-            Log::debug('Fetched Unsplash image for article', [
+        if ($mediaAsset) {
+            $mediaAsset->recordUsage('news_article_draft', $this->draft->id);
+
+            Log::debug('Fetched image for article', [
                 'draft_id' => $this->draft->id,
-                'photo_id' => $imageData['photo_id'] ?? 'unknown',
+                'asset_id' => $mediaAsset->id,
+                'source' => $mediaAsset->source_type,
             ]);
 
-            return $imageData;
-        }
-
-        // Try with just topic tags if title keywords didn't work
-        if (! empty($topicTags)) {
-            $imageData = $unsplash->searchImage($topicTags, $orientation);
-
-            if ($imageData) {
-                return $imageData;
-            }
-        }
-
-        // Fallback to a generic news/city image
-        if (config('news-workflow.unsplash.fallback_enabled', true)) {
-            return $unsplash->getRandomImage('local news city', $orientation);
+            return $mediaAsset->toArticleImageData();
         }
 
         return null;

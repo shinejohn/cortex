@@ -4,31 +4,31 @@ declare(strict_types=1);
 
 namespace App\Services\News;
 
+use App\Models\DayNewsPost;
 use App\Models\NewsArticleDraft;
 use App\Models\RawContent;
-use App\Models\DayNewsPost;
 use App\Models\Region;
+use App\Services\MediaLibraryService;
 use App\Services\WriterAgent\AgentAssignmentService;
 use Exception;
 use Illuminate\Support\Facades\Log;
-use RuntimeException;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 final class ArticleGenerationService
 {
     public function __construct(
         private readonly PrismAiService $prismAi,
-        private readonly UnsplashService $unsplash,
+        private readonly MediaLibraryService $mediaLibrary,
         private readonly AgentAssignmentService $agentAssignmentService
-    ) {
-    }
+    ) {}
 
     /**
      * Generate full articles from drafts (Phase 6)
      */
     public function generateArticles(Region $region): int
     {
-        if (!config('news-workflow.article_generation.enabled', true)) {
+        if (! config('news-workflow.article_generation.enabled', true)) {
             Log::info('Article generation is disabled', ['region' => $region->name]);
 
             return 0;
@@ -90,7 +90,7 @@ final class ArticleGenerationService
 
                 $draft->update([
                     'status' => 'rejected',
-                    'rejection_reason' => 'Article generation failed: ' . $e->getMessage(),
+                    'rejection_reason' => 'Article generation failed: '.$e->getMessage(),
                 ]);
             }
         }
@@ -101,6 +101,25 @@ final class ArticleGenerationService
         ]);
 
         return $generatedCount;
+    }
+
+    // =========================================================================
+    // NEWSROOM TIER-BASED GENERATION
+    // =========================================================================
+
+    public function generateBrief(RawContent $content): DayNewsPost
+    {
+        return $this->generateFromRaw($content, RawContent::TIER_BRIEF);
+    }
+
+    public function generateStandard(RawContent $content): DayNewsPost
+    {
+        return $this->generateFromRaw($content, RawContent::TIER_STANDARD);
+    }
+
+    public function generateFull(RawContent $content): DayNewsPost
+    {
+        return $this->generateFromRaw($content, RawContent::TIER_FULL);
     }
 
     /**
@@ -116,7 +135,7 @@ final class ArticleGenerationService
         $agent = $region ? $this->agentAssignmentService->findBestAgent($region, $category) : null;
 
         // Fallback to any active agent if no match found
-        if (!$agent) {
+        if (! $agent) {
             $agent = $this->agentAssignmentService->findAnyAgent();
         }
 
@@ -135,7 +154,7 @@ final class ArticleGenerationService
         $factChecks = $draft->factChecks()
             ->where('verification_result', 'verified')
             ->get()
-            ->map(fn($fc) => [
+            ->map(fn ($fc) => [
                 'claim' => $fc->claim,
                 'verification_result' => $fc->verification_result,
                 'confidence_score' => $fc->confidence_score,
@@ -158,11 +177,11 @@ final class ArticleGenerationService
         $result = $this->prismAi->generateFinalArticle($draftData, $factChecks, $writerStyleInstructions);
 
         // Validate AI response has required fields
-        if (!is_array($result) || !isset($result['title'], $result['content'], $result['excerpt'])) {
+        if (! is_array($result) || ! isset($result['title'], $result['content'], $result['excerpt'])) {
             $keys = is_array($result) ? array_keys($result) : ['not_an_array'];
 
             throw new RuntimeException(
-                'AI response missing required fields (title, content, excerpt). Got keys: ' . implode(', ', $keys)
+                'AI response missing required fields (title, content, excerpt). Got keys: '.implode(', ', $keys)
             );
         }
 
@@ -170,8 +189,19 @@ final class ArticleGenerationService
         $seoMetadata = $this->generateSeoMetadata($result['title'], $result['content'], $draft->topic_tags);
         $seoMetadata['keywords'] = array_merge($seoMetadata['keywords'], $result['seo_keywords'] ?? []);
 
-        // Fetch a relevant image from Unsplash
-        $imageData = $this->fetchArticleImage($result['title'], $draft->topic_tags ?? []);
+        // Fetch a relevant image (local first, then Unsplash)
+        $mediaAsset = $this->fetchArticleImage(
+            $result['title'],
+            $draft->topic_tags ?? [],
+            $draft->region_id,
+            $draft->newsArticle?->business_id
+        );
+
+        $imageData = $mediaAsset?->toArticleImageData();
+
+        if ($mediaAsset) {
+            $mediaAsset->recordUsage('news_article_draft', $draft->id);
+        }
 
         // Store image attribution in SEO metadata if available
         if ($imageData) {
@@ -219,46 +249,36 @@ final class ArticleGenerationService
     }
 
     /**
-     * Fetch a relevant image for the article from Unsplash.
+     * Fetch a relevant image for the article (local library first, then Unsplash).
      */
-    private function fetchArticleImage(string $title, array $topicTags): ?array
-    {
-        if (!config('news-workflow.unsplash.enabled', true)) {
+    private function fetchArticleImage(
+        string $title,
+        array $topicTags,
+        ?string $regionId = null,
+        ?string $businessId = null,
+    ): ?\App\Models\MediaAsset {
+        if (! config('news-workflow.unsplash.enabled', true)) {
             return null;
         }
 
-        // Build keywords from title and topic tags
         $titleKeywords = $this->extractKeywords($title);
         $keywords = array_merge($topicTags, $titleKeywords);
 
-        $orientation = config('news-workflow.unsplash.orientation', 'landscape');
+        $mediaAsset = $this->mediaLibrary->findImageForArticle(
+            keywords: $keywords,
+            regionId: $regionId,
+            businessId: $businessId,
+        );
 
-        $imageData = $this->unsplash->searchImage($keywords, $orientation);
-
-        if ($imageData) {
-            Log::debug('Fetched Unsplash image for article', [
+        if ($mediaAsset) {
+            Log::debug('Fetched image for article', [
                 'title' => $title,
-                'photo_id' => $imageData['photo_id'] ?? 'unknown',
+                'asset_id' => $mediaAsset->id,
+                'source' => $mediaAsset->source_type,
             ]);
-
-            return $imageData;
         }
 
-        // Try with just topic tags if title keywords didn't work
-        if (!empty($topicTags)) {
-            $imageData = $this->unsplash->searchImage($topicTags, $orientation);
-
-            if ($imageData) {
-                return $imageData;
-            }
-        }
-
-        // Fallback to a generic news/city image
-        if (config('news-workflow.unsplash.fallback_enabled', true)) {
-            return $this->unsplash->getRandomImage('local news city', $orientation);
-        }
-
-        return null;
+        return $mediaAsset;
     }
 
     /**
@@ -305,28 +325,9 @@ final class ArticleGenerationService
         $stopWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'];
 
         $words = explode(' ', mb_strtolower($title));
-        $keywords = array_filter($words, fn($word) => !in_array($word, $stopWords) && mb_strlen($word) > 3);
+        $keywords = array_filter($words, fn ($word) => ! in_array($word, $stopWords) && mb_strlen($word) > 3);
 
         return array_values($keywords);
-    }
-
-    // =========================================================================
-    // NEWSROOM TIER-BASED GENERATION
-    // =========================================================================
-
-    public function generateBrief(RawContent $content): DayNewsPost
-    {
-        return $this->generateFromRaw($content, RawContent::TIER_BRIEF);
-    }
-
-    public function generateStandard(RawContent $content): DayNewsPost
-    {
-        return $this->generateFromRaw($content, RawContent::TIER_STANDARD);
-    }
-
-    public function generateFull(RawContent $content): DayNewsPost
-    {
-        return $this->generateFromRaw($content, RawContent::TIER_FULL);
     }
 
     private function generateFromRaw(RawContent $content, string $tier): DayNewsPost
@@ -347,9 +348,9 @@ final class ArticleGenerationService
 
         // 2. Determine Length/Style based on Tier
         $instructions = match ($tier) {
-            RawContent::TIER_BRIEF => "Write a concise 100-200 word summary. Focus on the key facts: Who, What, When, Where. Direct tone.",
-            RawContent::TIER_FULL => "Write a comprehensive 500-1000 word article. Include deep context, analysis, and a professional journalistic tone.",
-            default => "Write a standard 300-500 word news article. Balanced tone, covering all main points.",
+            RawContent::TIER_BRIEF => 'Write a concise 100-200 word summary. Focus on the key facts: Who, What, When, Where. Direct tone.',
+            RawContent::TIER_FULL => 'Write a comprehensive 500-1000 word article. Include deep context, analysis, and a professional journalistic tone.',
+            default => 'Write a standard 300-500 word news article. Balanced tone, covering all main points.',
         };
 
         // 3. Generate with Prism
@@ -368,22 +369,35 @@ final class ArticleGenerationService
         $seoMetadata = $this->generateSeoMetadata($result['title'], $result['content'], $result['seo_keywords'] ?? []);
 
         $tags = $result['seo_keywords'] ?? [];
-        $imageData = $this->fetchArticleImage($result['title'], $tags);
+        $regionId = $content->source->region_id ?? null;
+        $mediaAsset = $this->fetchArticleImage($result['title'], $tags, $regionId, null);
+        $imageData = $mediaAsset?->toArticleImageData();
 
         $post = DayNewsPost::create([
             'title' => $result['title'],
-            'slug' => $seoMetadata['slug'] . '-' . Str::random(6),
+            'slug' => $seoMetadata['slug'].'-'.Str::random(6),
             'content' => $result['content'],
             'excerpt' => $result['excerpt'],
             'category' => $category,
             'status' => 'draft', // Auto-publish logic can handle status change later
             'featured_image' => $imageData['url'] ?? null,
-            'meta_description' => $seoMetadata['meta_description'],
-            'seo_keywords' => $seoMetadata['keywords'],
+            'featured_image_path' => $imageData['storage_path'] ?? null,
+            'featured_image_disk' => $imageData['storage_disk'] ?? null,
+            'metadata' => [
+                'meta_description' => $seoMetadata['meta_description'],
+                'meta_keywords' => $seoMetadata['keywords'],
+            ],
             'author_id' => 1, // System user or unassigned
             'published_at' => now(), // Setup for immediate publishing if approved
-            'region_id' => $content->source->region_id ?? null,
         ]);
+
+        if ($content->source?->region_id) {
+            $post->regions()->attach($content->source->region_id);
+        }
+
+        if ($mediaAsset) {
+            $mediaAsset->recordUsage('day_news_post', $post->id);
+        }
 
         return $post;
     }

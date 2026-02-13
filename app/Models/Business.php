@@ -100,6 +100,8 @@ final class Business extends Model
         'promoted',
         'seo_metadata',
         'industry_id',
+        'city_id',
+        'category_id',
     ];
 
     public function workspace(): BelongsTo
@@ -132,25 +134,26 @@ final class Business extends Model
     // Organization relationships
     public function parentOrganization(): BelongsTo
     {
-        return $this->belongsTo(Business::class, 'parent_organization_id');
+        return $this->belongsTo(self::class, 'parent_organization_id');
     }
 
     public function childOrganizations(): HasMany
     {
-        return $this->hasMany(Business::class, 'parent_organization_id');
+        return $this->hasMany(self::class, 'parent_organization_id');
     }
 
     public function organizationRelationships(): HasMany
     {
-        return $this->hasMany(\App\Models\OrganizationRelationship::class, 'organization_id');
+        return $this->hasMany(OrganizationRelationship::class, 'organization_id');
     }
 
-    public function relatedContent(string $type = null): HasMany
+    public function relatedContent(?string $type = null): HasMany
     {
-        $query = $this->hasMany(\App\Models\OrganizationRelationship::class, 'organization_id');
+        $query = $this->hasMany(OrganizationRelationship::class, 'organization_id');
         if ($type) {
             $query->where('relatable_type', $type);
         }
+
         return $query;
     }
 
@@ -223,6 +226,120 @@ final class Business extends Model
     public function coupons(): HasMany
     {
         return $this->hasMany(Coupon::class);
+    }
+
+    public function customDomain(): HasOne
+    {
+        return $this->hasOne(CustomDomain::class);
+    }
+
+    // Domain Convenience Service relationships
+    public function domains(): HasMany
+    {
+        return $this->hasMany(BusinessDomain::class);
+    }
+
+    public function primaryDomain(): HasOne
+    {
+        return $this->hasOne(BusinessDomain::class)->where('is_primary', true);
+    }
+
+    public function activeDomainUrl(): ?string
+    {
+        $domain = $this->primaryDomain;
+        if ($domain && $domain->isActive()) {
+            return 'https://'.$domain->domain_name;
+        }
+
+        return null;
+    }
+
+    public function localVoices(): HasMany
+    {
+        return $this->hasMany(LocalVoice::class);
+    }
+
+    public function photoContributions(): HasMany
+    {
+        return $this->hasMany(PhotoContribution::class);
+    }
+
+    // Community Linking relationships
+    public function cityRecord(): BelongsTo
+    {
+        return $this->belongsTo(City::class, 'city_id');
+    }
+
+    public function alphasiteCategory(): BelongsTo
+    {
+        return $this->belongsTo(AlphasiteCategory::class, 'category_id');
+    }
+
+    public function serviceAreas(): HasMany
+    {
+        return $this->hasMany(BusinessServiceArea::class);
+    }
+
+    public function activeServiceAreas(): HasMany
+    {
+        return $this->serviceAreas()->where('status', 'active');
+    }
+
+    /**
+     * Get all city IDs where this business should appear in listings.
+     * Includes home city + active service area cities + cities within active county areas.
+     */
+    public function getAllServiceCityIds(): array
+    {
+        $cityIds = [];
+
+        if ($this->city_id) {
+            $cityIds[] = $this->city_id;
+        }
+
+        $directCities = $this->activeServiceAreas()
+            ->where('area_type', BusinessServiceArea::AREA_TYPE_CITY)
+            ->whereNotNull('city_id')
+            ->pluck('city_id')
+            ->toArray();
+        $cityIds = array_merge($cityIds, $directCities);
+
+        $countyIds = $this->activeServiceAreas()
+            ->where('area_type', BusinessServiceArea::AREA_TYPE_COUNTY)
+            ->whereNotNull('county_id')
+            ->pluck('county_id');
+
+        if ($countyIds->isNotEmpty()) {
+            $countyCities = City::whereIn('county_id', $countyIds)
+                ->where('is_active', true)
+                ->pluck('id')
+                ->toArray();
+            $cityIds = array_merge($cityIds, $countyCities);
+        }
+
+        return array_unique($cityIds);
+    }
+
+    public function servesCity(string $cityId): bool
+    {
+        return in_array($cityId, $this->getAllServiceCityIds());
+    }
+
+    public function getAllServiceCountyIds(): array
+    {
+        $countyIds = [];
+
+        if ($this->cityRecord && $this->cityRecord->county_id) {
+            $countyIds[] = $this->cityRecord->county_id;
+        }
+
+        $explicitCounties = $this->activeServiceAreas()
+            ->where('area_type', BusinessServiceArea::AREA_TYPE_COUNTY)
+            ->whereNotNull('county_id')
+            ->pluck('county_id')
+            ->toArray();
+
+        return array_unique(array_merge($countyIds, $explicitCounties));
     }
 
     // Scopes

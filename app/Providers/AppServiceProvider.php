@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Contracts\GeocodingServiceInterface;
+use App\Models\User;
 use App\Services\GeocodingService;
 use Exception;
-use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Throwable;
 
 final class AppServiceProvider extends ServiceProvider
 {
@@ -46,7 +47,6 @@ final class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\News\ArticleGenerationService::class);
         $this->app->singleton(\App\Services\News\BusinessDiscoveryService::class);
         $this->app->singleton(\App\Services\News\ContentCurationService::class);
-        $this->app->singleton(\App\Services\News\ContentShortlistingService::class);
         $this->app->singleton(\App\Services\News\EventExtractionService::class);
         $this->app->singleton(\App\Services\News\EventPublishingService::class);
         $this->app->singleton(\App\Services\News\FactCheckingService::class);
@@ -75,7 +75,7 @@ final class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \App\Models\DayNewsPost::observe(\App\Observers\DayNewsPostObserver::class);
-        if (!config('makerkit.auth.magiclink.enabled') && !config('makerkit.auth.password.enabled')) {
+        if (! config('makerkit.auth.magiclink.enabled') && ! config('makerkit.auth.password.enabled')) {
             throw new Exception('Magic link or password authentication must be enabled');
         }
 
@@ -93,7 +93,7 @@ final class AppServiceProvider extends ServiceProvider
     private function configureRedisClient(): void
     {
         // Only auto-detect if REDIS_CLIENT is not explicitly set
-        if (!env('REDIS_CLIENT')) {
+        if (! env('REDIS_CLIENT')) {
             $client = (extension_loaded('redis') || function_exists('redis_connect')) ? 'phpredis' : 'predis';
             config(['database.redis.client' => $client]);
         }
@@ -137,10 +137,10 @@ final class AppServiceProvider extends ServiceProvider
                 ];
             }
         }
-        if (!isset($defaultConfig['timeout'])) {
+        if (! isset($defaultConfig['timeout'])) {
             $defaultConfig['timeout'] = $timeout;
         }
-        if (!isset($defaultConfig['read_timeout'])) {
+        if (! isset($defaultConfig['read_timeout'])) {
             $defaultConfig['read_timeout'] = $readTimeout;
         }
         config(['database.redis.default' => $defaultConfig]);
@@ -166,10 +166,10 @@ final class AppServiceProvider extends ServiceProvider
                 ];
             }
         }
-        if (!isset($cacheConfig['timeout'])) {
+        if (! isset($cacheConfig['timeout'])) {
             $cacheConfig['timeout'] = $timeout;
         }
-        if (!isset($cacheConfig['read_timeout'])) {
+        if (! isset($cacheConfig['read_timeout'])) {
             $cacheConfig['read_timeout'] = $readTimeout;
         }
         config(['database.redis.cache' => $cacheConfig]);
@@ -195,7 +195,7 @@ final class AppServiceProvider extends ServiceProvider
                 // Test Redis connection
                 $redis = \Illuminate\Support\Facades\Redis::connection();
                 $redis->ping();
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // Redis is unavailable - log warning
                 \Illuminate\Support\Facades\Log::warning('Redis connection failed', [
                     'error' => $e->getMessage(),
@@ -215,18 +215,18 @@ final class AppServiceProvider extends ServiceProvider
     private function configureRateLimiting(): void
     {
         // API rate limiting
-        RateLimiter::for('api', fn() => Limit::perMinute(60)->by(request()->user()?->id ?: request()->ip()));
-        RateLimiter::for('api-public', fn() => Limit::perMinute(30)->by(request()->ip()));
+        RateLimiter::for('api', fn () => Limit::perMinute(60)->by(request()->user()?->id ?: request()->ip()));
+        RateLimiter::for('api-public', fn () => Limit::perMinute(30)->by(request()->ip()));
 
         // Rate limiter for geocoding jobs - Google Maps API allows 50 requests/second
         // We limit to 10 per second to be safe and avoid hitting API limits
-        RateLimiter::for('geocoding', fn() => Limit::perSecond(10));
+        RateLimiter::for('geocoding', fn () => Limit::perSecond(10));
 
         // Rate limiter for location API - prevent abuse of search/detection endpoints
         // 30 requests per minute per IP for search (allow for autocomplete typing)
-        RateLimiter::for('location-search', fn() => Limit::perMinute(30)->by(request()->ip()));
+        RateLimiter::for('location-search', fn () => Limit::perMinute(30)->by(request()->ip()));
 
         // 10 requests per minute per IP for set/detect/clear operations
-        RateLimiter::for('location-actions', fn() => Limit::perMinute(10)->by(request()->ip()));
+        RateLimiter::for('location-actions', fn () => Limit::perMinute(10)->by(request()->ip()));
     }
 }
