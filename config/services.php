@@ -97,4 +97,15 @@ return [
         'api_key' => env('ANTHROPIC_API_KEY'),
     ],
 
+    'ai' => [
+        'provider' => env('AI_PROVIDER', 'anthropic'),
+        'model' => env('AI_MODEL', 'claude-sonnet-4-5-20250514'),
+    ],
+
+    'cloudflare' => [
+        'api_token' => env('CLOUDFLARE_API_TOKEN'),
+        'account_id' => env('CLOUDFLARE_ACCOUNT_ID'),
+        'zone_id' => env('CLOUDFLARE_ZONE_ID'),
+    ],
+
 ];

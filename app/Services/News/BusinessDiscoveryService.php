@@ -6,6 +6,7 @@ namespace App\Services\News;
 
 use App\Models\Business;
 use App\Models\Region;
+use App\Services\MediaLibraryService;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -14,15 +15,15 @@ final class BusinessDiscoveryService
 {
     public function __construct(
         private readonly GooglePlacesService $googlePlaces,
-    ) {
-    }
+        private readonly MediaLibraryService $mediaLibrary,
+    ) {}
 
     /**
      * Discover and store businesses for a region (Phase 1)
      */
     public function discoverBusinesses(Region $region): int
     {
-        if (!config('news-workflow.business_discovery.enabled', true)) {
+        if (! config('news-workflow.business_discovery.enabled', true)) {
             Log::info('Business discovery is disabled', ['region' => $region->name]);
 
             return 0;
@@ -105,7 +106,7 @@ final class BusinessDiscoveryService
         // Use google_place_id as unique identifier
         $googlePlaceId = $data['google_place_id'];
 
-        if (!$googlePlaceId) {
+        if (! $googlePlaceId) {
             throw new Exception('Business data missing google_place_id');
         }
 
@@ -156,6 +157,12 @@ final class BusinessDiscoveryService
             ]);
         }
 
+        // Register Google Places photos into central media library
+        $photos = $data['images'] ?? [];
+        if (! empty($photos)) {
+            $this->mediaLibrary->registerGooglePlacesPhotos($photos, $business, $region->id);
+        }
+
         return $business;
     }
 
@@ -170,7 +177,7 @@ final class BusinessDiscoveryService
             ->where('region_id', $region->id)
             ->exists();
 
-        if (!$exists) {
+        if (! $exists) {
             DB::table('business_region')->insert([
                 'business_id' => $business->id,
                 'region_id' => $region->id,
@@ -206,7 +213,7 @@ final class BusinessDiscoveryService
 
         $isNewsy = false;
         foreach ($business->categories ?? [] as $cat) {
-            if (str_contains(strtolower($cat), 'news') || in_array(strtolower($cat), $newsyTypes)) {
+            if (str_contains(mb_strtolower($cat), 'news') || in_array(mb_strtolower($cat), $newsyTypes)) {
                 $isNewsy = true;
                 break;
             }
@@ -216,7 +223,7 @@ final class BusinessDiscoveryService
             $isNewsy = true;
         }
 
-        if (!$isNewsy) {
+        if (! $isNewsy) {
             return;
         }
 
@@ -232,12 +239,12 @@ final class BusinessDiscoveryService
                 'website_url' => $business->website,
                 'is_active' => true,
                 'priority' => 70,
-                'customer_status' => 'prospect'
+                'customer_status' => 'prospect',
             ]
         );
 
         // 4. Create Collection Method (Web Scrape)
-        if ($source->wasRecentlyCreated || !$source->collectionMethods()->exists()) {
+        if ($source->wasRecentlyCreated || ! $source->collectionMethods()->exists()) {
 
             // Determine Playwright requirement (rudimentary check or config)
             // By default, assume simple scrape, but use playwright if configured
@@ -254,15 +261,15 @@ final class BusinessDiscoveryService
                     'selectors' => [
                         'list' => 'article, .news-item, .post, .press-release', // Generic starting point
                         'title' => 'h1, h2, h3, .title',
-                        'date' => '.date, time'
-                    ]
-                ]
+                        'date' => '.date, time',
+                    ],
+                ],
             ]);
 
             Log::info('Auto-created News Source from Business', [
                 'business_id' => $business->id,
                 'source_id' => $source->id,
-                'method' => 'scrape'
+                'method' => 'scrape',
             ]);
         }
     }

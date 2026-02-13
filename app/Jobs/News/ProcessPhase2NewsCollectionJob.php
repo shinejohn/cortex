@@ -65,6 +65,7 @@ final class ProcessPhase2NewsCollectionJob implements ShouldQueue
                 ]);
 
                 ProcessPhase3ShortlistingJob::dispatch($this->region);
+
                 return;
             }
 
@@ -122,6 +123,7 @@ final class ProcessPhase2NewsCollectionJob implements ShouldQueue
                 ]);
 
                 ProcessPhase3ShortlistingJob::dispatch($this->region);
+
                 return;
             }
 
@@ -131,8 +133,10 @@ final class ProcessPhase2NewsCollectionJob implements ShouldQueue
             // Dispatch category news collection job
             if ($categoryJobsCount > 0) {
                 ProcessCategoryNewsCollectionJob::dispatch($this->region);
-            }
 
+            }
+            // Direct source collection (RSS, scraping, civic platforms)
+            ProcessDirectSourceCollectionJob::dispatch($this->region);
             // Dispatch business news collection jobs
             if (! $skipBusinessSources) {
                 foreach ($businessesToFetch as $business) {

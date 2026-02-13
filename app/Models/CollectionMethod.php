@@ -1,13 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
-class CollectionMethod extends Model
+final class CollectionMethod extends Model
 {
     use HasUuids;
+
+    public const TYPE_RSS = 'rss';
+
+    public const TYPE_EMAIL = 'email';
+
+    public const TYPE_SCRAPE = 'scrape';
+
+    public const TYPE_CIVICPLUS = 'civicplus';
+
+    public const TYPE_NIXLE = 'nixle';
+
+    public const TYPE_POLICE = 'police';
+
+    public const TYPE_SCHOOL = 'school';
+
+    public const TYPE_EVENT_CALENDAR = 'event_calendar';
+
+    public const SUB_PENDING = 'pending';
+
+    public const SUB_AWAITING_CONFIRMATION = 'awaiting_confirmation';
+
+    public const SUB_CONFIRMED = 'confirmed';
+
+    public const SUB_ACTIVE = 'active';
 
     protected $fillable = [
         'source_id', 'method_type', 'name', 'endpoint_url', 'poll_interval_minutes',
@@ -16,42 +43,50 @@ class CollectionMethod extends Model
         'scrape_config', 'requires_javascript', 'platform_config', 'is_enabled', 'is_primary',
         'last_collected_at', 'last_successful_at', 'last_items_found', 'total_items_collected',
         'consecutive_failures', 'last_error',
+        'auto_detected_config', 'is_auto_configured',
     ];
 
     protected $casts = [
-        'scrape_config' => 'array', 'platform_config' => 'array',
+        'scrape_config' => 'array', 'platform_config' => 'array', 'auto_detected_config' => 'array',
         'is_enabled' => 'boolean', 'is_primary' => 'boolean', 'requires_javascript' => 'boolean',
+        'is_auto_configured' => 'boolean',
         'confirmed_at' => 'datetime', 'last_email_received_at' => 'datetime', 'last_collected_at' => 'datetime',
     ];
 
-    public const TYPE_RSS = 'rss';
-    public const TYPE_EMAIL = 'email';
-    public const TYPE_SCRAPE = 'scrape';
-    public const TYPE_CIVICPLUS = 'civicplus';
-    public const TYPE_NIXLE = 'nixle';
-    public const TYPE_POLICE = 'police';
-    public const TYPE_SCHOOL = 'school';
-    public const TYPE_EVENT_CALENDAR = 'event_calendar';
-
-    public const SUB_PENDING = 'pending';
-    public const SUB_AWAITING_CONFIRMATION = 'awaiting_confirmation';
-    public const SUB_CONFIRMED = 'confirmed';
-    public const SUB_ACTIVE = 'active';
-
-    public function source() { return $this->belongsTo(NewsSource::class, 'source_id'); }
-    public function rawContent() { return $this->hasMany(RawContent::class, 'collection_method_id'); }
-
-    public function scopeEnabled($q) { return $q->where('is_enabled', true); }
-    public function scopeByType($q, $t) { return $q->where('method_type', $t); }
-    
-    public function scopeDueForCollection($q) {
-        return $q->where('is_enabled', true)
-            ->whereHas('source', fn($sq) => $sq->where('is_active', true))
-            ->where(fn($sq) => $sq->whereNull('last_collected_at')
-                ->orWhereRaw('last_collected_at < NOW() - (poll_interval_minutes * INTERVAL \'1 minute\')'));
+    public function source()
+    {
+        return $this->belongsTo(NewsSource::class, 'source_id');
     }
 
-    public function recordCollection(int $items, int $duplicates = 0): void {
+    public function rawContent()
+    {
+        return $this->hasMany(RawContent::class, 'collection_method_id');
+    }
+
+    public function scopeEnabled($q)
+    {
+        return $q->where('is_enabled', true);
+    }
+
+    public function scopeByType($q, $t)
+    {
+        return $q->where('method_type', $t);
+    }
+
+    public function scopeDueForCollection($q)
+    {
+        return $q->where('is_enabled', true)
+            ->whereHas('source', fn ($sq) => $sq->where('is_active', true))
+            ->where(fn ($sq) => $sq->whereNull('last_collected_at')
+                ->orWhereRaw(
+                    DB::getDriverName() === 'sqlite'
+                        ? 'last_collected_at < datetime("now", "-" || poll_interval_minutes || " minutes")'
+                        : "last_collected_at < NOW() - (poll_interval_minutes * INTERVAL '1 minute')"
+                ));
+    }
+
+    public function recordCollection(int $items, int $duplicates = 0): void
+    {
         $this->update([
             'last_collected_at' => now(), 'last_successful_at' => now(),
             'last_items_found' => $items, 'total_items_collected' => $this->total_items_collected + $items,
@@ -60,16 +95,20 @@ class CollectionMethod extends Model
         $this->source->recordSuccess();
     }
 
-    public function recordFailure(string $error): void {
+    public function recordFailure(string $error): void
+    {
         $this->update([
             'last_collected_at' => now(), 'consecutive_failures' => $this->consecutive_failures + 1,
             'last_error' => $error,
         ]);
-        if ($this->consecutive_failures >= 5) $this->update(['is_enabled' => false]);
+        if ($this->consecutive_failures >= 5) {
+            $this->update(['is_enabled' => false]);
+        }
         $this->source->recordFailure($error);
     }
 
-    public function recordEmailReceived(): void {
+    public function recordEmailReceived(): void
+    {
         $this->update([
             'last_email_received_at' => now(),
             'emails_received_count' => $this->emails_received_count + 1,
@@ -77,7 +116,8 @@ class CollectionMethod extends Model
         ]);
     }
 
-    public function markConfirmed(): void {
+    public function markConfirmed(): void
+    {
         $this->update(['subscription_status' => self::SUB_CONFIRMED, 'confirmed_at' => now()]);
     }
 }

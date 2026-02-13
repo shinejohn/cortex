@@ -196,6 +196,9 @@ final class LocationService
 
     /**
      * Get fallback region (default region when no location detected)
+     *
+     * Prefers a city-level region so that content filters match seeded data.
+     * Falls back to the top-level (state) region if no city exists.
      */
     public function getFallbackRegion(): ?Region
     {
@@ -213,10 +216,15 @@ final class LocationService
                 }
 
                 try {
+                    // Prefer city-level region since content is linked to cities, not states
                     return Region::active()
-                        ->topLevel()
+                        ->where('type', 'city')
                         ->orderBy('display_order')
-                        ->first();
+                        ->first()
+                        ?? Region::active()
+                            ->topLevel()
+                            ->orderBy('display_order')
+                            ->first();
                 } catch (Exception $e) {
                     // If query fails (e.g., table doesn't exist), return null
                     return null;
