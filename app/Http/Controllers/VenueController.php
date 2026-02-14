@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreVenueRequest;
+use App\Models\Event;
 use App\Models\Follow;
 use App\Models\Venue;
 use App\Services\AdvertisementService;
@@ -61,12 +62,12 @@ final class VenueController extends Controller
             $query->where('price_per_hour', '<=', $request->float('max_price'));
         }
 
-        // Apply amenities filter
+        // Apply amenities filter (OR logic: venues with ANY selected amenity)
         if ($request->filled('amenities') && is_array($request->amenities)) {
             $amenities = $request->amenities;
             $query->where(function ($q) use ($amenities) {
                 foreach ($amenities as $amenity) {
-                    $q->whereJsonContains('amenities', $amenity);
+                    $q->orWhereJsonContains('amenities', $amenity);
                 }
             });
         }
@@ -88,15 +89,22 @@ final class VenueController extends Controller
             });
         }
 
-        // Apply sorting
-        $sortBy = $request->get('sort', 'popular');
+        // Apply location-based filtering and distance sorting
+        $hasLocation = $request->filled('latitude') && $request->filled('longitude');
+        if ($hasLocation) {
+            $radius = $request->float('radius', 50);
+            $query->withinRadius($request->float('latitude'), $request->float('longitude'), $radius);
+        }
+
+        $sortBy = $hasLocation ? ($request->get('sort', 'distance')) : $request->get('sort', 'popular');
+
         match ($sortBy) {
             'popular' => $query->orderByRaw('(total_reviews * 0.3 + average_rating * 0.7) DESC'),
             'recommended' => $query->orderByRaw('(average_rating * 0.7 + total_reviews * 0.3) DESC'),
             'newest' => $query->orderBy('listed_date', 'desc'),
             'price_low' => $query->orderBy('price_per_hour', 'asc'),
             'price_high' => $query->orderBy('price_per_hour', 'desc'),
-            'distance' => $query->orderBy('id'), // Placeholder for distance sorting
+            'distance' => $hasLocation ? $query->orderBy('distance', 'asc') : $query->orderByRaw('(total_reviews * 0.3 + average_rating * 0.7) DESC'),
             'rating' => $query->orderBy('average_rating', 'desc'),
             'capacity' => $query->orderBy('capacity', 'desc'),
             default => $query->orderByRaw('(total_reviews * 0.3 + average_rating * 0.7) DESC'),
@@ -138,7 +146,7 @@ final class VenueController extends Controller
                 ],
                 'lastBookedDaysAgo' => $venue->last_booked_days_ago,
                 'listedDate' => $venue->listed_date?->toISOString(),
-                'distance' => 0, // Placeholder - would be calculated based on user location
+                'distance' => $venue->distance,
             ];
         });
 
@@ -204,7 +212,10 @@ final class VenueController extends Controller
             'upcomingEvents' => $upcomingEvents,
             'stats' => [
                 'totalVenues' => $totalVenues,
-                'eventsThisWeek' => 427, // Mock data
+                'eventsThisWeek' => Event::published()
+                    ->where('event_date', '>=', now()->startOfWeek())
+                    ->where('event_date', '<=', now()->endOfWeek())
+                    ->count(),
                 'newVenuesThisWeek' => $newVenuesThisWeek,
             ],
             'filters' => $request->only(['search', 'venue_types', 'min_capacity', 'max_capacity', 'min_price', 'max_price', 'amenities', 'verified', 'date']),

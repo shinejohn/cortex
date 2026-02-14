@@ -97,8 +97,10 @@ final class Venue extends Model
 
     public function getDistanceAttribute(): float
     {
-        // This would be calculated based on user's location
-        // For now, return a default value
+        if (isset($this->attributes['distance'])) {
+            return round((float) $this->attributes['distance'], 2);
+        }
+
         return 0.0;
     }
 
