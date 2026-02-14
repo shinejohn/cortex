@@ -20,7 +20,7 @@ import {
 import { useState } from "react";
 import { CheckInButton } from "@/components/check-in/CheckInButton";
 import { CheckInFeed } from "@/components/check-in/CheckInFeed";
-import { FollowButton } from "@/components/common/follow-button";
+import FollowButton from "@/components/shared/FollowButton";
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
 import { SEO } from "@/components/common/seo";
@@ -445,7 +445,12 @@ export default function EventDetail({ auth, event, similarEvents, isFollowing, c
                                     Checked In
                                 </Button>
                             )}
-                            <FollowButton followableType="event" followableId={event.id} variant="default" initialFollowing={isFollowing} />
+                            <FollowButton
+                                followableType="event"
+                                followableId={event.id}
+                                initialFollowing={isFollowing}
+                                isAuthenticated={!!auth?.user}
+                            />
                             <Button variant="outline" onClick={handleShare}>
                                 <Share2 className="h-5 w-5 mr-2" />
                                 Share
