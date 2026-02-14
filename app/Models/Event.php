@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 final class Event extends Model
 {
     /** @use HasFactory<\Database\Factories\EventFactory> */
-    use HasFactory, HasUuid, \App\Traits\RelatableToOrganizations;
+    use \App\Traits\RelatableToOrganizations, HasFactory, HasUuid;
 
     protected $appends = [
         'date',
@@ -217,8 +217,8 @@ final class Event extends Model
         return $query->where(function ($q) use ($min, $max) {
             $q->where('is_free', true)
                 ->orWhere(function ($q2) use ($min, $max) {
-                    $q2->where('price_min', '>=', $min)
-                        ->where('price_max', '<=', $max);
+                    $q2->where('price_min', '<=', $max)
+                        ->where('price_max', '>=', $min);
                 });
         });
     }

@@ -19,7 +19,7 @@ import {
     X,
 } from "lucide-react";
 import { useState } from "react";
-import { FollowButton } from "@/components/common/follow-button";
+import FollowButton from "@/components/shared/FollowButton";
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
 import { SEO } from "@/components/common/seo";
@@ -165,14 +165,21 @@ export default function VenueShow() {
                                 <ArrowLeft className="h-4 w-4 mr-1" />
                                 Back to Venues
                             </Button>
-                            <h1 className="text-4xl font-bold mb-4 flex items-center">
+                            <h1 className="text-4xl font-bold mb-4 flex items-center gap-3">
                                 {venue.name}
                                 {venue.verified && (
-                                    <Badge className="ml-2 bg-accent text-primary">
+                                    <Badge className="bg-accent text-primary">
                                         <CheckCircle className="h-3.5 w-3.5 mr-1" />
                                         Verified
                                     </Badge>
                                 )}
+                                <FollowButton
+                                    followableType="venue"
+                                    followableId={String(venue.id)}
+                                    initialFollowing={isFollowing}
+                                    isAuthenticated={!!auth?.user}
+                                    className="text-white border-white/50 hover:bg-white/20"
+                                />
                             </h1>
                             <div className="flex flex-wrap items-center gap-4 text-lg">
                                 <div className="flex items-center">

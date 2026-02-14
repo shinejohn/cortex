@@ -1,15 +1,16 @@
 import { usePage } from "@inertiajs/react";
 import { CheckCircle, Clock, MapPin, Plus, Share2, Star, Users } from "lucide-react";
-import { FollowButton } from "@/components/common/follow-button";
+import FollowButton from "@/components/shared/FollowButton";
 import { Button } from "@/components/ui/button";
 import type { PerformerProfile } from "@/types/performer-profile";
 
 interface PerformerHeroProps {
     performer: PerformerProfile;
     isFollowing: boolean;
+    isAuthenticated?: boolean;
 }
 
-export function PerformerHero({ performer, isFollowing }: PerformerHeroProps) {
+export function PerformerHero({ performer, isFollowing, isAuthenticated = false }: PerformerHeroProps) {
     const getYearsActiveString = () => {
         const currentYear = new Date().getFullYear();
         const startYear = currentYear - performer.yearsActive;
@@ -96,9 +97,9 @@ export function PerformerHero({ performer, isFollowing }: PerformerHeroProps) {
                         <FollowButton
                             followableType="performer"
                             followableId={performer.id}
-                            variant="text"
-                            className="bg-indigo-600 text-white hover:bg-indigo-700"
                             initialFollowing={isFollowing}
+                            isAuthenticated={isAuthenticated}
+                            className="bg-indigo-600 text-white hover:bg-indigo-700"
                         />
                         <Button onClick={handleShare} variant="outline" className="bg-white/20 hover:bg-white/30 text-white border-white/30">
                             <Share2 className="h-5 w-5" />
