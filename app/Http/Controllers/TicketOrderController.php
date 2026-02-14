@@ -10,6 +10,7 @@ use App\Notifications\TicketOrderConfirmationNotification;
 use App\Services\PromoCodeService;
 use App\Services\QRCodeService;
 use App\Services\TicketPaymentService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ final class TicketOrderController extends Controller
         private readonly TicketPaymentService $ticketPaymentService,
         private readonly QRCodeService $qrCodeService
     ) {}
+
     public function index(Request $request): JsonResponse
     {
         $query = TicketOrder::query()
@@ -76,8 +78,6 @@ final class TicketOrderController extends Controller
                     'unit_price' => $ticketPlan->price,
                     'total_price' => $totalPrice,
                 ];
-
-                $ticketPlan->decrement('available_quantity', $item['quantity']);
             }
 
             $fees = $subtotal > 0 ? $subtotal * 0.1 : 0;
@@ -136,6 +136,7 @@ final class TicketOrderController extends Controller
                 }
                 // Send confirmation email for free tickets
                 $order->user->notify(new TicketOrderConfirmationNotification($order));
+
                 return response()->json($order->load(['items.ticketPlan', 'event']), 201);
             }
 
@@ -143,7 +144,10 @@ final class TicketOrderController extends Controller
             $successUrl = route('tickets.checkout.success', ['order' => $order->id]);
             $cancelUrl = route('tickets.checkout.cancel', ['order' => $order->id]);
 
+            $reserved = false;
             try {
+                $this->ticketPaymentService->reserveInventory($order);
+                $reserved = true;
                 $session = $this->ticketPaymentService->createCheckoutSession($order, $successUrl, $cancelUrl);
 
                 return response()->json([
@@ -153,17 +157,15 @@ final class TicketOrderController extends Controller
                         'url' => $session->url,
                     ],
                 ], 201);
-            } catch (\Exception $e) {
-                // If Stripe checkout fails, mark order as failed
+            } catch (Exception $e) {
+                if ($reserved) {
+                    $this->ticketPaymentService->releaseInventory($order);
+                }
+
                 $order->update([
                     'status' => 'cancelled',
                     'payment_status' => 'failed',
                 ]);
-
-                // Restore ticket quantities
-                foreach ($order->items as $item) {
-                    $item->ticketPlan->increment('available_quantity', $item->quantity);
-                }
 
                 return response()->json([
                     'error' => 'Failed to create checkout session: '.$e->getMessage(),
@@ -237,7 +239,7 @@ final class TicketOrderController extends Controller
 
             // Generate QR codes for all ticket items
             foreach ($ticketOrder->items as $item) {
-                if (!$item->qr_code) {
+                if (! $item->qr_code) {
                     $this->qrCodeService->generateForTicketOrderItem($item);
                 }
             }
@@ -257,18 +259,12 @@ final class TicketOrderController extends Controller
      */
     public function checkoutCancel(Request $request, TicketOrder $ticketOrder): RedirectResponse
     {
-        // Restore ticket quantities
-        DB::transaction(function () use ($ticketOrder) {
-            foreach ($ticketOrder->items as $item) {
-                $item->ticketPlan->increment('available_quantity', $item->quantity);
-            }
+        $this->ticketPaymentService->releaseInventory($ticketOrder);
 
-            // Mark order as cancelled
-            $ticketOrder->update([
-                'status' => 'cancelled',
-                'payment_status' => 'cancelled',
-            ]);
-        });
+        $ticketOrder->update([
+            'status' => 'cancelled',
+            'payment_status' => 'cancelled',
+        ]);
 
         return redirect()->route('events.tickets.selection', ['event' => $ticketOrder->event_id])
             ->with('error', 'Your order was cancelled. Please try again if you wish to purchase tickets.');

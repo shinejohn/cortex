@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { RoleManagement } from "@/components/calendars/role-management";
-import { FollowButton } from "@/components/common/follow-button";
+import FollowButton from "@/components/shared/FollowButton";
 import { Footer } from "@/components/common/footer";
 import { Header } from "@/components/common/header";
 import { Badge } from "@/components/ui/badge";
@@ -142,14 +142,21 @@ export default function CalendarShow() {
                             </Button>
                             <div className="flex items-start justify-between">
                                 <div className="flex-1">
-                                    <h1 className="text-4xl font-bold mb-4 flex items-center">
+                                    <h1 className="text-4xl font-bold mb-4 flex items-center gap-3">
                                         {calendar.title}
                                         {calendar.is_verified && (
-                                            <Badge className="ml-2 bg-accent text-primary">
+                                            <Badge className="bg-accent text-primary">
                                                 <CheckCircle className="h-3.5 w-3.5 mr-1" />
                                                 Verified
                                             </Badge>
                                         )}
+                                        <FollowButton
+                                            followableType="calendar"
+                                            followableId={String(calendar.id)}
+                                            initialFollowing={isFollowing}
+                                            isAuthenticated={!!auth?.user}
+                                            className="text-white border-white/50 hover:bg-white/20"
+                                        />
                                     </h1>
                                     <div className="flex flex-wrap items-center gap-4 text-lg">
                                         <div className="flex items-center">
