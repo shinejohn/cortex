@@ -84,9 +84,12 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->foreign('parent_id')->references('id')->on('alphasite_categories')->nullOnDelete();
             $table->index('is_active');
             $table->index('parent_id');
+        });
+
+        Schema::table('alphasite_categories', function (Blueprint $table) {
+            $table->foreign('parent_id')->references('id')->on('alphasite_categories')->nullOnDelete();
         });
 
         // 4. City-Category Content table (unique AI content per city+category)
