@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Filament\Pages\ImportBusinesses;
+use App\Filament\Pages\BusinessTransfer;
 use App\Models\Business;
 use App\Models\Region;
 use App\Models\User;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
@@ -16,28 +18,183 @@ beforeEach(function () {
     $this->actingAs($this->admin);
 });
 
-describe('ImportBusinesses Page Access', function () {
-    it('can render import businesses page', function () {
-        Livewire::test(ImportBusinesses::class)
+/**
+ * Extract a tar.gz export response and return parsed data.
+ *
+ * @return array{metadata: array, regions: array, businesses: array}
+ */
+function extractExport(Symfony\Component\HttpFoundation\BinaryFileResponse $response): array
+{
+    $tarGzPath = $response->getFile()->getPathname();
+    $tempDir = sys_get_temp_dir().'/test-extract-'.uniqid();
+    mkdir($tempDir, 0755, true);
+    exec(sprintf('tar -xzf %s -C %s', escapeshellarg($tarGzPath), escapeshellarg($tempDir)));
+
+    $metadata = json_decode(file_get_contents("{$tempDir}/metadata.json"), true) ?? [];
+    $regions = json_decode(file_get_contents("{$tempDir}/regions.json"), true) ?? [];
+
+    $businesses = [];
+    $chunkFiles = glob("{$tempDir}/businesses/chunk-*.json") ?: [];
+    sort($chunkFiles);
+
+    foreach ($chunkFiles as $f) {
+        $businesses = array_merge($businesses, json_decode(file_get_contents($f), true) ?? []);
+    }
+
+    File::deleteDirectory($tempDir);
+    @unlink($tarGzPath);
+
+    return compact('metadata', 'regions', 'businesses');
+}
+
+/**
+ * Create a tar.gz archive on the faked local disk from the given data.
+ */
+function createTestArchive(array $regions, array $businesses): string
+{
+    $tempDir = sys_get_temp_dir().'/test-archive-'.uniqid();
+    mkdir($tempDir.'/businesses', 0755, true);
+
+    file_put_contents("{$tempDir}/metadata.json", json_encode([
+        'exported_at' => now()->toIso8601String(),
+    ]));
+    file_put_contents("{$tempDir}/regions.json", json_encode($regions));
+
+    if (! empty($businesses)) {
+        file_put_contents("{$tempDir}/businesses/chunk-0001.json", json_encode($businesses));
+    }
+
+    $filePath = 'tmp/test-import-'.uniqid().'.tar.gz';
+    $diskPath = Storage::disk('local')->path($filePath);
+    File::ensureDirectoryExists(dirname($diskPath));
+
+    exec(sprintf('tar -czf %s -C %s .', escapeshellarg($diskPath), escapeshellarg($tempDir)));
+    File::deleteDirectory($tempDir);
+
+    return $filePath;
+}
+
+describe('Page Access', function () {
+    it('can render business transfer page', function () {
+        Livewire::test(BusinessTransfer::class)
             ->assertSuccessful();
     });
 
     it('has correct navigation settings', function () {
-        expect(ImportBusinesses::getNavigationGroup())->toBe('Day News')
-            ->and(ImportBusinesses::getNavigationSort())->toBe(5);
+        expect(BusinessTransfer::getNavigationGroup())->toBe('Day News')
+            ->and(BusinessTransfer::getNavigationSort())->toBe(4);
     });
 });
 
-describe('ImportBusinesses Import Logic', function () {
-    it('imports businesses and regions from parsed data', function () {
+describe('Export Preview', function () {
+    it('shows preview count after clicking preview', function () {
+        Business::factory()->count(3)->create(['status' => 'active']);
+
+        Livewire::test(BusinessTransfer::class)
+            ->call('updatePreview')
+            ->assertSet('previewCount', 3);
+    });
+
+    it('filters by region', function () {
+        $region = Region::factory()->active()->create();
+        $inRegion = Business::factory()->create(['status' => 'active']);
+        $inRegion->regions()->attach($region);
+
+        Business::factory()->create(['status' => 'active']);
+
+        Livewire::test(BusinessTransfer::class)
+            ->set('data.region_id', $region->id)
+            ->call('updatePreview')
+            ->assertSet('previewCount', 1);
+    });
+
+    it('filters by active status', function () {
+        Business::factory()->count(2)->create(['status' => 'active']);
+        Business::factory()->create(['status' => 'inactive']);
+
+        Livewire::test(BusinessTransfer::class)
+            ->set('data.status', 'active')
+            ->call('updatePreview')
+            ->assertSet('previewCount', 2);
+    });
+
+    it('filters by inactive status', function () {
+        Business::factory()->count(2)->create(['status' => 'active']);
+        Business::factory()->create(['status' => 'inactive']);
+
+        Livewire::test(BusinessTransfer::class)
+            ->set('data.status', 'inactive')
+            ->call('updatePreview')
+            ->assertSet('previewCount', 1);
+    });
+});
+
+describe('Export Archive', function () {
+    it('exports valid tar.gz archive', function () {
+        $region = Region::factory()->active()->create();
+        $business = Business::factory()->create(['status' => 'active']);
+        $business->regions()->attach($region);
+
+        $component = Livewire::test(BusinessTransfer::class);
+        $response = $component->instance()->export();
+
+        $data = extractExport($response);
+
+        expect($data['metadata'])->toHaveKey('exported_at')
+            ->and($data['regions'])->toHaveCount(1)
+            ->and($data['businesses'])->toHaveCount(1)
+            ->and($data['businesses'][0]['name'])->toBe($business->name);
+    });
+
+    it('excludes workspace_id from exported businesses', function () {
+        Business::factory()->create(['status' => 'active']);
+
+        $component = Livewire::test(BusinessTransfer::class);
+        $data = extractExport($component->instance()->export());
+
+        expect($data['businesses'][0])->not->toHaveKey('workspace_id');
+    });
+
+    it('includes region_ids in exported businesses', function () {
+        $region1 = Region::factory()->active()->create();
+        $region2 = Region::factory()->active()->create();
+        $business = Business::factory()->create(['status' => 'active']);
+        $business->regions()->attach([$region1->id, $region2->id]);
+
+        $component = Livewire::test(BusinessTransfer::class);
+        $data = extractExport($component->instance()->export());
+
+        expect($data['businesses'][0]['region_ids'])->toHaveCount(2)
+            ->and($data['businesses'][0]['region_ids'])->toContain($region1->id)
+            ->and($data['businesses'][0]['region_ids'])->toContain($region2->id);
+    });
+
+    it('exports regions with hierarchy ordering', function () {
+        $state = Region::factory()->stateRegion()->active()->create();
+        $county = Region::factory()->county()->active()->create(['parent_id' => $state->id]);
+        $business = Business::factory()->create(['status' => 'active']);
+        $business->regions()->attach([$state->id, $county->id]);
+
+        $component = Livewire::test(BusinessTransfer::class);
+        $data = extractExport($component->instance()->export());
+
+        expect($data['regions'])->toHaveCount(2);
+
+        $regionTypes = array_column($data['regions'], 'type');
+        $stateIdx = array_search('state', $regionTypes);
+        $countyIdx = array_search('county', $regionTypes);
+        expect($stateIdx)->toBeLessThan($countyIdx);
+    });
+});
+
+describe('Import', function () {
+    it('imports businesses and regions from archive', function () {
         $regionId = fake()->uuid();
+        $businessId = fake()->uuid();
 
-        $component = Livewire::test(ImportBusinesses::class);
-
-        // Simulate parsed data (normally set by parseJsonFile)
-        $component->set('parsedData', [
-            'exported_at' => now()->toIso8601String(),
-            'regions' => [
+        Storage::fake('local');
+        $filePath = createTestArchive(
+            regions: [
                 [
                     'id' => $regionId,
                     'name' => 'Test City',
@@ -52,9 +209,9 @@ describe('ImportBusinesses Import Logic', function () {
                     'longitude' => '-82.3248000',
                 ],
             ],
-            'businesses' => [
+            businesses: [
                 [
-                    'id' => fake()->uuid(),
+                    'id' => $businessId,
                     'google_place_id' => 'ChIJtest123',
                     'name' => 'Test Business',
                     'slug' => 'test-business',
@@ -64,9 +221,14 @@ describe('ImportBusinesses Import Logic', function () {
                     'region_ids' => [$regionId],
                 ],
             ],
-        ]);
+        );
 
-        $component->set('data.preserve_uuids', false)
+        Livewire::test(BusinessTransfer::class)
+            ->set('data.import_file', $filePath)
+            ->call('parseArchive')
+            ->assertSet('importSummary.total_businesses', 1)
+            ->assertSet('importSummary.total_regions', 1)
+            ->set('data.preserve_uuids', false)
             ->set('data.skip_duplicates', true)
             ->call('startImport');
 
@@ -82,7 +244,6 @@ describe('ImportBusinesses Import Logic', function () {
             'workspace_id' => null,
         ]);
 
-        // Check pivot
         $business = Business::where('name', 'Test Business')->first();
         $region = Region::where('slug', 'test-city')->first();
         expect($business->regions->pluck('id')->toArray())->toContain($region->id);
@@ -94,12 +255,10 @@ describe('ImportBusinesses Import Logic', function () {
             'name' => 'Existing Business',
         ]);
 
-        $component = Livewire::test(ImportBusinesses::class);
-
-        $component->set('parsedData', [
-            'exported_at' => now()->toIso8601String(),
-            'regions' => [],
-            'businesses' => [
+        Storage::fake('local');
+        $filePath = createTestArchive(
+            regions: [],
+            businesses: [
                 [
                     'id' => fake()->uuid(),
                     'google_place_id' => 'ChIJexisting',
@@ -117,9 +276,11 @@ describe('ImportBusinesses Import Logic', function () {
                     'region_ids' => [],
                 ],
             ],
-        ]);
+        );
 
-        $component->set('data.skip_duplicates', true)
+        Livewire::test(BusinessTransfer::class)
+            ->set('data.import_file', $filePath)
+            ->set('data.skip_duplicates', true)
             ->call('startImport');
 
         $this->assertDatabaseMissing('businesses', ['name' => 'Duplicate Business']);
@@ -130,11 +291,9 @@ describe('ImportBusinesses Import Logic', function () {
         $businessId = fake()->uuid();
         $regionId = fake()->uuid();
 
-        $component = Livewire::test(ImportBusinesses::class);
-
-        $component->set('parsedData', [
-            'exported_at' => now()->toIso8601String(),
-            'regions' => [
+        Storage::fake('local');
+        $filePath = createTestArchive(
+            regions: [
                 [
                     'id' => $regionId,
                     'name' => 'UUID Region',
@@ -148,7 +307,7 @@ describe('ImportBusinesses Import Logic', function () {
                     'longitude' => null,
                 ],
             ],
-            'businesses' => [
+            businesses: [
                 [
                     'id' => $businessId,
                     'google_place_id' => 'ChIJuuid123',
@@ -158,9 +317,11 @@ describe('ImportBusinesses Import Logic', function () {
                     'region_ids' => [$regionId],
                 ],
             ],
-        ]);
+        );
 
-        $component->set('data.preserve_uuids', true)
+        Livewire::test(BusinessTransfer::class)
+            ->set('data.import_file', $filePath)
+            ->set('data.preserve_uuids', true)
             ->set('data.skip_duplicates', true)
             ->call('startImport');
 
@@ -182,13 +343,11 @@ describe('ImportBusinesses Import Logic', function () {
             'type' => 'city',
         ]);
 
-        $component = Livewire::test(ImportBusinesses::class);
-
         $exportedRegionId = fake()->uuid();
 
-        $component->set('parsedData', [
-            'exported_at' => now()->toIso8601String(),
-            'regions' => [
+        Storage::fake('local');
+        $filePath = createTestArchive(
+            regions: [
                 [
                     'id' => $exportedRegionId,
                     'name' => 'Existing Region',
@@ -202,7 +361,7 @@ describe('ImportBusinesses Import Logic', function () {
                     'longitude' => null,
                 ],
             ],
-            'businesses' => [
+            businesses: [
                 [
                     'id' => fake()->uuid(),
                     'google_place_id' => 'ChIJmatch123',
@@ -212,16 +371,16 @@ describe('ImportBusinesses Import Logic', function () {
                     'region_ids' => [$exportedRegionId],
                 ],
             ],
-        ]);
+        );
 
-        $component->set('data.preserve_uuids', false)
+        Livewire::test(BusinessTransfer::class)
+            ->set('data.import_file', $filePath)
+            ->set('data.preserve_uuids', false)
             ->set('data.skip_duplicates', true)
             ->call('startImport');
 
-        // Should not create duplicate region
         expect(Region::where('slug', 'existing-region')->count())->toBe(1);
 
-        // Business should be linked to the existing region
         $business = Business::where('name', 'Matched Region Business')->first();
         expect($business->regions->pluck('id')->toArray())->toContain($existingRegion->id);
     });
@@ -231,11 +390,9 @@ describe('ImportBusinesses Import Logic', function () {
         $countyId = fake()->uuid();
         $cityId = fake()->uuid();
 
-        $component = Livewire::test(ImportBusinesses::class);
-
-        $component->set('parsedData', [
-            'exported_at' => now()->toIso8601String(),
-            'regions' => [
+        Storage::fake('local');
+        $filePath = createTestArchive(
+            regions: [
                 [
                     'id' => $stateId,
                     'name' => 'Florida',
@@ -273,7 +430,7 @@ describe('ImportBusinesses Import Logic', function () {
                     'longitude' => null,
                 ],
             ],
-            'businesses' => [
+            businesses: [
                 [
                     'id' => fake()->uuid(),
                     'google_place_id' => 'ChIJhierarchy123',
@@ -283,9 +440,11 @@ describe('ImportBusinesses Import Logic', function () {
                     'region_ids' => [$cityId],
                 ],
             ],
-        ]);
+        );
 
-        $component->set('data.preserve_uuids', true)
+        Livewire::test(BusinessTransfer::class)
+            ->set('data.import_file', $filePath)
+            ->set('data.preserve_uuids', true)
             ->set('data.skip_duplicates', true)
             ->call('startImport');
 
@@ -299,12 +458,10 @@ describe('ImportBusinesses Import Logic', function () {
     });
 
     it('sets workspace_id to null for all imported businesses', function () {
-        $component = Livewire::test(ImportBusinesses::class);
-
-        $component->set('parsedData', [
-            'exported_at' => now()->toIso8601String(),
-            'regions' => [],
-            'businesses' => [
+        Storage::fake('local');
+        $filePath = createTestArchive(
+            regions: [],
+            businesses: [
                 [
                     'id' => fake()->uuid(),
                     'google_place_id' => 'ChIJnullws123',
@@ -314,9 +471,11 @@ describe('ImportBusinesses Import Logic', function () {
                     'region_ids' => [],
                 ],
             ],
-        ]);
+        );
 
-        $component->set('data.preserve_uuids', false)
+        Livewire::test(BusinessTransfer::class)
+            ->set('data.import_file', $filePath)
+            ->set('data.preserve_uuids', false)
             ->call('startImport');
 
         $business = Business::where('name', 'No Workspace Business')->first();
