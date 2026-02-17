@@ -126,7 +126,7 @@ final class Event extends Model
     // Computed attributes for frontend compatibility
     public function getDateAttribute(): string
     {
-        return $this->event_date->toISOString();
+        return $this->event_date?->toISOString() ?? '';
     }
 
     public function getVenueInfoAttribute(): array

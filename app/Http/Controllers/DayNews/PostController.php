@@ -7,9 +7,11 @@ namespace App\Http\Controllers\DayNews;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DayNews\StoreDayNewsPostRequest;
 use App\Http\Requests\DayNews\UpdateDayNewsPostRequest;
+use App\Models\ContentModerationLog;
 use App\Models\DayNewsPost;
 use App\Models\Region;
 use App\Services\DayNewsPostService;
+use App\Services\Moderation\ContentModerationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -19,10 +21,9 @@ use Inertia\Response;
 final class PostController extends Controller
 {
     public function __construct(
-        private readonly DayNewsPostService $postService
-    ) {
-        //
-    }
+        private readonly DayNewsPostService $postService,
+        private readonly ContentModerationService $moderator,
+    ) {}
 
     public function index(Request $request): Response
     {
@@ -87,10 +88,16 @@ final class PostController extends Controller
             ]);
 
         $type = $request->query('type', 'article');
+        $categories = [
+            'local_news', 'business', 'government', 'crime', 'sports',
+            'lifestyle', 'education', 'health', 'real_estate', 'opinion',
+        ];
 
         return Inertia::render('day-news/posts/create', [
             'regions' => $regions,
             'initialType' => $type,
+            'categories' => $categories,
+            'defaultRegionId' => $request->user()->default_region_id ?? null,
         ]);
     }
 
@@ -109,6 +116,29 @@ final class PostController extends Controller
             workspace: $workspace,
             data: $data
         );
+
+        $regionId = $post->regions->first()?->id;
+        $moderationPassed = $this->moderator->moderate(
+            content: $post,
+            contentType: 'day_news_post',
+            trigger: ContentModerationLog::TRIGGER_CREATE,
+            userId: $request->user()->id,
+            regionId: $regionId,
+        );
+
+        if (! $moderationPassed) {
+            $latestLog = ContentModerationLog::where('content_type', 'day_news_post')
+                ->where('content_id', (string) $post->id)
+                ->latest()
+                ->first();
+
+            return redirect()
+                ->route('daynews.posts.edit', $post)
+                ->withErrors([
+                    'moderation' => $latestLog?->violation_explanation
+                        ?? 'This content does not meet our Content Standards Policy.',
+                ]);
+        }
 
         if ($post->status === 'published') {
             return redirect()

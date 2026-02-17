@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Throwable;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DayNewsPost>
@@ -20,6 +21,24 @@ final class DayNewsPostFactory extends Factory
     {
         $type = $this->faker->randomElement(['article', 'announcement', 'notice', 'ad', 'schedule']);
         $title = $this->faker->sentence();
+
+        // Try to get a real image from Unsplash
+        $imageUrl = $this->faker->imageUrl(800, 600, 'news');
+        try {
+            if (config('services.unsplash.access_key')) {
+                $unsplash = app(\App\Services\UnsplashService::class);
+                $photo = $unsplash->getRandomPhoto('local news, community');
+                if ($photo && isset($photo['urls']['regular'])) {
+                    $imageUrl = $photo['urls']['regular'];
+                    // Track download as per API requirements
+                    if (isset($photo['links']['download_location'])) {
+                        $unsplash->trackDownload($photo['links']['download_location']);
+                    }
+                }
+            }
+        } catch (Throwable $e) {
+            // Fallback to faker
+        }
 
         return [
             'workspace_id' => \App\Models\Workspace::factory(),
@@ -47,7 +66,7 @@ final class DayNewsPostFactory extends Factory
             'slug' => str($title)->slug()->toString(),
             'content' => $this->faker->paragraphs(5, true),
             'excerpt' => $this->faker->sentence(20),
-            'featured_image' => $this->faker->optional(0.7)->imageUrl(800, 600, 'news'),
+            'featured_image' => $imageUrl,
             'metadata' => $type === 'ad' ? [
                 'ad_days' => $this->faker->numberBetween(1, 30),
                 'ad_placement' => $this->faker->randomElement(['sidebar', 'banner', 'inline', 'featured']),

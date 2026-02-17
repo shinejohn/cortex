@@ -43,6 +43,33 @@ final class VenueMatchingService
     }
 
     /**
+     * Search venues by query for autocomplete. Returns array of matches.
+     *
+     * @return array<int, array{id: string, name: string, address: string|null, latitude: float|null, longitude: float|null}>
+     */
+    public function findVenue(string $query, ?\App\Models\Region $region = null): array
+    {
+        if (mb_strlen(mb_trim($query)) < 2) {
+            return [];
+        }
+
+        $search = '%'.Str::lower(mb_trim($query)).'%';
+        $venues = Venue::query()
+            ->whereRaw('LOWER(name) LIKE ?', [$search])
+            ->where('status', 'active')
+            ->limit(10)
+            ->get(['id', 'name', 'address', 'latitude', 'longitude']);
+
+        return $venues->map(fn (Venue $v) => [
+            'id' => $v->id,
+            'name' => $v->name,
+            'address' => $v->address,
+            'latitude' => $v->latitude,
+            'longitude' => $v->longitude,
+        ])->toArray();
+    }
+
+    /**
      * Find matching venue using name matching
      */
     private function findMatchingVenue(string $venueName, ?string $address): ?Venue

@@ -19,7 +19,15 @@ final class StoreDayNewsPostRequest extends FormRequest
     {
         return [
             'type' => ['required', 'string', Rule::in(['article', 'announcement', 'notice', 'ad', 'schedule'])],
-            'category' => ['nullable', 'string', Rule::in(['demise', 'missing_person', 'emergency'])],
+            'category' => [
+                'nullable',
+                'string',
+                Rule::in([
+                    'demise', 'missing_person', 'emergency',
+                    'local_news', 'business', 'government', 'crime', 'sports',
+                    'lifestyle', 'education', 'health', 'real_estate', 'opinion',
+                ]),
+            ],
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
             'excerpt' => ['nullable', 'string', 'max:500'],

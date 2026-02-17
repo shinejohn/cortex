@@ -220,9 +220,16 @@ final class EventService
                     ->where('id', '!=', $event->id)
                     ->with(['venue', 'performer', 'regions']);
 
-                // Find events with same category
-                if ($event->category) {
+                // Find events with same category or same venue
+                if ($event->category && $event->venue_id) {
+                    $query->where(function ($q) use ($event) {
+                        $q->where('category', $event->category)
+                            ->orWhere('venue_id', $event->venue_id);
+                    });
+                } elseif ($event->category) {
                     $query->where('category', $event->category);
+                } elseif ($event->venue_id) {
+                    $query->where('venue_id', $event->venue_id);
                 }
 
                 // Find events in same regions
@@ -231,11 +238,6 @@ final class EventService
                     $query->whereHas('regions', function ($q) use ($regionIds) {
                         $q->whereIn('regions.id', $regionIds);
                     });
-                }
-
-                // Find events at same venue
-                if ($event->venue_id) {
-                    $query->orWhere('venue_id', $event->venue_id);
                 }
 
                 return $query->orderBy('event_date', 'asc')

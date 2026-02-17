@@ -33,6 +33,27 @@ yarn-error.log
 *.bak
 *VARIABLES*
 *CREDENTIALS*
+*variables*
+*shared-variables*
+*SHARED*
+*-VARIABLES*
+*SHINE-DEV*
+CORRECT-*.txt
+CORRECTED-*.txt
+FINAL-*.txt
+MISSING-*.txt
+ACTUAL-*.env
+DB_*_FIX.md
+SSR_*_STATUS.md
+RAILWAY_*_STATUS.md
+community_audit.txt
+*.env.testing.bak
+push_to_github.sh
+aws-quarantine-recovery.md
+railway-fix-all-variables.sh
+import-*-variables.sh
+copy-*-variables.sh
+climactic-shared-variables.env
 .railway/token.json
 
 # Logs

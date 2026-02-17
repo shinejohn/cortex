@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Services\News;
 
+use App\Jobs\Rollout\ProcessWebsiteScanJob;
 use App\Models\Business;
 use App\Models\Region;
+use App\Models\Rollout\CommunityRollout;
 use App\Services\MediaLibraryService;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -113,7 +115,10 @@ final class BusinessDiscoveryService
         // Find existing business by google_place_id
         $business = Business::where('google_place_id', $googlePlaceId)->first();
 
+        $communityId = $region->community_id ?? $region->community?->id;
+
         $businessFields = [
+            'community_id' => $communityId,
             'name' => $data['name'],
             'description' => $data['description'],
             'address' => $data['address'],
@@ -167,9 +172,9 @@ final class BusinessDiscoveryService
     }
 
     /**
-     * Link business to region (many-to-many)
+     * Link business to region (many-to-many). Optionally pass CommunityRollout for rollout metrics.
      */
-    public function assignToRegion(Business $business, Region $region): void
+    public function assignToRegion(Business $business, Region $region, ?CommunityRollout $communityRollout = null): void
     {
         // Check if relationship already exists
         $exists = DB::table('business_region')
@@ -193,21 +198,27 @@ final class BusinessDiscoveryService
             ]);
         }
 
-        // Auto-configure as news source if applicable
-        $this->evaluateAndSetupNewsSource($business, $region);
+        $this->evaluateAndSetupNewsSource($business, $region, $communityRollout);
     }
 
     /**
-     * targeted: Evaluate if this business should be a news source and setup collection
+     * Evaluate if business should be a news source, setup collection, and optionally dispatch website scan.
      */
-    private function evaluateAndSetupNewsSource(Business $business, Region $region): void
+    public function evaluateAndSetupNewsSource(Business $business, Region $region, ?CommunityRollout $communityRollout = null): void
     {
         // 1. Must have a website
         if (empty($business->website)) {
             return;
         }
 
-        // 2. Check types/categories for news potential
+        // Rollout path: dispatch website scan for any business with website (discovers RSS/sitemap)
+        if ($communityRollout) {
+            ProcessWebsiteScanJob::dispatch($business, $communityRollout)->onQueue('rollout');
+
+            return;
+        }
+
+        // 2. Check types/categories for news potential (non-rollout path)
         // e.g., 'city_hall', 'police', 'school', 'newspaper', 'community_center'
         $newsyTypes = ['government', 'school', 'university', 'museum', 'library', 'police', 'fire_station', 'local_government_office', 'newspaper', 'news_media'];
 

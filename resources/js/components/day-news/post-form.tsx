@@ -32,6 +32,11 @@ interface PostFormProps {
     regions: Region[];
     isEditing?: boolean;
     onSubmit: (data: PostFormData) => void;
+    /** When provided, form is controlled by parent (for AI integration) */
+    data?: PostFormData;
+    setData?: React.Dispatch<React.SetStateAction<PostFormData>> | ((key: string, value: unknown) => void);
+    processing?: boolean;
+    errors?: Record<string, string>;
 }
 
 const POST_TYPES = [
@@ -42,10 +47,23 @@ const POST_TYPES = [
     { value: "schedule", label: "Schedule" },
 ];
 
-const CATEGORIES = [
+const NOTICE_CATEGORIES = [
     { value: "demise", label: "Demise (Free)" },
     { value: "missing_person", label: "Missing Person (Free)" },
     { value: "emergency", label: "Emergency (Free)" },
+];
+
+const ARTICLE_CATEGORIES = [
+    { value: "local_news", label: "Local News" },
+    { value: "business", label: "Business" },
+    { value: "government", label: "Government" },
+    { value: "crime", label: "Crime" },
+    { value: "sports", label: "Sports" },
+    { value: "lifestyle", label: "Lifestyle" },
+    { value: "education", label: "Education" },
+    { value: "health", label: "Health" },
+    { value: "real_estate", label: "Real Estate" },
+    { value: "opinion", label: "Opinion" },
 ];
 
 const AD_PLACEMENTS = [
@@ -55,8 +73,17 @@ const AD_PLACEMENTS = [
     { value: "featured", label: "Featured" },
 ];
 
-export default function PostForm({ initialData, regions, isEditing = false, onSubmit }: PostFormProps) {
-    const { data, setData, processing, errors } = useForm<PostFormData>({
+export default function PostForm({
+    initialData,
+    regions,
+    isEditing = false,
+    onSubmit,
+    data: controlledData,
+    setData: controlledSetData,
+    processing: controlledProcessing,
+    errors: controlledErrors,
+}: PostFormProps) {
+    const internalForm = useForm<PostFormData>({
         type: initialData?.type || "article",
         category: initialData?.category || null,
         title: initialData?.title || "",
@@ -67,14 +94,43 @@ export default function PostForm({ initialData, regions, isEditing = false, onSu
         metadata: initialData?.metadata || {},
     });
 
+    const isControlled = controlledData !== undefined && controlledSetData !== undefined;
+    const data = isControlled ? controlledData : internalForm.data;
+    const setData = isControlled
+        ? (keyOrUpdater: string | ((prev: PostFormData) => PostFormData), value?: unknown) => {
+              if (typeof keyOrUpdater === "function") {
+                  (controlledSetData as (updater: (prev: PostFormData) => PostFormData) => void)(keyOrUpdater);
+              } else if (typeof controlledSetData === "function") {
+                  (controlledSetData as (key: string, value: unknown) => void)(keyOrUpdater, value);
+              }
+          }
+        : internalForm.setData;
+    const processing = isControlled ? controlledProcessing ?? false : internalForm.processing;
+    const errors = isControlled ? controlledErrors ?? {} : internalForm.errors;
+
+    const handleSetData = (key: keyof PostFormData, value: unknown) => {
+        if (isControlled && typeof controlledSetData === "function") {
+            if ("region_ids" in { [key]: 1 } && key === "region_ids") {
+                (controlledSetData as (key: string, value: unknown) => void)(key, value);
+            } else {
+                (controlledSetData as (key: string, value: unknown) => void)(key, value);
+            }
+        } else if (!isControlled) {
+            internalForm.setData(key, value);
+        }
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSubmit(data);
     };
 
     const toggleRegion = (regionId: number) => {
-        setData("region_ids", data.region_ids.includes(regionId) ? data.region_ids.filter((id) => id !== regionId) : [...data.region_ids, regionId]);
+        const next = data.region_ids.includes(regionId) ? data.region_ids.filter((id) => id !== regionId) : [...data.region_ids, regionId];
+        handleSetData("region_ids", next);
     };
+
+    const categoryOptions = data.type === "article" ? ARTICLE_CATEGORIES : NOTICE_CATEGORIES;
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -86,7 +142,7 @@ export default function PostForm({ initialData, regions, isEditing = false, onSu
                 <CardContent className="space-y-4">
                     <div>
                         <Label htmlFor="type">Post Type</Label>
-                        <Select value={data.type} onValueChange={(value) => setData("type", value)} disabled={isEditing}>
+                        <Select value={data.type} onValueChange={(value) => handleSetData("type", value)} disabled={isEditing}>
                             <SelectTrigger>
                                 <SelectValue />
                             </SelectTrigger>
@@ -103,13 +159,13 @@ export default function PostForm({ initialData, regions, isEditing = false, onSu
 
                     <div>
                         <Label htmlFor="category">Category (Optional)</Label>
-                        <Select value={data.category || "none"} onValueChange={(value) => setData("category", value === "none" ? null : value)}>
+                        <Select value={data.category || "none"} onValueChange={(value) => handleSetData("category", value === "none" ? null : value)}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select category" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="none">None</SelectItem>
-                                {CATEGORIES.map((cat) => (
+                                {categoryOptions.map((cat) => (
                                     <SelectItem key={cat.value} value={cat.value}>
                                         {cat.label}
                                     </SelectItem>
@@ -121,7 +177,7 @@ export default function PostForm({ initialData, regions, isEditing = false, onSu
 
                     <div>
                         <Label htmlFor="title">Title</Label>
-                        <Input id="title" value={data.title} onChange={(e) => setData("title", e.target.value)} placeholder="Enter post title" />
+                        <Input id="title" value={data.title} onChange={(e) => handleSetData("title", e.target.value)} placeholder="Enter post title" />
                         {errors.title && <p className="mt-1 text-sm text-destructive">{errors.title}</p>}
                     </div>
 
@@ -130,7 +186,7 @@ export default function PostForm({ initialData, regions, isEditing = false, onSu
                         <Textarea
                             id="excerpt"
                             value={data.excerpt}
-                            onChange={(e) => setData("excerpt", e.target.value)}
+                            onChange={(e) => handleSetData("excerpt", e.target.value)}
                             placeholder="Brief summary of your post"
                             rows={2}
                         />
@@ -142,7 +198,7 @@ export default function PostForm({ initialData, regions, isEditing = false, onSu
                         <Textarea
                             id="content"
                             value={data.content}
-                            onChange={(e) => setData("content", e.target.value)}
+                            onChange={(e) => handleSetData("content", e.target.value)}
                             placeholder="Write your post content here"
                             rows={10}
                         />
@@ -155,7 +211,7 @@ export default function PostForm({ initialData, regions, isEditing = false, onSu
                             id="featured_image"
                             type="file"
                             accept="image/*"
-                            onChange={(e) => setData("featured_image", e.target.files?.[0] || null)}
+                            onChange={(e) => handleSetData("featured_image", e.target.files?.[0] || null)}
                         />
                         {errors.featured_image && <p className="mt-1 text-sm text-destructive">{errors.featured_image}</p>}
                     </div>
@@ -171,7 +227,7 @@ export default function PostForm({ initialData, regions, isEditing = false, onSu
                                     max="90"
                                     value={data.metadata.ad_days || ""}
                                     onChange={(e) =>
-                                        setData("metadata", {
+                                        handleSetData("metadata", {
                                             ...data.metadata,
                                             ad_days: parseInt(e.target.value) || undefined,
                                         })
@@ -187,7 +243,7 @@ export default function PostForm({ initialData, regions, isEditing = false, onSu
                                 <Select
                                     value={data.metadata.ad_placement || ""}
                                     onValueChange={(value) =>
-                                        setData("metadata", {
+                                        handleSetData("metadata", {
                                             ...data.metadata,
                                             ad_placement: value,
                                         })

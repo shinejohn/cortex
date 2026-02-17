@@ -650,6 +650,33 @@ class PrismAiService
         ]);
     }
     /**
+     * Simple chat completion for freeform text/JSON responses.
+     * Used by AiCreatorAssistantService and ContentModeratorService.
+     *
+     * @param  string  $prompt  User prompt
+     * @param  string  $model  Model identifier (e.g. 'google/gemini-2.0-flash-001', 'anthropic/claude-sonnet-4-20250514')
+     * @param  string|null  $systemPrompt  Optional system instruction
+     */
+    public function chat(string $prompt, string $model, ?string $systemPrompt = null): string
+    {
+        $modelConfig = ['openrouter', $model];
+
+        $request = prism()
+            ->text()
+            ->using(...$modelConfig)
+            ->withClientOptions(['timeout' => self::CLIENT_TIMEOUT])
+            ->withPrompt($prompt);
+
+        if ($systemPrompt !== null) {
+            $request = $request->withSystemPrompt($systemPrompt);
+        }
+
+        $response = $request->generate();
+
+        return $response->text;
+    }
+
+    /**
      * Generic JSON generation method to support Story Analysis
      */
     public function generateJson(string $prompt, array $schema): array

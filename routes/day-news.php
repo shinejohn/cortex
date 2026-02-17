@@ -24,6 +24,10 @@ Route::get('/sitemap-posts.xml', [SitemapController::class, 'posts']);
 Route::get('/sitemap-posts-{page}.xml', [SitemapController::class, 'posts'])->where('page', '[0-9]+');
 Route::get('/sitemap-regions.xml', [SitemapController::class, 'regions']);
 
+// Public Content Standards Policy
+Route::get('/content-policy', [App\Http\Controllers\ContentPolicyController::class, 'show'])
+    ->name('content-policy');
+
 // DayNews home page
 Route::get('/', function () {
     $currentRegion = request()->attributes->get('detected_region');
@@ -153,9 +157,19 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
+// Admin Moderation Dashboard (admin only)
+Route::middleware(['auth', 'verified', 'can:access-admin'])->prefix('admin/moderation')->name('admin.moderation.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Admin\ModerationDashboardController::class, 'index'])->name('index');
+    Route::get('/content/{contentType}/{contentId}', [App\Http\Controllers\Admin\ModerationDashboardController::class, 'show'])->name('show');
+    Route::post('/content/{contentType}/{contentId}/override', [App\Http\Controllers\Admin\ModerationDashboardController::class, 'override'])->name('override');
+    Route::get('/complaints', [App\Http\Controllers\Admin\ModerationDashboardController::class, 'complaints'])->name('complaints');
+    Route::get('/interventions', [App\Http\Controllers\Admin\ModerationDashboardController::class, 'interventions'])->name('interventions');
+    Route::get('/analytics', [App\Http\Controllers\Admin\ModerationDashboardController::class, 'analytics'])->name('analytics');
+});
+
 // Authenticated post management routes (must come BEFORE the wildcard {slug} route)
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Post CRUD routes
+    // Post CRUD routes (AI-assisted create is integrated into posts.create)
     Route::resource('posts', PostController::class)->names([
         'index' => 'posts.index',
         'create' => 'posts.create',

@@ -21,6 +21,7 @@ final class Region extends Model
         'slug',
         'type',
         'parent_id',
+        'community_id',
         'description',
         'is_active',
         'display_order',
@@ -33,6 +34,11 @@ final class Region extends Model
     public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function community(): BelongsTo
+    {
+        return $this->belongsTo(Community::class);
     }
 
     public function children(): HasMany

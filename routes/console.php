@@ -31,6 +31,11 @@ Schedule::command('email:generate-newsletters')->weeklyOn(6, '22:00')->withoutOv
 Schedule::command('email:generate-smb-reports')->weeklyOn(0, '18:00')->withoutOverlapping()->runInBackground(); // Sunday at 6 PM
 Schedule::command('email:process-queue')->everyMinute()->withoutOverlapping()->runInBackground();
 
+// Content Moderation - Intervention monitor every 15 minutes
+Schedule::job(new App\Jobs\Moderation\RunInterventionMonitorJob)
+    ->everyFifteenMinutes()
+    ->withoutOverlapping();
+
 // AI Newsroom Schedule - CRITICAL: These run frequently, MUST have withoutOverlapping()
 Schedule::command('newsroom:collect')->everyFifteenMinutes()->withoutOverlapping()->runInBackground();
 Schedule::command('newsroom:classify')->everyTenMinutes()->withoutOverlapping()->runInBackground();
