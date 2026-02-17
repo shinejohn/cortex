@@ -2,17 +2,20 @@ import { Link } from "@inertiajs/react";
 import { ExternalLink } from "lucide-react";
 import React, { useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GoogleAd } from "@/components/ads/GoogleAd";
 
 interface Advertisement {
     id: number;
+    type?: string;
+    external_code?: string;
     placement: string;
-    advertable: {
+    advertable?: {
         id: number;
         title: string;
         excerpt: string | null;
         featured_image: string | null;
         slug: string;
-    };
+    } | null;
     expires_at: string;
 }
 
@@ -37,6 +40,21 @@ export default function Advertisement({ ad, onImpression, onClick }: Advertiseme
             onClick(ad.id);
         }
     };
+
+    // External / Google Ad Logic
+    if (ad.type === 'google' || ad.type === 'network') {
+        if (!ad.external_code) return null;
+
+        return (
+            <div className="w-full my-4" onClick={handleClick}>
+                <GoogleAd scriptCode={ad.external_code} className={ad.placement === 'sidebar' ? 'min-h-[250px]' : 'min-h-[90px]'} />
+                <div className="text-[10px] text-muted-foreground text-center mt-1">Advertisement</div>
+            </div>
+        );
+    }
+
+    // Fallback if local ad but no advertable data
+    if (!ad.advertable) return null;
 
     if (ad.placement === "banner") {
         return (

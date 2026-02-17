@@ -51,7 +51,7 @@ final class Announcement extends Model
 
     public function comments(): MorphMany
     {
-        return $this->morphMany(ArticleComment::class, 'article_id'); // Reuse ArticleComment pattern
+        return $this->morphMany(ArticleComment::class, 'commentable');
     }
 
     // Scopes

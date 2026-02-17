@@ -165,6 +165,16 @@ final class DayNewsPostForm
                     ])
                     ->columns(3)
                     ->collapsed(),
+
+                Section::make('Social Media Status')
+                    ->schema([
+                        \Filament\Forms\Components\KeyValue::make('social_share_status')
+                            ->label('Sharing History')
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsed(),
             ]);
     }
 }

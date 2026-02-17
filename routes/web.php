@@ -91,13 +91,25 @@ Route::get('/calendar', [CalendarController::class, 'publicIndex'])->name('calen
 
 // Create routes must come before {id} routes to avoid conflicts
 Route::middleware(['auth', 'verified'])->group(function () {
+    // Original human event creation (workspace, venues, performers, images)
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
+    Route::post('/events', [EventController::class, 'store'])->name('events.store');
+    // AI-assisted event creator (alternative flow)
+    Route::get('/events/create-ai', [App\Http\Controllers\EventCreatorController::class, 'create'])->name('events.create-ai');
+    Route::post('/events-ai', [App\Http\Controllers\EventCreatorController::class, 'store'])->name('events.store-ai');
     Route::get('/performers/create', [PerformerController::class, 'create'])->name('performers.create');
     Route::get('/performers/onboarding', [PerformerController::class, 'onboarding'])->name('performers.onboarding');
     Route::get('/performers/management', [PerformerController::class, 'management'])->name('performers.management');
     Route::get('/venues/create', [VenueController::class, 'create'])->name('venues.create');
     Route::get('/venues/management', [VenueController::class, 'management'])->name('venues.management');
     Route::get('/calendars/create', [CalendarController::class, 'create'])->name('calendars.create');
+
+    // Future AI-Assisted Content Creators (stubs)
+    Route::get('/ads/create', [App\Http\Controllers\ContentCreatorStubController::class, 'adCreate'])->name('ads.create');
+    Route::get('/announcements/create', [App\Http\Controllers\ContentCreatorStubController::class, 'announcementCreate'])->name('announcements.create');
+    Route::get('/coupons/create', [App\Http\Controllers\ContentCreatorStubController::class, 'couponCreate'])->name('coupons.create');
+    Route::get('/classifieds/create', [App\Http\Controllers\ContentCreatorStubController::class, 'classifiedCreate'])->name('classifieds.create');
+    Route::get('/legal-notices/create', [App\Http\Controllers\ContentCreatorStubController::class, 'legalNoticeCreate'])->name('legal-notices.create');
 });
 
 Route::get('/events', [EventController::class, 'publicIndex'])->name('events');

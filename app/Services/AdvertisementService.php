@@ -13,7 +13,12 @@ final class AdvertisementService
 {
     public function createAdvertisement(Model $advertable, string $platform, array $config): Advertisement
     {
+        $type = $config['type'] ?? 'local';
+
         return Advertisement::create([
+            'type' => $type,
+            'external_code' => $type === 'google' ? ($config['external_code'] ?? null) : null,
+            'config' => $config['config'] ?? null,
             'advertable_type' => get_class($advertable),
             'advertable_id' => $advertable->id,
             'platform' => $platform,

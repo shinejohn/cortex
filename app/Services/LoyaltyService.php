@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Models\Business;
+use App\Models\User;
+use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -21,9 +22,9 @@ final class LoyaltyService
     public function enroll(User $user, Business|string $business): void
     {
         $businessId = $business instanceof Business ? $business->id : $business;
-        
+
         DB::beginTransaction();
-        
+
         try {
             // Check if already enrolled (would need LoyaltyEnrollment model)
             // $exists = LoyaltyEnrollment::where('user_id', $user->id)
@@ -39,14 +40,14 @@ final class LoyaltyService
             //     'user_id' => $user->id,
             //     'business_id' => $businessId,
             //     'enrolled_at' => now(),
-            //     'points' => 0,
+            //     'points_balance' => 0,
             // ]);
 
             DB::commit();
 
             // Clear cache
             $this->clearUserCache($user, $businessId);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw $e;
         }
@@ -58,9 +59,9 @@ final class LoyaltyService
     public function earnPoints(User $user, Business|string $business, int $points, string $reason, ?string $sourceType = null, ?string $sourceId = null): void
     {
         $businessId = $business instanceof Business ? $business->id : $business;
-        
+
         DB::beginTransaction();
-        
+
         try {
             // Get or create enrollment
             // $enrollment = LoyaltyEnrollment::firstOrCreate([
@@ -68,11 +69,11 @@ final class LoyaltyService
             //     'business_id' => $businessId,
             // ], [
             //     'enrolled_at' => now(),
-            //     'points' => 0,
+            //     'points_balance' => 0,
             // ]);
 
             // Add points
-            // $enrollment->increment('points', $points);
+            // $enrollment->increment('points_balance', $points);
 
             // Log transaction (would need LoyaltyTransaction model)
             // LoyaltyTransaction::create([
@@ -89,7 +90,7 @@ final class LoyaltyService
 
             // Clear cache
             $this->clearUserCache($user, $businessId);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw $e;
         }
@@ -101,9 +102,9 @@ final class LoyaltyService
     public function redeemPoints(User $user, Business|string $business, int $points, string $reason): void
     {
         $businessId = $business instanceof Business ? $business->id : $business;
-        
+
         DB::beginTransaction();
-        
+
         try {
             // Get enrollment
             // $enrollment = LoyaltyEnrollment::where('user_id', $user->id)
@@ -111,12 +112,12 @@ final class LoyaltyService
             //     ->firstOrFail();
 
             // Check balance
-            // if ($enrollment->points < $points) {
+            // if ($enrollment->points_balance < $points) {
             //     throw new \Exception('Insufficient points');
             // }
 
             // Deduct points
-            // $enrollment->decrement('points', $points);
+            // $enrollment->decrement('points_balance', $points);
 
             // Log transaction
             // LoyaltyTransaction::create([
@@ -131,7 +132,7 @@ final class LoyaltyService
 
             // Clear cache
             $this->clearUserCache($user, $businessId);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             throw $e;
         }
@@ -144,15 +145,15 @@ final class LoyaltyService
     {
         $businessId = $business instanceof Business ? $business->id : $business;
         $cacheKey = "loyalty:balance:{$user->id}:{$businessId}";
-        
-        return (int) $this->cacheService->remember($cacheKey, now()->addMinutes(5), function () use ($user, $businessId) {
+
+        return (int) $this->cacheService->remember($cacheKey, now()->addMinutes(5), function () {
             // Would query LoyaltyEnrollment model
             // $enrollment = LoyaltyEnrollment::where('user_id', $user->id)
             //     ->where('business_id', $businessId)
             //     ->first();
             //
-            // return $enrollment ? $enrollment->points : 0;
-            
+            // return $enrollment ? $enrollment->points_balance : 0;
+
             return 0;
         });
     }
@@ -164,15 +165,15 @@ final class LoyaltyService
     {
         $businessId = $business instanceof Business ? $business->id : $business;
         $cacheKey = "loyalty:history:{$user->id}:{$businessId}:limit:{$limit}";
-        
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(5), function () use ($user, $businessId, $limit) {
+
+        return $this->cacheService->remember($cacheKey, now()->addMinutes(5), function () {
             // Would query LoyaltyTransaction model
             // return LoyaltyTransaction::where('user_id', $user->id)
             //     ->where('business_id', $businessId)
             //     ->orderBy('created_at', 'desc')
             //     ->limit($limit)
             //     ->get();
-            
+
             return collect([]);
         });
     }
@@ -183,13 +184,13 @@ final class LoyaltyService
     public function getUserPrograms(User $user): Collection
     {
         $cacheKey = "loyalty:programs:{$user->id}";
-        
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(10), function () use ($user) {
+
+        return $this->cacheService->remember($cacheKey, now()->addMinutes(10), function () {
             // Would query LoyaltyEnrollment model
             // return LoyaltyEnrollment::where('user_id', $user->id)
             //     ->with('business')
             //     ->get();
-            
+
             return collect([]);
         });
     }
@@ -201,16 +202,16 @@ final class LoyaltyService
     {
         $businessId = $business instanceof Business ? $business->id : $business;
         $cacheKey = "loyalty:stats:business:{$businessId}";
-        
-        return $this->cacheService->remember($cacheKey, now()->addMinutes(10), function () use ($businessId) {
+
+        return $this->cacheService->remember($cacheKey, now()->addMinutes(10), function () {
             // Would query LoyaltyEnrollment and LoyaltyTransaction models
             // return [
             //     'total_enrollments' => LoyaltyEnrollment::where('business_id', $businessId)->count(),
             //     'total_points_earned' => LoyaltyTransaction::where('business_id', $businessId)->where('type', 'earned')->sum('points'),
             //     'total_points_redeemed' => abs(LoyaltyTransaction::where('business_id', $businessId)->where('type', 'redeemed')->sum('points')),
-            //     'active_points' => LoyaltyEnrollment::where('business_id', $businessId)->sum('points'),
+            //     'active_points' => LoyaltyEnrollment::where('business_id', $businessId)->sum('points_balance'),
             // ];
-            
+
             return [
                 'total_enrollments' => 0,
                 'total_points_earned' => 0,
@@ -229,8 +230,7 @@ final class LoyaltyService
             $this->cacheService->forget("loyalty:balance:{$user->id}:{$businessId}");
             $this->cacheService->forget("loyalty:history:{$user->id}:{$businessId}:*");
         }
-        
+
         $this->cacheService->forget("loyalty:programs:{$user->id}");
     }
 }
-

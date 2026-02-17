@@ -146,8 +146,9 @@ final class Performer extends Model
 
     public function scopeWithinRadius($query, float $lat, float $lng, float $radius)
     {
-        // This would need to be implemented based on performer's location
-        // For now, return all performers
+        // TODO: Performer model lacks latitude/longitude columns. Once those columns are added
+        // via migration, implement the Haversine formula here (see Business or Venue models
+        // for reference). Until then, this scope returns all performers unfiltered.
         return $query;
     }
 

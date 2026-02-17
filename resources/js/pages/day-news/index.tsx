@@ -1,7 +1,9 @@
-import { Newspaper, DollarSign } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { Newspaper, DollarSign, Globe } from "lucide-react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import Advertisement from "@/components/day-news/advertisement";
 import NewspaperMasthead from "@/components/day-news/newspaper-masthead";
 import AnnouncementsSection from "@/components/day-news/announcements-section";
@@ -49,18 +51,21 @@ interface NewsArticle {
     regions: Region[];
     type?: string;
     category?: string | null;
+    is_national?: boolean;
 }
 
 interface Ad {
     id: number;
+    type?: string;
+    external_code?: string;
     placement: string;
-    advertable: {
+    advertable?: {
         id: number;
         title: string;
         excerpt: string | null;
         featured_image: string | null;
         slug: string;
-    };
+    } | null;
     expires_at: string;
 }
 
@@ -81,6 +86,7 @@ interface LegalNotice {
 interface DayNewsIndexProps {
     auth?: Auth;
     news: NewsArticle[];
+    nationalNews?: NewsArticle[];
     announcements: any[];
     legalNotices: LegalNotice[];
     classifieds: any[];
@@ -91,11 +97,23 @@ interface DayNewsIndexProps {
     advertisements: Advertisements;
 }
 
-function DayNewsContent({ news, hasRegion, advertisements, announcements, legalNotices, classifieds, coupons, events, socialPosts }: { news: NewsArticle[]; hasRegion: boolean; advertisements: Advertisements; announcements: any[]; legalNotices: LegalNotice[]; classifieds: any[]; coupons: any[]; events: any[]; socialPosts: SocialPost[] }) {
+function DayNewsContent({ news, nationalNews = [], hasRegion, advertisements, announcements, legalNotices, classifieds, coupons, events, socialPosts }: { news: NewsArticle[]; nationalNews?: NewsArticle[]; hasRegion: boolean; advertisements: Advertisements; announcements: any[]; legalNotices: LegalNotice[]; classifieds: any[]; coupons: any[]; events: any[]; socialPosts: SocialPost[] }) {
     const { currentRegion } = useLocation();
     const [showNewspaperView, setShowNewspaperView] = useState(false);
+    const [includeNational, setIncludeNational] = useState(false);
     const [greeting, setGreeting] = useState('');
     const [activeReaders, setActiveReaders] = useState(247);
+
+    // Merge and sort news based on toggle
+    const displayedNews = useMemo(() => {
+        if (!includeNational) return news;
+
+        // Combine and sort by date descending
+        const combined = [...news, ...nationalNews];
+        return combined.sort((a, b) =>
+            new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
+        );
+    }, [news, nationalNews, includeNational]);
 
     // Set time-based greeting & active readers logic from spec
     useEffect(() => {
@@ -128,12 +146,12 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
         });
     };
 
-    if (!hasRegion || news.length === 0) {
+    if (!hasRegion || displayedNews.length === 0) {
         return (
             <div className="flex min-h-[60vh] items-center justify-center px-4 py-24">
                 <div className="text-center">
                     <Newspaper className="mx-auto mb-4 size-16 text-muted-foreground" />
-                    <h2 className="mb-2 text-2xl font-bold">No Local News Available</h2>
+                    <h2 className="mb-2 text-2xl font-bold">No News Available</h2>
                     <p className="mx-auto max-w-md text-muted-foreground">
                         {hasRegion
                             ? "There are no news articles available for your region yet. Check back soon!"
@@ -144,9 +162,9 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
         );
     }
 
-    const featuredArticle = news[0];
-    const topStories = news.slice(1, 4);
-    const otherStories = news.slice(4);
+    const featuredArticle = displayedNews[0];
+    const topStories = displayedNews.slice(1, 4);
+    const otherStories = displayedNews.slice(4);
 
     return (
         <>
@@ -165,30 +183,42 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
 
             {/* Main content */}
             <div className="py-8">
-                {/* Spec View Toggle */}
-                <div className="mb-6 flex items-center justify-between border-b pb-4">
+                {/* View Controls & National Toggle */}
+                <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between border-b pb-4 gap-4">
                     <h2 className="font-serif text-3xl font-bold">Today's News</h2>
-                    <div className="flex gap-2">
-                        <Button
-                            variant={showNewspaperView ? "outline" : "default"}
-                            size="sm"
-                            onClick={() => setShowNewspaperView(false)}
-                        >
-                            Regular View
-                        </Button>
-                        <Button
-                            variant={showNewspaperView ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => setShowNewspaperView(true)}
-                        >
-                            Newspaper View
-                        </Button>
+
+                    <div className="flex items-center gap-6">
+                        {/* National News Toggle */}
+                        <div className="flex items-center space-x-2">
+                            <Switch id="national-mode" checked={includeNational} onCheckedChange={setIncludeNational} />
+                            <Label htmlFor="national-mode" className="flex items-center gap-1.5 cursor-pointer">
+                                <Globe className="h-4 w-4 text-muted-foreground" />
+                                <span>National News</span>
+                            </Label>
+                        </div>
+
+                        <div className="flex gap-2">
+                            <Button
+                                variant={showNewspaperView ? "outline" : "default"}
+                                size="sm"
+                                onClick={() => setShowNewspaperView(false)}
+                            >
+                                Regular View
+                            </Button>
+                            <Button
+                                variant={showNewspaperView ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => setShowNewspaperView(true)}
+                            >
+                                Newspaper View
+                            </Button>
+                        </div>
                     </div>
                 </div>
 
                 {showNewspaperView ? (
                     <ScrollableNewspaper
-                        news={news}
+                        news={displayedNews}
                         announcements={announcements}
                         classifieds={classifieds}
                         regionName={currentRegion?.name}
@@ -243,9 +273,14 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
                                                 <Link href={route('daynews.posts.show', article.slug) as any} className="font-bold leading-tight hover:underline">
                                                     {article.title}
                                                 </Link>
-                                                <p className="text-xs text-muted-foreground mt-1">
-                                                    {article.author?.name} • 4 min read
-                                                </p>
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    {article.is_national && (
+                                                        <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-bold uppercase">National</span>
+                                                    )}
+                                                    <p className="text-xs text-muted-foreground">
+                                                        {article.author?.name} • 4 min read
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
@@ -350,7 +385,7 @@ function DayNewsContent({ news, hasRegion, advertisements, announcements, legalN
 
 
 
-export default function DayNewsIndex({ auth, news, hasRegion, advertisements, announcements, legalNotices, classifieds, coupons, events, socialPosts }: DayNewsIndexProps) {
+export default function DayNewsIndex({ auth, news, nationalNews, hasRegion, advertisements, announcements, legalNotices, classifieds, coupons, events, socialPosts }: DayNewsIndexProps) {
     return (
         <DayNewsLayout
             auth={auth}
@@ -363,6 +398,7 @@ export default function DayNewsIndex({ auth, news, hasRegion, advertisements, an
         >
             <DayNewsContent
                 news={news}
+                nationalNews={nationalNews}
                 hasRegion={hasRegion}
                 advertisements={advertisements}
                 announcements={announcements}

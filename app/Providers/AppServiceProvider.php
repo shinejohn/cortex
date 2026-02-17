@@ -63,6 +63,10 @@ final class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\News\VenueMatchingService::class);
         $this->app->singleton(\App\Services\News\WorkflowSettingsService::class);
 
+        // Register AI Creator services
+        $this->app->singleton(\App\Services\Creator\AiCreatorAssistantService::class);
+        $this->app->singleton(\App\Services\Creator\ContentModeratorService::class);
+
         // Register Story Follow-Up services
         $this->app->singleton(\App\Services\Story\StoryFollowUpService::class);
         $this->app->singleton(\App\Services\Story\EngagementScoringService::class);
