@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 final class Advertisement extends Model
 {
     /** @use HasFactory<\Database\Factories\AdvertisementFactory> */
-    use \App\Traits\RelatableToOrganizations, HasFactory;
+    use HasFactory, \App\Traits\RelatableToOrganizations;
 
     protected $fillable = [
         'platform',

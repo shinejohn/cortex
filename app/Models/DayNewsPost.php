@@ -332,6 +332,7 @@ final class DayNewsPost extends Model
             'likes_count' => 'integer',
             'shares_count' => 'integer',
             'comments_count' => 'integer',
+            'engagement_score' => 'decimal:2',
             'engagement_calculated_at' => 'datetime',
             'is_national' => 'boolean',
             'social_share_status' => 'array',

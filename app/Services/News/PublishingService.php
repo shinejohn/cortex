@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Log;
 final class PublishingService
 {
     public function __construct(
-        private readonly AgentAssignmentService $agentAssignmentService,
         private readonly TrafficControlService $trafficControlService,
         private readonly ContentModerationService $moderationService,
     ) {}
@@ -28,7 +27,7 @@ final class PublishingService
      */
     public function publishArticles(Region $region): int
     {
-        if (! config('news-workflow.publishing.enabled', true)) {
+        if (!config('news-workflow.publishing.enabled', true)) {
             Log::info('Publishing is disabled', ['region' => $region->name]);
 
             return 0;
@@ -83,7 +82,7 @@ final class PublishingService
 
                 $draft->update([
                     'status' => 'rejected',
-                    'rejection_reason' => 'Publishing failed: '.$e->getMessage(),
+                    'rejection_reason' => 'Publishing failed: ' . $e->getMessage(),
                 ]);
             }
         }
@@ -256,7 +255,7 @@ final class PublishingService
         $counter = 1;
 
         while (DayNewsPost::where('slug', $slug)->exists()) {
-            $slug = $originalSlug.'-'.$counter;
+            $slug = $originalSlug . '-' . $counter;
             $counter++;
         }
 

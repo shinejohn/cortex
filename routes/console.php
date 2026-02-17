@@ -32,7 +32,7 @@ Schedule::command('email:generate-smb-reports')->weeklyOn(0, '18:00')->withoutOv
 Schedule::command('email:process-queue')->everyMinute()->withoutOverlapping()->runInBackground();
 
 // Content Moderation - Intervention monitor every 15 minutes
-Schedule::job(new App\Jobs\Moderation\RunInterventionMonitorJob)
+Schedule::job(new \App\Jobs\Moderation\RunInterventionMonitorJob)
     ->everyFifteenMinutes()
     ->withoutOverlapping();
 

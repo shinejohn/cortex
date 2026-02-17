@@ -21,7 +21,6 @@ final class ArticleCommentController extends Controller
     public function __construct(
         private readonly ContentModerationService $moderationService,
     ) {}
-
     /**
      * Get comments for an article
      */
