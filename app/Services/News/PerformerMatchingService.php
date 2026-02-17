@@ -38,6 +38,31 @@ final class PerformerMatchingService
     }
 
     /**
+     * Search performers by query for autocomplete. Returns array of matches.
+     *
+     * @return array<int, array{id: string, name: string, home_city: string|null}>
+     */
+    public function findPerformer(string $query, ?\App\Models\Region $region = null): array
+    {
+        if (mb_strlen(mb_trim($query)) < 2) {
+            return [];
+        }
+
+        $search = '%'.Str::lower(mb_trim($query)).'%';
+        $performers = Performer::query()
+            ->whereRaw('LOWER(name) LIKE ?', [$search])
+            ->where('status', 'active')
+            ->limit(10)
+            ->get(['id', 'name', 'home_city']);
+
+        return $performers->map(fn (Performer $p) => [
+            'id' => $p->id,
+            'name' => $p->name,
+            'home_city' => $p->home_city,
+        ])->toArray();
+    }
+
+    /**
      * Find matching performer using name matching
      */
     private function findMatchingPerformer(string $performerName): ?Performer

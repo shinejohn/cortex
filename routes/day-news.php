@@ -155,6 +155,10 @@ Route::get('/', function () {
 
 // Authenticated post management routes (must come BEFORE the wildcard {slug} route)
 Route::middleware(['auth', 'verified'])->group(function () {
+    // AI-Assisted Article Creator
+    Route::get('/articles/create', [App\Http\Controllers\ArticleCreatorController::class, 'create'])->name('articles.create');
+    Route::post('/articles', [App\Http\Controllers\ArticleCreatorController::class, 'store'])->name('articles.store');
+
     // Post CRUD routes
     Route::resource('posts', PostController::class)->names([
         'index' => 'posts.index',

@@ -38,14 +38,27 @@ final class RegionHomeController extends Controller
         $this->locationService->setUserLocation($region->id);
 
         // Get all published posts for this region
-        $allArticles = DayNewsPost::published()
+        $regionPosts = DayNewsPost::published()
             ->with(['author', 'regions', 'workspace'])
             ->whereHas('regions', fn ($q) => $q->where('regions.id', $region->id))
             ->orderBy('published_at', 'desc')
             ->limit(20)
             ->get();
 
+        // Get national news if requested or by default
+        $nationalPosts = DayNewsPost::published()
+            ->national()
+            ->with(['author', 'regions', 'workspace'])
+            ->orderBy('published_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        // Merge posts (simple merge for now, can be interleaved later)
+        // We'll pass them separately to let the frontend handle the toggle/mixing logic
+        // But for the main 'news' prop, we can keep it as region posts for valid fallback
+
         // Get advertisements for different placements
+        // Update: getActiveAds now returns mixed types (local + google)
         $bannerAds = $this->advertisementService->getActiveAds('day_news', $region, 'banner')->take(1);
         $featuredAds = $this->advertisementService->getActiveAds('day_news', $region, 'featured')->take(1);
         $inlineAds = $this->advertisementService->getActiveAds('day_news', $region, 'inline')->take(3);
@@ -109,7 +122,8 @@ final class RegionHomeController extends Controller
             'seo' => [
                 'jsonLd' => SeoService::buildJsonLd('website', $seoData, 'day-news'),
             ],
-            'news' => $allArticles,
+            'news' => $regionPosts,
+            'nationalNews' => $nationalPosts,
             'announcements' => $announcements,
             'legalNotices' => $legalNotices,
             'classifieds' => $classifieds,
@@ -120,50 +134,58 @@ final class RegionHomeController extends Controller
             'advertisements' => [
                 'banner' => $bannerAds->map(fn ($ad) => [
                     'id' => $ad->id,
+                    'type' => $ad->type,
+                    'external_code' => $ad->external_code,
                     'placement' => $ad->placement,
-                    'advertable' => [
+                    'advertable' => $ad->advertable ? [
                         'id' => $ad->advertable->id,
                         'title' => $ad->advertable->title,
                         'excerpt' => $ad->advertable->excerpt,
                         'featured_image' => $ad->advertable->featured_image,
                         'slug' => $ad->advertable->slug,
-                    ],
+                    ] : null,
                     'expires_at' => $ad->expires_at->toISOString(),
                 ]),
                 'featured' => $featuredAds->map(fn ($ad) => [
                     'id' => $ad->id,
+                    'type' => $ad->type, // local or google
+                    'external_code' => $ad->external_code,
                     'placement' => $ad->placement,
-                    'advertable' => [
+                    'advertable' => $ad->advertable ? [
                         'id' => $ad->advertable->id,
                         'title' => $ad->advertable->title,
                         'excerpt' => $ad->advertable->excerpt,
                         'featured_image' => $ad->advertable->featured_image,
                         'slug' => $ad->advertable->slug,
-                    ],
+                    ] : null, // Advertable might be null for google ads
                     'expires_at' => $ad->expires_at->toISOString(),
                 ]),
                 'inline' => $inlineAds->map(fn ($ad) => [
                     'id' => $ad->id,
+                    'type' => $ad->type,
+                    'external_code' => $ad->external_code,
                     'placement' => $ad->placement,
-                    'advertable' => [
+                    'advertable' => $ad->advertable ? [
                         'id' => $ad->advertable->id,
                         'title' => $ad->advertable->title,
                         'excerpt' => $ad->advertable->excerpt,
                         'featured_image' => $ad->advertable->featured_image,
                         'slug' => $ad->advertable->slug,
-                    ],
+                    ] : null,
                     'expires_at' => $ad->expires_at->toISOString(),
                 ]),
                 'sidebar' => $sidebarAds->map(fn ($ad) => [
                     'id' => $ad->id,
+                    'type' => $ad->type,
+                    'external_code' => $ad->external_code,
                     'placement' => $ad->placement,
-                    'advertable' => [
+                    'advertable' => $ad->advertable ? [
                         'id' => $ad->advertable->id,
                         'title' => $ad->advertable->title,
                         'excerpt' => $ad->advertable->excerpt,
                         'featured_image' => $ad->advertable->featured_image,
                         'slug' => $ad->advertable->slug,
-                    ],
+                    ] : null,
                     'expires_at' => $ad->expires_at->toISOString(),
                 ]),
             ],

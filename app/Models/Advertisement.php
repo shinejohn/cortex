@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 final class Advertisement extends Model
 {
     /** @use HasFactory<\Database\Factories\AdvertisementFactory> */
-    use HasFactory, \App\Traits\RelatableToOrganizations;
+    use \App\Traits\RelatableToOrganizations, HasFactory;
 
     protected $fillable = [
         'platform',
@@ -19,6 +19,9 @@ final class Advertisement extends Model
         'advertable_id',
         'placement',
         'regions',
+        'type',
+        'external_code',
+        'config',
         'impressions_count',
         'clicks_count',
         'starts_at',
@@ -96,6 +99,7 @@ final class Advertisement extends Model
     {
         return [
             'regions' => 'array',
+            'config' => 'array',
             'starts_at' => 'datetime',
             'expires_at' => 'datetime',
             'is_active' => 'boolean',

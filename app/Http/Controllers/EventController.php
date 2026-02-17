@@ -329,8 +329,10 @@ final class EventController extends Controller
         $events = Event::where('workspace_id', $currentWorkspace->id)
             ->where('status', 'published')
             ->where('event_date', '>=', now())
-            ->whereIn('badges', [['Featured']])
-            ->orWhere('community_rating', '>=', 4.0)
+            ->where(function ($q) {
+                $q->whereJsonContains('badges', 'Featured')
+                    ->orWhere('community_rating', '>=', 4.0);
+            })
             ->with(['venue', 'performer'])
             ->orderBy('community_rating', 'desc')
             ->orderBy('member_attendance', 'desc')

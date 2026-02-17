@@ -36,6 +36,7 @@ final class DayNewsPost extends Model
         'featured_image_path',
         'featured_image_disk',
         'metadata',
+        'social_share_status',
         'status',
         'published_at',
         'expires_at',
@@ -45,6 +46,7 @@ final class DayNewsPost extends Model
         'comments_count',
         'engagement_score',
         'engagement_calculated_at',
+        'is_national',
     ];
 
     public function workspace(): BelongsTo
@@ -161,6 +163,11 @@ final class DayNewsPost extends Model
         return $query->whereHas('regions', function ($q) use ($regionId) {
             $q->where('region_id', $regionId);
         });
+    }
+
+    public function scopeNational($query)
+    {
+        return $query->where('is_national', true);
     }
 
     public function scopeByType($query, string $type)
@@ -319,8 +326,9 @@ final class DayNewsPost extends Model
             'likes_count' => 'integer',
             'shares_count' => 'integer',
             'comments_count' => 'integer',
-            'engagement_score' => 'decimal:2',
             'engagement_calculated_at' => 'datetime',
+            'is_national' => 'boolean',
+            'social_share_status' => 'array',
         ];
     }
 }

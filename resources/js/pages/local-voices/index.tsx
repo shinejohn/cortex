@@ -226,21 +226,31 @@ export default function LocalVoicesIndex() {
                 {/* Pagination */}
                 {podcasts.links && podcasts.links.length > 3 && (
                     <div className="mt-8 flex justify-center gap-2">
-                        {podcasts.links.map((link: PaginationLink, index: number) => (
-                            <Button
-                                key={index}
-                                variant={link.active ? "default" : "outline"}
-                                size="sm"
-                                className={
-                                    link.active
-                                        ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
-                                        : "border hover:border-purple-500"
-                                }
-                                onClick={() => link.url && router.visit(link.url)}
-                                disabled={!link.url}
-                                dangerouslySetInnerHTML={{ __html: link.label }}
-                            />
-                        ))}
+                        {podcasts.links.map((link: PaginationLink, index: number) => {
+                            const decodedLabel = link.label
+                                .replace(/&laquo;/g, "\u00AB")
+                                .replace(/&raquo;/g, "\u00BB")
+                                .replace(/&amp;/g, "&")
+                                .replace(/&lt;/g, "<")
+                                .replace(/&gt;/g, ">");
+
+                            return (
+                                <Button
+                                    key={index}
+                                    variant={link.active ? "default" : "outline"}
+                                    size="sm"
+                                    className={
+                                        link.active
+                                            ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0"
+                                            : "border hover:border-purple-500"
+                                    }
+                                    onClick={() => link.url && router.visit(link.url)}
+                                    disabled={!link.url}
+                                >
+                                    {decodedLabel}
+                                </Button>
+                            );
+                        })}
                     </div>
                 )}
             </div>
