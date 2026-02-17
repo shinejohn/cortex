@@ -99,6 +99,13 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'throttle:api'])->group(functio
         require __DIR__.'/v1/social.php';
     }
 
+    // Moderation routes (complaints, appeals)
+    Route::prefix('moderation')->group(function () {
+        Route::post('/{contentType}/{contentId}/complaint', [App\Http\Controllers\Api\ModerationComplaintController::class, 'store']);
+        Route::post('/{logId}/appeal', [App\Http\Controllers\Api\ModerationComplaintController::class, 'appeal']);
+        Route::get('/{contentType}/{contentId}/complaint-status', [App\Http\Controllers\Api\ModerationComplaintController::class, 'complaintStatus']);
+    });
+
     // Community routes
     if (file_exists(__DIR__.'/v1/communities.php')) {
         require __DIR__.'/v1/communities.php';

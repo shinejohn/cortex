@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Services\News;
 
+use App\Models\ContentModerationLog;
 use App\Models\DayNewsPost;
 use App\Models\NewsArticleDraft;
 use App\Models\Region;
 use App\Models\WriterAgent;
+use App\Services\Moderation\ContentModerationService;
 use App\Services\WriterAgent\AgentAssignmentService;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -17,16 +19,16 @@ final class PublishingService
 {
     public function __construct(
         private readonly AgentAssignmentService $agentAssignmentService,
-        private readonly TrafficControlService $trafficControlService
-    ) {
-    }
+        private readonly TrafficControlService $trafficControlService,
+        private readonly ContentModerationService $moderationService,
+    ) {}
 
     /**
      * Publish articles (Phase 7)
      */
     public function publishArticles(Region $region): int
     {
-        if (!config('news-workflow.publishing.enabled', true)) {
+        if (! config('news-workflow.publishing.enabled', true)) {
             Log::info('Publishing is disabled', ['region' => $region->name]);
 
             return 0;
@@ -51,7 +53,7 @@ final class PublishingService
         ]);
 
         // Sort drafts by Priority Score before processing
-        $drafts = $drafts->sortByDesc(fn($draft) => $this->trafficControlService->calculatePriorityScore($draft));
+        $drafts = $drafts->sortByDesc(fn ($draft) => $this->trafficControlService->calculatePriorityScore($draft));
 
         foreach ($drafts as $draft) {
             try {
@@ -81,7 +83,7 @@ final class PublishingService
 
                 $draft->update([
                     'status' => 'rejected',
-                    'rejection_reason' => 'Publishing failed: ' . $e->getMessage(),
+                    'rejection_reason' => 'Publishing failed: '.$e->getMessage(),
                 ]);
             }
         }
@@ -108,6 +110,27 @@ final class PublishingService
      */
     private function publishDraft(NewsArticleDraft $draft, string $status): DayNewsPost
     {
+        $moderationPassed = $this->moderationService->moderate(
+            content: $draft,
+            contentType: 'day_news_post',
+            trigger: ContentModerationLog::TRIGGER_PUBLISH,
+            userId: null,
+            regionId: $draft->region_id,
+        );
+
+        if (! $moderationPassed) {
+            $draft->update([
+                'status' => 'rejected',
+                'rejection_reason' => 'Content moderation: policy violation detected',
+            ]);
+            Log::warning('Phase 7: Draft rejected by moderator', [
+                'draft_id' => $draft->id,
+                'title' => $draft->generated_title,
+            ]);
+
+            throw new Exception('Content moderation: policy violation detected');
+        }
+
         return DB::transaction(function () use ($draft, $status) {
             // Prepare metadata with SEO information
             $metadata = [
@@ -139,7 +162,7 @@ final class PublishingService
             $agent = $preAssignedAgentId ? WriterAgent::find($preAssignedAgentId) : null;
 
             // Fallback to finding a suitable agent if not pre-assigned
-            if (!$agent) {
+            if (! $agent) {
                 $region = Region::find($draft->region_id);
                 $agent = $region ? $this->agentAssignmentService->findBestAgent($region, $category) : null;
             }
@@ -233,7 +256,7 @@ final class PublishingService
         $counter = 1;
 
         while (DayNewsPost::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $counter;
+            $slug = $originalSlug.'-'.$counter;
             $counter++;
         }
 

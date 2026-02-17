@@ -67,6 +67,12 @@ final class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\Creator\AiCreatorAssistantService::class);
         $this->app->singleton(\App\Services\Creator\ContentModeratorService::class);
 
+        // Register Content Moderation services (v2 - binary pass/fail)
+        $this->app->singleton(\App\Services\Moderation\ContentModerationService::class);
+        $this->app->singleton(\App\Services\Moderation\ContentComplaintService::class);
+        $this->app->singleton(\App\Services\Moderation\InterventionMonitorService::class);
+        $this->app->singleton(\App\Services\Moderation\ModerationNotificationService::class);
+
         // Register Story Follow-Up services
         $this->app->singleton(\App\Services\Story\StoryFollowUpService::class);
         $this->app->singleton(\App\Services\Story\EngagementScoringService::class);

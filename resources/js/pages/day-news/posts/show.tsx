@@ -1,6 +1,6 @@
-import { Head, usePage } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import DOMPurify from "dompurify";
-import { Calendar, ChevronLeft, ChevronRight, Eye, MapPin, User, Share2, Bookmark, MessageSquare, ThumbsUp, Heart, AlertCircle, Clock } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Eye, MapPin, User, Share2, Bookmark, MessageSquare, ThumbsUp, Heart, AlertCircle, Clock, FlagIcon } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import Advertisement from "@/components/day-news/advertisement";
 import { ArticleComments } from "@/components/day-news/article-comments";
@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { ArticleNavigation } from "@/components/day-news/article-navigation";
 import { ArticleSidebar } from "@/components/day-news/article-sidebar";
+import ReportContentModal from "@/components/moderation/report-content-modal";
 import { MobileArticleBar } from "@/components/day-news/mobile-article-bar";
 import { cn } from "@/lib/utils";
 import type { Auth } from "@/types";
@@ -205,6 +206,18 @@ export default function ArticleShow() {
                                     <Button variant="ghost" size="icon" className="size-9 rounded-full">
                                         <Bookmark className="size-4" />
                                     </Button>
+                                    {auth ? (
+                                        <ReportContentModal
+                                            contentType="day_news_post"
+                                            contentId={String(post.id)}
+                                        />
+                                    ) : (
+                                        <Link href="/login">
+                                            <Button variant="ghost" size="icon" className="size-9 rounded-full" title="Login to report">
+                                                <FlagIcon className="size-4" />
+                                            </Button>
+                                        </Link>
+                                    )}
                                 </div>
                             </div>
                         </header>

@@ -8,15 +8,20 @@ use App\Http\Controllers\Controller;
 use App\Models\ArticleComment;
 use App\Models\ArticleCommentLike;
 use App\Models\CommentReport;
+use App\Models\ContentModerationLog;
 use App\Models\DayNewsPost;
 use App\Models\SocialActivity;
 use App\Notifications\DayNews\ArticleCommented;
+use App\Services\Moderation\ContentModerationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 final class ArticleCommentController extends Controller
 {
+    public function __construct(
+        private readonly ContentModerationService $moderationService,
+    ) {}
+
     /**
      * Get comments for an article
      */
@@ -101,6 +106,28 @@ final class ArticleCommentController extends Controller
             'parent_id' => $validated['parent_id'] ?? null,
             'content' => $validated['content'],
         ]);
+
+        $moderationPassed = $this->moderationService->moderate(
+            content: $comment,
+            contentType: 'comment',
+            trigger: ContentModerationLog::TRIGGER_COMMENT,
+            userId: $request->user()->id,
+            regionId: null,
+        );
+
+        if (! $moderationPassed) {
+            $comment->delete();
+            $latestLog = ContentModerationLog::where('content_type', 'comment')
+                ->where('content_id', $comment->id)
+                ->latest()
+                ->first();
+
+            return response()->json([
+                'error' => 'moderation_rejected',
+                'message' => $latestLog?->violation_explanation
+                    ?? 'Your comment does not meet our community standards.',
+            ], 422);
+        }
 
         $comment->load(['user', 'replies']);
 
@@ -229,7 +256,7 @@ final class ArticleCommentController extends Controller
         // If reports exceed threshold, auto-hide comment
         if ($comment->fresh()->reports_count >= 5) {
             $comment->update(['is_active' => false]);
-            
+
             // Notify admins
             // TODO: Send notification to admin users
         }
@@ -244,7 +271,7 @@ final class ArticleCommentController extends Controller
     {
         $request->user()->can('moderate', ArticleComment::class) || abort(403);
 
-        $comment->update(['is_pinned' => !$comment->is_pinned]);
+        $comment->update(['is_pinned' => ! $comment->is_pinned]);
 
         return response()->json([
             'pinned' => $comment->is_pinned,
@@ -278,4 +305,3 @@ final class ArticleCommentController extends Controller
         return response()->json(['message' => 'Comment moderated successfully']);
     }
 }
-

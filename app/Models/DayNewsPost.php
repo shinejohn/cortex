@@ -47,6 +47,8 @@ final class DayNewsPost extends Model
         'engagement_score',
         'engagement_calculated_at',
         'is_national',
+        'moderation_status',
+        'moderation_removal_reason',
     ];
 
     public function workspace(): BelongsTo
@@ -147,6 +149,10 @@ final class DayNewsPost extends Model
     {
         return $query->where('status', 'published')
             ->whereNotNull('published_at')
+            ->where(function ($q) {
+                $q->where('moderation_status', 'published')
+                    ->orWhereNull('moderation_status');
+            })
             ->where(function ($q) {
                 $q->whereNull('expires_at')
                     ->orWhere('expires_at', '>', now());
