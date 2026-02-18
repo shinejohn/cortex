@@ -97,8 +97,10 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => env('DB_SSLMODE', 'prefer'),
+            // Railway: DB_HOST=${{Postgres.PGHOST}}, DB_PORT=${{Postgres.PGPORT}}, etc.
             'options' => extension_loaded('pdo_pgsql') ? array_filter([
-                PDO::ATTR_TIMEOUT => env('DB_TIMEOUT', 10),
+                PDO::ATTR_TIMEOUT => (int) env('DB_TIMEOUT', 10),
+                PDO::ATTR_PERSISTENT => false,
                 PDO::ATTR_EMULATE_PREPARES => false,
             ]) : [],
         ],
@@ -155,7 +157,7 @@ return [
         $urlPort = $parsed['port'] ?? null;
         $urlPass = isset($parsed['pass']) ? urldecode($parsed['pass']) : null;
         $urlUser = isset($parsed['user']) && $parsed['user'] !== 'default' ? $parsed['user'] : null;
-        $urlDb = isset($parsed['path']) ? ltrim($parsed['path'], '/') : null;
+        $urlDb = isset($parsed['path']) ? mb_ltrim($parsed['path'], '/') : null;
         $urlScheme = isset($parsed['scheme']) && $parsed['scheme'] === 'rediss' ? 'tls' : 'tcp';
 
         $host = env('REDIS_HOST', $urlHost ?? '127.0.0.1');

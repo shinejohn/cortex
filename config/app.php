@@ -151,6 +151,7 @@ return [
     |
     */
 
-    'admin_emails' => env('ADMIN_EMAILS', ''),
+    // Railway: Set ADMIN_EMAILS=email1@example.com,email2@example.com for Horizon/Filament
+    'admin_emails' => env('ADMIN_EMAILS', env('APP_ADMIN_EMAILS', '')),
 
 ];
