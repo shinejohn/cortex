@@ -58,9 +58,10 @@ config/         Business context + permissions
 
 1. Push to a GitHub repo
 2. Create a Railway service connected to that repo
-3. Set environment variables (see `.env.example`)
-4. Add a volume mounted at `/data` for database persistence
-5. Cortex auto-discovers your project on startup
+3. Set environment variables (see below)
+4. Cortex auto-discovers your project on startup
+
+**Port alignment:** If you get 502, ensure the port in **Settings → Networking → Public Domain** matches what the app listens on. Railway injects `PORT` (often 8080). If your domain targets 8000, add `PORT=8000` in Variables to override.
 
 ## Environment Variables
 
@@ -73,6 +74,8 @@ config/         Business context + permissions
 | `GITHUB_TOKEN` | Recommended | GitHub token (repo scope) for code analysis + PRs |
 | `CORTEX_API_TOKEN` | Recommended | Auth token for Cortex's own API |
 | `CORTEX_SLACK_WEBHOOK` | Optional | Slack webhook for notifications |
+
+**Railway API 400:** Ensure `RAILWAY_TOKEN` is a valid token from [railway.app/account/tokens](https://railway.app/account/tokens). Use an **Account** or **Project** token. Copy `RAILWAY_PROJECT_ID` and `RAILWAY_ENVIRONMENT_ID` from the Railway dashboard (Cmd+K → "Copy Project ID").
 
 ## API Endpoints
 

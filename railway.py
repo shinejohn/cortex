@@ -34,7 +34,10 @@ async def _gql(query: str, variables: dict = None) -> dict | None:
     try:
         async with httpx.AsyncClient(timeout=30) as client:
             r = await client.post(RAILWAY_API, json=payload, headers=_headers())
-            r.raise_for_status()
+            if r.status_code != 200:
+                body = r.text[:500] if r.text else "(no body)"
+                print(f"  Railway API {r.status_code}: {body}")
+                return None
             data = r.json()
             if "errors" in data:
                 for e in data["errors"]:
@@ -52,6 +55,12 @@ async def _gql(query: str, variables: dict = None) -> dict | None:
 
 async def get_services(project_id: str) -> list[dict]:
     """Get all services in a project with instance details."""
+    if not RAILWAY_TOKEN:
+        print("  RAILWAY_TOKEN not set — cannot fetch services")
+        return []
+    if not project_id or not project_id.strip():
+        print("  RAILWAY_PROJECT_ID is empty — cannot fetch services")
+        return []
     data = await _gql("""
         query($projectId: String!) {
             project(id: $projectId) {
