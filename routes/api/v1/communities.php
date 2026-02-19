@@ -13,6 +13,7 @@ Route::prefix('communities')->group(function () {
     Route::put('/{community}', [CommunityController::class, 'update']);
     Route::get('/{community}/threads', [CommunityController::class, 'threads']);
     Route::get('/{community}/members', [CommunityController::class, 'members']);
+    Route::get('/{community}/businesses', [CommunityController::class, 'businesses']);
 });
 
 Route::prefix('community-threads')->group(function () {
@@ -21,5 +22,3 @@ Route::prefix('community-threads')->group(function () {
     Route::put('/{communityThread}', [CommunityThreadController::class, 'update']);
     Route::delete('/{communityThread}', [CommunityThreadController::class, 'destroy']);
 });
-
-

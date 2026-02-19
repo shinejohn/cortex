@@ -52,6 +52,11 @@ final class Community extends Model
         return $this->hasMany(CommunityMember::class);
     }
 
+    public function smbBusinesses(): HasMany
+    {
+        return $this->hasMany(SmbBusiness::class, 'community_id');
+    }
+
     public function activeMembers(): HasMany
     {
         return $this->hasMany(CommunityMember::class)->active();

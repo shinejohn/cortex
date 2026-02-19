@@ -102,6 +102,7 @@ final class Business extends Model
         'industry_id',
         'city_id',
         'category_id',
+        'smb_business_id',
     ];
 
     public function workspace(): BelongsTo
@@ -155,6 +156,11 @@ final class Business extends Model
         }
 
         return $query;
+    }
+
+    public function smbBusiness(): BelongsTo
+    {
+        return $this->belongsTo(SmbBusiness::class, 'smb_business_id');
     }
 
     // AlphaSite relationships

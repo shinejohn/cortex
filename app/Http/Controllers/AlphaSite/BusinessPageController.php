@@ -6,6 +6,7 @@ namespace App\Http\Controllers\AlphaSite;
 
 use App\Http\Controllers\Controller;
 use App\Models\Business;
+use App\Models\SmbBusiness;
 use App\Services\AlphaSite\FourCallsIntegrationService;
 use App\Services\AlphaSite\LinkingService;
 use App\Services\AlphaSite\PageGeneratorService;
@@ -14,6 +15,7 @@ use App\Services\CouponService;
 use App\Services\EventService;
 use App\Services\NewsService;
 use App\Services\ReviewService;
+use App\Services\SmbFullProfileService;
 use Exception;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -29,7 +31,8 @@ final class BusinessPageController extends Controller
         private readonly ReviewService $reviewService,
         private readonly CouponService $couponService,
         private readonly EventService $eventService,
-        private readonly NewsService $newsService
+        private readonly NewsService $newsService,
+        private readonly SmbFullProfileService $profileService
     ) {}
 
     /**
@@ -146,11 +149,24 @@ final class BusinessPageController extends Controller
             abort(404);
         }
 
+        $context = null;
+        if ($business->smb_business_id ?? false) {
+            $smb = SmbBusiness::find($business->smb_business_id);
+            if ($smb) {
+                $context = [
+                    'business_profile' => $this->profileService->getFullProfile($smb),
+                    'ai_context' => $this->profileService->getAiContext($smb),
+                    'intelligence_summary' => $this->profileService->getIntelligenceSummary($smb),
+                ];
+            }
+        }
+
         try {
             $response = $this->fourCallsService->sendChatMessage(
                 $business,
                 $request->input('message'),
-                $request->input('conversation_id')
+                $request->input('conversation_id'),
+                $context
             );
 
             return response()->json([

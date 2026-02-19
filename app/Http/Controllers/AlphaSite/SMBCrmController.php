@@ -6,10 +6,13 @@ namespace App\Http\Controllers\AlphaSite;
 
 use App\Http\Controllers\Controller;
 use App\Models\Business;
-use App\Services\BusinessService;
-use App\Services\AlphaSite\SMBCrmService;
-use App\Services\AlphaSite\FourCallsIntegrationService;
+use App\Models\SmbBusiness;
 use App\Services\AlphaSite\FourCallsBillingService;
+use App\Services\AlphaSite\FourCallsIntegrationService;
+use App\Services\AlphaSite\SMBCrmService;
+use App\Services\BusinessService;
+use App\Services\SmbFullProfileService;
+use Exception;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -20,7 +23,8 @@ final class SMBCrmController extends Controller
         private readonly BusinessService $businessService,
         private readonly SMBCrmService $crmService,
         private readonly FourCallsIntegrationService $fourCallsService,
-        private readonly FourCallsBillingService $billingService
+        private readonly FourCallsBillingService $billingService,
+        private readonly SmbFullProfileService $profileService
     ) {}
 
     /**
@@ -29,8 +33,8 @@ final class SMBCrmController extends Controller
     public function dashboard(Request $request): Response
     {
         $business = Business::where('claimed_by_id', $request->user()->id)->first();
-        
-        if (!$business) {
+
+        if (! $business) {
             abort(404, 'No claimed business found');
         }
 
@@ -39,16 +43,16 @@ final class SMBCrmController extends Controller
         // Get 4calls.ai integration data
         $fourCallsData = null;
         $subscriptionDetails = null;
-        
+
         try {
             $fourCallsData = $this->fourCallsService->getIntegrationStatus($business);
             $subscriptionDetails = $this->billingService->getSubscriptionDetails($business);
-            
+
             // Merge call stats into dashboard
             if ($fourCallsData && isset($fourCallsData['stats'])) {
                 $dashboardData['call_stats'] = $fourCallsData['stats'];
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Silently fail if integration doesn't exist
         }
 
@@ -66,8 +70,8 @@ final class SMBCrmController extends Controller
     public function customers(Request $request): Response
     {
         $business = Business::where('claimed_by_id', $request->user()->id)->first();
-        
-        if (!$business) {
+
+        if (! $business) {
             abort(404);
         }
 
@@ -85,8 +89,8 @@ final class SMBCrmController extends Controller
     public function showCustomer(Request $request, string $customer): Response
     {
         $business = Business::where('claimed_by_id', $request->user()->id)->first();
-        
-        if (!$business) {
+
+        if (! $business) {
             abort(404);
         }
 
@@ -104,8 +108,8 @@ final class SMBCrmController extends Controller
     public function interactions(Request $request): Response
     {
         $business = Business::where('claimed_by_id', $request->user()->id)->first();
-        
-        if (!$business) {
+
+        if (! $business) {
             abort(404);
         }
 
@@ -115,7 +119,7 @@ final class SMBCrmController extends Controller
         $callHistory = [];
         try {
             $callHistory = $this->fourCallsService->getCallHistory($business, $request->all());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Silently fail if integration doesn't exist
         }
 
@@ -132,8 +136,8 @@ final class SMBCrmController extends Controller
     public function faqs(Request $request): Response
     {
         $business = Business::where('claimed_by_id', $request->user()->id)->first();
-        
-        if (!$business) {
+
+        if (! $business) {
             abort(404);
         }
 
@@ -151,8 +155,8 @@ final class SMBCrmController extends Controller
     public function storeFaq(Request $request)
     {
         $business = Business::where('claimed_by_id', $request->user()->id)->first();
-        
-        if (!$business) {
+
+        if (! $business) {
             abort(404);
         }
 
@@ -173,8 +177,8 @@ final class SMBCrmController extends Controller
     public function surveys(Request $request): Response
     {
         $business = Business::where('claimed_by_id', $request->user()->id)->first();
-        
-        if (!$business) {
+
+        if (! $business) {
             abort(404);
         }
 
@@ -187,13 +191,47 @@ final class SMBCrmController extends Controller
     }
 
     /**
+     * Business profile (Intelligence Hub)
+     */
+    public function profile(Request $request): Response
+    {
+        $business = Business::where('claimed_by_id', $request->user()->id)->first();
+
+        if (! $business) {
+            abort(404);
+        }
+
+        $fullProfile = null;
+        $subscriptionDetails = null;
+
+        if ($business->smb_business_id ?? false) {
+            $smb = SmbBusiness::find($business->smb_business_id);
+            if ($smb && $request->user()->tenant_id === $smb->tenant_id) {
+                $fullProfile = $this->profileService->getFullProfile($smb);
+            }
+        }
+
+        try {
+            $subscriptionDetails = $this->billingService->getSubscriptionDetails($business);
+        } catch (Exception $e) {
+            // Silently fail
+        }
+
+        return Inertia::render('alphasite/crm/profile', [
+            'business' => $business,
+            'fullProfile' => $fullProfile,
+            'subscription' => $subscriptionDetails,
+        ]);
+    }
+
+    /**
      * AI Services configuration
      */
     public function aiServices(Request $request): Response
     {
         $business = Business::where('claimed_by_id', $request->user()->id)->first();
-        
-        if (!$business) {
+
+        if (! $business) {
             abort(404);
         }
 
@@ -203,11 +241,11 @@ final class SMBCrmController extends Controller
         $fourCallsIntegration = null;
         $subscriptionDetails = null;
         $availablePackages = config('fourcalls.packages', []);
-        
+
         try {
             $fourCallsIntegration = $this->fourCallsService->getIntegrationStatus($business);
             $subscriptionDetails = $this->billingService->getSubscriptionDetails($business);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Silently fail if integration doesn't exist
         }
 

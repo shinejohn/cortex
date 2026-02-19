@@ -9,7 +9,9 @@ import {
     ClipboardList,
     Sparkles,
     Command,
-    ExternalLink
+    ExternalLink,
+    Tag,
+    UserCircle
 } from "lucide-react";
 
 interface CrmLayoutProps {
@@ -35,10 +37,12 @@ interface CrmLayoutProps {
 const navItems = [
     { href: "alphasite.crm.command-center", label: "Command Center", icon: Command },
     { href: "alphasite.crm.dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "alphasite.crm.profile", label: "Business Profile", icon: UserCircle },
     { href: "alphasite.crm.customers", label: "Customers", icon: Users },
     { href: "alphasite.crm.interactions", label: "Interactions", icon: MessageSquare },
     { href: "alphasite.crm.faqs", label: "FAQs", icon: HelpCircle },
     { href: "alphasite.crm.surveys", label: "Surveys", icon: ClipboardList },
+    { href: "alphasite.crm.coupon-claims", label: "Coupon Claims", icon: Tag },
     { href: "alphasite.crm.ai", label: "AI Services", icon: Sparkles },
 ];
 

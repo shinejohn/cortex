@@ -80,7 +80,49 @@ final class SmbBusiness extends Model
         'permanently_closed',
         'permanently_closed_time',
         'last_google_sync_at',
+        'community_id',
+        'ai_context',
+        'customer_intelligence',
+        'competitor_analysis',
+        'survey_responses',
+        'profile_completeness',
+        'last_enriched_at',
     ];
+
+    public function community(): BelongsTo
+    {
+        return $this->belongsTo(Community::class);
+    }
+
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+
+    public function customers(): HasMany
+    {
+        return $this->hasMany(Customer::class, 'smb_business_id');
+    }
+
+    public function businessHours(): HasMany
+    {
+        return $this->hasMany(BusinessHours::class);
+    }
+
+    public function photos(): HasMany
+    {
+        return $this->hasMany(BusinessPhoto::class);
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(BusinessReview::class);
+    }
+
+    public function attributes(): HasMany
+    {
+        return $this->hasMany(BusinessAttribute::class);
+    }
 
     protected function casts(): array
     {
@@ -120,36 +162,11 @@ final class SmbBusiness extends Model
             'permanently_closed' => 'boolean',
             'permanently_closed_time' => 'datetime',
             'last_google_sync_at' => 'datetime',
+            'ai_context' => 'array',
+            'customer_intelligence' => 'array',
+            'competitor_analysis' => 'array',
+            'survey_responses' => 'array',
+            'last_enriched_at' => 'datetime',
         ];
-    }
-
-    public function tenant(): BelongsTo
-    {
-        return $this->belongsTo(Tenant::class);
-    }
-
-    public function customers(): HasMany
-    {
-        return $this->hasMany(Customer::class, 'smb_business_id');
-    }
-
-    public function businessHours(): HasMany
-    {
-        return $this->hasMany(BusinessHours::class);
-    }
-
-    public function photos(): HasMany
-    {
-        return $this->hasMany(BusinessPhoto::class);
-    }
-
-    public function reviews(): HasMany
-    {
-        return $this->hasMany(BusinessReview::class);
-    }
-
-    public function attributes(): HasMany
-    {
-        return $this->hasMany(BusinessAttribute::class);
     }
 }

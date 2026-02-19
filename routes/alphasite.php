@@ -7,13 +7,16 @@ use App\Http\Controllers\AlphaSite\BusinessPageController;
 use App\Http\Controllers\AlphaSite\CityCategoryPageController;
 use App\Http\Controllers\AlphaSite\CityPageController;
 use App\Http\Controllers\AlphaSite\ClaimController;
+use App\Http\Controllers\AlphaSite\CommandCenterController;
 use App\Http\Controllers\AlphaSite\CommunityController;
 use App\Http\Controllers\AlphaSite\CountyPageController;
+use App\Http\Controllers\AlphaSite\CouponClaimsController;
 use App\Http\Controllers\AlphaSite\DirectoryController;
 use App\Http\Controllers\AlphaSite\DomainController;
 use App\Http\Controllers\AlphaSite\FourCallsSubscriptionController;
 use App\Http\Controllers\AlphaSite\IndustryController;
 use App\Http\Controllers\AlphaSite\LlmsTxtController;
+use App\Http\Controllers\AlphaSite\RevenueProductPurchaseController;
 use App\Http\Controllers\AlphaSite\SearchController;
 use App\Http\Controllers\AlphaSite\ServiceAreaController;
 use App\Http\Controllers\AlphaSite\SitemapController;
@@ -105,7 +108,11 @@ Route::domain(config('domains.alphasite'))->group(function () {
 
     // SMB CRM Routes (for claimed businesses)
     Route::middleware(['auth', 'verified'])->prefix('crm')->group(function () {
+        Route::get('/command-center', [CommandCenterController::class, 'index'])->name('alphasite.crm.command-center');
+        Route::get('/command-center/revenue', [CommandCenterController::class, 'revenue'])->name('alphasite.crm.command-center.revenue');
+        Route::get('/command-center/community', [CommandCenterController::class, 'community'])->name('alphasite.crm.command-center.community');
         Route::get('/dashboard', [SMBCrmController::class, 'dashboard'])->name('alphasite.crm.dashboard');
+        Route::get('/profile', [SMBCrmController::class, 'profile'])->name('alphasite.crm.profile');
         Route::get('/customers', [SMBCrmController::class, 'customers'])->name('alphasite.crm.customers');
         Route::get('/customers/{customer}', [SMBCrmController::class, 'showCustomer'])->name('alphasite.crm.customer.show');
         Route::get('/interactions', [SMBCrmController::class, 'interactions'])->name('alphasite.crm.interactions');
@@ -113,6 +120,15 @@ Route::domain(config('domains.alphasite'))->group(function () {
         Route::post('/faqs', [SMBCrmController::class, 'storeFaq'])->name('alphasite.crm.faqs.store');
         Route::get('/surveys', [SMBCrmController::class, 'surveys'])->name('alphasite.crm.surveys');
         Route::get('/ai-services', [SMBCrmController::class, 'aiServices'])->name('alphasite.crm.ai');
+        Route::get('/coupon-claims', [CouponClaimsController::class, 'index'])->name('alphasite.crm.coupon-claims');
+        Route::post('/coupon-claims/{claim}/redeem', [CouponClaimsController::class, 'redeem'])->name('alphasite.crm.coupon-claims.redeem');
+    });
+
+    // Revenue Product Purchase (Headliner, Section Sponsor, Newsletter Ad)
+    Route::middleware(['auth', 'verified'])->prefix('revenue-products')->group(function () {
+        Route::post('/checkout', [RevenueProductPurchaseController::class, 'checkout'])->name('alphasite.revenue-product.checkout');
+        Route::get('/success', [RevenueProductPurchaseController::class, 'success'])->name('alphasite.revenue-product.success');
+        Route::get('/cancel', [RevenueProductPurchaseController::class, 'cancel'])->name('alphasite.revenue-product.cancel');
     });
 
     // 4calls.ai Subscription Management Routes

@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Services\AlphaSite;
 
-use App\Models\Business;
 use App\Models\AlphaSiteFourCallsIntegration;
+use App\Models\Business;
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
+use InvalidArgumentException;
 
 /**
  * Service for integrating AlphaSite businesses with 4calls.ai API
@@ -16,7 +17,9 @@ use Illuminate\Support\Facades\Cache;
 final class FourCallsIntegrationService
 {
     private string $apiUrl;
+
     private string $apiKey;
+
     private int $timeout = 30;
 
     public function __construct()
@@ -32,36 +35,36 @@ final class FourCallsIntegrationService
     {
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Authorization' => 'Bearer '.$this->apiKey,
                 'Content-Type' => 'application/json',
             ])
-            ->timeout($this->timeout)
-            ->post("{$this->apiUrl}/api/coordinator/organizations", [
-                'name' => $business->name,
-                'phone' => $business->phone,
-                'email' => $business->email,
-                'address' => $business->address,
-                'city' => $business->city,
-                'state' => $business->state,
-                'postal_code' => $business->postal_code,
-                'country' => $business->country ?? 'US',
-                'metadata' => [
-                    'alphasite_business_id' => $business->id,
-                    'alphasite_business_slug' => $business->slug,
-                ],
-            ]);
+                ->timeout($this->timeout)
+                ->post("{$this->apiUrl}/api/coordinator/organizations", [
+                    'name' => $business->name,
+                    'phone' => $business->phone,
+                    'email' => $business->email,
+                    'address' => $business->address,
+                    'city' => $business->city,
+                    'state' => $business->state,
+                    'postal_code' => $business->postal_code,
+                    'country' => $business->country ?? 'US',
+                    'metadata' => [
+                        'alphasite_business_id' => $business->id,
+                        'alphasite_business_slug' => $business->slug,
+                    ],
+                ]);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 Log::error('Failed to create 4calls.ai organization', [
                     'business_id' => $business->id,
                     'status' => $response->status(),
                     'response' => $response->body(),
                 ]);
-                throw new \Exception('Failed to create 4calls.ai organization');
+                throw new Exception('Failed to create 4calls.ai organization');
             }
 
             return $response->json();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception creating 4calls.ai organization', [
                 'business_id' => $business->id,
                 'error' => $e->getMessage(),
@@ -77,17 +80,17 @@ final class FourCallsIntegrationService
     {
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Authorization' => 'Bearer '.$this->apiKey,
             ])
-            ->timeout($this->timeout)
-            ->get("{$this->apiUrl}/api/coordinator/organizations/{$organizationId}");
+                ->timeout($this->timeout)
+                ->get("{$this->apiUrl}/api/coordinator/organizations/{$organizationId}");
 
-            if (!$response->successful()) {
-                throw new \Exception('Failed to get organization');
+            if (! $response->successful()) {
+                throw new Exception('Failed to get organization');
             }
 
             return $response->json();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception getting 4calls.ai organization', [
                 'organization_id' => $organizationId,
                 'error' => $e->getMessage(),
@@ -106,23 +109,23 @@ final class FourCallsIntegrationService
             $coordinatorData = array_merge($defaultConfig, $config);
 
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Authorization' => 'Bearer '.$this->apiKey,
                 'Content-Type' => 'application/json',
             ])
-            ->timeout($this->timeout)
-            ->post("{$this->apiUrl}/api/coordinator/organizations/{$organizationId}/coordinators", $coordinatorData);
+                ->timeout($this->timeout)
+                ->post("{$this->apiUrl}/api/coordinator/organizations/{$organizationId}/coordinators", $coordinatorData);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 Log::error('Failed to create coordinator', [
                     'organization_id' => $organizationId,
                     'status' => $response->status(),
                     'response' => $response->body(),
                 ]);
-                throw new \Exception('Failed to create coordinator');
+                throw new Exception('Failed to create coordinator');
             }
 
             return $response->json();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception creating coordinator', [
                 'organization_id' => $organizationId,
                 'error' => $e->getMessage(),
@@ -138,17 +141,17 @@ final class FourCallsIntegrationService
     {
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Authorization' => 'Bearer '.$this->apiKey,
             ])
-            ->timeout($this->timeout)
-            ->get("{$this->apiUrl}/api/coordinator/organizations/{$organizationId}/coordinators");
+                ->timeout($this->timeout)
+                ->get("{$this->apiUrl}/api/coordinator/organizations/{$organizationId}/coordinators");
 
-            if (!$response->successful()) {
-                throw new \Exception('Failed to list coordinators');
+            if (! $response->successful()) {
+                throw new Exception('Failed to list coordinators');
             }
 
             return $response->json();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception listing coordinators', [
                 'organization_id' => $organizationId,
                 'error' => $e->getMessage(),
@@ -163,14 +166,14 @@ final class FourCallsIntegrationService
     public function provisionService(Business $business, string $packageSlug): AlphaSiteFourCallsIntegration
     {
         $package = config("fourcalls.packages.{$packageSlug}");
-        
-        if (!$package) {
-            throw new \InvalidArgumentException("Invalid package: {$packageSlug}");
+
+        if (! $package) {
+            throw new InvalidArgumentException("Invalid package: {$packageSlug}");
         }
 
         // Check if integration already exists
         $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
-        
+
         if ($integration) {
             // Update existing integration
             $integration->update([
@@ -178,6 +181,7 @@ final class FourCallsIntegrationService
                 'status' => 'active',
                 'activated_at' => now(),
             ]);
+
             return $integration;
         }
 
@@ -185,14 +189,14 @@ final class FourCallsIntegrationService
         $organization = $this->createOrganization($business);
         $organizationId = $organization['id'] ?? $organization['data']['id'] ?? null;
 
-        if (!$organizationId) {
-            throw new \Exception('Failed to get organization ID from 4calls.ai');
+        if (! $organizationId) {
+            throw new Exception('Failed to get organization ID from 4calls.ai');
         }
 
         // Create default coordinator
         $coordinator = $this->createCoordinator($organizationId, [
             'role_template' => $package['features']['coordinator_roles'][0] ?? 'receptionist',
-            'display_name' => $business->name . ' Assistant',
+            'display_name' => $business->name.' Assistant',
         ]);
         $coordinatorId = $coordinator['id'] ?? $coordinator['data']['id'] ?? null;
 
@@ -216,8 +220,8 @@ final class FourCallsIntegrationService
     public function deprovisionService(Business $business): bool
     {
         $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
-        
-        if (!$integration) {
+
+        if (! $integration) {
             return false;
         }
 
@@ -234,16 +238,16 @@ final class FourCallsIntegrationService
     public function changeServicePackage(Business $business, string $newPackageSlug): AlphaSiteFourCallsIntegration
     {
         $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
-        
-        if (!$integration) {
+
+        if (! $integration) {
             // If no integration exists, provision new service
             return $this->provisionService($business, $newPackageSlug);
         }
 
         $newPackage = config("fourcalls.packages.{$newPackageSlug}");
-        
-        if (!$newPackage) {
-            throw new \InvalidArgumentException("Invalid package: {$newPackageSlug}");
+
+        if (! $newPackage) {
+            throw new InvalidArgumentException("Invalid package: {$newPackageSlug}");
         }
 
         // Update integration
@@ -262,7 +266,7 @@ final class FourCallsIntegrationService
             for ($i = $currentCount; $i < $allowedCount; $i++) {
                 $this->createCoordinator($integration->organization_id, [
                     'role_template' => $roles[$i] ?? 'receptionist',
-                    'display_name' => $business->name . ' Assistant ' . ($i + 1),
+                    'display_name' => $business->name.' Assistant '.($i + 1),
                 ]);
             }
         }
@@ -276,28 +280,29 @@ final class FourCallsIntegrationService
     public function getCallHistory(Business $business, array $filters = []): array
     {
         $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
-        
-        if (!$integration || $integration->status !== 'active') {
+
+        if (! $integration || $integration->status !== 'active') {
             return ['data' => [], 'total' => 0];
         }
 
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . decrypt($integration->api_key),
+                'Authorization' => 'Bearer '.decrypt($integration->api_key),
             ])
-            ->timeout($this->timeout)
-            ->get("{$this->apiUrl}/api/coordinator/organizations/{$integration->organization_id}/calls", $filters);
+                ->timeout($this->timeout)
+                ->get("{$this->apiUrl}/api/coordinator/organizations/{$integration->organization_id}/calls", $filters);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 return ['data' => [], 'total' => 0];
             }
 
             return $response->json();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception getting call history', [
                 'business_id' => $business->id,
                 'error' => $e->getMessage(),
             ]);
+
             return ['data' => [], 'total' => 0];
         }
     }
@@ -308,8 +313,8 @@ final class FourCallsIntegrationService
     public function getCallStats(Business $business, array $filters = []): array
     {
         $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
-        
-        if (!$integration || $integration->status !== 'active') {
+
+        if (! $integration || $integration->status !== 'active') {
             return [
                 'calls_today' => 0,
                 'avg_duration' => 0,
@@ -320,12 +325,12 @@ final class FourCallsIntegrationService
 
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . decrypt($integration->api_key),
+                'Authorization' => 'Bearer '.decrypt($integration->api_key),
             ])
-            ->timeout($this->timeout)
-            ->get("{$this->apiUrl}/api/coordinator/organizations/{$integration->organization_id}/calls/stats", $filters);
+                ->timeout($this->timeout)
+                ->get("{$this->apiUrl}/api/coordinator/organizations/{$integration->organization_id}/calls/stats", $filters);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 return [
                     'calls_today' => 0,
                     'avg_duration' => 0,
@@ -335,11 +340,12 @@ final class FourCallsIntegrationService
             }
 
             return $response->json();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception getting call stats', [
                 'business_id' => $business->id,
                 'error' => $e->getMessage(),
             ]);
+
             return [
                 'calls_today' => 0,
                 'avg_duration' => 0,
@@ -355,28 +361,29 @@ final class FourCallsIntegrationService
     public function getAppointments(Business $business, array $filters = []): array
     {
         $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
-        
-        if (!$integration || $integration->status !== 'active') {
+
+        if (! $integration || $integration->status !== 'active') {
             return ['data' => [], 'total' => 0];
         }
 
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . decrypt($integration->api_key),
+                'Authorization' => 'Bearer '.decrypt($integration->api_key),
             ])
-            ->timeout($this->timeout)
-            ->get("{$this->apiUrl}/api/coordinator/organizations/{$integration->organization_id}/appointments", $filters);
+                ->timeout($this->timeout)
+                ->get("{$this->apiUrl}/api/coordinator/organizations/{$integration->organization_id}/appointments", $filters);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 return ['data' => [], 'total' => 0];
             }
 
             return $response->json();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception getting appointments', [
                 'business_id' => $business->id,
                 'error' => $e->getMessage(),
             ]);
+
             return ['data' => [], 'total' => 0];
         }
     }
@@ -387,28 +394,29 @@ final class FourCallsIntegrationService
     public function getContacts(Business $business, array $filters = []): array
     {
         $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
-        
-        if (!$integration || $integration->status !== 'active') {
+
+        if (! $integration || $integration->status !== 'active') {
             return ['data' => [], 'total' => 0];
         }
 
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . decrypt($integration->api_key),
+                'Authorization' => 'Bearer '.decrypt($integration->api_key),
             ])
-            ->timeout($this->timeout)
-            ->get("{$this->apiUrl}/api/coordinator/organizations/{$integration->organization_id}/contacts", $filters);
+                ->timeout($this->timeout)
+                ->get("{$this->apiUrl}/api/coordinator/organizations/{$integration->organization_id}/contacts", $filters);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 return ['data' => [], 'total' => 0];
             }
 
             return $response->json();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception getting contacts', [
                 'business_id' => $business->id,
                 'error' => $e->getMessage(),
             ]);
+
             return ['data' => [], 'total' => 0];
         }
     }
@@ -419,31 +427,32 @@ final class FourCallsIntegrationService
     public function checkAvailability(Business $business, array $params): array
     {
         $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
-        
-        if (!$integration || $integration->status !== 'active') {
+
+        if (! $integration || $integration->status !== 'active') {
             return ['available' => false];
         }
 
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . decrypt($integration->api_key),
+                'Authorization' => 'Bearer '.decrypt($integration->api_key),
                 'Content-Type' => 'application/json',
             ])
-            ->timeout($this->timeout)
-            ->post("{$this->apiUrl}/api/coordinator/real-time/availability", array_merge([
-                'organization_id' => $integration->organization_id,
-            ], $params));
+                ->timeout($this->timeout)
+                ->post("{$this->apiUrl}/api/coordinator/real-time/availability", array_merge([
+                    'organization_id' => $integration->organization_id,
+                ], $params));
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 return ['available' => false];
             }
 
             return $response->json();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception checking availability', [
                 'business_id' => $business->id,
                 'error' => $e->getMessage(),
             ]);
+
             return ['available' => false];
         }
     }
@@ -454,27 +463,27 @@ final class FourCallsIntegrationService
     public function createBooking(Business $business, array $data): array
     {
         $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
-        
-        if (!$integration || $integration->status !== 'active') {
-            throw new \Exception('AI service not active for this business');
+
+        if (! $integration || $integration->status !== 'active') {
+            throw new Exception('AI service not active for this business');
         }
 
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . decrypt($integration->api_key),
+                'Authorization' => 'Bearer '.decrypt($integration->api_key),
                 'Content-Type' => 'application/json',
             ])
-            ->timeout($this->timeout)
-            ->post("{$this->apiUrl}/api/coordinator/real-time/booking", array_merge([
-                'organization_id' => $integration->organization_id,
-            ], $data));
+                ->timeout($this->timeout)
+                ->post("{$this->apiUrl}/api/coordinator/real-time/booking", array_merge([
+                    'organization_id' => $integration->organization_id,
+                ], $data));
 
-            if (!$response->successful()) {
-                throw new \Exception('Failed to create booking');
+            if (! $response->successful()) {
+                throw new Exception('Failed to create booking');
             }
 
             return $response->json();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception creating booking', [
                 'business_id' => $business->id,
                 'error' => $e->getMessage(),
@@ -489,27 +498,27 @@ final class FourCallsIntegrationService
     public function createLead(Business $business, array $data): array
     {
         $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
-        
-        if (!$integration || $integration->status !== 'active') {
-            throw new \Exception('AI service not active for this business');
+
+        if (! $integration || $integration->status !== 'active') {
+            throw new Exception('AI service not active for this business');
         }
 
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . decrypt($integration->api_key),
+                'Authorization' => 'Bearer '.decrypt($integration->api_key),
                 'Content-Type' => 'application/json',
             ])
-            ->timeout($this->timeout)
-            ->post("{$this->apiUrl}/api/coordinator/real-time/lead", array_merge([
-                'organization_id' => $integration->organization_id,
-            ], $data));
+                ->timeout($this->timeout)
+                ->post("{$this->apiUrl}/api/coordinator/real-time/lead", array_merge([
+                    'organization_id' => $integration->organization_id,
+                ], $data));
 
-            if (!$response->successful()) {
-                throw new \Exception('Failed to create lead');
+            if (! $response->successful()) {
+                throw new Exception('Failed to create lead');
             }
 
             return $response->json();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception creating lead', [
                 'business_id' => $business->id,
                 'error' => $e->getMessage(),
@@ -520,34 +529,46 @@ final class FourCallsIntegrationService
 
     /**
      * Send chat message to AI coordinator
+     *
+     * @param  array{business_profile?: array, ai_context?: array, intelligence_summary?: string}|null  $context
      */
-    public function sendChatMessage(Business $business, string $message, ?string $conversationId = null): array
-    {
+    public function sendChatMessage(
+        Business $business,
+        string $message,
+        ?string $conversationId = null,
+        ?array $context = null
+    ): array {
         $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
-        
-        if (!$integration || $integration->status !== 'active') {
-            throw new \Exception('AI service not active for this business');
+
+        if (! $integration || $integration->status !== 'active') {
+            throw new Exception('AI service not active for this business');
+        }
+
+        $payload = [
+            'organization_id' => $integration->organization_id,
+            'coordinator_id' => $integration->coordinator_id,
+            'message' => $message,
+            'conversation_id' => $conversationId,
+        ];
+
+        if ($context !== null && $context !== []) {
+            $payload['context'] = $context;
         }
 
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . decrypt($integration->api_key),
+                'Authorization' => 'Bearer '.decrypt($integration->api_key),
                 'Content-Type' => 'application/json',
             ])
-            ->timeout($this->timeout)
-            ->post("{$this->apiUrl}/api/coordinator/chat/message", [
-                'organization_id' => $integration->organization_id,
-                'coordinator_id' => $integration->coordinator_id,
-                'message' => $message,
-                'conversation_id' => $conversationId,
-            ]);
+                ->timeout($this->timeout)
+                ->post("{$this->apiUrl}/api/coordinator/chat/message", $payload);
 
-            if (!$response->successful()) {
-                throw new \Exception('Failed to send chat message');
+            if (! $response->successful()) {
+                throw new Exception('Failed to send chat message');
             }
 
             return $response->json();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception sending chat message', [
                 'business_id' => $business->id,
                 'error' => $e->getMessage(),
@@ -562,8 +583,8 @@ final class FourCallsIntegrationService
     public function getIntegrationStatus(Business $business): ?array
     {
         $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
-        
-        if (!$integration) {
+
+        if (! $integration) {
             return null;
         }
 
@@ -582,11 +603,12 @@ final class FourCallsIntegrationService
                 'activated_at' => $integration->activated_at,
                 'expires_at' => $integration->expires_at,
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception getting integration status', [
                 'business_id' => $business->id,
                 'error' => $e->getMessage(),
             ]);
+
             return [
                 'integration_id' => $integration->id,
                 'status' => $integration->status,
@@ -602,25 +624,25 @@ final class FourCallsIntegrationService
     public function updateCoordinator(Business $business, string $coordinatorId, array $config): array
     {
         $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
-        
-        if (!$integration || $integration->status !== 'active') {
-            throw new \Exception('AI service not active for this business');
+
+        if (! $integration || $integration->status !== 'active') {
+            throw new Exception('AI service not active for this business');
         }
 
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . decrypt($integration->api_key),
+                'Authorization' => 'Bearer '.decrypt($integration->api_key),
                 'Content-Type' => 'application/json',
             ])
-            ->timeout($this->timeout)
-            ->put("{$this->apiUrl}/api/coordinator/organizations/{$integration->organization_id}/coordinators/{$coordinatorId}", $config);
+                ->timeout($this->timeout)
+                ->put("{$this->apiUrl}/api/coordinator/organizations/{$integration->organization_id}/coordinators/{$coordinatorId}", $config);
 
-            if (!$response->successful()) {
-                throw new \Exception('Failed to update coordinator');
+            if (! $response->successful()) {
+                throw new Exception('Failed to update coordinator');
             }
 
             return $response->json();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception updating coordinator', [
                 'business_id' => $business->id,
                 'coordinator_id' => $coordinatorId,
@@ -636,20 +658,20 @@ final class FourCallsIntegrationService
     public function deleteCoordinator(Business $business, string $coordinatorId): bool
     {
         $integration = AlphaSiteFourCallsIntegration::where('business_id', $business->id)->first();
-        
-        if (!$integration || $integration->status !== 'active') {
-            throw new \Exception('AI service not active for this business');
+
+        if (! $integration || $integration->status !== 'active') {
+            throw new Exception('AI service not active for this business');
         }
 
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . decrypt($integration->api_key),
+                'Authorization' => 'Bearer '.decrypt($integration->api_key),
             ])
-            ->timeout($this->timeout)
-            ->delete("{$this->apiUrl}/api/coordinator/organizations/{$integration->organization_id}/coordinators/{$coordinatorId}");
+                ->timeout($this->timeout)
+                ->delete("{$this->apiUrl}/api/coordinator/organizations/{$integration->organization_id}/coordinators/{$coordinatorId}");
 
             return $response->successful();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Exception deleting coordinator', [
                 'business_id' => $business->id,
                 'coordinator_id' => $coordinatorId,
@@ -659,4 +681,3 @@ final class FourCallsIntegrationService
         }
     }
 }
-
