@@ -148,6 +148,12 @@ async def _discovery_loop():
 # Health & status
 # ---------------------------------------------------------------------------
 
+@app.get("/")
+async def root():
+    """Root path for Metal Edge health checks (some proxies check / not /health)."""
+    return {"status": "ok", "version": "6.0", "time": datetime.now(timezone.utc).isoformat()}
+
+
 @app.get("/health")
 async def health():
     return {"status": "ok", "version": "6.0", "time": datetime.now(timezone.utc).isoformat()}
