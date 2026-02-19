@@ -1,0 +1,44 @@
+{
+  "Day News": {
+    "product_name": "Day News",
+    "priority": "critical",
+    "users": "Daily readers, content team",
+    "failure_impact": "News site goes offline. Readers can't access content. Editorial team can't publish.",
+    "notes": "Most important product. High traffic during news cycles."
+  },
+  "GoEventCity": {
+    "product_name": "GoEventCity",
+    "priority": "high",
+    "users": "Event organizers, attendees",
+    "failure_impact": "Event listings unavailable. Organizers can't manage events.",
+    "notes": "Traffic spikes around major local events."
+  },
+  "Go Local Voices": {
+    "product_name": "Go Local Voices",
+    "priority": "high",
+    "users": "Community contributors, readers",
+    "failure_impact": "Community content platform offline.",
+    "notes": ""
+  },
+  "Downtown Guide": {
+    "product_name": "Downtown Guide",
+    "priority": "medium",
+    "users": "Local businesses, visitors",
+    "failure_impact": "Business directory unavailable.",
+    "notes": ""
+  },
+  "Alphasite": {
+    "product_name": "Alphasite (Staging)",
+    "priority": "low",
+    "users": "Development team only",
+    "failure_impact": "Dev/staging environment down. No user impact.",
+    "notes": "Can be more aggressive with automated fixes here."
+  },
+  "Horizon": {
+    "product_name": "Queue Worker",
+    "priority": "critical",
+    "users": "All services (processes background jobs)",
+    "failure_impact": "All background jobs stop: emails, notifications, scheduled tasks, data processing.",
+    "notes": "If Horizon is down, all Laravel apps lose async processing."
+  }
+}

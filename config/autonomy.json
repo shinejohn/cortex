@@ -1,0 +1,42 @@
+{
+  "defaults": {
+    "can_restart": true,
+    "can_set_variable": true,
+    "can_rollback": false,
+    "can_create_pr": true,
+    "max_repair_attempts": 3
+  },
+  "services": {
+    "Alphasite": {
+      "can_restart": true,
+      "can_set_variable": true,
+      "can_rollback": true,
+      "can_create_pr": true,
+      "max_repair_attempts": 5
+    },
+    "Postgres": {
+      "can_restart": false,
+      "can_set_variable": false,
+      "can_rollback": false,
+      "can_create_pr": false,
+      "max_repair_attempts": 0
+    },
+    "Redis": {
+      "can_restart": true,
+      "can_set_variable": false,
+      "can_rollback": false,
+      "can_create_pr": false,
+      "max_repair_attempts": 1
+    }
+  },
+  "forbidden_actions": [
+    "database_migration",
+    "database_rollback",
+    "delete_data",
+    "drop_table",
+    "modify_schema",
+    "truncate",
+    "reset_database",
+    "force_push"
+  ]
+}
