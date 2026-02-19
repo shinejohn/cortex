@@ -8,11 +8,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY *.py .
 COPY knowledge/ knowledge/
 COPY config/ config/
+COPY start.sh .
 
+RUN mkdir -p /app/data && chmod +x start.sh
+
+ENV PYTHONUNBUFFERED=1
 ENV CORTEX_KNOWLEDGE_DIR=/app/knowledge
 ENV CORTEX_CONFIG_DIR=/app/config
-ENV CORTEX_DB_PATH=/data/cortex.db
+ENV CORTEX_DB_PATH=/app/data/cortex.db
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["./start.sh"]
