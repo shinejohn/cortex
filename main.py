@@ -68,11 +68,14 @@ async def lifespan(app: FastAPI):
     kb = Knowledge()
     print("  Knowledge base initialized")
 
-    # Run initial discovery
-    try:
-        await discover.discover_all(kb)
-    except Exception as e:
-        print(f"  Initial discovery failed: {e}")
+    # Run initial discovery in background (don't block startup — healthcheck needs /health within 30s)
+    async def _run_initial_discovery():
+        try:
+            await discover.discover_all(kb)
+        except Exception as e:
+            print(f"  Initial discovery failed: {e}")
+
+    discover_task = asyncio.create_task(_run_initial_discovery())
 
     # Start background tasks
     monitor_task = asyncio.create_task(_monitor_loop())
@@ -81,6 +84,7 @@ async def lifespan(app: FastAPI):
     print("Cortex V6 ready.")
     yield
 
+    discover_task.cancel()
     monitor_task.cancel()
     discovery_task.cancel()
 
