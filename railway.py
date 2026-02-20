@@ -73,7 +73,7 @@ async def get_services(project_id: str) -> list[dict]:
                             serviceInstances {
                                 edges {
                                     node {
-                                        source { repo branch }
+                                        source { repo }
                                         domains {
                                             serviceDomains { domain }
                                             customDomains { domain }
