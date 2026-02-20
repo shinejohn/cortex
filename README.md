@@ -61,7 +61,10 @@ config/         Business context + permissions
 3. Set environment variables (see below)
 4. Cortex auto-discovers your project on startup
 
-**502 fix:** Cortex listens on Railway's `PORT` (default 8080). In **Settings → Networking → Public Domain**, click your domain → set **Target Port** to `8080`. Redeploy.
+**502 fix:** Cortex listens on port 8080. If you get 502:
+1. **Settings → Networking → Public Networking** — click the pencil icon next to your domain
+2. Set **Target Port** to `8080`, save
+3. If that doesn't work: remove the domain (trash icon), redeploy, then **Generate Domain** again so Railway auto-detects port 8080
 
 ## Environment Variables
 
