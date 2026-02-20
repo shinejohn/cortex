@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-# Always use 8000 — matches EXPOSE and Railway public domain target port
-PORT=8000
+# Use Railway's PORT (default 8080) — domain target port must match in Settings → Networking
+PORT="${PORT:-8080}"
 echo "Starting Cortex on 0.0.0.0:${PORT}"
 exec uvicorn main:app --host 0.0.0.0 --port "$PORT"

@@ -61,7 +61,7 @@ config/         Business context + permissions
 3. Set environment variables (see below)
 4. Cortex auto-discovers your project on startup
 
-**Port alignment:** If you get 502, ensure the port in **Settings → Networking → Public Domain** matches what the app listens on. Railway injects `PORT` (often 8080). If your domain targets 8000, add `PORT=8000` in Variables to override.
+**502 fix:** Cortex listens on Railway's `PORT` (default 8080). In **Settings → Networking → Public Domain**, click your domain → set **Target Port** to `8080`. Redeploy.
 
 ## Environment Variables
 

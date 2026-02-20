@@ -17,6 +17,6 @@ ENV CORTEX_KNOWLEDGE_DIR=/app/knowledge
 ENV CORTEX_CONFIG_DIR=/app/config
 ENV CORTEX_DB_PATH=/app/data/cortex.db
 
-EXPOSE 8000
+EXPOSE 8080
 
 CMD ["./start.sh"]
