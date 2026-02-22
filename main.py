@@ -56,6 +56,14 @@ async def verify_token(request: Request):
 # Lifecycle
 # ---------------------------------------------------------------------------
 
+async def _initial_discovery():
+    """Run discovery in background so server can accept /health immediately."""
+    try:
+        await discover.discover_all(kb)
+    except Exception as e:
+        print(f"  Initial discovery failed: {e}")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global kb
@@ -68,14 +76,8 @@ async def lifespan(app: FastAPI):
     kb = Knowledge()
     print("  Knowledge base initialized")
 
-    # Run initial discovery in background (don't block startup — healthcheck needs /health within 30s)
-    async def _run_initial_discovery():
-        try:
-            await discover.discover_all(kb)
-        except Exception as e:
-            print(f"  Initial discovery failed: {e}")
-
-    discover_task = asyncio.create_task(_run_initial_discovery())
+    # Defer discovery to background — don't block /health (Railway 30s timeout)
+    asyncio.create_task(_initial_discovery())
 
     # Start background tasks
     monitor_task = asyncio.create_task(_monitor_loop())
@@ -84,7 +86,6 @@ async def lifespan(app: FastAPI):
     print("Cortex V6 ready.")
     yield
 
-    discover_task.cancel()
     monitor_task.cancel()
     discovery_task.cancel()
 
@@ -150,7 +151,7 @@ async def _discovery_loop():
 
 @app.get("/")
 async def root():
-    """Root path for Metal Edge health checks (some proxies check / not /health)."""
+    """Root path for proxies that check / instead of /health."""
     return {"status": "ok", "version": "6.0", "time": datetime.now(timezone.utc).isoformat()}
 
 
